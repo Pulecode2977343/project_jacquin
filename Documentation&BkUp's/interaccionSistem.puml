@@ -1,0 +1,30 @@
+@startuml Interacción entre componentes del sistema
+title Diagrama de Secuencia - Inicio de sesión y redirección por rol (JAM)
+
+actor Usuario
+boundary "login.jsp" as LoginPage
+control "LoginServlet" as Servlet
+entity "Base de Datos (jam_db)" as DB
+control "SessionManager" as Session
+entity "Interfaz por rol" as Dashboard
+
+Usuario -> LoginPage: Ingresa correo y contraseña
+LoginPage -> Servlet: Enviar datos de login (POST)
+Servlet -> DB: SELECT * FROM usuario WHERE email=? AND password=?
+DB --> Servlet: Devuelve datos del usuario + rol
+
+alt Credenciales válidas
+  Servlet -> Session: Crear sesión con datos de usuario
+  Session --> Servlet: Sesión activa
+  alt Rol = ADMIN
+    Servlet -> Dashboard: Mostrar /admin/dashboard.jsp
+  else Rol = PROFESOR
+    Servlet -> Dashboard: Mostrar /profesor/dashboard.jsp
+  else Rol = ESTUDIANTE
+    Servlet -> Dashboard: Mostrar /estudiante/dashboard.jsp
+  end
+else Credenciales incorrectas
+  Servlet -> LoginPage: Mostrar error "Credenciales incorrectas"
+end
+
+@enduml

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JACQUIN Academia musical - Gestión</title>
+  <link rel="stylesheet" href="/css/sesion.css">
+  <!--<link rel="stylesheet" href="/css/style.css">-->
+</head>
+<body>
+
+  <header>
+    <h1>Academia Musical JACQUIN</h1>
+    <nav>
+      <a href="/index.html">Inicio</a>
+      <a href="/login.html">Gestión</a>
+      <a href="#">Beneficios</a>
+      <a href="/contactanos.html">Contacto</a>
+    </nav>
+  </header>
+
+  <main class="main-gestion">
+    <section>
+      <h2>Bienvenido al Sistema de Gestión</h2>
+      <p>Este sistema ha sido diseñado para mejorar la organización, comunicación y acceso a la información dentro de la Academia Musical JACQUIN. A continuación se presentan las áreas clave de gestión que estructuran nuestra plataforma.</p>
+    </section>
+
+<section>
+  <h2>Áreas de Gestión</h2>
+  <div class="modulos-horizontal">
+
+    <!-- Profesores -->
+    <div class="modulo-columna">
+      <button class="gestion-btn" onclick="accesoModulo('profesores')">Módulo Profesores</button>
+      <ul>
+        <li>Planificación de horarios</li>
+        <li>Registro de asistencia</li>
+        <li>Comunicación con estudiantes</li>
+        <li>Recursos digitales</li>
+      </ul>
+    </div>
+
+    <!-- Administradores -->
+    <div class="modulo-columna">
+      <button class="gestion-btn" onclick="accesoModulo('administradores')">Módulo Administradores</button>
+      <ul>
+        <li>Gestión de usuarios</li>
+        <li>Cursos, aulas y horarios</li>
+        <li>Comunicación con la comunidad</li>
+      </ul>
+    </div>
+
+    <!-- Estudiantes -->
+    <div class="modulo-columna">
+      <button class="gestion-btn" onclick="accesoModulo('estudiantes')">Módulo Estudiantes</button>
+      <ul>
+        <li>Consulta de horarios</li>
+        <li>Acceso a materiales</li>
+        <li>Seguimiento académico</li>
+        <li>Pagos y facturación</li>
+      </ul>
+    </div>
+
+    <!-- Interesados -->
+    <div class="modulo-columna">
+      <button class="gestion-btn" onclick="accesoModulo('interesados')">Módulo Interesados</button>
+      <ul>
+        <li>Consulta de cursos</li>
+        <li>Registro como estudiante</li>
+        <li>Contacto con la academia</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+    <section>
+      <h2>Beneficios Potenciales</h2>
+      <ul>
+        <li>Optimización de procesos administrativos</li>
+        <li>Mejora en la comunicación entre todos los miembros</li>
+        <li>Acceso centralizado a la información académica</li>
+        <li>Seguimiento al progreso de los estudiantes</li>
+        <li>Incremento en la eficiencia y productividad</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Academia Musical JACQUIN - Todos los derechos reservados.</p>
+  </footer>
+  <!-- Aquí se vincula el archivo JavaScript -->
+<script src="/js/script.js"></script>
+</body>
+</html>

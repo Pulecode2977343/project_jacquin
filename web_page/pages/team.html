@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.M. | Nuestro Equipo</title>
+    
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/menu.css">
+    
+    <style>
+        .team-container {
+            padding: 120px 5% 50px; /* Espacio para el header fijo */
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            color: var(--color-text-main);
+        }
+
+        /* GRID DE TARJETAS */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* TARJETA INDIVIDUAL (Estilo Glassmorphism) */
+        .member-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: var(--azul-neon);
+        }
+
+        /* Avatar */
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: var(--neomorph-ppal-blue);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--color-acento-azul);
+            border: 2px solid var(--azul-neon);
+        }
+
+        .member-name {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-text-main);
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            font-size: 0.9rem;
+            color: var(--color-acento-naranja);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .member-email {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            word-break: break-all;
+        }
+    </style>
+
+    <script src="js/app.js" defer></script>
+    <script src="js/team-loader.js" defer></script> </head>
+<body>
+
+    <div id="header-container"></div>
+
+    <main class="team-container">
+        <h1 class="page-title">Equipo <span style="color: var(--azul-neon);">Docente</span></h1>
+        
+        <div id="team-grid" class="team-grid">
+            <p style="text-align:center; width:100%; color: gray;">Cargando datos...</p>
+        </div>
+    </main>
+
+</body>
+</html>

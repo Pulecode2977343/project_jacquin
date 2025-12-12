@@ -67,15 +67,6 @@ fun SplashScreen() {
             Spacer(modifier = Modifier.height(16.dp))
             JamSplashNeonLine()
 
-            // Textos institucionales
-            Text(
-                text = "Jacquin Academia Musical",
-                style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFFCCF9FF),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 16.dp)
-            )
-
             Text(
                 text = "Explora tu universo musical",
                 style = MaterialTheme.typography.bodyMedium,

@@ -78,5 +78,11 @@ dependencies {
     // ViewModel integrado con Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
+    // Back arrow
+    implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("androidx.compose.animation:animation-graphics")
+
+
 
 }

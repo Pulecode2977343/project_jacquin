@@ -2,111 +2,177 @@
   <dictionary name="project">
     <words>
       <w>abajo</w>
+      <w>académica</w>
       <w>académico</w>
       <w>acceso</w>
       <w>accesos</w>
       <w>aceptas</w>
+      <w>activa</w>
       <w>activas</w>
+      <w>adelante</w>
+      <w>administra</w>
+      <w>administrar</w>
+      <w>administrativo</w>
       <w>ahora</w>
       <w>ajusta</w>
       <w>ajustamos</w>
       <w>ajustar</w>
       <w>animación</w>
       <w>animado</w>
+      <w>apoyo</w>
+      <w>aprendizaje</w>
       <w>aproximada</w>
       <w>aproximado</w>
       <w>aquí</w>
       <w>arriba</w>
+      <w>asigna</w>
+      <w>asignaturas</w>
+      <w>asistencia</w>
       <w>autenticación</w>
+      <w>avances</w>
       <w>baja</w>
       <w>bajamos</w>
       <w>bajo</w>
       <w>botón</w>
       <w>brillante</w>
       <w>buscar</w>
+      <w>básico</w>
       <w>búsqueda</w>
       <w>cada</w>
+      <w>cargado</w>
+      <w>catálogo</w>
       <w>centrado</w>
+      <w>cerrar</w>
+      <w>clase</w>
       <w>clases</w>
+      <w>cohortes</w>
+      <w>comunicación</w>
+      <w>comunicados</w>
       <w>conciertos</w>
       <w>conectada</w>
+      <w>conectado</w>
+      <w>conectamos</w>
       <w>conectando</w>
       <w>configurados</w>
       <w>configurar</w>
       <w>conoce</w>
       <w>consumir</w>
+      <w>contacto</w>
+      <w>contactos</w>
       <w>contenido</w>
+      <w>contenidos</w>
       <w>continuar</w>
       <w>contraseña</w>
       <w>contáctanos</w>
       <w>correo</w>
       <w>crea</w>
+      <w>crear</w>
+      <w>crecimiento</w>
       <w>cruza</w>
       <w>cruzando</w>
+      <w>cuentas</w>
       <w>cuerpo</w>
+      <w>curso</w>
       <w>cursos</w>
       <w>darle</w>
       <w>debajo</w>
+      <w>defecto</w>
       <w>delgada</w>
+      <w>dependemos</w>
       <w>derecha</w>
       <w>desde</w>
       <w>desfasada</w>
       <w>desplaza</w>
       <w>desplazamiento</w>
       <w>desplazándose</w>
+      <w>destacar</w>
       <w>detrás</w>
       <w>difumina</w>
+      <w>difusión</w>
       <w>diseñado</w>
       <w>disparamos</w>
       <w>disparar</w>
       <w>distinto</w>
       <w>donde</w>
       <w>dudas</w>
+      <w>editar</w>
       <w>efecto</w>
       <w>electrónico</w>
+      <w>encabezado</w>
       <w>encienden</w>
       <w>encima</w>
+      <w>encontró</w>
       <w>encuentra</w>
       <w>ensambles</w>
       <w>ensayos</w>
       <w>entrar</w>
+      <w>enviar</w>
+      <w>envía</w>
       <w>equipo</w>
+      <w>errores</w>
       <w>esbelta</w>
       <w>escala</w>
       <w>escríbenos</w>
       <w>espacio</w>
+      <w>específicos</w>
+      <w>estilo</w>
+      <w>estudiante</w>
+      <w>estudiantes</w>
       <w>están</w>
+      <w>estás</w>
+      <w>evitar</w>
       <w>explora</w>
       <w>explícitamente</w>
+      <w>externo</w>
       <w>fase</w>
       <w>fijo</w>
       <w>flotante</w>
       <w>fondo</w>
+      <w>formulario</w>
       <w>fuera</w>
       <w>fuerte</w>
       <w>genérico</w>
+      <w>gestiona</w>
+      <w>gestionar</w>
+      <w>globales</w>
+      <w>grosor</w>
+      <w>grupos</w>
       <w>hace</w>
       <w>hacen</w>
       <w>hacia</w>
       <w>historia</w>
+      <w>horarios</w>
       <w>humo</w>
       <w>icono</w>
       <w>iconos</w>
       <w>ilumina</w>
+      <w>importantes</w>
       <w>infinitos</w>
+      <w>información</w>
       <w>inicia</w>
       <w>iniciar</w>
       <w>inicio</w>
+      <w>inscribirme</w>
+      <w>institucionales</w>
       <w>intensidad</w>
+      <w>interna</w>
       <w>interno</w>
       <w>izquierda</w>
       <w>jacquin</w>
       <w>latido</w>
       <w>letras</w>
+      <w>listas</w>
       <w>llamadas</w>
+      <w>logros</w>
       <w>luego</w>
+      <w>lógicas</w>
+      <w>maquetamos</w>
       <w>materiales</w>
+      <w>materias</w>
       <w>matrículas</w>
+      <w>mensajería</w>
+      <w>mensajes</w>
+      <w>mientras</w>
       <w>misión</w>
       <w>misma</w>
       <w>mitad</w>
@@ -115,7 +181,10 @@
       <w>muestra</w>
       <w>mueve</w>
       <w>multiusuarios</w>
+      <w>métricas</w>
+      <w>módulos</w>
       <w>naranja</w>
+      <w>navegación</w>
       <w>navegar</w>
       <w>navegaremos</w>
       <w>navideña</w>
@@ -127,22 +196,31 @@
       <w>novedades</w>
       <w>nuestros</w>
       <w>nuevas</w>
+      <w>oferta</w>
       <w>oleada</w>
       <w>onda</w>
+      <w>organiza</w>
       <w>otra</w>
       <w>pantalla</w>
       <w>pasa</w>
       <w>pequeño</w>
+      <w>personalizada</w>
       <w>personalizado</w>
       <w>peticiones</w>
       <w>poder</w>
       <w>políticas</w>
       <w>posición</w>
       <w>potenciar</w>
+      <w>principales</w>
       <w>proceso</w>
+      <w>profe</w>
+      <w>profesor</w>
+      <w>profesores</w>
       <w>proyecto</w>
+      <w>próxima</w>
       <w>próximamente</w>
       <w>próximos</w>
+      <w>publicado</w>
       <w>puedes</w>
       <w>pulsación</w>
       <w>pulsando</w>
@@ -151,8 +229,12 @@
       <w>quieras</w>
       <w>quieres</w>
       <w>reales</w>
+      <w>recibidas</w>
+      <w>recibidos</w>
       <w>recomendaciones</w>
+      <w>recordatorios</w>
       <w>recursos</w>
+      <w>repertorios</w>
       <w>repositorios</w>
       <w>requiere</w>
       <w>reservado</w>
@@ -160,12 +242,19 @@
       <w>respuesta</w>
       <w>respuestas</w>
       <w>resultado</w>
+      <w>retención</w>
+      <w>retroalimentaciones</w>
+      <w>revisa</w>
+      <w>revisar</w>
       <w>rápida</w>
       <w>rápido</w>
       <w>rápidos</w>
       <w>scrolleable</w>
+      <w>secciones</w>
       <w>sección</w>
+      <w>segmentación</w>
       <w>segundos</w>
+      <w>según</w>
       <w>senoidal</w>
       <w>sensación</w>
       <w>separación</w>
@@ -176,23 +265,32 @@
       <w>talento</w>
       <w>talleres</w>
       <w>tamaño</w>
+      <w>tareas</w>
+      <w>tarjeta</w>
       <w>teclado</w>
       <w>teclas</w>
       <w>tengamos</w>
       <w>tenías</w>
+      <w>textos</w>
       <w>tintado</w>
       <w>tipo</w>
+      <w>todavía</w>
       <w>trae</w>
+      <w>transparente</w>
       <w>tren</w>
       <w>términos</w>
       <w>universo</w>
       <w>usamos</w>
       <w>usuario</w>
+      <w>usuarios</w>
+      <w>verás</w>
       <w>viaja</w>
       <w>viceversa</w>
       <w>vidrio</w>
       <w>visibilidad</w>
+      <w>visualiza</w>
       <w>volver</w>
+      <w>vuelve</w>
       <w>ésto</w>
     </words>
   </dictionary>

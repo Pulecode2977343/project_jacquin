@@ -1,5 +1,11 @@
 package co.edu.jacquin.jam_app.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +59,7 @@ fun HomeScreen(
         )
     )
 
-    // Glass del header tipo “vidrio tintado” oscuro (difumina fuerte lo que pasa detrás)
+    // Glass del header tipo “vidrio tintado” oscuro
     val headerGlassGradient = Brush.verticalGradient(
         colors = listOf(
             Color(0xCC061325), // ~80% azul muy oscuro
@@ -65,72 +72,92 @@ fun HomeScreen(
 
     var searchQuery by remember { mutableStateOf("") }
 
+    // Animación de entrada del contenido
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        visible = true
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient)
     ) {
-        // CONTENIDO SCROLLEABLE DETRÁS DEL HEADER
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(
-                    start = 24.dp,
-                    end = 24.dp,
-                    top = 210.dp,  // espacio para header + mitad del botón flotante
-                    bottom = 72.dp
-                ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        // CONTENIDO SCROLLEABLE DETRÁS DEL HEADER (animado)
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn(animationSpec = tween(700)) +
+                    slideInVertically(
+                        animationSpec = tween(700),
+                        initialOffsetY = { it / 10 } // entra suave desde abajo
+                    ),
+            exit = fadeOut(animationSpec = tween(300)) +
+                    slideOutVertically(
+                        animationSpec = tween(300),
+                        targetOffsetY = { it / 10 }
+                    )
         ) {
-            Text(
-                text = "Explora tu universo musical",
-                style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFFCCF9FF)
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(
+                        start = 24.dp,
+                        end = 24.dp,
+                        top = 210.dp,  // espacio para header + mitad del botón flotante
+                        bottom = 72.dp
+                    ),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = "Explora tu universo musical",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color(0xFFCCF9FF)
+                )
 
-            Text(
-                text = "Encuentra cursos, talleres, ensambles y recursos para potenciar tu talento. Esta sección mostrará recomendaciones, novedades y accesos rápidos a tu contenido académico.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFFB0C4DE)
-            )
+                Text(
+                    text = "Encuentra cursos, talleres, ensambles y recursos para potenciar tu talento. Esta sección mostrará recomendaciones, novedades y accesos rápidos a tu contenido académico.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFFB0C4DE)
+                )
 
-            JamHomeGlassCard(
-                title = "Dashboard académico",
-                description = "Accede a tus clases, progreso y materiales (requiere iniciar sesión).",
-                icon = Icons.Outlined.LibraryMusic,
-                onClick = onLoginClick
-            )
+                JamHomeGlassCard(
+                    title = "Dashboard académico",
+                    description = "Accede a tus clases, progreso y materiales (requiere iniciar sesión).",
+                    icon = Icons.Outlined.LibraryMusic,
+                    onClick = onLoginClick
+                )
 
-            JamHomeGlassCard(
-                title = "Nosotros",
-                description = "Conoce la historia, misión y equipo de Jacquin Academia Musical.",
-                icon = Icons.Outlined.Info,
-                onClick = onAboutClick
-            )
+                JamHomeGlassCard(
+                    title = "Nosotros",
+                    description = "Conoce la historia, misión y equipo de Jacquin Academia Musical.",
+                    icon = Icons.Outlined.Info,
+                    onClick = onAboutClick
+                )
 
-            JamHomeGlassCard(
-                title = "Contáctanos",
-                description = "Escríbenos para matrículas, dudas o soporte académico.",
-                icon = Icons.Outlined.MailOutline,
-                onClick = onContactClick
-            )
+                JamHomeGlassCard(
+                    title = "Contáctanos",
+                    description = "Escríbenos para matrículas, dudas o soporte académico.",
+                    icon = Icons.Outlined.MailOutline,
+                    onClick = onContactClick
+                )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "Próximamente",
-                style = MaterialTheme.typography.titleSmall,
-                color = Color(0xFFCCF9FF)
-            )
+                Text(
+                    text = "Próximamente",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = Color(0xFFCCF9FF)
+                )
 
-            Text(
-                text = "Acceso rápido a próximos ensayos, conciertos, workshops y notificaciones de tu proceso musical.",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFF9FB3D9)
-            )
+                Text(
+                    text = "Acceso rápido a próximos ensayos, conciertos, workshops y notificaciones de tu proceso musical.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(0xFF9FB3D9)
+                )
 
-            Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(40.dp))
+            }
         }
 
         // HEADER GLASS FIJO (solo logo + búsqueda)
@@ -162,12 +189,12 @@ fun HomeScreen(
                         )
                     )
                     .padding(horizontal = 24.dp, vertical = 40.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)   // 👈 más separación entre logo y search
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),                        // 👈 baja el logo ~1em
+                        .padding(top = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -224,7 +251,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
                     .align(Alignment.BottomEnd)
-                    .offset(y = 16.dp), // desplaza hacia abajo para que medio botón salga del glass
+                    .offset(y = 16.dp),
                 horizontalArrangement = Arrangement.End
             ) {
                 JamHomePrimaryButton(

@@ -1,5 +1,11 @@
 package co.edu.jacquin.jam_app.ui.auth
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -22,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,7 +50,7 @@ import co.edu.jacquin.jam_app.ui.JamHorizontalLogo
 import co.edu.jacquin.jam_app.ui.JamSignature
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-
+import co.edu.jacquin.jam_app.ui.common.JamScreenTransition // lo dejamos por si luego lo usas
 
 @Composable
 fun LoginScreen(
@@ -55,6 +62,12 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    // Para animación de entrada
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        visible = true
+    }
 
     // Fondo JAM
     val backgroundGradient = Brush.verticalGradient(
@@ -86,7 +99,7 @@ fun LoginScreen(
             .background(backgroundGradient)
             .padding(horizontal = 24.dp)
     ) {
-        // Header: logo izquierda + flecha atrás derecha
+        // Header fijo
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -106,123 +119,138 @@ fun LoginScreen(
             }
         }
 
-        // Card glass central con “grosor”
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 96.dp, bottom = 72.dp)
-                .align(Alignment.TopCenter),
-            color = Color.Transparent
+        // Contenido animado (card + textos + campos)
+        AnimatedVisibility(
+            visible = visible,
+            modifier = Modifier.align(Alignment.TopCenter),
+            enter = fadeIn(animationSpec = tween(600)) +
+                    slideInVertically(
+                        animationSpec = tween(600),
+                        initialOffsetY = { it / 8 } // entra desde un poco abajo
+                    ),
+            exit = fadeOut(animationSpec = tween(300)) +
+                    slideOutVertically(
+                        animationSpec = tween(300),
+                        targetOffsetY = { it / 8 }
+                    )
         ) {
-            Box(
+            Surface(
                 modifier = Modifier
-                    .background(
-                        brush = outerGlassGradient,
-                        shape = RoundedCornerShape(30.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = Color.White.copy(alpha = 0.14f),
-                        shape = RoundedCornerShape(30.dp)
-                    )
-                    .padding(2.dp)
+                    .fillMaxWidth()
+                    .padding(top = 96.dp, bottom = 72.dp),
+                color = Color.Transparent
             ) {
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(28.dp))
                         .background(
-                            brush = innerGlassGradient,
-                            shape = RoundedCornerShape(28.dp)
+                            brush = outerGlassGradient,
+                            shape = RoundedCornerShape(30.dp)
                         )
                         .border(
-                            width = 0.5.dp,
-                            color = Color.White.copy(alpha = 0.28f),
-                            shape = RoundedCornerShape(28.dp)
+                            width = 1.dp,
+                            color = Color.White.copy(alpha = 0.14f),
+                            shape = RoundedCornerShape(30.dp)
                         )
-                        .padding(22.dp)
+                        .padding(2.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),  // 👈 ésto sí es clave
-                        verticalArrangement = Arrangement.spacedBy(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-
-                        Text(
-                            text = "Bienvenido de nuevo",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = Color.White
-                        )
-
-                        Text(
-                            text = "Inicia sesión para entrar a tu universo musical.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFFB0C4DE),
-                            textAlign = TextAlign.Center
-                        )
-
-                        // Campo correo underlined
-                        JamUnderlinedTextField(
-                            value = email,
-                            onValueChange = { email = it },
-                            label = "Correo electrónico",
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Email
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Email,
-                                    contentDescription = "Email",
-                                    tint = Color(0xFFB0C4DE)
-                                )
-                            }
-                        )
-
-                        // Campo contraseña underlined con icono de visibilidad
-                        JamUnderlinedPasswordField(
-                            value = password,
-                            onValueChange = { password = it },
-                            label = "Contraseña",
-                            visible = passwordVisible,
-                            onToggleVisibility = { passwordVisible = !passwordVisible }
-                        )
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        // Mensaje de error entre contraseña y botón
-                        if (state.error != null) {
-                            Text(
-                                text = state.error ?: "",
-                                color = Color(0xFFFF6B81),
-                                style = MaterialTheme.typography.bodySmall,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillMaxWidth()
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(28.dp))
+                            .background(
+                                brush = innerGlassGradient,
+                                shape = RoundedCornerShape(28.dp)
                             )
-                            Spacer(modifier = Modifier.height(10.dp))
-                        } else {
-                            Spacer(modifier = Modifier.height(4.dp))
-                        }
-
-                        // Botón glass brillante
-                        JamPrimaryGlassButton(
-                            text = if (state.isLoading) "Conectando..." else "Iniciar sesión",
-                            enabled = !state.isLoading,
-                            onClick = {
-                                viewModel.login(email.trim(), password)
-                            },
-                            showLoader = state.isLoading
-                        )
-
-                        Text(
-                            text = "Al continuar aceptas nuestros términos y políticas.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFBCC6DC),
-                            textAlign = TextAlign.Center,
+                            .border(
+                                width = 0.5.dp,
+                                color = Color.White.copy(alpha = 0.28f),
+                                shape = RoundedCornerShape(28.dp)
+                            )
+                            .padding(22.dp)
+                    ) {
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 4.dp)
-                                .alpha(0.9f)
-                        )
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+
+                            Text(
+                                text = "Bienvenido de nuevo",
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = Color.White
+                            )
+
+                            Text(
+                                text = "Inicia sesión para entrar a tu universo musical.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color(0xFFB0C4DE),
+                                textAlign = TextAlign.Center
+                            )
+
+                            // Campo correo underlined
+                            JamUnderlinedTextField(
+                                value = email,
+                                onValueChange = { email = it },
+                                label = "Correo electrónico",
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Email
+                                ),
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Email,
+                                        contentDescription = "Email",
+                                        tint = Color(0xFFB0C4DE)
+                                    )
+                                }
+                            )
+
+                            // Campo contraseña underlined con icono de visibilidad
+                            JamUnderlinedPasswordField(
+                                value = password,
+                                onValueChange = { password = it },
+                                label = "Contraseña",
+                                visible = passwordVisible,
+                                onToggleVisibility = { passwordVisible = !passwordVisible }
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            // Mensaje de error entre contraseña y botón
+                            if (state.error != null) {
+                                Text(
+                                    text = state.error ?: "",
+                                    color = Color(0xFFFF6B81),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                            } else {
+                                Spacer(modifier = Modifier.height(4.dp))
+                            }
+
+                            // Botón glass brillante
+                            JamPrimaryGlassButton(
+                                text = if (state.isLoading) "Conectando..." else "Iniciar sesión",
+                                enabled = !state.isLoading,
+                                onClick = {
+                                    viewModel.login(email.trim(), password)
+                                },
+                                showLoader = state.isLoading
+                            )
+
+                            Text(
+                                text = "Al continuar aceptas nuestros términos y políticas.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color(0xFFBCC6DC),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 4.dp)
+                                    .alpha(0.9f)
+                            )
+                        }
                     }
                 }
             }

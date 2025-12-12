@@ -83,6 +83,10 @@ dependencies {
 
     implementation("androidx.compose.animation:animation-graphics")
 
+    // ---- ANIMACIONES TRANSICIONES ENTRE PANTALLAS ----
+    implementation("androidx.compose.animation:animation")
+
+
 
 
 }

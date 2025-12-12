@@ -2,7 +2,6 @@ package co.edu.jacquin.jam_app.ui
 
 import co.edu.jacquin.jam_app.R
 import androidx.compose.foundation.background
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -18,28 +17,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-enum class JamBottomItem {
-    Home,
-    About,
-    Special,
-    Courses,
-    Contact
-}
+enum class JamBottomItem { Home, About, Special, Courses, Contact }
 
 @Composable
 fun JamSignature(
     modifier: Modifier = Modifier,
     showNavIcons: Boolean = false,
-    selectedItem: JamBottomItem = JamBottomItem.Home,   // 🔹 estado activo
+    selectedItem: JamBottomItem = JamBottomItem.Home,
     onHomeClick: () -> Unit = {},
     onAboutClick: () -> Unit = {},
     onCoursesClick: () -> Unit = {},
     onContactClick: () -> Unit = {},
-    onSpecialClick: () -> Unit = {},                    // ícono central
+    onSpecialClick: () -> Unit = {},
 ) {
     val activeColor = Color(0xFF00F0FF)                       // neón activo
     val inactiveColor = Color(0xFFCCF9FF).copy(alpha = 0.65f) // cian suave
@@ -49,18 +42,10 @@ fun JamSignature(
             .fillMaxWidth()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF001226),
-                        Color(0xFF000814)
-                    )
+                    colors = listOf(Color(0xFF001226), Color(0xFF000814))
                 )
             )
-            .padding(
-                start = 16.dp,
-                end = 16.dp,
-                top = 4.dp,
-                bottom = 0.dp
-            ),
+            .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
@@ -70,7 +55,6 @@ fun JamSignature(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // HOME
                 JamBottomNavItem(
                     icon = { tint ->
                         Icon(
@@ -86,7 +70,6 @@ fun JamSignature(
                     onClick = onHomeClick
                 )
 
-                // NOSOTROS (multiusuarios)
                 JamBottomNavItem(
                     icon = { tint ->
                         Icon(
@@ -102,15 +85,14 @@ fun JamSignature(
                     onClick = onAboutClick
                 )
 
-                // ESPECIAL (clave de sol navideña personalizada)
+                // ✅ ESPECIAL = “Panel” (cuando hay sesión, lo usas para volver al dashboard)
                 JamBottomNavItem(
-                    icon = { _: Color ->
-                        Image(
+                    icon = { tint ->
+                        Icon(
                             painter = painterResource(id = R.drawable.ic_treble_clef_christmas),
-                            contentDescription = "Especial JAM (clave de sol navideña)",
-                            modifier = Modifier
-                                .size(36.dp)              // un pelín más grande para destacar
-                                .clickable(onClick = onSpecialClick)
+                            contentDescription = "Panel JAM",
+                            tint = Color.Unspecified,           // ✅ NO tintar: conserva navideño
+                            modifier = Modifier.size(38.dp)
                         )
                     },
                     isSelected = selectedItem == JamBottomItem.Special,
@@ -119,7 +101,6 @@ fun JamSignature(
                     onClick = onSpecialClick
                 )
 
-                // CURSOS
                 JamBottomNavItem(
                     icon = { tint ->
                         Icon(
@@ -135,7 +116,6 @@ fun JamSignature(
                     onClick = onCoursesClick
                 )
 
-                // CONTACTO (teléfono)
                 JamBottomNavItem(
                     icon = { tint ->
                         Icon(
@@ -175,19 +155,15 @@ private fun JamBottomNavItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(2.dp),
-        modifier = Modifier
-            .clickable(onClick = onClick)
+        modifier = Modifier.clickable(onClick = onClick)
     ) {
         icon(tint)
 
-        // Indicador inferior (barra pequeña)
         Box(
             modifier = Modifier
                 .width(18.dp)
                 .height(2.dp)
-                .background(
-                    color = if (isSelected) activeColor else Color.Transparent
-                )
+                .background(if (isSelected) activeColor else Color.Transparent)
         )
     }
 }

@@ -28,13 +28,16 @@ class AuthViewModel(
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         isLoggedIn = true,
-                        user = result.data
+                        user = result.data,
+                        error = null
                     )
                 }
 
                 is JamResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
+                        isLoggedIn = false,
+                        user = null,
                         error = result.message
                     )
                 }
@@ -42,6 +45,12 @@ class AuthViewModel(
                 JamResult.Loading -> { /* no-op */ }
             }
         }
+    }
+
+    fun logout() {
+        // Enfoque 1: no cerramos sesión al navegar público/privado,
+        // solo se cierra cuando el usuario toca explícitamente "Cerrar sesión".
+        _uiState.value = AuthUiState()
     }
 
     fun clearError() {

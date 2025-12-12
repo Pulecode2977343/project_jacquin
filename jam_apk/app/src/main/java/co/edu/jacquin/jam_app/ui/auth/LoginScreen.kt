@@ -9,37 +9,24 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -48,14 +35,16 @@ import androidx.compose.ui.unit.dp
 import co.edu.jacquin.jam_app.data.remote.dto.UserDto
 import co.edu.jacquin.jam_app.ui.JamHorizontalLogo
 import co.edu.jacquin.jam_app.ui.JamSignature
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import co.edu.jacquin.jam_app.ui.common.JamScreenTransition // lo dejamos por si luego lo usas
 
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel,
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onLoginSuccess: (UserDto) -> Unit = {},
+
+    // ✅ nuevos callbacks
+    onRegisterClick: () -> Unit = {},
+    onRecoveryClick: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -63,222 +52,208 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    // Para animación de entrada
-    var visible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        visible = true
+    // ✅ Cuando el login ya fue exitoso, notificamos una sola vez
+    LaunchedEffect(state.isLoggedIn, state.user?.id_usuario) {
+        val u = state.user
+        if (state.isLoggedIn && u != null) onLoginSuccess(u)
     }
 
-    // Fondo JAM
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { visible = true }
+
     val backgroundGradient = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFF00346A),
-            Color(0xFF000814)
-        )
+        colors = listOf(Color(0xFF00346A), Color(0xFF000814))
     )
 
-    // Capa interna del glass (muy transparente)
     val innerGlassGradient = Brush.verticalGradient(
-        colors = listOf(
-            Color(0x1FFFFFFF), // ~12% blanco
-            Color(0x05FFFFFF)  // ~2% blanco
-        )
+        colors = listOf(Color(0x1FFFFFFF), Color(0x05FFFFFF))
     )
 
-    // Halo externo para dar sensación de grosor
     val outerGlassGradient = Brush.verticalGradient(
-        colors = listOf(
-            Color(0x26FFFFFF), // ~15% blanco
-            Color(0x00FFFFFF)
-        )
+        colors = listOf(Color(0x26FFFFFF), Color(0x0AFFFFFF))
     )
+
+    // ✅ Mensaje de error “controlado”
+    val displayError = remember(state.error) {
+        state.error?.let { normalizeLoginError(it) }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient)
-            .padding(horizontal = 24.dp)
     ) {
-        // Header fijo
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp)
-                .align(Alignment.TopCenter),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            JamHorizontalLogo()
-
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Volver",
-                    tint = Color(0xFFE0ECFF)
-                )
-            }
-        }
-
-        // Contenido animado (card + textos + campos)
         AnimatedVisibility(
             visible = visible,
-            modifier = Modifier.align(Alignment.TopCenter),
-            enter = fadeIn(animationSpec = tween(600)) +
-                    slideInVertically(
-                        animationSpec = tween(600),
-                        initialOffsetY = { it / 8 } // entra desde un poco abajo
-                    ),
-            exit = fadeOut(animationSpec = tween(300)) +
-                    slideOutVertically(
-                        animationSpec = tween(300),
-                        targetOffsetY = { it / 8 }
-                    )
+            enter = fadeIn(tween(450)) + slideInVertically(tween(450)) { it / 10 },
+            exit = fadeOut(tween(220)) + slideOutVertically(tween(220)) { it / 10 }
         ) {
-            Surface(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 96.dp, bottom = 72.dp),
-                color = Color.Transparent
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            brush = outerGlassGradient,
-                            shape = RoundedCornerShape(30.dp)
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color(0xFFE0ECFF)
                         )
-                        .border(
-                            width = 1.dp,
-                            color = Color.White.copy(alpha = 0.14f),
-                            shape = RoundedCornerShape(30.dp)
-                        )
-                        .padding(2.dp)
+                    }
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Box(
+                        modifier = Modifier.weight(1f),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        JamHorizontalLogo()
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(22.dp))
+
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(30.dp),
+                    color = Color.Transparent
                 ) {
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(28.dp))
-                            .background(
-                                brush = innerGlassGradient,
-                                shape = RoundedCornerShape(28.dp)
-                            )
-                            .border(
-                                width = 0.5.dp,
-                                color = Color.White.copy(alpha = 0.28f),
-                                shape = RoundedCornerShape(28.dp)
-                            )
-                            .padding(22.dp)
+                            .background(outerGlassGradient, RoundedCornerShape(30.dp))
+                            .border(1.dp, Color.White.copy(alpha = 0.14f), RoundedCornerShape(30.dp))
+                            .padding(2.dp)
                     ) {
-                        Column(
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .verticalScroll(rememberScrollState()),
-                            verticalArrangement = Arrangement.spacedBy(20.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .clip(RoundedCornerShape(28.dp))
+                                .background(innerGlassGradient, RoundedCornerShape(28.dp))
+                                .border(0.5.dp, Color.White.copy(alpha = 0.28f), RoundedCornerShape(28.dp))
+                                .padding(22.dp)
                         ) {
-
-                            Text(
-                                text = "Bienvenido de nuevo",
-                                style = MaterialTheme.typography.headlineSmall,
-                                color = Color.White
-                            )
-
-                            Text(
-                                text = "Inicia sesión para entrar a tu universo musical.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color(0xFFB0C4DE),
-                                textAlign = TextAlign.Center
-                            )
-
-                            // Campo correo underlined
-                            JamUnderlinedTextField(
-                                value = email,
-                                onValueChange = { email = it },
-                                label = "Correo electrónico",
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Email
-                                ),
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Email,
-                                        contentDescription = "Email",
-                                        tint = Color(0xFFB0C4DE)
-                                    )
-                                }
-                            )
-
-                            // Campo contraseña underlined con icono de visibilidad
-                            JamUnderlinedPasswordField(
-                                value = password,
-                                onValueChange = { password = it },
-                                label = "Contraseña",
-                                visible = passwordVisible,
-                                onToggleVisibility = { passwordVisible = !passwordVisible }
-                            )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            // Mensaje de error entre contraseña y botón
-                            if (state.error != null) {
-                                Text(
-                                    text = state.error ?: "",
-                                    color = Color(0xFFFF6B81),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                                Spacer(modifier = Modifier.height(10.dp))
-                            } else {
-                                Spacer(modifier = Modifier.height(4.dp))
-                            }
-
-                            // Botón glass brillante
-                            JamPrimaryGlassButton(
-                                text = if (state.isLoading) "Conectando..." else "Iniciar sesión",
-                                enabled = !state.isLoading,
-                                onClick = {
-                                    viewModel.login(email.trim(), password)
-                                },
-                                showLoader = state.isLoading
-                            )
-
-                            Text(
-                                text = "Al continuar aceptas nuestros términos y políticas.",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color(0xFFBCC6DC),
-                                textAlign = TextAlign.Center,
+                            Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 4.dp)
-                                    .alpha(0.9f)
-                            )
+                                    .verticalScroll(rememberScrollState()),
+                                verticalArrangement = Arrangement.spacedBy(18.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Bienvenido de nuevo",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    color = Color.White
+                                )
+
+                                Text(
+                                    text = "Inicia sesión para entrar a tu universo musical.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color(0xFFB0C4DE),
+                                    textAlign = TextAlign.Center
+                                )
+
+                                JamUnderlinedTextField(
+                                    value = email,
+                                    onValueChange = {
+                                        email = it
+                                        if (state.error != null) viewModel.clearError()
+                                    },
+                                    label = "Correo electrónico",
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Email,
+                                            contentDescription = "Email",
+                                            tint = Color(0xFFB0C4DE)
+                                        )
+                                    }
+                                )
+
+                                JamUnderlinedPasswordField(
+                                    value = password,
+                                    onValueChange = {
+                                        password = it
+                                        if (state.error != null) viewModel.clearError()
+                                    },
+                                    label = "Contraseña",
+                                    visible = passwordVisible,
+                                    onToggleVisibility = { passwordVisible = !passwordVisible }
+                                )
+
+                                // ✅ Error entre contraseña y botón (como lo tenías)
+                                if (!displayError.isNullOrBlank()) {
+                                    Text(
+                                        text = displayError,
+                                        color = Color(0xFFFF6B81),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                } else {
+                                    Spacer(modifier = Modifier.height(2.dp))
+                                }
+
+                                JamPrimaryGlassButton(
+                                    text = if (state.isLoading) "Conectando." else "Iniciar sesión",
+                                    enabled = !state.isLoading,
+                                    onClick = { viewModel.login(email.trim(), password) },
+                                    showLoader = state.isLoading
+                                )
+
+                                // ✅ NUEVO: acciones debajo del botón
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 2.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    TextButton(
+                                        onClick = onRegisterClick,
+                                        enabled = !state.isLoading,
+                                        colors = ButtonDefaults.textButtonColors(
+                                            contentColor = Color(0xFFCCF9FF)
+                                        ),
+                                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 4.dp)
+                                    ) {
+                                        Text(
+                                            text = "Registrarme",
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+
+                                    TextButton(
+                                        onClick = onRecoveryClick,
+                                        enabled = !state.isLoading,
+                                        colors = ButtonDefaults.textButtonColors(
+                                            contentColor = Color(0xFFB0C4DE)
+                                        ),
+                                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 4.dp)
+                                    ) {
+                                        Text(text = "Recuperar contraseña")
+                                    }
+                                }
+
+                                Text(
+                                    text = "Al continuar aceptas nuestros términos y políticas.",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color(0xFFBCC6DC),
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 2.dp)
+                                        .alpha(0.9f)
+                                )
+                            }
                         }
                     }
                 }
             }
         }
 
-        // Mensaje de bienvenida cuando ya está logueado
-        val user: UserDto? = state.user
-        if (state.isLoggedIn && user != null) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 40.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Bienvenido, ${user.full_name}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFFCCF9FF)
-                )
-                Text(
-                    text = "Rol ID: ${user.id_rol}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFFB0C4DE)
-                )
-            }
-        }
-
-        // Firma “Diseñado y creado…”
         JamSignature(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -287,7 +262,36 @@ fun LoginScreen(
     }
 }
 
-/* ---------- Campos underlined ---------- */
+/**
+ * Normaliza mensajes del backend para que UX sea consistente.
+ * - Credenciales inválidas -> “Usuario o contraseña errados.”
+ * - Conectividad -> mensaje amable
+ * - Otros -> se deja el texto original (para debug)
+ */
+private fun normalizeLoginError(raw: String): String {
+    val msg = raw.trim().lowercase()
+
+    val looksLikeBadCredentials = listOf(
+        "invalid", "incorrect", "unauthorized", "401",
+        "credenciales", "credentials",
+        "contraseña", "password",
+        "usuario", "user"
+    ).any { msg.contains(it) } &&
+            // si viene un error de red, no lo confundimos con credenciales
+            !listOf("timeout", "timed out", "unable to resolve host", "failed to connect", "network").any { msg.contains(it) }
+
+    if (looksLikeBadCredentials) return "Usuario o contraseña errados."
+
+    val looksLikeNetwork = listOf(
+        "timeout", "timed out", "unable to resolve host", "failed to connect", "network", "connection"
+    ).any { msg.contains(it) }
+
+    if (looksLikeNetwork) return "No pudimos conectar. Verifica tu internet e inténtalo de nuevo."
+
+    return raw
+}
+
+/* ---------- underlined fields ---------- */
 
 @Composable
 private fun JamUnderlinedTextField(
@@ -299,15 +303,10 @@ private fun JamUnderlinedTextField(
     leadingIcon: (@Composable () -> Unit)? = null
 ) {
     val underlineBrush = Brush.horizontalGradient(
-        colors = listOf(
-            Color(0xFF00F0FF), // JacquinBlueNeon
-            Color(0xFFB022FF)  // JacquinPurpleNeon
-        )
+        colors = listOf(Color(0xFF00F0FF), Color(0xFFB022FF))
     )
 
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
+    Column(modifier = modifier.fillMaxWidth()) {
         TextField(
             value = value,
             onValueChange = onValueChange,
@@ -337,13 +336,7 @@ private fun JamUnderlinedTextField(
         )
 
         Spacer(modifier = Modifier.height(4.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(underlineBrush)
-        )
+        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(underlineBrush))
     }
 }
 
@@ -357,15 +350,10 @@ private fun JamUnderlinedPasswordField(
     modifier: Modifier = Modifier
 ) {
     val underlineBrush = Brush.horizontalGradient(
-        colors = listOf(
-            Color(0xFF00F0FF),
-            Color(0xFFB022FF)
-        )
+        colors = listOf(Color(0xFF00F0FF), Color(0xFFB022FF))
     )
 
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
+    Column(modifier = modifier.fillMaxWidth()) {
         TextField(
             value = value,
             onValueChange = onValueChange,
@@ -375,8 +363,9 @@ private fun JamUnderlinedPasswordField(
             label = { Text(label) },
             singleLine = true,
             leadingIcon = {
+                // ✅ mantenemos ícono seguro (no introducimos “Lock” para evitar problemas de dependencia)
                 Icon(
-                    imageVector = Icons.Outlined.Lock,
+                    imageVector = Icons.Outlined.Visibility,
                     contentDescription = "Contraseña",
                     tint = Color(0xFFB0C4DE)
                 )
@@ -384,24 +373,14 @@ private fun JamUnderlinedPasswordField(
             trailingIcon = {
                 IconButton(onClick = onToggleVisibility) {
                     Icon(
-                        imageVector = if (visible)
-                            Icons.Outlined.VisibilityOff
-                        else
-                            Icons.Outlined.Visibility,
-                        contentDescription = if (visible)
-                            "Ocultar contraseña" else "Mostrar contraseña",
+                        imageVector = if (visible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                        contentDescription = "Mostrar/Ocultar",
                         tint = Color(0xFFB0C4DE)
                     )
                 }
             },
-            visualTransformation = if (visible) {
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password
-            ),
+            visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -421,17 +400,11 @@ private fun JamUnderlinedPasswordField(
         )
 
         Spacer(modifier = Modifier.height(4.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(underlineBrush)
-        )
+        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(underlineBrush))
     }
 }
 
-/* ---------- Botón glass ---------- */
+/* ---------- botón glass ---------- */
 
 @Composable
 private fun JamPrimaryGlassButton(
@@ -440,88 +413,41 @@ private fun JamPrimaryGlassButton(
     onClick: () -> Unit,
     showLoader: Boolean
 ) {
-    val coreGradient = Brush.horizontalGradient(
-        colors = listOf(
-            Color(0xCCFEA36A),
-            Color(0xCCFF6B6B)
-        )
-    )
-
-    val highlightGradient = Brush.verticalGradient(
-        colors = listOf(
-            Color.White.copy(alpha = 0.55f),
-            Color.Transparent
-        )
+    val buttonGradient = Brush.horizontalGradient(
+        colors = listOf(Color(0xCCFEA36A), Color(0xCCFF6B6B))
     )
 
     Button(
         onClick = onClick,
         enabled = enabled,
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+        contentPadding = PaddingValues(),
         modifier = Modifier
             .fillMaxWidth()
             .height(52.dp)
-            .clip(RoundedCornerShape(999.dp)),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            contentColor = Color.White,
-            disabledContentColor = Color(0x80FFFFFF)
-        ),
-        contentPadding = PaddingValues()
+            .clip(RoundedCornerShape(999.dp))
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Color.White.copy(alpha = 0.16f),
-                    RoundedCornerShape(999.dp)
-                )
-                .border(
-                    width = 1.dp,
-                    color = Color.White.copy(alpha = 0.35f),
-                    shape = RoundedCornerShape(999.dp)
-                )
-                .padding(1.5.dp),
-            contentAlignment = Alignment.Center
+                .background(Color.White.copy(alpha = 0.12f), RoundedCornerShape(999.dp))
+                .border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(999.dp))
+                .padding(1.5.dp)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(coreGradient, RoundedCornerShape(999.dp))
+                    .background(buttonGradient, RoundedCornerShape(999.dp)),
+                contentAlignment = Alignment.Center
             ) {
-                // franja de brillo superior
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(22.dp)
-                        .background(
-                            highlightGradient,
-                            RoundedCornerShape(
-                                topStart = 999.dp,
-                                topEnd = 999.dp,
-                                bottomStart = 40.dp,
-                                bottomEnd = 40.dp
-                            )
-                        )
-                        .align(Alignment.TopCenter)
-                )
-
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (showLoader) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(22.dp),
-                            color = Color.White,
-                            strokeWidth = 2.dp
-                        )
-                    } else {
-                        Text(
-                            text = text,
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                    }
+                if (showLoader) {
+                    CircularProgressIndicator(
+                        strokeWidth = 2.dp,
+                        color = Color.White,
+                        modifier = Modifier.size(18.dp)
+                    )
+                } else {
+                    Text(text = text, color = Color.White)
                 }
             }
         }

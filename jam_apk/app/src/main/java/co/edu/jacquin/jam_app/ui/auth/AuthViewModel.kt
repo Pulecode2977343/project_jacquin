@@ -28,32 +28,60 @@ class AuthViewModel(
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         isLoggedIn = true,
-                        user = result.data,
-                        error = null
+                        user = result.data
                     )
                 }
 
                 is JamResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        isLoggedIn = false,
-                        user = null,
                         error = result.message
                     )
                 }
 
-                JamResult.Loading -> { /* no-op */ }
+                JamResult.Loading -> Unit
             }
         }
     }
 
-    fun logout() {
-        // Enfoque 1: no cerramos sesión al navegar público/privado,
-        // solo se cierra cuando el usuario toca explícitamente "Cerrar sesión".
-        _uiState.value = AuthUiState()
+    fun register(fullName: String, email: String, phone: String, password: String) {
+        _uiState.value = _uiState.value.copy(
+            isRegistering = true,
+            registerSuccess = false,
+            registerMessage = null,
+            error = null
+        )
+
+        viewModelScope.launch {
+            when (val result = repository.register(fullName, email, phone, password)) {
+                is JamResult.Success<String> -> {
+                    _uiState.value = _uiState.value.copy(
+                        isRegistering = false,
+                        registerSuccess = true,
+                        registerMessage = result.data
+                    )
+                }
+
+                is JamResult.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        isRegistering = false,
+                        error = result.message
+                    )
+                }
+
+                JamResult.Loading -> Unit
+            }
+        }
     }
 
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
+    }
+
+    fun consumeRegisterSuccess() {
+        _uiState.value = _uiState.value.copy(
+            registerSuccess = false,
+            registerMessage = null
+        )
     }
 }

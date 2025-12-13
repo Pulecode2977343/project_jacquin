@@ -1,14 +1,25 @@
 package co.edu.jacquin.jam_app.ui.auth
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,33 +29,53 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import co.edu.jacquin.jam_app.data.remote.dto.UserDto
+import androidx.compose.ui.unit.sp
 import co.edu.jacquin.jam_app.ui.JamHorizontalLogo
 import co.edu.jacquin.jam_app.ui.JamSignature
+import kotlinx.coroutines.delay
+
+// Para icono sin depender de Icons.Outlined.Lock:
+import androidx.compose.material.icons.materialIcon
+import androidx.compose.material.icons.materialPath
 
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel,
     onBackClick: () -> Unit = {},
-    onLoginSuccess: (UserDto) -> Unit = {},
-
-    // ✅ nuevos callbacks
     onRegisterClick: () -> Unit = {},
-    onRecoveryClick: () -> Unit = {}
+    onForgotPasswordClick: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -52,14 +83,11 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    // ✅ Cuando el login ya fue exitoso, notificamos una sola vez
-    LaunchedEffect(state.isLoggedIn, state.user?.id_usuario) {
-        val u = state.user
-        if (state.isLoggedIn && u != null) onLoginSuccess(u)
-    }
-
     var visible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { visible = true }
+    LaunchedEffect(Unit) {
+        delay(60)
+        visible = true
+    }
 
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFF00346A), Color(0xFF000814))
@@ -73,19 +101,34 @@ fun LoginScreen(
         colors = listOf(Color(0x26FFFFFF), Color(0x0AFFFFFF))
     )
 
-    // ✅ Mensaje de error “controlado”
-    val displayError = remember(state.error) {
-        state.error?.let { normalizeLoginError(it) }
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient)
     ) {
+        // Header fijo: back + logo (consistente con Home)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 14.dp, end = 18.dp, top = 22.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Volver",
+                    tint = Color(0xFFE0ECFF)
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            JamHorizontalLogo(
+                modifier = Modifier.height(44.dp) // ✅ “misma altura feeling” del Home
+            )
+        }
+
         AnimatedVisibility(
             visible = visible,
-            enter = fadeIn(tween(450)) + slideInVertically(tween(450)) { it / 10 },
+            enter = fadeIn(tween(420)) + slideInVertically(tween(420)) { it / 10 },
             exit = fadeOut(tween(220)) + slideOutVertically(tween(220)) { it / 10 }
         ) {
             Column(
@@ -93,29 +136,8 @@ fun LoginScreen(
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Volver",
-                            tint = Color(0xFFE0ECFF)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Box(
-                        modifier = Modifier.weight(1f),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        JamHorizontalLogo()
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(22.dp))
+                // deja el header libre
+                Spacer(modifier = Modifier.height(92.dp))
 
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
@@ -139,17 +161,17 @@ fun LoginScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .verticalScroll(rememberScrollState()),
-                                verticalArrangement = Arrangement.spacedBy(18.dp),
+                                verticalArrangement = Arrangement.spacedBy(14.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = "Bienvenido de nuevo",
+                                    text = "Iniciar sesión",
                                     style = MaterialTheme.typography.headlineSmall,
                                     color = Color.White
                                 )
 
                                 Text(
-                                    text = "Inicia sesión para entrar a tu universo musical.",
+                                    text = "Accede a tu universo musical.",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = Color(0xFFB0C4DE),
                                     textAlign = TextAlign.Center
@@ -183,57 +205,63 @@ fun LoginScreen(
                                     onToggleVisibility = { passwordVisible = !passwordVisible }
                                 )
 
-                                // ✅ Error entre contraseña y botón (como lo tenías)
-                                if (!displayError.isNullOrBlank()) {
+                                // ✅ “3rem” de espacio entre contraseña y botón
+                                Spacer(modifier = Modifier.height(48.dp))
+
+                                if (!state.error.isNullOrBlank()) {
                                     Text(
-                                        text = displayError,
+                                        text = state.error!!,
                                         color = Color(0xFFFF6B81),
                                         style = MaterialTheme.typography.bodySmall,
                                         textAlign = TextAlign.Center,
                                         modifier = Modifier.fillMaxWidth()
                                     )
-                                } else {
-                                    Spacer(modifier = Modifier.height(2.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
                                 }
 
                                 JamPrimaryGlassButton(
-                                    text = if (state.isLoading) "Conectando." else "Iniciar sesión",
-                                    enabled = !state.isLoading,
+                                    text = if (state.isLoading) "Iniciando..." else "Iniciar sesión",
+                                    enabled = !state.isLoading && email.isNotBlank() && password.isNotBlank(),
                                     onClick = { viewModel.login(email.trim(), password) },
                                     showLoader = state.isLoading
                                 )
 
-                                // ✅ NUEVO: acciones debajo del botón
+                                // ✅ Links debajo del botón (1 línea garantizada)
+                                Spacer(modifier = Modifier.height(10.dp))
+
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 2.dp),
+                                    modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     TextButton(
                                         onClick = onRegisterClick,
                                         enabled = !state.isLoading,
-                                        colors = ButtonDefaults.textButtonColors(
-                                            contentColor = Color(0xFFCCF9FF)
-                                        ),
-                                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 4.dp)
+                                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
                                     ) {
                                         Text(
                                             text = "Registrarme",
-                                            fontWeight = FontWeight.SemiBold
+                                            color = Color(0xFFCCF9FF),
+                                            fontWeight = FontWeight.SemiBold,
+                                            maxLines = 1,
+                                            softWrap = false,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     }
 
                                     TextButton(
-                                        onClick = onRecoveryClick,
+                                        onClick = onForgotPasswordClick,
                                         enabled = !state.isLoading,
-                                        colors = ButtonDefaults.textButtonColors(
-                                            contentColor = Color(0xFFB0C4DE)
-                                        ),
-                                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 4.dp)
+                                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
                                     ) {
-                                        Text(text = "Recuperar contraseña")
+                                        Text(
+                                            text = "Recuperar contraseña",
+                                            color = Color(0xFFB0C4DE),
+                                            fontSize = 12.sp,
+                                            maxLines = 1,
+                                            softWrap = false,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
                                     }
                                 }
 
@@ -244,13 +272,14 @@ fun LoginScreen(
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(top = 2.dp)
                                         .alpha(0.9f)
                                 )
                             }
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
 
@@ -262,36 +291,7 @@ fun LoginScreen(
     }
 }
 
-/**
- * Normaliza mensajes del backend para que UX sea consistente.
- * - Credenciales inválidas -> “Usuario o contraseña errados.”
- * - Conectividad -> mensaje amable
- * - Otros -> se deja el texto original (para debug)
- */
-private fun normalizeLoginError(raw: String): String {
-    val msg = raw.trim().lowercase()
-
-    val looksLikeBadCredentials = listOf(
-        "invalid", "incorrect", "unauthorized", "401",
-        "credenciales", "credentials",
-        "contraseña", "password",
-        "usuario", "user"
-    ).any { msg.contains(it) } &&
-            // si viene un error de red, no lo confundimos con credenciales
-            !listOf("timeout", "timed out", "unable to resolve host", "failed to connect", "network").any { msg.contains(it) }
-
-    if (looksLikeBadCredentials) return "Usuario o contraseña errados."
-
-    val looksLikeNetwork = listOf(
-        "timeout", "timed out", "unable to resolve host", "failed to connect", "network", "connection"
-    ).any { msg.contains(it) }
-
-    if (looksLikeNetwork) return "No pudimos conectar. Verifica tu internet e inténtalo de nuevo."
-
-    return raw
-}
-
-/* ---------- underlined fields ---------- */
+/* ---------- Underlined fields ---------- */
 
 @Composable
 private fun JamUnderlinedTextField(
@@ -317,7 +317,6 @@ private fun JamUnderlinedTextField(
             singleLine = true,
             leadingIcon = leadingIcon,
             keyboardOptions = keyboardOptions,
-            textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
@@ -334,9 +333,8 @@ private fun JamUnderlinedTextField(
                 unfocusedTextColor = Color.White
             )
         )
-
         Spacer(modifier = Modifier.height(4.dp))
-        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(underlineBrush))
+        Box(Modifier.fillMaxWidth().height(1.dp).background(underlineBrush))
     }
 }
 
@@ -363,9 +361,8 @@ private fun JamUnderlinedPasswordField(
             label = { Text(label) },
             singleLine = true,
             leadingIcon = {
-                // ✅ mantenemos ícono seguro (no introducimos “Lock” para evitar problemas de dependencia)
                 Icon(
-                    imageVector = Icons.Outlined.Visibility,
+                    imageVector = JamLockIcon,
                     contentDescription = "Contraseña",
                     tint = Color(0xFFB0C4DE)
                 )
@@ -381,7 +378,6 @@ private fun JamUnderlinedPasswordField(
             },
             visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
@@ -398,13 +394,12 @@ private fun JamUnderlinedPasswordField(
                 unfocusedTextColor = Color.White
             )
         )
-
         Spacer(modifier = Modifier.height(4.dp))
-        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(underlineBrush))
+        Box(Modifier.fillMaxWidth().height(1.dp).background(underlineBrush))
     }
 }
 
-/* ---------- botón glass ---------- */
+/* ---------- Primary glass button ---------- */
 
 @Composable
 private fun JamPrimaryGlassButton(
@@ -450,6 +445,44 @@ private fun JamPrimaryGlassButton(
                     Text(text = text, color = Color.White)
                 }
             }
+        }
+    }
+}
+
+/* ---------- Lock icon: compatible (sin Icons.Outlined.Lock) ---------- */
+
+private val JamLockIcon: ImageVector by lazy {
+    materialIcon(name = "JamLock") {
+        materialPath {
+            // Shackle
+            moveTo(8f, 10f)
+            lineTo(8f, 8.2f)
+            curveTo(8f, 6.2f, 9.6f, 4.6f, 11.6f, 4.6f)
+            curveTo(13.6f, 4.6f, 15.2f, 6.2f, 15.2f, 8.2f)
+            lineTo(15.2f, 10f)
+
+            // Body
+            moveTo(7.2f, 10f)
+            lineTo(16.8f, 10f)
+            curveTo(18.0f, 10f, 19.0f, 11.0f, 19.0f, 12.2f)
+            lineTo(19.0f, 18.0f)
+            curveTo(19.0f, 19.2f, 18.0f, 20.2f, 16.8f, 20.2f)
+            lineTo(7.2f, 20.2f)
+            curveTo(6.0f, 20.2f, 5.0f, 19.2f, 5.0f, 18.0f)
+            lineTo(5.0f, 12.2f)
+            curveTo(5.0f, 11.0f, 6.0f, 10f, 7.2f, 10f)
+            close()
+
+            // Keyhole
+            moveTo(12f, 13.2f)
+            curveTo(11.0f, 13.2f, 10.2f, 14.0f, 10.2f, 15.0f)
+            curveTo(10.2f, 15.8f, 10.7f, 16.5f, 11.4f, 16.8f)
+            lineTo(11.4f, 18.2f)
+            lineTo(12.6f, 18.2f)
+            lineTo(12.6f, 16.8f)
+            curveTo(13.3f, 16.5f, 13.8f, 15.8f, 13.8f, 15.0f)
+            curveTo(13.8f, 14.0f, 13.0f, 13.2f, 12f, 13.2f)
+            close()
         }
     }
 }

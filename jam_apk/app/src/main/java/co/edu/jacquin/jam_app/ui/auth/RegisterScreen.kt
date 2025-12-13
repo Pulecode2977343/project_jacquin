@@ -27,6 +27,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.PhoneAndroid
@@ -36,7 +37,6 @@ import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.materialPath
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -60,7 +60,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.Path
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -93,11 +92,8 @@ fun RegisterScreen(
     var acceptTerms by remember { mutableStateOf(false) }
     var acceptDataPolicy by remember { mutableStateOf(false) }
 
-    var showError by remember { mutableStateOf(false) }
-    var errorText by remember { mutableStateOf<String?>(null) }
-
-    // ✅ NUEVO: si el usuario ya intentó registrarse, mantenemos avisos importantes hasta corregir
     var attemptedSubmit by remember { mutableStateOf(false) }
+    var inlineError by remember { mutableStateOf<String?>(null) }
 
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFF00346A), Color(0xFF000814))
@@ -110,48 +106,42 @@ fun RegisterScreen(
         colors = listOf(Color(0x26FFFFFF), Color(0x0AFFFFFF))
     )
 
-    val pwdState by remember(password) { derivedStateOf { PasswordRules.evaluate(password) } }
-    val emailValid by remember(email) { derivedStateOf { isEmailValid(email.trim()) } }
-    val phoneValid by remember(phone) { derivedStateOf { phone.trim().length >= 7 } }
-    val nameValid by remember(fullName) { derivedStateOf { fullName.trim().length >= 3 } }
+    // ✅ derivedStateOf SIN remember(keys...) para compatibilidad
+    val pwdState by remember { derivedStateOf { PasswordRules.evaluate(password) } }
+    val emailValid by remember { derivedStateOf { isEmailValid(email.trim()) } }
+    val phoneValid by remember { derivedStateOf { phone.trim().length >= 7 } }
+    val nameValid by remember { derivedStateOf { fullName.trim().length >= 3 } }
 
-    val mismatchNow by remember(password, confirmPassword) {
-        derivedStateOf { confirmPassword.isNotBlank() && password != confirmPassword }
-    }
+    val mismatchNow by remember { derivedStateOf { confirmPassword.isNotBlank() && password != confirmPassword } }
+    val passwordsMatch by remember { derivedStateOf { confirmPassword.isNotBlank() && password == confirmPassword } }
 
-    // ✅ Aviso persistente (tras intentar enviar)
-    val shouldShowMismatchWarning by remember(attemptedSubmit, password, confirmPassword) {
+    // ✅ Aviso persistente (si ya intentó enviar)
+    val shouldShowMismatchWarning by remember {
         derivedStateOf {
-            mismatchNow ||
-                    (attemptedSubmit && password.isNotBlank() && confirmPassword.isBlank()) ||
-                    (attemptedSubmit && password.isNotBlank() && password != confirmPassword)
+            mismatchNow || (attemptedSubmit && (confirmPassword.isBlank() || password != confirmPassword))
         }
     }
 
-    val canSubmit by remember(
-        nameValid, emailValid, phoneValid,
-        pwdState.isStrong, acceptTerms, acceptDataPolicy,
-        isSubmitting, mismatchNow, confirmPassword
-    ) {
+    // ✅ FIX del error: nada de remember(vararg keys)
+    val canSubmit by remember {
         derivedStateOf {
             !isSubmitting &&
                     nameValid &&
                     emailValid &&
                     phoneValid &&
                     pwdState.isStrong &&
-                    confirmPassword.isNotBlank() &&
-                    !mismatchNow &&
+                    passwordsMatch &&
                     acceptTerms &&
                     acceptDataPolicy
         }
     }
 
-    fun clearInlineError() {
-        showError = false
-        errorText = null
+    fun clearError() {
+        inlineError = null
     }
 
-    val visible by remember { mutableStateOf(true) }
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { visible = true }
 
     Box(
         modifier = Modifier
@@ -215,7 +205,7 @@ fun RegisterScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .verticalScroll(rememberScrollState()),
-                                verticalArrangement = Arrangement.spacedBy(14.dp), // ✅ un poco más compacto
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
@@ -233,10 +223,7 @@ fun RegisterScreen(
 
                                 JamUnderlinedTextField(
                                     value = fullName,
-                                    onValueChange = {
-                                        fullName = it
-                                        clearInlineError()
-                                    },
+                                    onValueChange = { fullName = it; clearError() },
                                     label = "Nombre completo",
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                                     leadingIcon = {
@@ -250,10 +237,7 @@ fun RegisterScreen(
 
                                 JamUnderlinedTextField(
                                     value = email,
-                                    onValueChange = {
-                                        email = it
-                                        clearInlineError()
-                                    },
+                                    onValueChange = { email = it; clearError() },
                                     label = "Correo electrónico",
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                                     leadingIcon = {
@@ -269,7 +253,7 @@ fun RegisterScreen(
                                     value = phone,
                                     onValueChange = {
                                         phone = it.filter { ch -> ch.isDigit() || ch == '+' || ch == ' ' }
-                                        clearInlineError()
+                                        clearError()
                                     },
                                     label = "Teléfono",
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -284,35 +268,24 @@ fun RegisterScreen(
 
                                 JamUnderlinedPasswordField(
                                     value = password,
-                                    onValueChange = {
-                                        password = it
-                                        clearInlineError()
-                                    },
+                                    onValueChange = { password = it; clearError() },
                                     label = "Contraseña",
                                     visible = passwordVisible,
                                     onToggleVisibility = { passwordVisible = !passwordVisible }
                                 )
 
-                                // ✅ más compacto
                                 PasswordStrengthCardCompact(state = pwdState)
 
                                 JamUnderlinedPasswordField(
                                     value = confirmPassword,
-                                    onValueChange = {
-                                        confirmPassword = it
-                                        clearInlineError()
-                                    },
+                                    onValueChange = { confirmPassword = it; clearError() },
                                     label = "Confirmar contraseña",
                                     visible = confirmVisible,
                                     onToggleVisibility = { confirmVisible = !confirmVisible }
                                 )
 
-                                // ✅ Aviso persistente (tras intento)
                                 if (shouldShowMismatchWarning) {
-                                    val msg = when {
-                                        confirmPassword.isBlank() -> "Confirma tu contraseña."
-                                        else -> "Las contraseñas no coinciden."
-                                    }
+                                    val msg = if (confirmPassword.isBlank()) "Confirma tu contraseña." else "Las contraseñas no coinciden."
                                     Text(
                                         text = msg,
                                         color = Color(0xFFFF6B81),
@@ -322,32 +295,32 @@ fun RegisterScreen(
                                     )
                                 }
 
-                                // ✅ Checkboxes: menos separación vertical + lineHeight compacto
-                                LegalCheckboxRowCompact(
-                                    checked = acceptTerms,
-                                    onCheckedChange = {
-                                        acceptTerms = it
-                                        clearInlineError()
-                                    },
-                                    labelPrefix = "Acepto ",
-                                    linkText = "términos y condiciones",
-                                    onLinkClick = onTermsClick
-                                )
+                                // ✅ Bloque legal REALMENTE compacto y más a la izquierda
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 2.dp), // 🔥 corre un poquito a la izquierda
+                                    verticalArrangement = Arrangement.spacedBy(0.dp)
+                                ) {
+                                    LegalRowMiniCheckbox(
+                                        checked = acceptTerms,
+                                        onCheckedChange = { acceptTerms = it; clearError() },
+                                        labelPrefix = "Acepto ",
+                                        linkText = "términos y condiciones",
+                                        onLinkClick = onTermsClick
+                                    )
+                                    LegalRowMiniCheckbox(
+                                        checked = acceptDataPolicy,
+                                        onCheckedChange = { acceptDataPolicy = it; clearError() },
+                                        labelPrefix = "Acepto ",
+                                        linkText = "tratamiento de datos personales",
+                                        onLinkClick = onDataPolicyClick
+                                    )
+                                }
 
-                                LegalCheckboxRowCompact(
-                                    checked = acceptDataPolicy,
-                                    onCheckedChange = {
-                                        acceptDataPolicy = it
-                                        clearInlineError()
-                                    },
-                                    labelPrefix = "Acepto ",
-                                    linkText = "tratamiento de datos personales",
-                                    onLinkClick = onDataPolicyClick
-                                )
-
-                                if (showError && !errorText.isNullOrBlank()) {
+                                if (!inlineError.isNullOrBlank()) {
                                     Text(
-                                        text = errorText!!,
+                                        text = inlineError!!,
                                         color = Color(0xFFFF6B81),
                                         style = MaterialTheme.typography.bodySmall,
                                         textAlign = TextAlign.Center,
@@ -356,7 +329,7 @@ fun RegisterScreen(
                                 }
 
                                 JamPrimaryGlassButton(
-                                    text = if (isSubmitting) "Creando cuenta." else "Crear cuenta",
+                                    text = if (isSubmitting) "Creando cuenta..." else "Crear cuenta",
                                     enabled = canSubmit,
                                     onClick = {
                                         attemptedSubmit = true
@@ -373,11 +346,9 @@ fun RegisterScreen(
                                         )
 
                                         if (err != null) {
-                                            showError = true
-                                            errorText = err
+                                            inlineError = err
                                         } else {
-                                            showError = false
-                                            errorText = null
+                                            inlineError = null
                                             onRegisterSubmit(
                                                 fullName.trim(),
                                                 email.trim(),
@@ -438,7 +409,82 @@ fun RegisterScreen(
 }
 
 /* =========================
-   Password card (COMPACT)
+   ✅ Legal rows (mini checkbox)
+   ========================= */
+
+@Composable
+private fun LegalRowMiniCheckbox(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    labelPrefix: String,
+    linkText: String,
+    onLinkClick: () -> Unit
+) {
+    val interaction = remember { MutableInteractionSource() }
+    val shape = RoundedCornerShape(6.dp)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 1.dp), // ✅ súper compacto
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(18.dp)
+                .clip(shape)
+                .background(if (checked) Color(0x2200F0FF) else Color.Transparent)
+                .border(1.dp, Color.White.copy(alpha = 0.35f), shape)
+                .clickable(interactionSource = interaction, indication = null) {
+                    onCheckedChange(!checked)
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            if (checked) {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = null,
+                    tint = Color(0xFF00F0FF),
+                    modifier = Modifier.size(13.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .clickable(interactionSource = interaction, indication = null) {
+                    onCheckedChange(!checked)
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = labelPrefix,
+                color = Color(0xFFB0C4DE),
+                fontSize = 12.sp,
+                lineHeight = 13.sp
+            )
+            Text(
+                text = linkText,
+                color = Color(0xFFCCF9FF),
+                fontSize = 12.sp,
+                lineHeight = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.clickable(interactionSource = interaction, indication = null) {
+                    onLinkClick()
+                }
+            )
+        }
+    }
+}
+
+/* =========================
+   Password card (compact)
    ========================= */
 
 @Composable
@@ -459,8 +505,8 @@ private fun PasswordStrengthCardCompact(state: PasswordRules.State) {
             .clip(cardShape)
             .background(bg, cardShape)
             .border(1.dp, border, cardShape)
-            .padding(horizontal = 14.dp, vertical = 12.dp), // ✅ menos padding vertical
-        verticalArrangement = Arrangement.spacedBy(6.dp)  // ✅ menos espacio entre líneas
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -481,7 +527,7 @@ private fun PasswordStrengthCardCompact(state: PasswordRules.State) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(5.dp) // ✅ un poco más fina
+                .height(5.dp)
                 .clip(RoundedCornerShape(99.dp))
                 .background(Color.White.copy(alpha = 0.10f))
         ) {
@@ -515,7 +561,7 @@ private fun PasswordRuleRowCompact(text: String, ok: Boolean) {
     ) {
         Box(
             modifier = Modifier
-                .size(8.dp) // ✅ más pequeño
+                .size(8.dp)
                 .clip(RoundedCornerShape(99.dp))
                 .background(dotColor.copy(alpha = 0.95f))
         )
@@ -523,7 +569,7 @@ private fun PasswordRuleRowCompact(text: String, ok: Boolean) {
         Text(
             text = text,
             color = txtColor,
-            fontSize = 11.sp, // ✅ más compacto
+            fontSize = 11.sp,
             lineHeight = 14.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -532,93 +578,7 @@ private fun PasswordRuleRowCompact(text: String, ok: Boolean) {
 }
 
 /* =========================
-   Legal rows (COMPACT)
-   ========================= */
-
-@Composable
-private fun LegalCheckboxRowCompact(
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    labelPrefix: String,
-    linkText: String,
-    onLinkClick: () -> Unit
-) {
-    val interaction = remember { MutableInteractionSource() }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 0.dp), // ✅ sin extra
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Checkbox(
-            checked = checked,
-            onCheckedChange = onCheckedChange
-        )
-        Spacer(modifier = Modifier.width(4.dp)) // ✅ menos espacio
-
-        Row(
-            modifier = Modifier
-                .weight(1f)
-                .clickable(interactionSource = interaction, indication = null) { onCheckedChange(!checked) },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = labelPrefix,
-                color = Color(0xFFB0C4DE),
-                fontSize = 12.sp,
-                lineHeight = 14.sp
-            )
-            Text(
-                text = linkText,
-                color = Color(0xFFCCF9FF),
-                fontSize = 12.sp,
-                lineHeight = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.clickable(
-                    interactionSource = interaction,
-                    indication = null
-                ) { onLinkClick() }
-            )
-        }
-    }
-}
-
-/* =========================
-   Validation
-   ========================= */
-
-private fun validateRegister(
-    fullName: String,
-    email: String,
-    phone: String,
-    pwdState: PasswordRules.State,
-    password: String,
-    confirmPassword: String,
-    acceptTerms: Boolean,
-    acceptDataPolicy: Boolean
-): String? {
-    if (fullName.trim().length < 3) return "Escribe tu nombre completo."
-    if (!isEmailValid(email.trim())) return "Correo inválido."
-    if (phone.trim().length < 7) return "Teléfono inválido."
-    if (!pwdState.isStrong) return "Tu contraseña aún no cumple los requisitos."
-    if (confirmPassword.isBlank()) return "Confirma tu contraseña."
-    if (password != confirmPassword) return "Las contraseñas no coinciden."
-    if (!acceptTerms) return "Debes aceptar los términos y condiciones."
-    if (!acceptDataPolicy) return "Debes aceptar el tratamiento de datos personales."
-    return null
-}
-
-private fun isEmailValid(email: String): Boolean {
-    val e = email.trim()
-    if (e.isEmpty()) return false
-    return e.contains("@") && e.contains(".") && e.length >= 6
-}
-
-/* =========================
-   Underline fields + Button
+   Underline fields + button
    ========================= */
 
 @Composable
@@ -645,7 +605,6 @@ private fun JamUnderlinedTextField(
             singleLine = true,
             leadingIcon = leadingIcon,
             keyboardOptions = keyboardOptions,
-            textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
@@ -663,7 +622,7 @@ private fun JamUnderlinedTextField(
             )
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(underlineBrush))
+        Box(Modifier.fillMaxWidth().height(1.dp).background(underlineBrush))
     }
 }
 
@@ -690,7 +649,6 @@ private fun JamUnderlinedPasswordField(
             label = { Text(label) },
             singleLine = true,
             leadingIcon = {
-                // ✅ Ícono FIX: no depende de material-icons-extended
                 Icon(
                     imageVector = JamLockIcon,
                     contentDescription = "Contraseña",
@@ -708,7 +666,6 @@ private fun JamUnderlinedPasswordField(
             },
             visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            textStyle = MaterialTheme.typography.bodyMedium,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
@@ -726,7 +683,7 @@ private fun JamUnderlinedPasswordField(
             )
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(underlineBrush))
+        Box(Modifier.fillMaxWidth().height(1.dp).background(underlineBrush))
     }
 }
 
@@ -779,8 +736,35 @@ private fun JamPrimaryGlassButton(
 }
 
 /* =========================
-   Password rules engine
+   Validation + password rules
    ========================= */
+
+private fun validateRegister(
+    fullName: String,
+    email: String,
+    phone: String,
+    pwdState: PasswordRules.State,
+    password: String,
+    confirmPassword: String,
+    acceptTerms: Boolean,
+    acceptDataPolicy: Boolean
+): String? {
+    if (fullName.trim().length < 3) return "Escribe tu nombre completo."
+    if (!isEmailValid(email.trim())) return "Correo inválido."
+    if (phone.trim().length < 7) return "Teléfono inválido."
+    if (!pwdState.isStrong) return "Tu contraseña aún no cumple los requisitos."
+    if (confirmPassword.isBlank()) return "Confirma tu contraseña."
+    if (password != confirmPassword) return "Las contraseñas no coinciden."
+    if (!acceptTerms) return "Debes aceptar los términos y condiciones."
+    if (!acceptDataPolicy) return "Debes aceptar el tratamiento de datos personales."
+    return null
+}
+
+private fun isEmailValid(email: String): Boolean {
+    val e = email.trim()
+    if (e.isEmpty()) return false
+    return e.contains("@") && e.contains(".") && e.length >= 6
+}
 
 private object PasswordRules {
     data class State(
@@ -819,8 +803,7 @@ private object PasswordRules {
 }
 
 /* =========================
-   ✅ Lock icon (in-code)
-   No depende de material-icons-extended
+   ✅ Lock icon (compatible)
    ========================= */
 
 private val JamLockIcon: ImageVector by lazy {

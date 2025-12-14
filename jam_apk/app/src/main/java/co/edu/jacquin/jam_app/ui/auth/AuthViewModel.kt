@@ -7,6 +7,7 @@ import co.edu.jacquin.jam_app.data.remote.dto.UserDto
 import co.edu.jacquin.jam_app.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
@@ -14,11 +15,13 @@ class AuthViewModel(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
-    val uiState: StateFlow<AuthUiState> = _uiState
+    val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
     fun login(email: String, password: String) {
         _uiState.value = _uiState.value.copy(
             isLoading = true,
+            isLoggedIn = false,  // evita quedarse en true si un login falla después de haber iniciado
+            user = null,
             error = null
         )
 
@@ -28,13 +31,16 @@ class AuthViewModel(
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         isLoggedIn = true,
-                        user = result.data
+                        user = result.data,
+                        error = null
                     )
                 }
 
                 is JamResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
+                        isLoggedIn = false,
+                        user = null,
                         error = result.message
                     )
                 }
@@ -65,6 +71,8 @@ class AuthViewModel(
                 is JamResult.Error -> {
                     _uiState.value = _uiState.value.copy(
                         isRegistering = false,
+                        registerSuccess = false,
+                        registerMessage = null,
                         error = result.message
                     )
                 }
@@ -72,6 +80,10 @@ class AuthViewModel(
                 JamResult.Loading -> Unit
             }
         }
+    }
+
+    fun logout() {
+        _uiState.value = AuthUiState()
     }
 
     fun clearError() {

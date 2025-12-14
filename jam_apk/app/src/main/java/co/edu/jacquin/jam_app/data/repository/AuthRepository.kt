@@ -4,9 +4,11 @@ import co.edu.jacquin.jam_app.core.JamResult
 import co.edu.jacquin.jam_app.data.remote.JamApiService
 import co.edu.jacquin.jam_app.data.remote.dto.LoginRequest
 import co.edu.jacquin.jam_app.data.remote.dto.RegisterRequest
+import co.edu.jacquin.jam_app.data.remote.dto.RegisterResponse
 import co.edu.jacquin.jam_app.data.remote.dto.UserDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.IOException
 
 class AuthRepository(
     private val api: JamApiService
@@ -15,50 +17,48 @@ class AuthRepository(
     suspend fun login(email: String, password: String): JamResult<UserDto> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = api.login(LoginRequest(email, password))
+                val response = api.login(LoginRequest(email.trim(), password))
+                val user = response.bestUser()
 
-                if (response.success && response.user != null) {
-                    JamResult.Success(response.user)
+                if (response.success == true && user != null) {
+                    JamResult.Success(user)
                 } else {
-                    val safeMsg = response.message
-                        ?.takeIf { it.isNotBlank() }
-                        ?: "Usuario o contraseña incorrectos. Intenta de nuevo."
-                    JamResult.Error(safeMsg)
+                    JamResult.Error(response.bestMessage())
                 }
+            } catch (e: IOException) {
+                JamResult.Error("No se pudo conectar con el servidor. Verifica tu red e intenta de nuevo.")
             } catch (e: Exception) {
-                val safeMsg = e.message
-                    ?.takeIf { it.isNotBlank() }
-                    ?: "Error de conexión con el servidor"
-                JamResult.Error(safeMsg)
+                JamResult.Error(e.message?.takeIf { it.isNotBlank() } ?: "Error inesperado. Intenta de nuevo.")
             }
         }
     }
 
-    suspend fun register(fullName: String, email: String, phone: String, password: String): JamResult<String> {
+    suspend fun register(
+        fullName: String,
+        email: String,
+        phone: String,
+        password: String
+    ): JamResult<String> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = api.register(
+                val response: RegisterResponse = api.register(
                     RegisterRequest(
-                        fullName = fullName,
-                        email = email,
-                        nPhone = phone,
+                        fullName = fullName.trim(),
+                        email = email.trim(),
+                        nPhone = phone.trim(),
                         password = password
                     )
                 )
 
                 if (response.success == true) {
-                    JamResult.Success(response.message ?: "Usuario registrado correctamente.")
+                    JamResult.Success(response.bestMessage())
                 } else {
-                    val safeMsg = response.error
-                        ?: response.message
-                        ?: "No se pudo registrar el usuario. Intenta de nuevo."
-                    JamResult.Error(safeMsg)
+                    JamResult.Error(response.bestMessage())
                 }
+            } catch (e: IOException) {
+                JamResult.Error("No se pudo conectar con el servidor. Verifica tu red e intenta de nuevo.")
             } catch (e: Exception) {
-                val safeMsg = e.message
-                    ?.takeIf { it.isNotBlank() }
-                    ?: "Error de conexión con el servidor"
-                JamResult.Error(safeMsg)
+                JamResult.Error(e.message?.takeIf { it.isNotBlank() } ?: "Error inesperado. Intenta de nuevo.")
             }
         }
     }

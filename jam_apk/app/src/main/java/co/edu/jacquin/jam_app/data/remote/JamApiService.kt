@@ -4,6 +4,7 @@ import co.edu.jacquin.jam_app.data.remote.dto.LoginRequest
 import co.edu.jacquin.jam_app.data.remote.dto.LoginResponse
 import co.edu.jacquin.jam_app.data.remote.dto.RegisterRequest
 import co.edu.jacquin.jam_app.data.remote.dto.RegisterResponse
+import androidx.compose.ui.text.font.FontWeight
 import retrofit2.http.Body
 import retrofit2.http.POST
 

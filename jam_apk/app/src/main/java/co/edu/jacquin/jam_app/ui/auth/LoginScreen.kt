@@ -8,18 +8,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,24 +18,10 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.materialIcon
+import androidx.compose.material.icons.materialPath
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -54,28 +29,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.edu.jacquin.jam_app.data.remote.dto.UserDto
 import co.edu.jacquin.jam_app.ui.JamHorizontalLogo
 import co.edu.jacquin.jam_app.ui.JamSignature
 import kotlinx.coroutines.delay
-
-// Para icono sin depender de Icons.Outlined.Lock:
-import androidx.compose.material.icons.materialIcon
-import androidx.compose.material.icons.materialPath
 
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel,
     onBackClick: () -> Unit = {},
     onRegisterClick: () -> Unit = {},
-    onForgotPasswordClick: () -> Unit = {}
+    onForgotPasswordClick: () -> Unit = {},
+    onLoginSuccess: (UserDto) -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -83,30 +55,30 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
+    // ✅ cuando el VM confirme login, navegamos
+    LaunchedEffect(state.isLoggedIn, state.user) {
+        val u = state.user
+        if (state.isLoggedIn && u != null) onLoginSuccess(u)
+    }
+
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
-        delay(60)
+        delay(50)
         visible = true
     }
 
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFF00346A), Color(0xFF000814))
     )
-
-    val innerGlassGradient = Brush.verticalGradient(
-        colors = listOf(Color(0x1FFFFFFF), Color(0x05FFFFFF))
-    )
-
-    val outerGlassGradient = Brush.verticalGradient(
-        colors = listOf(Color(0x26FFFFFF), Color(0x0AFFFFFF))
-    )
+    val innerGlassGradient = Brush.verticalGradient(listOf(Color(0x1FFFFFFF), Color(0x05FFFFFF)))
+    val outerGlassGradient = Brush.verticalGradient(listOf(Color(0x26FFFFFF), Color(0x0AFFFFFF)))
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient)
     ) {
-        // Header fijo: back + logo (consistente con Home)
+        // Header fijo: back + logo
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -121,9 +93,7 @@ fun LoginScreen(
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
-            JamHorizontalLogo(
-                modifier = Modifier.height(44.dp) // ✅ “misma altura feeling” del Home
-            )
+            JamHorizontalLogo(modifier = Modifier.height(44.dp))
         }
 
         AnimatedVisibility(
@@ -136,7 +106,6 @@ fun LoginScreen(
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
             ) {
-                // deja el header libre
                 Spacer(modifier = Modifier.height(92.dp))
 
                 Surface(
@@ -170,13 +139,6 @@ fun LoginScreen(
                                     color = Color.White
                                 )
 
-                                Text(
-                                    text = "Accede a tu universo musical.",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color(0xFFB0C4DE),
-                                    textAlign = TextAlign.Center
-                                )
-
                                 JamUnderlinedTextField(
                                     value = email,
                                     onValueChange = {
@@ -186,11 +148,7 @@ fun LoginScreen(
                                     label = "Correo electrónico",
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                                     leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Email,
-                                            contentDescription = "Email",
-                                            tint = Color(0xFFB0C4DE)
-                                        )
+                                        Icon(Icons.Outlined.Email, null, tint = Color(0xFFB0C4DE))
                                     }
                                 )
 
@@ -205,7 +163,7 @@ fun LoginScreen(
                                     onToggleVisibility = { passwordVisible = !passwordVisible }
                                 )
 
-                                // ✅ “3rem” de espacio entre contraseña y botón
+                                // ✅ 3rem aprox
                                 Spacer(modifier = Modifier.height(48.dp))
 
                                 if (!state.error.isNullOrBlank()) {
@@ -216,17 +174,15 @@ fun LoginScreen(
                                         textAlign = TextAlign.Center,
                                         modifier = Modifier.fillMaxWidth()
                                     )
-                                    Spacer(modifier = Modifier.height(8.dp))
                                 }
 
                                 JamPrimaryGlassButton(
                                     text = if (state.isLoading) "Iniciando..." else "Iniciar sesión",
                                     enabled = !state.isLoading && email.isNotBlank() && password.isNotBlank(),
-                                    onClick = { viewModel.login(email.trim(), password) },
-                                    showLoader = state.isLoading
+                                    showLoader = state.isLoading,
+                                    onClick = { viewModel.login(email.trim(), password) }
                                 )
 
-                                // ✅ Links debajo del botón (1 línea garantizada)
                                 Spacer(modifier = Modifier.height(10.dp))
 
                                 Row(
@@ -239,14 +195,7 @@ fun LoginScreen(
                                         enabled = !state.isLoading,
                                         contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
                                     ) {
-                                        Text(
-                                            text = "Registrarme",
-                                            color = Color(0xFFCCF9FF),
-                                            fontWeight = FontWeight.SemiBold,
-                                            maxLines = 1,
-                                            softWrap = false,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
+                                        Text("Registrarme", color = Color(0xFFCCF9FF), fontWeight = FontWeight.SemiBold)
                                     }
 
                                     TextButton(
@@ -255,12 +204,11 @@ fun LoginScreen(
                                         contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
                                     ) {
                                         Text(
-                                            text = "Recuperar contraseña",
+                                            "Recuperar contraseña",
                                             color = Color(0xFFB0C4DE),
                                             fontSize = 12.sp,
                                             maxLines = 1,
-                                            softWrap = false,
-                                            overflow = TextOverflow.Ellipsis
+                                            softWrap = false
                                         )
                                     }
                                 }
@@ -302,17 +250,12 @@ private fun JamUnderlinedTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     leadingIcon: (@Composable () -> Unit)? = null
 ) {
-    val underlineBrush = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF00F0FF), Color(0xFFB022FF))
-    )
-
+    val underlineBrush = Brush.horizontalGradient(listOf(Color(0xFF00F0FF), Color(0xFFB022FF)))
     Column(modifier = modifier.fillMaxWidth()) {
         TextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
+            modifier = Modifier.fillMaxWidth().height(56.dp),
             label = { Text(label) },
             singleLine = true,
             leadingIcon = leadingIcon,
@@ -320,12 +263,8 @@ private fun JamUnderlinedTextField(
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                errorContainerColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent,
                 cursorColor = Color(0xFF00F0FF),
                 focusedLabelColor = Color(0xFFCCF9FF),
                 unfocusedLabelColor = Color(0xFFB0C4DE),
@@ -344,34 +283,25 @@ private fun JamUnderlinedPasswordField(
     onValueChange: (String) -> Unit,
     label: String,
     visible: Boolean,
-    onToggleVisibility: () -> Unit,
-    modifier: Modifier = Modifier
+    onToggleVisibility: () -> Unit
 ) {
-    val underlineBrush = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF00F0FF), Color(0xFFB022FF))
-    )
+    val underlineBrush = Brush.horizontalGradient(listOf(Color(0xFF00F0FF), Color(0xFFB022FF)))
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(Modifier.fillMaxWidth()) {
         TextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
+            modifier = Modifier.fillMaxWidth().height(56.dp),
             label = { Text(label) },
             singleLine = true,
             leadingIcon = {
-                Icon(
-                    imageVector = JamLockIcon,
-                    contentDescription = "Contraseña",
-                    tint = Color(0xFFB0C4DE)
-                )
+                Icon(imageVector = JamLockIcon, contentDescription = null, tint = Color(0xFFB0C4DE))
             },
             trailingIcon = {
                 IconButton(onClick = onToggleVisibility) {
                     Icon(
                         imageVector = if (visible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                        contentDescription = "Mostrar/Ocultar",
+                        contentDescription = null,
                         tint = Color(0xFFB0C4DE)
                     )
                 }
@@ -381,12 +311,8 @@ private fun JamUnderlinedPasswordField(
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                errorContainerColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent,
                 cursorColor = Color(0xFF00F0FF),
                 focusedLabelColor = Color(0xFFCCF9FF),
                 unfocusedLabelColor = Color(0xFFB0C4DE),
@@ -399,28 +325,21 @@ private fun JamUnderlinedPasswordField(
     }
 }
 
-/* ---------- Primary glass button ---------- */
-
 @Composable
 private fun JamPrimaryGlassButton(
     text: String,
     enabled: Boolean,
-    onClick: () -> Unit,
-    showLoader: Boolean
+    showLoader: Boolean,
+    onClick: () -> Unit
 ) {
-    val buttonGradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xCCFEA36A), Color(0xCCFF6B6B))
-    )
+    val buttonGradient = Brush.horizontalGradient(listOf(Color(0xCCFEA36A), Color(0xCCFF6B6B)))
 
     Button(
         onClick = onClick,
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         contentPadding = PaddingValues(),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(52.dp)
-            .clip(RoundedCornerShape(999.dp))
+        modifier = Modifier.fillMaxWidth().height(52.dp).clip(RoundedCornerShape(999.dp))
     ) {
         Box(
             modifier = Modifier
@@ -430,17 +349,11 @@ private fun JamPrimaryGlassButton(
                 .padding(1.5.dp)
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(buttonGradient, RoundedCornerShape(999.dp)),
+                modifier = Modifier.fillMaxSize().background(buttonGradient, RoundedCornerShape(999.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 if (showLoader) {
-                    CircularProgressIndicator(
-                        strokeWidth = 2.dp,
-                        color = Color.White,
-                        modifier = Modifier.size(18.dp)
-                    )
+                    CircularProgressIndicator(strokeWidth = 2.dp, color = Color.White, modifier = Modifier.size(18.dp))
                 } else {
                     Text(text = text, color = Color.White)
                 }
@@ -449,19 +362,16 @@ private fun JamPrimaryGlassButton(
     }
 }
 
-/* ---------- Lock icon: compatible (sin Icons.Outlined.Lock) ---------- */
-
+/* ---------- Lock icon ---------- */
 private val JamLockIcon: ImageVector by lazy {
     materialIcon(name = "JamLock") {
         materialPath {
-            // Shackle
             moveTo(8f, 10f)
             lineTo(8f, 8.2f)
             curveTo(8f, 6.2f, 9.6f, 4.6f, 11.6f, 4.6f)
             curveTo(13.6f, 4.6f, 15.2f, 6.2f, 15.2f, 8.2f)
             lineTo(15.2f, 10f)
 
-            // Body
             moveTo(7.2f, 10f)
             lineTo(16.8f, 10f)
             curveTo(18.0f, 10f, 19.0f, 11.0f, 19.0f, 12.2f)
@@ -473,7 +383,6 @@ private val JamLockIcon: ImageVector by lazy {
             curveTo(5.0f, 11.0f, 6.0f, 10f, 7.2f, 10f)
             close()
 
-            // Keyhole
             moveTo(12f, 13.2f)
             curveTo(11.0f, 13.2f, 10.2f, 14.0f, 10.2f, 15.0f)
             curveTo(10.2f, 15.8f, 10.7f, 16.5f, 11.4f, 16.8f)

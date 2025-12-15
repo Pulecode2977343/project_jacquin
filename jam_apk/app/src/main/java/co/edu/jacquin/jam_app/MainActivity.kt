@@ -72,7 +72,6 @@ class MainActivity : ComponentActivity() {
             JAM_appTheme {
                 val uiState by authViewModel.uiState.collectAsState()
 
-                // ✅ Consentimientos globales (se reflejan en Register y Contact)
                 var termsAccepted by rememberSaveable { mutableStateOf(false) }
                 var dataPolicyAccepted by rememberSaveable { mutableStateOf(false) }
 
@@ -193,12 +192,49 @@ class MainActivity : ComponentActivity() {
                     showRecovery = true
                 }
 
+                fun goLegalTerms(from: String) {
+                    legalReturnTo = from
+                    showLogin = false
+                    showRegister = false
+                    showDashboard = false
+                    showContact = false
+                    showEvents = false
+                    showAbout = false
+                    showCourses = false
+                    showRecovery = false
+                    showLegalPolicy = false
+                    showLegalTerms = true
+                }
+
+                fun goLegalPolicy(from: String) {
+                    legalReturnTo = from
+                    showLogin = false
+                    showRegister = false
+                    showDashboard = false
+                    showContact = false
+                    showEvents = false
+                    showAbout = false
+                    showCourses = false
+                    showRecovery = false
+                    showLegalTerms = false
+                    showLegalPolicy = true
+                }
+
+                fun backFromLegal() {
+                    showLegalTerms = false
+                    showLegalPolicy = false
+                    when (legalReturnTo) {
+                        "register" -> showRegister = true
+                        "contact" -> showContact = true
+                        else -> goHome()
+                    }
+                }
+
                 LaunchedEffect(Unit) {
                     delay(2500L)
                     showSplash = false
                 }
 
-                // ✅ Registro OK -> vuelve a Login + snackbar
                 LaunchedEffect(uiState.registerSuccess) {
                     if (uiState.registerSuccess) {
                         goLogin()
@@ -229,7 +265,7 @@ class MainActivity : ComponentActivity() {
                             AboutScreen(
                                 onBackClick = { goHome() },
                                 onHomeClick = { goHome() },
-                                onAboutClick = { /* ya estás aquí */ },
+                                onAboutClick = { },
                                 onCoursesClick = { goCourses() },
                                 onContactClick = { goContact() },
                                 onEventsClick = { goEvents() }
@@ -241,7 +277,7 @@ class MainActivity : ComponentActivity() {
                                 onBackClick = { goHome() },
                                 onHomeClick = { goHome() },
                                 onAboutClick = { goAbout() },
-                                onCoursesClick = { /* ya estás aquí */ },
+                                onCoursesClick = { },
                                 onContactClick = { goContact() },
                                 onEventsClick = { goEvents() }
                             )
@@ -253,7 +289,7 @@ class MainActivity : ComponentActivity() {
                                 onBackClick = { goLogin() },
                                 onGoLogin = { goLogin() },
                                 onGoRegister = { goRegister() },
-                                onRecoveryFinished = { /* opcional */ },
+                                onRecoveryFinished = { },
                                 onHomeClick = { goHome() },
                                 onAboutClick = { goAbout() },
                                 onCoursesClick = { goCourses() },
@@ -262,8 +298,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        
-                        
                         showLegalTerms -> {
                             JamLegalScreen(
                                 title = "Términos y condiciones",
@@ -288,7 +322,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-showRegister -> {
+                        showRegister -> {
                             saveableStateHolder.SaveableStateProvider("register") {
                                 RegisterScreen(
                                     onBackClick = { goLogin() },
@@ -304,18 +338,12 @@ showRegister -> {
                                     onCoursesClick = { goCourses() },
                                     onContactClick = { goContact() },
                                     onSpecialClick = { goEvents() },
-                                    isSubmitting = uiState.isLoadingRegister,
+                                    isSubmitting = uiState.isRegistering,
                                     termsAccepted = termsAccepted,
                                     onTermsAcceptedChange = { termsAccepted = it },
                                     dataPolicyAccepted = dataPolicyAccepted,
                                     onDataPolicyAcceptedChange = { dataPolicyAccepted = it }
                                 )
-                            }
-                        }
-                                    )
-                                }
-                                    )
-                                }
                             }
                         }
 
@@ -325,7 +353,6 @@ showRegister -> {
                                 onBackClick = { goHome() },
                                 onRegisterClick = { goRegister() },
                                 onForgotPasswordClick = { goRecovery() },
-                                // ✅ JamSignature
                                 onHomeClick = { goHome() },
                                 onAboutClick = { goAbout() },
                                 onCoursesClick = { goCourses() },
@@ -335,7 +362,6 @@ showRegister -> {
                             )
                         }
 
-                        
                         showContact -> {
                             saveableStateHolder.SaveableStateProvider("contact") {
                                 ContactScreen(
@@ -345,7 +371,6 @@ showRegister -> {
                                     onTermsClick = { goLegalTerms("contact") },
                                     onDataPolicyClick = { goLegalPolicy("contact") },
                                     onSentSuccess = {
-                                        // si está logueado -> dashboard, si no -> home (manteniendo tu comportamiento anterior)
                                         if (uiState.isLoggedIn) goDashboard() else goHome()
                                     },
                                     onHomeClick = { goHome() },
@@ -358,12 +383,6 @@ showRegister -> {
                                     dataPolicyAccepted = dataPolicyAccepted,
                                     onDataPolicyAcceptedChange = { dataPolicyAccepted = it }
                                 )
-                            }
-                        }
-                                    )
-                                }
-                                    )
-                                }
                             }
                         }
 
@@ -402,7 +421,7 @@ showRegister -> {
                                 onCoursesClick = { goCourses() },
                                 onAboutClick = { goAbout() },
                                 onContactClick = { goContact() },
-                                onEventsClick = { goEvents() } // ✅ Special => Eventos/Noticias
+                                onEventsClick = { goEvents() }
                             )
                         }
                     }
@@ -410,17 +429,4 @@ showRegister -> {
             }
         }
     }
-}
-
-/**
- * Helper para volver desde pantallas legales sin romper el flujo de pantallas en MainActivity.
- * - Si el usuario ACEPTA en legal, ejecuta onAccept (ej. marcar checkbox y volver).
- * - Si el usuario solo vuelve, ejecuta onBack (volver sin marcar).
- */
-private fun backFromLegal(
-    accepted: Boolean,
-    onAccept: () -> Unit,
-    onBack: () -> Unit
-) {
-    if (accepted) onAccept() else onBack()
 }

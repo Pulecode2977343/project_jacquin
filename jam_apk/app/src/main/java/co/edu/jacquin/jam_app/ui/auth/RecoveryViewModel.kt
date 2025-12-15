@@ -69,7 +69,8 @@ class RecoveryViewModel(
                     )
                 }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message ?: "Error de conexión.")
+                val msg = getFriendlyErrorMessage(e)
+                _uiState.value = _uiState.value.copy(isLoading = false, error = msg)
             }
         }
     }
@@ -111,7 +112,8 @@ class RecoveryViewModel(
                     )
                 }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message ?: "Error de conexión.")
+                val msg = getFriendlyErrorMessage(e)
+                _uiState.value = _uiState.value.copy(isLoading = false, error = msg)
             }
         }
     }
@@ -160,12 +162,22 @@ class RecoveryViewModel(
                     )
                 }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message ?: "Error de conexión.")
+                val msg = getFriendlyErrorMessage(e)
+                _uiState.value = _uiState.value.copy(isLoading = false, error = msg)
             }
         }
     }
 
     fun consumeMessage() {
         _uiState.value = _uiState.value.copy(message = null)
+    }
+
+    private fun getFriendlyErrorMessage(e: Exception): String {
+        return when {
+            e is com.google.gson.JsonSyntaxException || 
+            e is java.lang.IllegalStateException -> "Respuesta incorrecta del servidor. Verifica que los archivos PHP estén en la carpeta correcta."
+            e.message?.contains("Unable to resolve host", ignoreCase = true) == true -> "Sin conexión a internet."
+            else -> e.message ?: "Error desconocido."
+        }
     }
 }

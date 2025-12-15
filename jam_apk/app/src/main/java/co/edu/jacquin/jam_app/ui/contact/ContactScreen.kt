@@ -31,6 +31,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.PhoneAndroid
@@ -54,7 +55,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,6 +74,7 @@ import co.edu.jacquin.jam_app.ui.JamBottomItem
 import co.edu.jacquin.jam_app.ui.JamHorizontalLogo
 import co.edu.jacquin.jam_app.ui.JamSignature
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val SEND_ICON_ROTATION_DEG = -35f // ↗ aprox 1:30
 
@@ -199,6 +203,21 @@ fun ContactScreen(
                                 .padding(22.dp)
                         ) {
                             val scrollState = rememberScrollState()
+                            val scope = rememberCoroutineScope()
+                            var hideScrollHint by remember { mutableStateOf(false) }
+
+                            LaunchedEffect(scrollState.value) {
+                                if (scrollState.value > 10) hideScrollHint = true
+                            }
+
+                            val canScrollMore by remember {
+                                derivedStateOf {
+                                    scrollState.maxValue > 0 && scrollState.value < (scrollState.maxValue - 10)
+                                }
+                            }
+
+
+                            Box(modifier = Modifier.fillMaxWidth()) {
 
                             Column(
                                 modifier = Modifier
@@ -281,6 +300,7 @@ fun ContactScreen(
                                     LegalRowMiniCheckbox(
                                         checked = acceptTerms,
                                         onCheckedChange = {
+                                            setAcceptTerms(it)
                                             if (state.error != null || state.successMessage != null) viewModel.clearMessages()
                                         },
                                         labelPrefix = "Acepto ",
@@ -337,6 +357,26 @@ fun ContactScreen(
                                     }
                                 )
                             }
+
+                            // 👇 Flecha + indicación de scroll (se oculta al hacer scroll o al tocarla)
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = !hideScrollHint && canScrollMore,
+                                enter = fadeIn(tween(180)),
+                                exit = fadeOut(tween(180)),
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(bottom = 8.dp)
+                            ) {
+                                ScrollHintDown(
+                                    text = "Desliza para ver más",
+                                    onClick = {
+                                        hideScrollHint = true
+                                        scope.launch { scrollState.animateScrollTo(scrollState.maxValue) }
+                                    }
+                                )
+                            }
+
+                            } // Box(form)
                         }
                     }
                 }
@@ -676,5 +716,40 @@ private fun JamPrimaryGlassButton(
                 }
             }
         }
+    }
+}
+
+/* ---------- Scroll hint pill ---------- */
+
+@Composable
+private fun ScrollHintDown(
+    text: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(999.dp))
+            .background(Color.Black.copy(alpha = 0.28f))
+            .border(1.dp, Color.White.copy(alpha = 0.22f), RoundedCornerShape(999.dp))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onClick() }
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Filled.KeyboardArrowDown,
+            contentDescription = null,
+            tint = Color(0xFFCCF9FF),
+            modifier = Modifier.size(18.dp)
+        )
+        Text(
+            text = text,
+            color = Color.White.copy(alpha = 0.92f),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }

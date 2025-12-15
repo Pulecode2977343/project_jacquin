@@ -1,0 +1,313 @@
+warning: in the working copy of 'jam_apk/app/src/main/java/co/edu/jacquin/jam_app/ui/auth/RegisterScreen.kt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'jam_apk/app/src/main/java/co/edu/jacquin/jam_app/ui/contact/ContactScreen.kt', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/jam_apk/.idea/dictionaries/project.xml b/jam_apk/.idea/dictionaries/project.xml[m
+[1mindex 32dba0e..f91521f 100644[m
+[1m--- a/jam_apk/.idea/dictionaries/project.xml[m
+[1m+++ b/jam_apk/.idea/dictionaries/project.xml[m
+[36m@@ -42,6 +42,7 @@[m
+       <w>asigna</w>[m
+       <w>asignaturas</w>[m
+       <w>asistencia</w>[m
+[32m+[m[32m      <w>aumenta</w>[m
+       <w>autenticación</w>[m
+       <w>avances</w>[m
+       <w>baja</w>[m
+[36m@@ -123,6 +124,7 @@[m
+       <w>derecha</w>[m
+       <w>desde</w>[m
+       <w>desfasada</w>[m
+[32m+[m[32m      <w>desliza</w>[m
+       <w>desplaza</w>[m
+       <w>desplazamiento</w>[m
+       <w>desplazándose</w>[m
+[36m@@ -188,6 +190,7 @@[m
+       <w>externos</w>[m
+       <w>fase</w>[m
+       <w>fijo</w>[m
+[32m+[m[32m      <w>flecha</w>[m
+       <w>flotante</w>[m
+       <w>flujo</w>[m
+       <w>fondo</w>[m
+[36m@@ -217,6 +220,7 @@[m
+       <w>importantes</w>[m
+       <w>impulsar</w>[m
+       <w>incorrectos</w>[m
+[32m+[m[32m      <w>indicación</w>[m
+       <w>inesperado</w>[m
+       <w>infinitos</w>[m
+       <w>información</w>[m
+[36m@@ -265,6 +269,7 @@[m
+       <w>mensajes</w>[m
+       <w>metodologías</w>[m
+       <w>mientras</w>[m
+[32m+[m[32m      <w>migra</w>[m
+       <w>misión</w>[m
+       <w>misma</w>[m
+       <w>mismo</w>[m
+[36m@@ -300,6 +305,7 @@[m
+       <w>nueva</w>[m
+       <w>nuevamente</w>[m
+       <w>nuevas</w>[m
+[32m+[m[32m      <w>oculta</w>[m
+       <w>ocultar</w>[m
+       <w>ocurrió</w>[m
+       <w>oferta</w>[m
+[1mdiff --git a/jam_apk/app/src/main/java/co/edu/jacquin/jam_app/ui/auth/RegisterScreen.kt b/jam_apk/app/src/main/java/co/edu/jacquin/jam_app/ui/auth/RegisterScreen.kt[m
+[1mindex c67f484..86e42de 100644[m
+[1m--- a/jam_apk/app/src/main/java/co/edu/jacquin/jam_app/ui/auth/RegisterScreen.kt[m
+[1m+++ b/jam_apk/app/src/main/java/co/edu/jacquin/jam_app/ui/auth/RegisterScreen.kt[m
+[36m@@ -14,9 +14,11 @@[m [mimport androidx.compose.foundation.layout.*[m
+ import androidx.compose.foundation.rememberScrollState[m
+ import androidx.compose.foundation.shape.RoundedCornerShape[m
+ import androidx.compose.foundation.text.KeyboardOptions[m
+[32m+[m[32mimport androidx.compose.foundation.text.ClickableText[m
+ import androidx.compose.foundation.verticalScroll[m
+ import androidx.compose.material.icons.Icons[m
+ import androidx.compose.material.icons.filled.ArrowBack[m
+[32m+[m[32mimport androidx.compose.material.icons.filled.KeyboardArrowDown[m
+ import androidx.compose.material.icons.filled.Person[m
+ import androidx.compose.material.icons.filled.Phone[m
+ import androidx.compose.material.icons.outlined.Email[m
+[36m@@ -26,6 +28,9 @@[m [mimport androidx.compose.material.icons.materialIcon[m
+ import androidx.compose.material.icons.materialPath[m
+ import androidx.compose.material3.*[m
+ import androidx.compose.runtime.*[m
+[32m+[m[32mimport androidx.compose.ui.text.buildAnnotatedString[m
+[32m+[m[32mimport androidx.compose.ui.text.withStyle[m
+[32m+[m[32mimport androidx.compose.ui.text.SpanStyle[m
+ import androidx.compose.ui.Alignment[m
+ import androidx.compose.ui.Modifier[m
+ import androidx.compose.ui.draw.alpha[m
+[36m@@ -45,15 +50,12 @@[m [mimport co.edu.jacquin.jam_app.ui.JamBottomItem[m
+ import co.edu.jacquin.jam_app.ui.JamHorizontalLogo[m
+ import co.edu.jacquin.jam_app.ui.JamSignature[m
+ import kotlinx.coroutines.delay[m
+[32m+[m[32mimport kotlinx.coroutines.launch[m
+ [m
+ /**[m
+[31m- * Register con la MISMA UI que Login:[m
+[31m- * - Header fijo (back + JamHorizontalLogo)[m
+[31m- * - Card glass doble (outer + inner)[m
+[31m- * - Underlined TextFields (mismo estilo)[m
+[31m- * - Botón primary glass gradient (mismo)[m
+[31m- * - AnimatedVisibility entrada[m
+[31m- * - JamSignature bottom[m
+[32m+[m[32m * Register con la MISMA UI que Login + mejoras:[m
+[32m+[m[32m * - Bloque de recomendaciones con menos espacio entre líneas[m
+[32m+[m[32m * - Flecha/indicador de scroll: se oculta al hacer scroll o al tocarla (baja al final)[m
+  */[m
+ @Composable[m
+ fun RegisterScreen([m
+[36m@@ -106,13 +108,13 @@[m [mfun RegisterScreen([m
+     val canSubmit by remember {[m
+         derivedStateOf {[m
+             !isSubmitting &&[m
+[31m-                    fullName.trim().length >= 3 &&[m
+[31m-                    email.contains("@") && email.contains(".") &&[m
+[31m-                    phone.length == 10 &&[m
+[31m-                    passRules.allOk &&[m
+[31m-                    confirmPassword.isNotBlank() &&[m
+[31m-                    passwordsMatch &&[m
+[31m-                    acceptTerms && acceptPolicy[m
+[32m+[m[32m                fullName.trim().length >= 3 &&[m
+[32m+[m[32m                email.contains("@") && email.contains(".") &&[m
+[32m+[m[32m                phone.length == 10 &&[m
+[32m+[m[32m                passRules.allOk &&[m
+[32m+[m[32m                confirmPassword.isNotBlank() &&[m
+[32m+[m[32m                passwordsMatch &&[m
+[32m+[m[32m                acceptTerms && acceptPolicy[m
+         }[m
+     }[m
+ [m
+[36m@@ -122,6 +124,8 @@[m [mfun RegisterScreen([m
+         visible = true[m
+     }[m
+ [m
+[32m+[m[32m    val scope = rememberCoroutineScope()[m
+[32m+[m
+     Box([m
+         modifier = Modifier[m
+             .fillMaxSize()[m
+[36m@@ -154,9 +158,8 @@[m [mfun RegisterScreen([m
+                 modifier = Modifier[m
+                     .fillMaxSize()[m
+                     .padding(horizontal = 24.dp)[m
+[31m-                    .padding(bottom = 120.dp)[m
+[32m+[m[32m                    .padding(bottom = 72.dp) // (Si se cruza con Signature, aumenta o migra a Scaffold)[m
+             ) {[m
+[31m-                // similar a Login (puedes ajustar a 110 si lo ves muy abajo)[m
+                 Spacer(modifier = Modifier.height(110.dp))[m
+ [m
+                 Surface([m
+[36m@@ -170,6 +173,15 @@[m [mfun RegisterScreen([m
+                             .border(1.dp, Color.White.copy(alpha = 0.14f), RoundedCornerShape(30.dp))[m
+                             .padding(2.dp)[m
+                     ) {[m
+[32m+[m[32m                        val formScroll = rememberScrollState()[m
+[32m+[m[32m                        var hideFormScrollHint by remember { mutableStateOf(false) }[m
+[32m+[m[32m                        LaunchedEffect(formScroll.value) {[m
+[32m+[m[32m                            if (formScroll.value > 10) hideFormScrollHint = true[m
+[32m+[m[32m                        }[m
+[32m+[m[32m                        val canScrollMore by remember {[m
+[32m+[m[32m                            derivedStateOf { formScroll.maxValue > 0 && formScroll.value < (formScroll.maxValue - 10) }[m
+[32m+[m[32m                        }[m
+[32m+[m
+                         Box([m
+                             modifier = Modifier[m
+                                 .clip(RoundedCornerShape(28.dp))[m
+[36m@@ -180,7 +192,7 @@[m [mfun RegisterScreen([m
+                             Column([m
+                                 modifier = Modifier[m
+                                     .fillMaxWidth()[m
+[31m-                                    .verticalScroll(rememberScrollState()),[m
+[32m+[m[32m                                    .verticalScroll(formScroll),[m
+                                 verticalArrangement = Arrangement.spacedBy(14.dp),[m
+                                 horizontalAlignment = Alignment.CenterHorizontally[m
+                             ) {[m
+[36m@@ -195,9 +207,7 @@[m [mfun RegisterScreen([m
+                                     onValueChange = { fullName = it; clearError() },[m
+                                     label = "Nombre completo",[m
+                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),[m
+[31m-                                    leadingIcon = {[m
+[31m-                                        Icon(Icons.Filled.Person, null, tint = Color(0xFFB0C4DE))[m
+[31m-                                    }[m
+[32m+[m[32m                                    leadingIcon = { Icon(Icons.Filled.Person, null, tint = Color(0xFFB0C4DE)) }[m
+                                 )[m
+ [m
+                                 JamUnderlinedTextField([m
+[36m@@ -205,9 +215,7 @@[m [mfun RegisterScreen([m
+                                     onValueChange = { email = it; clearError() },[m
+                                     label = "Correo electrónico",[m
+                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),[m
+[31m-                                    leadingIcon = {[m
+[31m-                                        Icon(Icons.Outlined.Email, null, tint = Color(0xFFB0C4DE))[m
+[31m-                                    }[m
+[32m+[m[32m                                    leadingIcon = { Icon(Icons.Outlined.Email, null, tint = Color(0xFFB0C4DE)) }[m
+                                 )[m
+ [m
+                                 JamUnderlinedTextField([m
+[36m@@ -218,9 +226,7 @@[m [mfun RegisterScreen([m
+                                     },[m
+                                     label = "Teléfono (10 dígitos)",[m
+                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),[m
+[31m-                                    leadingIcon = {[m
+[31m-                                        Icon(Icons.Filled.Phone, null, tint = Color(0xFFB0C4DE))[m
+[31m-                                    }[m
+[32m+[m[32m                                    leadingIcon = { Icon(Icons.Filled.Phone, null, tint = Color(0xFFB0C4DE)) }[m
+                                 )[m
+ [m
+                                 JamUnderlinedPasswordField([m
+[36m@@ -253,13 +259,13 @@[m [mfun RegisterScreen([m
+                                     LegalRowMiniCheckbox([m
+                                         checked = acceptTerms,[m
+                                         onCheckedChange = { setAcceptTerms(it); clearError() },[m
+[31m-                                        text = "Acepto los términos y condiciones",[m
+[32m+[m[32m                                        linkText = "términos y condiciones",[m
+                                         onLinkClick = onTermsClick[m
+                                     )[m
+                                     LegalRowMiniCheckbox([m
+                                         checked = acceptPolicy,[m
+                                         onCheckedChange = { setAcceptPolicy(it); clearError() },[m
+[31m-                                        text = "Acepto el tratamiento de datos personales",[m
+[32m+[m[32m                                        linkText = "tratamiento de datos personales",[m
+                                         onLinkClick = onDataPolicyClick[m
+                                     )[m
+                                 }[m
+[36m@@ -325,6 +331,26 @@[m [mfun RegisterScreen([m
+                                         .fillMaxWidth()[m
+                                         .alpha(0.9f)[m
+                                 )[m
+[32m+[m
+[32m+[m[32m                                Spacer(modifier = Modifier.height(8.dp))[m
+[32m+[m[32m                            }[m
+[32m+[m
+[32m+[m[32m                            // 👇 Flecha + indicación de scroll (se oculta al hacer scroll o al tocarla)[m
+[32m+[m[32m                            androidx.compose.animation.AnimatedVisibility([m
+[32m+[m[32m                                visible = !hideFormScrollHint && canScrollMore,[m
+[32m+[m[32m                                enter = fadeIn(tween(180)),[m
+[32m+[m[32m                                exit = fadeOut(tween(180)),[m
+[32m+[m[32m                                modifier = Modifier[m
+[32m+[m[32m                                    .align(Alignment.BottomCenter)[m
+[32m+[m[32m                                    .padding(bottom = 6.dp)[m
+[32m+[m[32m                            ) {[m
+[32m+[m[32m                                ScrollHintDown([m
+[32m+[m[32m                                    text = "Desliza para ver más",[m
+[32m+[m[32m                                    onClick = {[m
+[32m+[m[32m                                        hideFormScrollHint = true[m
+[32m+[m[32m                                        scope.launch { formScroll.animateScrollTo(formScroll.maxValue) }[m
+[32m+[m[32m                                    }[m
+[32m+[m[32m                                )[m
+                             }[m
+                         }[m
+                     }[m
+[36m@@ -339,7 +365,7 @@[m [mfun RegisterScreen([m
+                 .align(Alignment.BottomCenter)[m
+                 .padding(bottom = 8.dp),[m
+             showNavIcons = true,[m
+[31m-            selectedItem = signatureSelectedItem, // Home fijo por defecto[m
+[32m+[m[32m            selectedItem = signatureSelectedItem,[m
+             onHomeClick = onHomeClick,[m
+             onAboutClick = onAboutClick,[m
+             onCoursesClick = onCoursesClick,[m
+[36m@@ -349,6 +375,35 @@[m [mfun RegisterScreen([m
+     }[m
+ }[m
+ [m
+[32m+[m[32m/* ---------- Scroll hint pill ---------- */[m
+[32m+[m
+[32m+[m[32m@Composable[m
+[32m+[m[32mprivate fun ScrollHintDown([m
+[32m+[m[32m    text: String,[m
+[32m+[m[32m    onClick: () -> Unit[m
+[32m+[m[32m) {[m
+[32m+[m[32m    Row([m
+[32m+[m[32m        modifier = Modifier[m
+[32m+[m[32m            .clip(RoundedCornerShape(999.dp))[m
+[32m+[m[32m            .background(Color.Black.copy(alpha = 0.28f))[m
+[32m+[m[32m            .border(1.dp, Color.White.copy(alpha = 0.22f), RoundedCornerShape(999.dp))[m
+[32m+[m[32m            .clickable([m
+[32m+[m[32m                interactionSource = remember { MutableInteractionSource() },[m
+[32m+[m[32m                indication = null[m
+[32m+[m[32m            ) { onClick() }[m
+[32m+[m[32m            .padding(horizontal = 12.dp, vertical = 8.dp),[m
+[32m+[m[32m        verticalAlignment = Alignment.CenterVertically,[m
+[32m+[m[32m        horizontalArrangement = Arrangement.spacedBy(8.dp)[m
+[32m+[m[32m    ) {[m
+[32m+[m[32m        Icon([m
+[32m+[m[32m            imageVector = Icons.Filled.KeyboardArrowDown,[m
+[32m+[m[32m            contentDescription = null,[m
+[32m+[m[32m            tint = Color(0xFFCCF9FF)[m
+[32m+[m[32m        )[m
+[32m+[m[32m        Text(text, color = Color.White.copy(alpha = 0.92f), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+[32m+[m
+ /* ---------- Underlined fields (mismo estilo Login) ---------- */[m
+ [m
+ @Composable[m
+[36m@@ -472,7 +527,7 @@[m [mprivate fun JamPrimaryGlassButton([m
+     }[m
+ }[m
+ [m
+[31m-/* ---------- Password rules card (mantiene tu lógica) ---------- */[m
+[32m+[m[32m/* ---------- Password rules card (menos espacio entre líneas) ---------- */[m
+ [m
+ @Composable[m
+ private fun PasswordStrengthCard(passRules: RegisterPasswordRules.State) {[m
+[36m@@ -483,9 +538,9 @@[m [mprivate fun PasswordStrengthCard(passRules: RegisterPasswordRules.State) {[m
+             .clip(RoundedCornerShape(20.dp))[m
+             .background(Color.White.copy(alpha = 0.06f))[m
+             .border(1.dp, Color.White.copy(alpha = 0.10f), RoundedCornerShape(20.dp))[m
+[31m-            .padding(14.dp)[m
+[32m+[m[32m            .padding(horizontal = 14.dp, vertical = 12.dp)[m
+     ) {[m
+[31m-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {[m
+[32m+[m[32m        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) { // 👈 antes 8.dp[m
+             Text([m
+                 text = if (ok) "Contraseña fuerte ✅" else "Recomendaciones de contraseña",[m
+                 color = if (ok) Color(0xFFA7FFD3) else Color.White,[m
+[36m@@ -510,33 +565,57 @@[m [mprivate fun RuleLine(text: String, ok: Boolean) {[m
+                 .clip(RoundedCornerShape(999.dp))[m
+                 .background(if (ok) Color(0xFFA7FFD3) else Color.White.copy(alpha = 0.28f))[m
+         )[m
+[31m-

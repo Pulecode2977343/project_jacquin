@@ -14,9 +14,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.Email
@@ -26,6 +28,9 @@ import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.materialPath
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -45,15 +50,12 @@ import co.edu.jacquin.jam_app.ui.JamBottomItem
 import co.edu.jacquin.jam_app.ui.JamHorizontalLogo
 import co.edu.jacquin.jam_app.ui.JamSignature
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
- * Register con la MISMA UI que Login:
- * - Header fijo (back + JamHorizontalLogo)
- * - Card glass doble (outer + inner)
- * - Underlined TextFields (mismo estilo)
- * - Botón primary glass gradient (mismo)
- * - AnimatedVisibility entrada
- * - JamSignature bottom
+ * Register con la MISMA UI que Login + mejoras:
+ * - Bloque de recomendaciones con menos espacio entre líneas
+ * - Flecha/indicador de scroll: se oculta al hacer scroll o al tocarla (baja al final)
  */
 @Composable
 fun RegisterScreen(
@@ -106,13 +108,13 @@ fun RegisterScreen(
     val canSubmit by remember {
         derivedStateOf {
             !isSubmitting &&
-                    fullName.trim().length >= 3 &&
-                    email.contains("@") && email.contains(".") &&
-                    phone.length == 10 &&
-                    passRules.allOk &&
-                    confirmPassword.isNotBlank() &&
-                    passwordsMatch &&
-                    acceptTerms && acceptPolicy
+                fullName.trim().length >= 3 &&
+                email.contains("@") && email.contains(".") &&
+                phone.length == 10 &&
+                passRules.allOk &&
+                confirmPassword.isNotBlank() &&
+                passwordsMatch &&
+                acceptTerms && acceptPolicy
         }
     }
 
@@ -121,6 +123,8 @@ fun RegisterScreen(
         delay(50)
         visible = true
     }
+
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -154,9 +158,8 @@ fun RegisterScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
-                    .padding(bottom = 120.dp)
+                    .padding(bottom = 72.dp) // (Si se cruza con Signature, aumenta o migra a Scaffold)
             ) {
-                // similar a Login (puedes ajustar a 110 si lo ves muy abajo)
                 Spacer(modifier = Modifier.height(110.dp))
 
                 Surface(
@@ -170,6 +173,15 @@ fun RegisterScreen(
                             .border(1.dp, Color.White.copy(alpha = 0.14f), RoundedCornerShape(30.dp))
                             .padding(2.dp)
                     ) {
+                        val formScroll = rememberScrollState()
+                        var hideFormScrollHint by remember { mutableStateOf(false) }
+                        LaunchedEffect(formScroll.value) {
+                            if (formScroll.value > 10) hideFormScrollHint = true
+                        }
+                        val canScrollMore by remember {
+                            derivedStateOf { formScroll.maxValue > 0 && formScroll.value < (formScroll.maxValue - 10) }
+                        }
+
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(28.dp))
@@ -180,7 +192,7 @@ fun RegisterScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .verticalScroll(rememberScrollState()),
+                                    .verticalScroll(formScroll),
                                 verticalArrangement = Arrangement.spacedBy(14.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -195,9 +207,7 @@ fun RegisterScreen(
                                     onValueChange = { fullName = it; clearError() },
                                     label = "Nombre completo",
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
-                                    leadingIcon = {
-                                        Icon(Icons.Filled.Person, null, tint = Color(0xFFB0C4DE))
-                                    }
+                                    leadingIcon = { Icon(Icons.Filled.Person, null, tint = Color(0xFFB0C4DE)) }
                                 )
 
                                 JamUnderlinedTextField(
@@ -205,9 +215,7 @@ fun RegisterScreen(
                                     onValueChange = { email = it; clearError() },
                                     label = "Correo electrónico",
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                                    leadingIcon = {
-                                        Icon(Icons.Outlined.Email, null, tint = Color(0xFFB0C4DE))
-                                    }
+                                    leadingIcon = { Icon(Icons.Outlined.Email, null, tint = Color(0xFFB0C4DE)) }
                                 )
 
                                 JamUnderlinedTextField(
@@ -218,9 +226,7 @@ fun RegisterScreen(
                                     },
                                     label = "Teléfono (10 dígitos)",
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-                                    leadingIcon = {
-                                        Icon(Icons.Filled.Phone, null, tint = Color(0xFFB0C4DE))
-                                    }
+                                    leadingIcon = { Icon(Icons.Filled.Phone, null, tint = Color(0xFFB0C4DE)) }
                                 )
 
                                 JamUnderlinedPasswordField(
@@ -253,13 +259,13 @@ fun RegisterScreen(
                                     LegalRowMiniCheckbox(
                                         checked = acceptTerms,
                                         onCheckedChange = { setAcceptTerms(it); clearError() },
-                                        text = "Acepto los términos y condiciones",
+                                        linkText = "términos y condiciones",
                                         onLinkClick = onTermsClick
                                     )
                                     LegalRowMiniCheckbox(
                                         checked = acceptPolicy,
                                         onCheckedChange = { setAcceptPolicy(it); clearError() },
-                                        text = "Acepto el tratamiento de datos personales",
+                                        linkText = "tratamiento de datos personales",
                                         onLinkClick = onDataPolicyClick
                                     )
                                 }
@@ -325,6 +331,26 @@ fun RegisterScreen(
                                         .fillMaxWidth()
                                         .alpha(0.9f)
                                 )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+
+                            // 👇 Flecha + indicación de scroll (se oculta al hacer scroll o al tocarla)
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = !hideFormScrollHint && canScrollMore,
+                                enter = fadeIn(tween(180)),
+                                exit = fadeOut(tween(180)),
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(bottom = 6.dp)
+                            ) {
+                                ScrollHintDown(
+                                    text = "Desliza para ver más",
+                                    onClick = {
+                                        hideFormScrollHint = true
+                                        scope.launch { formScroll.animateScrollTo(formScroll.maxValue) }
+                                    }
+                                )
                             }
                         }
                     }
@@ -339,13 +365,42 @@ fun RegisterScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 8.dp),
             showNavIcons = true,
-            selectedItem = signatureSelectedItem, // Home fijo por defecto
+            selectedItem = signatureSelectedItem,
             onHomeClick = onHomeClick,
             onAboutClick = onAboutClick,
             onCoursesClick = onCoursesClick,
             onContactClick = onContactClick,
             onSpecialClick = onSpecialClick
         )
+    }
+}
+
+/* ---------- Scroll hint pill ---------- */
+
+@Composable
+private fun ScrollHintDown(
+    text: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(999.dp))
+            .background(Color.Black.copy(alpha = 0.28f))
+            .border(1.dp, Color.White.copy(alpha = 0.22f), RoundedCornerShape(999.dp))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onClick() }
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Filled.KeyboardArrowDown,
+            contentDescription = null,
+            tint = Color(0xFFCCF9FF)
+        )
+        Text(text, color = Color.White.copy(alpha = 0.92f), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 
@@ -472,7 +527,7 @@ private fun JamPrimaryGlassButton(
     }
 }
 
-/* ---------- Password rules card (mantiene tu lógica) ---------- */
+/* ---------- Password rules card (menos espacio entre líneas) ---------- */
 
 @Composable
 private fun PasswordStrengthCard(passRules: RegisterPasswordRules.State) {
@@ -483,9 +538,9 @@ private fun PasswordStrengthCard(passRules: RegisterPasswordRules.State) {
             .clip(RoundedCornerShape(20.dp))
             .background(Color.White.copy(alpha = 0.06f))
             .border(1.dp, Color.White.copy(alpha = 0.10f), RoundedCornerShape(20.dp))
-            .padding(14.dp)
+            .padding(horizontal = 14.dp, vertical = 12.dp)
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) { // 👈 antes 8.dp
             Text(
                 text = if (ok) "Contraseña fuerte ✅" else "Recomendaciones de contraseña",
                 color = if (ok) Color(0xFFA7FFD3) else Color.White,
@@ -510,33 +565,57 @@ private fun RuleLine(text: String, ok: Boolean) {
                 .clip(RoundedCornerShape(999.dp))
                 .background(if (ok) Color(0xFFA7FFD3) else Color.White.copy(alpha = 0.28f))
         )
-        Spacer(modifier = Modifier.width(10.dp))
-        Text(text = text, color = Color.White.copy(alpha = if (ok) 0.95f else 0.70f), fontSize = 12.sp)
+        Spacer(modifier = Modifier.width(8.dp)) // 👈 antes 10.dp
+        Text(
+            text,
+            color = Color.White.copy(alpha = if (ok) 0.95f else 0.70f),
+            fontSize = 12.sp
+        )
     }
 }
 
-/* ---------- Legal mini checkbox (igual a tu Register anterior) ---------- */
+/* ---------- Legal mini checkbox ---------- */
 
 @Composable
 private fun LegalRowMiniCheckbox(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    text: String,
+    prefixText: String = "Acepto ",
+    linkText: String,
+    suffixText: String = "",
     onLinkClick: () -> Unit,
 ) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         MiniCheckbox(checked = checked, onToggle = { onCheckedChange(!checked) })
         Spacer(modifier = Modifier.width(10.dp))
-        Text(text, color = Color.White.copy(alpha = 0.85f), fontSize = 12.sp, modifier = Modifier.weight(1f))
-        Text(
-            text = "Ver",
-            color = Color(0xFFBFE7FF),
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier
-                .clip(RoundedCornerShape(999.dp))
-                .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { onLinkClick() }
-                .padding(horizontal = 10.dp, vertical = 6.dp)
+
+        val annotated = remember(prefixText, linkText, suffixText) {
+            buildAnnotatedString {
+                append(prefixText)
+                pushStringAnnotation(tag = "LINK", annotation = "open")
+                withStyle(
+                    SpanStyle(
+                        color = Color(0xFFBFE7FF),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                ) { append(linkText) }
+                pop()
+                append(suffixText)
+            }
+        }
+
+        ClickableText(
+            modifier = Modifier.weight(1f),
+            text = annotated,
+            style = LocalTextStyle.current.copy(
+                color = Color.White.copy(alpha = 0.85f),
+                fontSize = 12.sp
+            ),
+            onClick = { offset ->
+                annotated.getStringAnnotations(tag = "LINK", start = offset, end = offset)
+                    .firstOrNull()
+                    ?.let { onLinkClick() }
+            }
         )
     }
 }
@@ -558,7 +637,7 @@ private fun MiniCheckbox(checked: Boolean, onToggle: () -> Unit) {
     }
 }
 
-/* ---------- Validation (tu misma lógica) ---------- */
+/* ---------- Validation ---------- */
 
 private fun validateRegister(
     fullName: String,
@@ -601,7 +680,7 @@ private object RegisterPasswordRules {
     }
 }
 
-/* ---------- Lock icon (igual al de Login) ---------- */
+/* ---------- Lock icon ---------- */
 private val JamLockIcon: ImageVector by lazy {
     materialIcon(name = "JamLock") {
         materialPath {

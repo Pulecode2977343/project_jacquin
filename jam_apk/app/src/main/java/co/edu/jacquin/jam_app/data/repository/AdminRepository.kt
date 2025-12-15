@@ -22,7 +22,7 @@ class AdminRepository(private val api: JamApiService) {
     suspend fun updateUserRole(userId: Int, newRoleId: Int): String {
         return try {
             val response = api.updateUserRole(UpdateRoleRequest(userId, newRoleId))
-            if (response.success) {
+            if (response.success == true) {
                 response.message ?: "Rol actualizado"
             } else {
                 throw Exception(response.message ?: "No se pudo actualizar el rol")

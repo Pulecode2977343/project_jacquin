@@ -318,7 +318,7 @@ fun RecoveryScreen(
 
                                 PrimaryGlassButton(
                                     text = if (ui.isLoading) "Actualizando..." else "Actualizar contraseña",
-                                    enabled = !ui.isLoading && pwdState.isStrong && newPwd == confirm && newPwd.isNotBlank(),
+                                    enabled = !ui.isLoading,
                                     showLoader = ui.isLoading,
                                     onClick = {
                                         viewModel.resetPassword(

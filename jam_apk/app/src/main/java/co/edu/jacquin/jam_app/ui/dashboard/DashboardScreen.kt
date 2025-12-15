@@ -58,9 +58,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.edu.jacquin.jam_app.domain.UserRole
-import co.edu.jacquin.jam_app.ui.JamBottomItem
 import co.edu.jacquin.jam_app.ui.JamHorizontalLogo
+import co.edu.jacquin.jam_app.ui.JamBottomItem
 import co.edu.jacquin.jam_app.ui.JamSignature
+
 
 @Composable
 fun DashboardScreen(
@@ -107,18 +108,7 @@ fun DashboardScreen(
     }
 
     Scaffold(
-        containerColor = Color.Transparent,
-        bottomBar = {
-            JamSignature(
-                showNavIcons = true,
-                selectedItem = JamBottomItem.Special,
-                onHomeClick = onGoHome,
-                onAboutClick = onGoAbout,
-                onCoursesClick = onGoCourses,
-                onContactClick = onGoContact,
-                onSpecialClick = { /* ya estás en panel */ }
-            )
-        }
+        containerColor = Color.Transparent
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -173,7 +163,7 @@ fun DashboardScreen(
                     .fillMaxSize()
                     .padding(top = 96.dp)
                     .padding(horizontal = 24.dp)
-                    .padding(bottom = 92.dp)
+                    .padding(bottom = 72.dp)
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
@@ -296,12 +286,6 @@ fun DashboardScreen(
                             drawerOpen = false
                             onGoCourses()
                         }
-
-                        JamDrawerItem("Contáctanos", DashboardSection.TEACHER_MESSAGES.icon) {
-                            drawerOpen = false
-                            onGoContact()
-                        }
-
                         Spacer(modifier = Modifier.height(12.dp))
                         JamDrawerItem(
                             label = "Cerrar sesión",
@@ -348,14 +332,6 @@ fun DashboardScreen(
                         ) {
                             drawerOpen = false
                             onNavigateToRoute(DashboardSection.ADMIN_COURSES.route)
-                        }
-
-                        JamDrawerItem(
-                            label = DashboardSection.ADMIN_CONTACTS.label,
-                            icon = DashboardSection.ADMIN_CONTACTS.icon
-                        ) {
-                            drawerOpen = false
-                            onNavigateToRoute(DashboardSection.ADMIN_CONTACTS.route)
                         }
 
                         JamDrawerItem(
@@ -424,6 +400,21 @@ fun DashboardScreen(
                     }
                 }
             }
+
+            // Firma + nav (mismo patrón que HomeScreen)
+            JamSignature(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 8.dp),
+                showNavIcons = true,
+                selectedItem = JamBottomItem.Special,
+                onHomeClick = onGoHome,
+                onAboutClick = onGoAbout,
+                onCoursesClick = onGoCourses,
+                onContactClick = onGoContact,
+                onSpecialClick = { /* ya estás en panel */ }
+            )
+
         }
     }
 }

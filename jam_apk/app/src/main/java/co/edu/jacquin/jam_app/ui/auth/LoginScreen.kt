@@ -32,13 +32,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.edu.jacquin.jam_app.data.remote.dto.UserDto
 import co.edu.jacquin.jam_app.ui.JamHorizontalLogo
 import co.edu.jacquin.jam_app.ui.JamSignature
+import co.edu.jacquin.jam_app.ui.JamBottomItem
 import kotlinx.coroutines.delay
 
 @Composable
@@ -47,7 +48,15 @@ fun LoginScreen(
     onBackClick: () -> Unit = {},
     onRegisterClick: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {},
-    onLoginSuccess: (UserDto) -> Unit = {}
+    onLoginSuccess: (UserDto) -> Unit = {},
+
+    // Signature nav (igual que HomeScreen)
+    signatureSelectedItem: JamBottomItem = JamBottomItem.Home,
+    onHomeClick: () -> Unit = {},
+    onAboutClick: () -> Unit = {},
+    onCoursesClick: () -> Unit = {},
+    onContactClick: () -> Unit = {},
+    onSpecialClick: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -104,9 +113,9 @@ fun LoginScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = 24.dp).padding(bottom = 72.dp)
             ) {
-                Spacer(modifier = Modifier.height(92.dp))
+                Spacer(modifier = Modifier.height(120.dp))
 
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
@@ -234,7 +243,14 @@ fun LoginScreen(
         JamSignature(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 8.dp)
+                .padding(bottom = 8.dp),
+            showNavIcons = true,
+            selectedItem = JamBottomItem.Home, // ✅ mantiene Home activo (Special nunca se queda activo)
+            onHomeClick = onHomeClick,
+            onAboutClick = onAboutClick,
+            onCoursesClick = onCoursesClick,
+            onContactClick = onContactClick,
+            onSpecialClick = onSpecialClick
         )
     }
 }

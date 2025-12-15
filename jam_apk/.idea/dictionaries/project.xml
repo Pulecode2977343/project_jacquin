@@ -16,6 +16,7 @@
       <w>administración</w>
       <w>administrar</w>
       <w>administrativo</w>
+      <w>afecta</w>
       <w>ahora</w>
       <w>ajusta</w>
       <w>ajustamos</w>
@@ -27,7 +28,9 @@
       <w>aprox</w>
       <w>aproximada</w>
       <w>aproximado</w>
+      <w>apunta</w>
       <w>aquí</w>
+      <w>archivo</w>
       <w>arriba</w>
       <w>asigna</w>
       <w>asignaturas</w>
@@ -37,20 +40,24 @@
       <w>baja</w>
       <w>bajamos</w>
       <w>bajo</w>
+      <w>bloque</w>
       <w>botón</w>
       <w>brillante</w>
       <w>buscar</w>
       <w>básico</w>
       <w>búsqueda</w>
       <w>cada</w>
+      <w>cambiar</w>
       <w>cargado</w>
       <w>catálogo</w>
       <w>centrado</w>
       <w>cerrar</w>
+      <w>choque</w>
       <w>clase</w>
       <w>clases</w>
       <w>cohortes</w>
       <w>compacto</w>
+      <w>compatibilidad</w>
       <w>comunicación</w>
       <w>comunicados</w>
       <w>conciertos</w>
@@ -64,6 +71,7 @@
       <w>configurados</w>
       <w>configurar</w>
       <w>conoce</w>
+      <w>consistente</w>
       <w>consumir</w>
       <w>contacto</w>
       <w>contactos</w>
@@ -86,6 +94,7 @@
       <w>cuerpo</w>
       <w>curso</w>
       <w>cursos</w>
+      <w>código</w>
       <w>darle</w>
       <w>datos</w>
       <w>debajo</w>
@@ -110,9 +119,12 @@
       <w>distinto</w>
       <w>donde</w>
       <w>dudas</w>
+      <w>dígitos</w>
       <w>editar</w>
       <w>efecto</w>
       <w>electrónico</w>
+      <w>elige</w>
+      <w>empezar</w>
       <w>encabezado</w>
       <w>encienden</w>
       <w>encima</w>
@@ -139,6 +151,7 @@
       <w>estás</w>
       <w>evitar</w>
       <w>explora</w>
+      <w>explorar</w>
       <w>explícitamente</w>
       <w>exponemos</w>
       <w>externo</w>
@@ -153,6 +166,7 @@
       <w>genérico</w>
       <w>gestiona</w>
       <w>gestionar</w>
+      <w>gigante</w>
       <w>globales</w>
       <w>grosor</w>
       <w>grupos</w>
@@ -186,23 +200,30 @@
       <w>jacquin</w>
       <w>latido</w>
       <w>letras</w>
+      <w>limpiamos</w>
+      <w>limpiar</w>
       <w>listas</w>
       <w>llamadas</w>
       <w>llamaremos</w>
+      <w>llegó</w>
       <w>logros</w>
       <w>luego</w>
       <w>lógicas</w>
       <w>manejas</w>
+      <w>mantener</w>
+      <w>manteniendo</w>
       <w>maquetamos</w>
       <w>materiales</w>
       <w>materias</w>
       <w>matrículas</w>
       <w>menos</w>
+      <w>mensaje</w>
       <w>mensajería</w>
       <w>mensajes</w>
       <w>mientras</w>
       <w>misión</w>
       <w>misma</w>
+      <w>mismo</w>
       <w>mitad</w>
       <w>mostramos</w>
       <w>mostrar</w>
@@ -238,13 +259,16 @@
       <w>otra</w>
       <w>pantalla</w>
       <w>pasa</w>
+      <w>pegado</w>
       <w>pequeño</w>
+      <w>perfil</w>
       <w>personales</w>
       <w>personalizada</w>
       <w>personalizado</w>
       <w>peticiones</w>
       <w>poder</w>
       <w>políticas</w>
+      <w>posible</w>
       <w>posición</w>
       <w>potenciar</w>
       <w>prellenamos</w>
@@ -264,6 +288,7 @@
       <w>pulsando</w>
       <w>pulsante</w>
       <w>pulso</w>
+      <w>pública</w>
       <w>público</w>
       <w>quieras</w>
       <w>quieres</w>
@@ -279,6 +304,7 @@
       <w>registrados</w>
       <w>registrarme</w>
       <w>registro</w>
+      <w>regístrate</w>
       <w>repertorios</w>
       <w>repositorios</w>
       <w>requiere</w>
@@ -316,6 +342,8 @@
       <w>tarjeta</w>
       <w>teclado</w>
       <w>teclas</w>
+      <w>telefono</w>
+      <w>teléfono</w>
       <w>tengamos</w>
       <w>tenías</w>
       <w>textos</w>
@@ -342,7 +370,9 @@
       <w>volvemos</w>
       <w>volver</w>
       <w>vuelve</w>
+      <w>válido</w>
       <w>válidos</w>
+      <w>xxxxxxxxxx</w>
       <w>ésto</w>
     </words>
   </dictionary>

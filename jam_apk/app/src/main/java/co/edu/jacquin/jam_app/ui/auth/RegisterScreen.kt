@@ -11,13 +11,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,6 +30,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.PhoneAndroid
@@ -52,6 +55,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,8 +72,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.edu.jacquin.jam_app.ui.JamBottomItem
 import co.edu.jacquin.jam_app.ui.JamHorizontalLogo
 import co.edu.jacquin.jam_app.ui.JamSignature
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(
@@ -78,11 +84,17 @@ fun RegisterScreen(
     onLoginClick: () -> Unit = {},
     onTermsClick: () -> Unit = {},
     onDataPolicyClick: () -> Unit = {},
-    isSubmitting: Boolean = false
+    isSubmitting: Boolean = false,
+    // JamSignature (igual que Home)
+    onHomeClick: () -> Unit = {},
+    onAboutClick: () -> Unit = {},
+    onCoursesClick: () -> Unit = {},
+    onContactClick: () -> Unit = {},
+    onSpecialClick: () -> Unit = {}
 ) {
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
+    var phoneDigits by remember { mutableStateOf("") } // ✅ 10 dígitos
 
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -109,7 +121,7 @@ fun RegisterScreen(
     // ✅ derivedStateOf SIN remember(keys...) para compatibilidad
     val pwdState by remember { derivedStateOf { PasswordRules.evaluate(password) } }
     val emailValid by remember { derivedStateOf { isEmailValid(email.trim()) } }
-    val phoneValid by remember { derivedStateOf { phone.trim().length >= 7 } }
+    val phoneValid by remember { derivedStateOf { phoneDigits.length == 10 } }
     val nameValid by remember { derivedStateOf { fullName.trim().length >= 3 } }
 
     val mismatchNow by remember { derivedStateOf { confirmPassword.isNotBlank() && password != confirmPassword } }
@@ -122,288 +134,373 @@ fun RegisterScreen(
         }
     }
 
-    // ✅ FIX del error: nada de remember(vararg keys)
     val canSubmit by remember {
         derivedStateOf {
             !isSubmitting &&
-                    nameValid &&
-                    emailValid &&
-                    phoneValid &&
-                    pwdState.isStrong &&
-                    passwordsMatch &&
-                    acceptTerms &&
-                    acceptDataPolicy
+                nameValid &&
+                emailValid &&
+                phoneValid &&
+                pwdState.isStrong &&
+                passwordsMatch &&
+                acceptTerms &&
+                acceptDataPolicy
         }
     }
 
-    fun clearError() {
-        inlineError = null
-    }
+    fun clearError() { inlineError = null }
 
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
 
-    Box(
+    // ✅ Scroll interno + hint
+    val formScrollState = rememberScrollState()
+    val hintVisible by remember { derivedStateOf { formScrollState.value < 8 && formScrollState.maxValue > 0 } }
+    val scope = rememberCoroutineScope()
+
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient)
     ) {
-        AnimatedVisibility(
-            visible = visible,
-            enter = fadeIn(tween(350)),
-            exit = fadeOut(tween(200))
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp)
+        // ✅ Mantén el glass por encima del Signature (igual Home)
+        val signatureSpace = 132.dp
+        val contentTopSpacer = 40.dp // 👈 tu valor actual
+
+        // ✅ Card más grande (manteniendo el borde inferior por encima del Signature)
+        val cardMaxHeight = (maxHeight - signatureSpace - contentTopSpacer - 48.dp)
+            .coerceAtLeast(520.dp)
+// Contenedor principal
+        Box(modifier = Modifier.fillMaxSize()) {
+
+            androidx.compose.animation.AnimatedVisibility(
+                visible = visible,
+                enter = fadeIn(tween(350)),
+                exit = fadeOut(tween(200))
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Header consistente (Back + logo)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp)
                 ) {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Volver",
-                            tint = Color(0xFFE0ECFF)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Box(
-                        modifier = Modifier.weight(1f),
-                        contentAlignment = Alignment.CenterStart
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Header consistente (Back + logo)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        JamHorizontalLogo()
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Volver",
+                                tint = Color(0xFFE0ECFF)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Box(
+                            modifier = Modifier.weight(1f),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            JamHorizontalLogo()
+                        }
                     }
-                }
 
-                Spacer(modifier = Modifier.height(18.dp))
+                    Spacer(modifier = Modifier.height(contentTopSpacer))
 
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(30.dp),
-                    color = Color.Transparent
-                ) {
-                    Box(
+                    Surface(
                         modifier = Modifier
-                            .background(outerGlassGradient, RoundedCornerShape(30.dp))
-                            .border(1.dp, Color.White.copy(alpha = 0.14f), RoundedCornerShape(30.dp))
-                            .padding(2.dp)
+                            .fillMaxWidth()
+                            .heightIn(min = 120.dp, max = cardMaxHeight),
+                        shape = RoundedCornerShape(30.dp),
+                        color = Color.Transparent
                     ) {
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(28.dp))
-                                .background(innerGlassGradient, RoundedCornerShape(28.dp))
-                                .border(0.5.dp, Color.White.copy(alpha = 0.28f), RoundedCornerShape(28.dp))
-                                .padding(22.dp)
+                                .background(outerGlassGradient, RoundedCornerShape(30.dp))
+                                .border(1.dp, Color.White.copy(alpha = 0.14f), RoundedCornerShape(30.dp))
+                                .padding(2.dp)
                         ) {
-                            Column(
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .verticalScroll(rememberScrollState()),
-                                verticalArrangement = Arrangement.spacedBy(12.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                    .clip(RoundedCornerShape(28.dp))
+                                    .background(innerGlassGradient, RoundedCornerShape(28.dp))
+                                    .border(0.5.dp, Color.White.copy(alpha = 0.28f), RoundedCornerShape(28.dp))
+                                    .padding(22.dp)
                             ) {
-                                Text(
-                                    text = "Crear cuenta",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    color = Color.White
-                                )
+                                // ✅ Box para overlay de hint dentro del glass
+                                Box(modifier = Modifier.fillMaxWidth()) {
 
-                                Text(
-                                    text = "Regístrate para acceder a tu panel JAM.",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color(0xFFB0C4DE),
-                                    textAlign = TextAlign.Center
-                                )
-
-                                JamUnderlinedTextField(
-                                    value = fullName,
-                                    onValueChange = { fullName = it; clearError() },
-                                    label = "Nombre completo",
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Outlined.PersonOutline,
-                                            contentDescription = "Nombre",
-                                            tint = Color(0xFFB0C4DE)
-                                        )
-                                    }
-                                )
-
-                                JamUnderlinedTextField(
-                                    value = email,
-                                    onValueChange = { email = it; clearError() },
-                                    label = "Correo electrónico",
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Email,
-                                            contentDescription = "Email",
-                                            tint = Color(0xFFB0C4DE)
-                                        )
-                                    }
-                                )
-
-                                JamUnderlinedTextField(
-                                    value = phone,
-                                    onValueChange = {
-                                        phone = it.filter { ch -> ch.isDigit() || ch == '+' || ch == ' ' }
-                                        clearError()
-                                    },
-                                    label = "Teléfono",
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Outlined.PhoneAndroid,
-                                            contentDescription = "Teléfono",
-                                            tint = Color(0xFFB0C4DE)
-                                        )
-                                    }
-                                )
-
-                                JamUnderlinedPasswordField(
-                                    value = password,
-                                    onValueChange = { password = it; clearError() },
-                                    label = "Contraseña",
-                                    visible = passwordVisible,
-                                    onToggleVisibility = { passwordVisible = !passwordVisible }
-                                )
-
-                                PasswordStrengthCardCompact(state = pwdState)
-
-                                JamUnderlinedPasswordField(
-                                    value = confirmPassword,
-                                    onValueChange = { confirmPassword = it; clearError() },
-                                    label = "Confirmar contraseña",
-                                    visible = confirmVisible,
-                                    onToggleVisibility = { confirmVisible = !confirmVisible }
-                                )
-
-                                if (shouldShowMismatchWarning) {
-                                    val msg = if (confirmPassword.isBlank()) "Confirma tu contraseña." else "Las contraseñas no coinciden."
-                                    Text(
-                                        text = msg,
-                                        color = Color(0xFFFF6B81),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                }
-
-                                // ✅ Bloque legal REALMENTE compacto y más a la izquierda
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(start = 2.dp), // 🔥 corre un poquito a la izquierda
-                                    verticalArrangement = Arrangement.spacedBy(0.dp)
-                                ) {
-                                    LegalRowMiniCheckbox(
-                                        checked = acceptTerms,
-                                        onCheckedChange = { acceptTerms = it; clearError() },
-                                        labelPrefix = "Acepto ",
-                                        linkText = "términos y condiciones",
-                                        onLinkClick = onTermsClick
-                                    )
-                                    LegalRowMiniCheckbox(
-                                        checked = acceptDataPolicy,
-                                        onCheckedChange = { acceptDataPolicy = it; clearError() },
-                                        labelPrefix = "Acepto ",
-                                        linkText = "tratamiento de datos personales",
-                                        onLinkClick = onDataPolicyClick
-                                    )
-                                }
-
-                                if (!inlineError.isNullOrBlank()) {
-                                    Text(
-                                        text = inlineError!!,
-                                        color = Color(0xFFFF6B81),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                }
-
-                                JamPrimaryGlassButton(
-                                    text = if (isSubmitting) "Creando cuenta..." else "Crear cuenta",
-                                    enabled = canSubmit,
-                                    onClick = {
-                                        attemptedSubmit = true
-
-                                        val err = validateRegister(
-                                            fullName = fullName,
-                                            email = email,
-                                            phone = phone,
-                                            pwdState = pwdState,
-                                            password = password,
-                                            confirmPassword = confirmPassword,
-                                            acceptTerms = acceptTerms,
-                                            acceptDataPolicy = acceptDataPolicy
-                                        )
-
-                                        if (err != null) {
-                                            inlineError = err
-                                        } else {
-                                            inlineError = null
-                                            onRegisterSubmit(
-                                                fullName.trim(),
-                                                email.trim(),
-                                                phone.trim(),
-                                                password
-                                            )
-                                        }
-                                    },
-                                    showLoader = isSubmitting
-                                )
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "¿Ya tienes cuenta?",
-                                        color = Color(0xFFB0C4DE),
-                                        fontSize = 13.sp
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    TextButton(
-                                        onClick = onLoginClick,
-                                        enabled = !isSubmitting,
-                                        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .verticalScroll(formScrollState)
+                                            .padding(bottom = 24.dp), // aire para no chocar con el hint
+                                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = "Inicia sesión aquí",
-                                            color = Color(0xFFCCF9FF),
-                                            fontWeight = FontWeight.SemiBold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
+                                            text = "Crear cuenta",
+                                            style = MaterialTheme.typography.headlineSmall,
+                                            color = Color.White
+                                        )
+
+                                        Text(
+                                            text = "Regístrate para acceder a tu panel JAM.",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = Color(0xFFB0C4DE),
+                                            textAlign = TextAlign.Center
+                                        )
+
+                                        JamUnderlinedTextField(
+                                            value = fullName,
+                                            onValueChange = { fullName = it; clearError() },
+                                            label = "Nombre completo",
+                                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                                            leadingIcon = {
+                                                Icon(
+                                                    imageVector = Icons.Outlined.PersonOutline,
+                                                    contentDescription = "Nombre",
+                                                    tint = Color(0xFFB0C4DE)
+                                                )
+                                            }
+                                        )
+
+                                        JamUnderlinedTextField(
+                                            value = email,
+                                            onValueChange = { email = it; clearError() },
+                                            label = "Correo electrónico",
+                                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                                            leadingIcon = {
+                                                Icon(
+                                                    imageVector = Icons.Outlined.Email,
+                                                    contentDescription = "Email",
+                                                    tint = Color(0xFFB0C4DE)
+                                                )
+                                            }
+                                        )
+
+                                        // ✅ Teléfono 10 dígitos
+                                        JamUnderlinedTextField(
+                                            value = phoneDigits,
+                                            onValueChange = {
+                                                phoneDigits = it.filter { ch -> ch.isDigit() }.take(10)
+                                                clearError()
+                                            },
+                                            label = "Teléfono (10 dígitos)",
+                                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                                            leadingIcon = {
+                                                Icon(
+                                                    imageVector = Icons.Outlined.PhoneAndroid,
+                                                    contentDescription = "Teléfono",
+                                                    tint = Color(0xFFB0C4DE)
+                                                )
+                                            }
+                                        )
+
+                                        JamUnderlinedPasswordField(
+                                            value = password,
+                                            onValueChange = { password = it; clearError() },
+                                            label = "Contraseña",
+                                            visible = passwordVisible,
+                                            onToggleVisibility = { passwordVisible = !passwordVisible }
+                                        )
+
+                                        PasswordStrengthCardCompact(state = pwdState)
+
+                                        JamUnderlinedPasswordField(
+                                            value = confirmPassword,
+                                            onValueChange = { confirmPassword = it; clearError() },
+                                            label = "Confirmar contraseña",
+                                            visible = confirmVisible,
+                                            onToggleVisibility = { confirmVisible = !confirmVisible }
+                                        )
+
+                                        if (shouldShowMismatchWarning) {
+                                            val msg = if (confirmPassword.isBlank()) "Confirma tu contraseña." else "Las contraseñas no coinciden."
+                                            Text(
+                                                text = msg,
+                                                color = Color(0xFFFF6B81),
+                                                style = MaterialTheme.typography.bodySmall,
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier.fillMaxWidth()
+                                            )
+                                        }
+
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(start = 2.dp),
+                                            verticalArrangement = Arrangement.spacedBy(0.dp)
+                                        ) {
+                                            LegalRowMiniCheckbox(
+                                                checked = acceptTerms,
+                                                onCheckedChange = { acceptTerms = it; clearError() },
+                                                labelPrefix = "Acepto ",
+                                                linkText = "términos y condiciones",
+                                                onLinkClick = onTermsClick
+                                            )
+                                            LegalRowMiniCheckbox(
+                                                checked = acceptDataPolicy,
+                                                onCheckedChange = { acceptDataPolicy = it; clearError() },
+                                                labelPrefix = "Acepto ",
+                                                linkText = "tratamiento de datos personales",
+                                                onLinkClick = onDataPolicyClick
+                                            )
+                                        }
+
+                                        if (!inlineError.isNullOrBlank()) {
+                                            Text(
+                                                text = inlineError!!,
+                                                color = Color(0xFFFF6B81),
+                                                style = MaterialTheme.typography.bodySmall,
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier.fillMaxWidth()
+                                            )
+                                        }
+
+                                        JamPrimaryGlassButton(
+                                            text = if (isSubmitting) "Creando cuenta..." else "Crear cuenta",
+                                            enabled = canSubmit,
+                                            onClick = {
+                                                attemptedSubmit = true
+
+                                                val err = validateRegister(
+                                                    fullName = fullName,
+                                                    email = email,
+                                                    phoneDigits10 = phoneDigits,
+                                                    pwdState = pwdState,
+                                                    password = password,
+                                                    confirmPassword = confirmPassword,
+                                                    acceptTerms = acceptTerms,
+                                                    acceptDataPolicy = acceptDataPolicy
+                                                )
+
+                                                if (err != null) {
+                                                    inlineError = err
+                                                } else {
+                                                    inlineError = null
+                                                    onRegisterSubmit(
+                                                        fullName.trim(),
+                                                        email.trim(),
+                                                        phoneDigits.trim(),
+                                                        password
+                                                    )
+                                                }
+                                            },
+                                            showLoader = isSubmitting
+                                        )
+
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.Center,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = "¿Ya tienes cuenta?",
+                                                color = Color(0xFFB0C4DE),
+                                                fontSize = 13.sp
+                                            )
+                                            Spacer(modifier = Modifier.width(6.dp))
+                                            TextButton(
+                                                onClick = onLoginClick,
+                                                enabled = !isSubmitting,
+                                                contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
+                                            ) {
+                                                Text(
+                                                    text = "Inicia sesión aquí",
+                                                    color = Color(0xFFCCF9FF),
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                        }
+
+                                        Text(
+                                            text = "Tu información se usará únicamente para fines académicos y de comunicación institucional.",
+                                            color = Color(0xFFBCC6DC),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.alpha(0.9f)
+                                        )
+                                    }
+
+                                    // ✅ Flecha/hint: desaparece al hacer scroll. Si se toca, baja al final.
+                                    androidx.compose.animation.AnimatedVisibility(
+                                        visible = hintVisible,
+                                        enter = fadeIn(tween(150)),
+                                        exit = fadeOut(tween(150)),
+                                        modifier = Modifier
+                                            .align(Alignment.BottomCenter)
+                                            .padding(bottom = 6.dp)
+                                    ) {
+                                        ScrollToEndHint(
+                                            onClick = {
+                                                scope.launch { formScrollState.animateScrollTo(formScrollState.maxValue) }
+                                            }
                                         )
                                     }
                                 }
-
-                                Text(
-                                    text = "Tu información se usará únicamente para fines académicos y de comunicación institucional.",
-                                    color = Color(0xFFBCC6DC),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.alpha(0.9f)
-                                )
                             }
                         }
                     }
+
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
-        }
 
-        JamSignature(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 8.dp)
+            // ✅ Signature overlay (igual Home): por fuera del glass
+            JamSignature(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 8.dp),
+                showNavIcons = true,
+                selectedItem = JamBottomItem.Home,
+                onHomeClick = onHomeClick,
+                onAboutClick = onAboutClick,
+                onCoursesClick = onCoursesClick,
+                onContactClick = onContactClick,
+                onSpecialClick = onSpecialClick
+            )
+        }
+    }
+}
+
+/* =========================
+   Scroll hint (tap -> end)
+   ========================= */
+
+@Composable
+private fun ScrollToEndHint(
+    onClick: () -> Unit
+) {
+    val interaction = remember { MutableInteractionSource() }
+    val shape = RoundedCornerShape(999.dp)
+    val bg = Brush.verticalGradient(
+        colors = listOf(Color.White.copy(alpha = 0.12f), Color.White.copy(alpha = 0.06f))
+    )
+
+    Row(
+        modifier = Modifier
+            .clip(shape)
+            .background(bg, shape)
+            .border(1.dp, Color.White.copy(alpha = 0.22f), shape)
+            .clickable(interactionSource = interaction, indication = null) { onClick() }
+            .padding(horizontal = 12.dp, vertical = 7.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Filled.KeyboardArrowDown,
+            contentDescription = "Bajar",
+            tint = Color(0xFFCCF9FF),
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = "Ver más",
+            color = Color(0xFFCCF9FF),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -426,7 +523,7 @@ private fun LegalRowMiniCheckbox(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 1.dp), // ✅ súper compacto
+            .padding(vertical = 1.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -742,7 +839,7 @@ private fun JamPrimaryGlassButton(
 private fun validateRegister(
     fullName: String,
     email: String,
-    phone: String,
+    phoneDigits10: String,
     pwdState: PasswordRules.State,
     password: String,
     confirmPassword: String,
@@ -751,7 +848,7 @@ private fun validateRegister(
 ): String? {
     if (fullName.trim().length < 3) return "Escribe tu nombre completo."
     if (!isEmailValid(email.trim())) return "Correo inválido."
-    if (phone.trim().length < 7) return "Teléfono inválido."
+    if (phoneDigits10.length != 10) return "El teléfono debe tener 10 dígitos."
     if (!pwdState.isStrong) return "Tu contraseña aún no cumple los requisitos."
     if (confirmPassword.isBlank()) return "Confirma tu contraseña."
     if (password != confirmPassword) return "Las contraseñas no coinciden."

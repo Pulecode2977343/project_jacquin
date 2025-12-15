@@ -73,7 +73,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(start = 24.dp, end = 24.dp, top = 210.dp, bottom = 72.dp),
+                    .padding(start = 24.dp, end = 24.dp, top = 230.dp, bottom = 72.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
@@ -100,13 +100,6 @@ fun HomeScreen(
                     description = "Conoce la historia, misión y equipo de Jacquin Academia Musical.",
                     icon = Icons.Outlined.Info,
                     onClick = onAboutClick
-                )
-
-                JamHomeGlassCard(
-                    title = "Contáctanos",
-                    description = "Escríbenos para matrículas, dudas o soporte académico.",
-                    icon = Icons.Outlined.MailOutline,
-                    onClick = onContactClick
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))

@@ -1,5 +1,4 @@
 package co.edu.jacquin.jam_app.ui.contact
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -90,6 +89,12 @@ fun ContactScreen(
     onContactClick: () -> Unit = {},
     onSpecialClick: () -> Unit = {},
 
+    // Consentimientos externos (para auto-marcar al aceptar en overlay)
+    termsAccepted: Boolean? = null,
+    onTermsAcceptedChange: ((Boolean) -> Unit)? = null,
+    dataPolicyAccepted: Boolean? = null,
+    onDataPolicyAcceptedChange: ((Boolean) -> Unit)? = null,
+
     headerTopPadding: Dp = 54.dp,
     contentTopSpacer: Dp = 124.dp,
 ) {
@@ -101,8 +106,19 @@ fun ContactScreen(
     var phone by remember { mutableStateOf("") } // 10 dígitos
     var message by remember { mutableStateOf("") }
 
-    var acceptTerms by remember { mutableStateOf(false) }
-    var acceptDataPolicy by remember { mutableStateOf(false) }
+    var acceptTermsLocal by remember { mutableStateOf(false) }
+    var acceptDataPolicyLocal by remember { mutableStateOf(false) }
+
+    val acceptTerms = termsAccepted ?: acceptTermsLocal
+    val acceptDataPolicy = dataPolicyAccepted ?: acceptDataPolicyLocal
+
+    fun setAcceptTerms(value: Boolean) {
+        onTermsAcceptedChange?.invoke(value) ?: run { acceptTermsLocal = value }
+    }
+
+    fun setAcceptDataPolicy(value: Boolean) {
+        onDataPolicyAcceptedChange?.invoke(value) ?: run { acceptDataPolicyLocal = value }
+    }
 
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { delay(50); visible = true }
@@ -265,7 +281,6 @@ fun ContactScreen(
                                     LegalRowMiniCheckbox(
                                         checked = acceptTerms,
                                         onCheckedChange = {
-                                            acceptTerms = it
                                             if (state.error != null || state.successMessage != null) viewModel.clearMessages()
                                         },
                                         labelPrefix = "Acepto ",
@@ -275,7 +290,7 @@ fun ContactScreen(
                                     LegalRowMiniCheckbox(
                                         checked = acceptDataPolicy,
                                         onCheckedChange = {
-                                            acceptDataPolicy = it
+                                            setAcceptDataPolicy(it)
                                             if (state.error != null || state.successMessage != null) viewModel.clearMessages()
                                         },
                                         labelPrefix = "Acepto ",

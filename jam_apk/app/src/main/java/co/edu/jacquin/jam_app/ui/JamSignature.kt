@@ -90,7 +90,7 @@ fun JamSignature(
                     icon = { tint ->
                         Icon(
                             painter = painterResource(id = R.drawable.ic_treble_clef_christmas),
-                            contentDescription = "Panel JAM",
+                            contentDescription = "Noticias y Eventos",
                             tint = Color.Unspecified,           // ✅ NO tintar: conserva navideño
                             modifier = Modifier.size(38.dp)
                         )

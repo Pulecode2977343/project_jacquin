@@ -1,12 +1,15 @@
 package co.edu.jacquin.jam_app.data.remote
 
+import co.edu.jacquin.jam_app.data.remote.dto.ContactMessageRequest
+import co.edu.jacquin.jam_app.data.remote.dto.ContactMessageResponse
 import co.edu.jacquin.jam_app.data.remote.dto.LoginRequest
 import co.edu.jacquin.jam_app.data.remote.dto.LoginResponse
 import co.edu.jacquin.jam_app.data.remote.dto.RegisterRequest
 import co.edu.jacquin.jam_app.data.remote.dto.RegisterResponse
-import co.edu.jacquin.jam_app.data.remote.dto.ContactMessageRequest
-import co.edu.jacquin.jam_app.data.remote.dto.ContactMessageResponse
-import androidx.compose.ui.text.font.FontWeight
+import co.edu.jacquin.jam_app.data.remote.dto.RecoveryEmailRequest
+import co.edu.jacquin.jam_app.data.remote.dto.RecoveryGenericResponse
+import co.edu.jacquin.jam_app.data.remote.dto.RecoveryResetPasswordRequest
+import co.edu.jacquin.jam_app.data.remote.dto.RecoveryVerifyCodeRequest
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -22,4 +25,14 @@ interface JamApiService {
     @POST("contact.php")
     suspend fun sendContactMessage(@Body body: ContactMessageRequest): ContactMessageResponse
 
+    // ===== Recuperación de contraseña (backend PHP real) =====
+
+    @POST("recover.php")
+    suspend fun requestRecoveryCode(@Body body: RecoveryEmailRequest): RecoveryGenericResponse
+
+    @POST("verify_code.php")
+    suspend fun verifyRecoveryCode(@Body body: RecoveryVerifyCodeRequest): RecoveryGenericResponse
+
+    @POST("reset_password.php")
+    suspend fun resetPassword(@Body body: RecoveryResetPasswordRequest): RecoveryGenericResponse
 }

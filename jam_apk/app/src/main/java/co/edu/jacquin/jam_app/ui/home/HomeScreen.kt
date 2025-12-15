@@ -41,7 +41,8 @@ fun HomeScreen(
     onDashboardClick: () -> Unit,
     onCoursesClick: () -> Unit = {},
     onAboutClick: () -> Unit = {},
-    onContactClick: () -> Unit = {}
+    onContactClick: () -> Unit = {},
+    onEventsClick: () -> Unit = {}
 ) {
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFF00346A), Color(0xFF000814))
@@ -100,6 +101,13 @@ fun HomeScreen(
                     description = "Conoce la historia, misión y equipo de Jacquin Academia Musical.",
                     icon = Icons.Outlined.Info,
                     onClick = onAboutClick
+                )
+
+                JamHomeGlassCard(
+                    title = "Contáctanos",
+                    description = "Escríbenos para matrículas, dudas o soporte académico.",
+                    icon = Icons.Outlined.MailOutline,
+                    onClick = onContactClick
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))
@@ -190,7 +198,7 @@ fun HomeScreen(
             onAboutClick = onAboutClick,
             onCoursesClick = onCoursesClick,
             onContactClick = onContactClick,
-            onSpecialClick = primaryActionClick // ✅ Panel o Login según sesión
+            onSpecialClick = onEventsClick // ✅ Noticias y eventos (siempre)
         )
     }
 }

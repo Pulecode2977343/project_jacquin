@@ -175,9 +175,9 @@ class RecoveryViewModel(
     private fun getFriendlyErrorMessage(e: Exception): String {
         return when {
             e is com.google.gson.JsonSyntaxException || 
-            e is java.lang.IllegalStateException -> "Respuesta incorrecta del servidor. Verifica que los archivos PHP estén en la carpeta correcta."
+            e is java.lang.IllegalStateException -> "Error formato: ${e.localizedMessage?.take(300)}" 
             e.message?.contains("Unable to resolve host", ignoreCase = true) == true -> "Sin conexión a internet."
-            else -> e.message ?: "Error desconocido."
+            else -> "Error: ${e.message?.take(300)}"
         }
     }
 }

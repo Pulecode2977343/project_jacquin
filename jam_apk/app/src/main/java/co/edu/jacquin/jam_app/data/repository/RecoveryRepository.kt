@@ -10,7 +10,14 @@ class RecoveryRepository(
     private val api: JamApiService
 ) {
     suspend fun requestCode(email: String): RecoveryGenericResponse {
-        return api.requestRecoveryCode(RecoveryEmailRequest(email.trim()))
+        val responseBody = api.requestRecoveryCode(RecoveryEmailRequest(email.trim()))
+        val rawJson = responseBody.string() // Lee el contenido real (HTML, texto, JSON)
+        try {
+            return com.google.gson.Gson().fromJson(rawJson, RecoveryGenericResponse::class.java)
+        } catch (e: Exception) {
+            // Si falla el parseo, lanzamos error con el contenido RAW para que el usuario lo vea
+            throw Exception("Respuesta inválida del servidor: $rawJson")
+        }
     }
 
     suspend fun verifyCode(email: String, code: String): RecoveryGenericResponse {

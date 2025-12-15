@@ -28,7 +28,7 @@ interface JamApiService {
     // ===== Recuperación de contraseña (backend PHP real) =====
 
     @POST("recover.php")
-    suspend fun requestRecoveryCode(@Body body: RecoveryEmailRequest): RecoveryGenericResponse
+    suspend fun requestRecoveryCode(@Body body: RecoveryEmailRequest): okhttp3.ResponseBody
 
     @POST("verify_code.php")
     suspend fun verifyRecoveryCode(@Body body: RecoveryVerifyCodeRequest): RecoveryGenericResponse

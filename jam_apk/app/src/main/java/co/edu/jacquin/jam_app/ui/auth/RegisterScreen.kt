@@ -28,6 +28,7 @@ import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.materialPath
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
@@ -83,19 +84,19 @@ fun RegisterScreen(
     val innerGlassGradient = Brush.verticalGradient(listOf(Color(0x1FFFFFFF), Color(0x05FFFFFF)))
     val outerGlassGradient = Brush.verticalGradient(listOf(Color(0x26FFFFFF), Color(0x0AFFFFFF)))
 
-    var fullName by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+    var fullName by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var phone by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
 
-    var passwordVisible by remember { mutableStateOf(false) }
-    var confirmVisible by remember { mutableStateOf(false) }
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var confirmVisible by rememberSaveable { mutableStateOf(false) }
 
-    var inlineError by remember { mutableStateOf<String?>(null) }
+    var inlineError by rememberSaveable { mutableStateOf<String?>(null) }
 
-    var acceptTermsLocal by remember { mutableStateOf(false) }
-    var acceptPolicyLocal by remember { mutableStateOf(false) }
+    var acceptTermsLocal by rememberSaveable { mutableStateOf(false) }
+    var acceptPolicyLocal by rememberSaveable { mutableStateOf(false) }
     val acceptTerms = termsAccepted ?: acceptTermsLocal
     val acceptPolicy = dataPolicyAccepted ?: acceptPolicyLocal
 
@@ -174,7 +175,7 @@ fun RegisterScreen(
                             .padding(2.dp)
                     ) {
                         val formScroll = rememberScrollState()
-                        var hideFormScrollHint by remember { mutableStateOf(false) }
+                        var hideFormScrollHint by rememberSaveable { mutableStateOf(false) }
                         LaunchedEffect(formScroll.value) {
                             if (formScroll.value > 10) hideFormScrollHint = true
                         }

@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
@@ -40,7 +41,7 @@ import co.edu.jacquin.jam_app.ui.dashboard.DashboardScreen
 import co.edu.jacquin.jam_app.ui.events.EventsNewsScreen
 import co.edu.jacquin.jam_app.ui.home.HomeScreen
 import co.edu.jacquin.jam_app.ui.legal.JamLegalLorem
-import co.edu.jacquin.jam_app.ui.legal.JamLegalOverlay
+import co.edu.jacquin.jam_app.ui.legal.JamLegalScreen
 import co.edu.jacquin.jam_app.ui.theme.JAM_appTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -85,8 +86,13 @@ class MainActivity : ComponentActivity() {
                 var showCourses by remember { mutableStateOf(false) }
                 var showRecovery by remember { mutableStateOf(false) }
 
+                var showLegalTerms by remember { mutableStateOf(false) }
+                var showLegalPolicy by remember { mutableStateOf(false) }
+                var legalReturnTo by rememberSaveable { mutableStateOf("home") }
+
                 val snackbarHostState = remember { SnackbarHostState() }
                 val scope = rememberCoroutineScope()
+                val saveableStateHolder = rememberSaveableStateHolder()
 
                 fun goHome() {
                     showLogin = false
@@ -256,55 +262,58 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        showRegister -> {
-                            // Mantener estado del formulario: overlays sin salir de Register
-                            var showTerms by remember { mutableStateOf(false) }
-                            var showPolicy by remember { mutableStateOf(false) }
+                        
+                        
+                        showLegalTerms -> {
+                            JamLegalScreen(
+                                title = "Términos y condiciones",
+                                body = JamLegalLorem.termsAndConditions,
+                                onBack = { backFromLegal() },
+                                onAccepted = {
+                                    termsAccepted = true
+                                    backFromLegal()
+                                }
+                            )
+                        }
 
-                            Box(modifier = Modifier.fillMaxSize()) {
+                        showLegalPolicy -> {
+                            JamLegalScreen(
+                                title = "Tratamiento de datos personales",
+                                body = JamLegalLorem.dataPolicy,
+                                onBack = { backFromLegal() },
+                                onAccepted = {
+                                    dataPolicyAccepted = true
+                                    backFromLegal()
+                                }
+                            )
+                        }
+
+showRegister -> {
+                            saveableStateHolder.SaveableStateProvider("register") {
                                 RegisterScreen(
                                     onBackClick = { goLogin() },
                                     onRegisterSubmit = { fullName, email, phone, password ->
                                         authViewModel.register(fullName, email, phone, password)
                                     },
                                     onLoginClick = { goLogin() },
-                                    onTermsClick = { showTerms = true },
-                                    onDataPolicyClick = { showPolicy = true },
-                                    // ✅ JamSignature
+                                    onTermsClick = { goLegalTerms("register") },
+                                    onDataPolicyClick = { goLegalPolicy("register") },
+                                    signatureSelectedItem = co.edu.jacquin.jam_app.ui.JamBottomItem.Home,
                                     onHomeClick = { goHome() },
                                     onAboutClick = { goAbout() },
                                     onCoursesClick = { goCourses() },
                                     onContactClick = { goContact() },
                                     onSpecialClick = { goEvents() },
-                                    isSubmitting = uiState.isRegistering,
-                                    // ✅ consentimientos externos
+                                    isSubmitting = uiState.isLoadingRegister,
                                     termsAccepted = termsAccepted,
                                     onTermsAcceptedChange = { termsAccepted = it },
                                     dataPolicyAccepted = dataPolicyAccepted,
                                     onDataPolicyAcceptedChange = { dataPolicyAccepted = it }
                                 )
-
-                                if (showTerms) {
-                                    JamLegalOverlay(
-                                        title = "Términos y condiciones",
-                                        content = JamLegalLorem.termsAndConditions,
-                                        onClose = { showTerms = false },
-                                        onAccept = {
-                                            termsAccepted = true
-                                            showTerms = false
-                                        }
+                            }
+                        }
                                     )
                                 }
-
-                                if (showPolicy) {
-                                    JamLegalOverlay(
-                                        title = "Política de tratamiento de datos",
-                                        content = JamLegalLorem.dataPolicy,
-                                        onClose = { showPolicy = false },
-                                        onAccept = {
-                                            dataPolicyAccepted = true
-                                            showPolicy = false
-                                        }
                                     )
                                 }
                             }
@@ -326,54 +335,33 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        
                         showContact -> {
-                            var showTerms by remember { mutableStateOf(false) }
-                            var showPolicy by remember { mutableStateOf(false) }
-
-                            Box(modifier = Modifier.fillMaxSize()) {
+                            saveableStateHolder.SaveableStateProvider("contact") {
                                 ContactScreen(
                                     viewModel = contactViewModel,
                                     prefilledEmail = uiState.user?.email,
                                     onBackClick = { goHome() },
-                                    onTermsClick = { showTerms = true },
-                                    onDataPolicyClick = { showPolicy = true },
+                                    onTermsClick = { goLegalTerms("contact") },
+                                    onDataPolicyClick = { goLegalPolicy("contact") },
                                     onSentSuccess = {
-                                        if (uiState.isLoggedIn && uiState.user != null) goDashboard() else goHome()
+                                        // si está logueado -> dashboard, si no -> home (manteniendo tu comportamiento anterior)
+                                        if (uiState.isLoggedIn) goDashboard() else goHome()
                                     },
-                                    // ✅ JamSignature
                                     onHomeClick = { goHome() },
                                     onAboutClick = { goAbout() },
                                     onCoursesClick = { goCourses() },
-                                    onContactClick = { /* ya estás aquí */ },
+                                    onContactClick = { goContact() },
                                     onSpecialClick = { goEvents() },
-                                    // ✅ consentimientos externos
                                     termsAccepted = termsAccepted,
                                     onTermsAcceptedChange = { termsAccepted = it },
                                     dataPolicyAccepted = dataPolicyAccepted,
                                     onDataPolicyAcceptedChange = { dataPolicyAccepted = it }
                                 )
-
-                                if (showTerms) {
-                                    JamLegalOverlay(
-                                        title = "Términos y condiciones",
-                                        content = JamLegalLorem.termsAndConditions,
-                                        onClose = { showTerms = false },
-                                        onAccept = {
-                                            termsAccepted = true
-                                            showTerms = false
-                                        }
+                            }
+                        }
                                     )
                                 }
-
-                                if (showPolicy) {
-                                    JamLegalOverlay(
-                                        title = "Política de tratamiento de datos",
-                                        content = JamLegalLorem.dataPolicy,
-                                        onClose = { showPolicy = false },
-                                        onAccept = {
-                                            dataPolicyAccepted = true
-                                            showPolicy = false
-                                        }
                                     )
                                 }
                             }
@@ -422,4 +410,17 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+/**
+ * Helper para volver desde pantallas legales sin romper el flujo de pantallas en MainActivity.
+ * - Si el usuario ACEPTA en legal, ejecuta onAccept (ej. marcar checkbox y volver).
+ * - Si el usuario solo vuelve, ejecuta onBack (volver sin marcar).
+ */
+private fun backFromLegal(
+    accepted: Boolean,
+    onAccept: () -> Unit,
+    onBack: () -> Unit
+) {
+    if (accepted) onAccept() else onBack()
 }

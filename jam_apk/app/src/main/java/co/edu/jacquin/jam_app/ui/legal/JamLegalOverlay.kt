@@ -48,10 +48,13 @@ import kotlinx.coroutines.launch
 
 /**
  * Overlay legal con MÁS CONTRASTE (menos transparencia).
+ *
+ * ⚠️ DEPRECADO: usa JamLegalScreen + Navigation (LegalRoutes).
  * - Glass más sólido
  * - Scrim más fuerte
  * - Botón habilitado solo al llegar al final
  */
+@Deprecated("Reemplazado por JamLegalScreen + Navigation (LegalRoutes)", level = DeprecationLevel.WARNING)
 @Composable
 fun JamLegalOverlay(
     title: String,

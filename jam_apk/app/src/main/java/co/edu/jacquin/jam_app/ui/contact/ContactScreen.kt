@@ -57,6 +57,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -104,14 +105,14 @@ fun ContactScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    var fullName by remember { mutableStateOf("") }
-    var email by remember(prefilledEmail) { mutableStateOf(prefilledEmail ?: "") }
-    var countryCode by remember { mutableStateOf("+57") }
-    var phone by remember { mutableStateOf("") } // 10 dígitos
-    var message by remember { mutableStateOf("") }
+    var fullName by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable(prefilledEmail) { mutableStateOf(prefilledEmail ?: "") }
+    var countryCode by rememberSaveable { mutableStateOf("+57") }
+    var phone by rememberSaveable { mutableStateOf("") } // 10 dígitos
+    var message by rememberSaveable { mutableStateOf("") }
 
-    var acceptTermsLocal by remember { mutableStateOf(false) }
-    var acceptDataPolicyLocal by remember { mutableStateOf(false) }
+    var acceptTermsLocal by rememberSaveable { mutableStateOf(false) }
+    var acceptDataPolicyLocal by rememberSaveable { mutableStateOf(false) }
 
     val acceptTerms = termsAccepted ?: acceptTermsLocal
     val acceptDataPolicy = dataPolicyAccepted ?: acceptDataPolicyLocal

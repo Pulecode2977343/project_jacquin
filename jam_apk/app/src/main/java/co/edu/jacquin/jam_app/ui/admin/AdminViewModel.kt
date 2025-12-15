@@ -1,4 +1,4 @@
-package co.edu.jacquin.jam_app.ui.auth // Lo pongo en auth o dashboard? mejor dashboard, pero auth tiene viewmodels. Crearé paquete admin.
+package co.edu.jacquin.jam_app.ui.admin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

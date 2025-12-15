@@ -174,10 +174,19 @@ class RecoveryViewModel(
 
     private fun getFriendlyErrorMessage(e: Exception): String {
         return when {
+            // Errores de parseo (HTML en vez de JSON, etc.)
             e is com.google.gson.JsonSyntaxException || 
-            e is java.lang.IllegalStateException -> "Error formato: ${e.localizedMessage?.take(300)}" 
-            e.message?.contains("Unable to resolve host", ignoreCase = true) == true -> "Sin conexión a internet."
-            else -> "Error: ${e.message?.take(300)}"
+            e is java.lang.IllegalStateException -> "Problema de comunicación con el servidor. Intenta más tarde."
+            
+            // Error de conexión (sin internet)
+            e.message?.contains("Unable to resolve host", ignoreCase = true) == true -> "No hay conexión a internet."
+            
+            // Errores explícitos del repositorio (500, timeout)
+            e.message?.contains("Fallo Servidor", ignoreCase = true) == true -> "El servidor no responde temporalmente."
+            e.message?.contains("timeout", ignoreCase = true) == true -> "La conexión tardó demasiado."
+            
+            // Fallback
+            else -> "Ocurrió un error inesperado. Intenta de nuevo."
         }
     }
 }

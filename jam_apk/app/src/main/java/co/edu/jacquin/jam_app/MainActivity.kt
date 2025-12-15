@@ -339,6 +339,7 @@ class MainActivity : ComponentActivity() {
                                     onContactClick = { goContact() },
                                     onSpecialClick = { goEvents() },
                                     isSubmitting = uiState.isRegistering,
+                                    serverError = uiState.error,
                                     termsAccepted = termsAccepted,
                                     onTermsAcceptedChange = { termsAccepted = it },
                                     dataPolicyAccepted = dataPolicyAccepted,

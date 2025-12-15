@@ -75,6 +75,7 @@ fun RegisterScreen(
     onSpecialClick: () -> Unit = {},
 
     isSubmitting: Boolean = false,
+    serverError: String? = null,
     termsAccepted: Boolean? = null,
     onTermsAcceptedChange: ((Boolean) -> Unit)? = null,
     dataPolicyAccepted: Boolean? = null,
@@ -159,7 +160,7 @@ fun RegisterScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
-                    .padding(bottom = 72.dp) // (Si se cruza con Signature, aumenta o migra a Scaffold)
+                    .padding(bottom = 100.dp) // (Si se cruza con Signature, aumenta o migra a Scaffold)
             ) {
                 Spacer(modifier = Modifier.height(110.dp))
 
@@ -271,9 +272,9 @@ fun RegisterScreen(
                                     )
                                 }
 
-                                if (inlineError != null) {
+                                if (inlineError != null || serverError != null) {
                                     Text(
-                                        text = inlineError.orEmpty(),
+                                        text = inlineError ?: serverError.orEmpty(),
                                         color = Color(0xFFFF6B81),
                                         style = MaterialTheme.typography.bodySmall,
                                         textAlign = TextAlign.Center,
@@ -283,7 +284,7 @@ fun RegisterScreen(
 
                                 JamPrimaryGlassButton(
                                     text = if (isSubmitting) "Creando..." else "Crear cuenta",
-                                    enabled = canSubmit,
+                                    enabled = !isSubmitting,
                                     showLoader = isSubmitting,
                                     onClick = {
                                         val validation = validateRegister(

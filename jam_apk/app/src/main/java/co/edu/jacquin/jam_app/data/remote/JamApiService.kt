@@ -35,4 +35,11 @@ interface JamApiService {
 
     @POST("reset_password.php")
     suspend fun resetPassword(@Body body: RecoveryResetPasswordRequest): RecoveryGenericResponse
+
+    // ===== ADMIN =====
+    @retrofit2.http.GET("admin_get_users.php")
+    suspend fun getUsers(): co.edu.jacquin.jam_app.data.remote.dto.AdminUserListResponse
+
+    @POST("admin_update_role.php")
+    suspend fun updateUserRole(@Body body: co.edu.jacquin.jam_app.data.remote.dto.UpdateRoleRequest): RecoveryGenericResponse
 }

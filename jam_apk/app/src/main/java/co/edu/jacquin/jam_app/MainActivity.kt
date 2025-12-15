@@ -68,10 +68,15 @@ class MainActivity : ComponentActivity() {
             RecoveryViewModelFactory(RecoveryRepository(api))
         )[RecoveryViewModel::class.java]
 
-        setContent {
+                val adminViewModel = ViewModelProvider(
+                    this,
+                    co.edu.jacquin.jam_app.ui.admin.AdminViewModelFactory(co.edu.jacquin.jam_app.data.repository.AdminRepository(api))
+                )[co.edu.jacquin.jam_app.ui.admin.AdminViewModel::class.java]
+
+                setContent {
             JAM_appTheme {
                 val uiState by authViewModel.uiState.collectAsState()
-
+                
                 var termsAccepted by rememberSaveable { mutableStateOf(false) }
                 var dataPolicyAccepted by rememberSaveable { mutableStateOf(false) }
 
@@ -84,6 +89,9 @@ class MainActivity : ComponentActivity() {
                 var showAbout by remember { mutableStateOf(false) }
                 var showCourses by remember { mutableStateOf(false) }
                 var showRecovery by remember { mutableStateOf(false) }
+                
+                // Admin screens
+                var showAdminUsers by remember { mutableStateOf(false) }
 
                 var showLegalTerms by remember { mutableStateOf(false) }
                 var showLegalPolicy by remember { mutableStateOf(false) }
@@ -102,121 +110,64 @@ class MainActivity : ComponentActivity() {
                     showAbout = false
                     showCourses = false
                     showRecovery = false
+                    showAdminUsers = false
                 }
 
                 fun goLogin() {
-                    showRegister = false
-                    showDashboard = false
-                    showContact = false
-                    showEvents = false
-                    showAbout = false
-                    showCourses = false
-                    showRecovery = false
+                    goHome() // reset all first
                     showLogin = true
                 }
 
                 fun goRegister() {
-                    showLogin = false
-                    showDashboard = false
-                    showContact = false
-                    showEvents = false
-                    showAbout = false
-                    showCourses = false
-                    showRecovery = false
+                    goHome()
                     showRegister = true
                 }
 
                 fun goDashboard() {
-                    showLogin = false
-                    showRegister = false
-                    showContact = false
-                    showEvents = false
-                    showAbout = false
-                    showCourses = false
-                    showRecovery = false
+                    goHome()
                     showDashboard = true
                 }
 
                 fun goContact() {
-                    showLogin = false
-                    showRegister = false
-                    showDashboard = false
-                    showEvents = false
-                    showAbout = false
-                    showCourses = false
-                    showRecovery = false
+                    goHome()
                     showContact = true
                 }
 
                 fun goEvents() {
-                    showLogin = false
-                    showRegister = false
-                    showDashboard = false
-                    showContact = false
-                    showAbout = false
-                    showCourses = false
-                    showRecovery = false
+                    goHome()
                     showEvents = true
                 }
 
                 fun goAbout() {
-                    showLogin = false
-                    showRegister = false
-                    showDashboard = false
-                    showContact = false
-                    showEvents = false
-                    showCourses = false
-                    showRecovery = false
+                    goHome()
                     showAbout = true
                 }
 
                 fun goCourses() {
-                    showLogin = false
-                    showRegister = false
-                    showDashboard = false
-                    showContact = false
-                    showEvents = false
-                    showAbout = false
-                    showRecovery = false
+                    goHome()
                     showCourses = true
                 }
 
                 fun goRecovery() {
-                    showLogin = false
-                    showRegister = false
-                    showDashboard = false
-                    showContact = false
-                    showEvents = false
-                    showAbout = false
-                    showCourses = false
+                    goHome()
                     showRecovery = true
                 }
 
+                fun goAdminUsers() {
+                    goHome()
+                    showAdminUsers = true
+                }
+                
+                // ... (mantener funciones legales igual, solo añadir reset admin) ...
                 fun goLegalTerms(from: String) {
                     legalReturnTo = from
-                    showLogin = false
-                    showRegister = false
-                    showDashboard = false
-                    showContact = false
-                    showEvents = false
-                    showAbout = false
-                    showCourses = false
-                    showRecovery = false
-                    showLegalPolicy = false
+                    goHome() // reset
                     showLegalTerms = true
                 }
 
                 fun goLegalPolicy(from: String) {
                     legalReturnTo = from
-                    showLogin = false
-                    showRegister = false
-                    showDashboard = false
-                    showContact = false
-                    showEvents = false
-                    showAbout = false
-                    showCourses = false
-                    showRecovery = false
-                    showLegalTerms = false
+                    goHome() // reset
                     showLegalPolicy = true
                 }
 
@@ -244,12 +195,28 @@ class MainActivity : ComponentActivity() {
                         authViewModel.consumeRegisterSuccess()
                     }
                 }
+                
+                // Feedback de admin actions
+                val adminState by adminViewModel.uiState.collectAsState()
+                LaunchedEffect(adminState.successMessage) {
+                    adminState.successMessage?.let { msg ->
+                        snackbarHostState.showSnackbar(msg)
+                        adminViewModel.clearMessages()
+                    }
+                }
 
                 Scaffold(
                     snackbarHost = { SnackbarHost(snackbarHostState) }
                 ) { _ ->
                     when {
                         showSplash -> SplashScreen()
+                        
+                        showAdminUsers -> {
+                            co.edu.jacquin.jam_app.ui.admin.AdminUsersScreen(
+                                viewModel = adminViewModel,
+                                onBackClick = { goDashboard() }
+                            )
+                        }
 
                         showEvents -> {
                             EventsNewsScreen(
@@ -391,7 +358,7 @@ class MainActivity : ComponentActivity() {
                             val user = uiState.user
                             if (uiState.isLoggedIn && user != null) {
                                 val role = when (user.id_rol) {
-                                    1 -> UserRole.Admin
+                                    1 -> UserRole.Admin // Admin
                                     2 -> UserRole.Teacher
                                     else -> UserRole.Student
                                 }
@@ -403,6 +370,11 @@ class MainActivity : ComponentActivity() {
                                     onLogoutClick = {
                                         authViewModel.logout()
                                         goHome()
+                                    },
+                                    onNavigateToRoute = { route -> 
+                                        if (route == co.edu.jacquin.jam_app.ui.dashboard.DashboardSection.ADMIN_USERS.route) {
+                                            goAdminUsers()
+                                        }
                                     },
                                     onGoHome = { goHome() },
                                     onGoAbout = { goAbout() },

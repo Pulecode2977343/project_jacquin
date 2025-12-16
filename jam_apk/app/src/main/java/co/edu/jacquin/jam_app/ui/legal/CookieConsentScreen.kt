@@ -2,27 +2,11 @@ package co.edu.jacquin.jam_app.ui.legal
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,13 +14,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextAlign
+import co.edu.jacquin.jam_app.ui.JamHorizontalLogo
 
 /**
- * Pantalla/Overlay de Consentimiento de Cookies.
- * Diseñada estilo Glassmorphism (consistente con JamLegalScreen).
+ * Pantalla de Consentimiento de Cookies (Overlay o Pantalla completa).
+ * Mantiene estilo Premium/Glassmorphism.
  */
 @Composable
 fun CookieConsentScreen(
@@ -44,168 +29,110 @@ fun CookieConsentScreen(
     onCustomize: () -> Unit,
     onAcceptAll: () -> Unit
 ) {
-    // Fondos y gradientes institucionales
-    val backgroundGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFF00346A).copy(alpha = 0.95f), Color(0xFF000814))
-    )
-    // Glass gradients
-    val outerGlassGradient = Brush.verticalGradient(
-        listOf(Color(0x26FFFFFF), Color(0x0AFFFFFF))
-    )
-    val innerGlassGradient = Brush.verticalGradient(
-        listOf(Color(0x1FFFFFFF), Color(0x05FFFFFF))
-    )
-
-    // Botón Aceptar con gradiente (estilo premium)
-    val acceptButtonBrush = Brush.horizontalGradient(
-        colors = listOf(Color(0xFFFEA36A), Color(0xFFFF6F91))
-    )
+    // Mismos gradientes que JamLegalScreen
+    val backgroundGradient = Brush.verticalGradient(colors = listOf(Color(0xFF00346A), Color(0xFF000814)))
+    val innerGlassGradient = Brush.verticalGradient(listOf(Color(0x1FFFFFFF), Color(0x05FFFFFF)))
+    val outerGlassGradient = Brush.verticalGradient(listOf(Color(0x26FFFFFF), Color(0x0AFFFFFF)))
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient)
             .statusBarsPadding()
-            .navigationBarsPadding(),
-        contentAlignment = Alignment.BottomCenter // Alineado abajo como un bottom sheet/overlay grande
+            .padding(20.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.Bottom
+        Surface(
+            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            shape = RoundedCornerShape(26.dp),
+            color = Color.Transparent
         ) {
-            // Título o Logo opcional arriba (si se desea llenar más pantalla)
-            // Por ahora nos centramos en el bloque de consentimiento principal
-
-            Surface(
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                shape = RoundedCornerShape(28.dp),
-                color = Color.Transparent
+                    .background(outerGlassGradient, RoundedCornerShape(26.dp))
+                    .border(1.dp, Color.White.copy(alpha = 0.14f), RoundedCornerShape(26.dp))
+                    .padding(2.dp)
             ) {
-                // Borde Exterior Glass
                 Box(
                     modifier = Modifier
-                        .background(outerGlassGradient, RoundedCornerShape(28.dp))
-                        .border(1.dp, Color.White.copy(alpha = 0.14f), RoundedCornerShape(28.dp))
-                        .padding(2.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(innerGlassGradient, RoundedCornerShape(24.dp))
+                        .border(0.5.dp, Color.White.copy(alpha = 0.28f), RoundedCornerShape(24.dp))
+                        .padding(22.dp)
                 ) {
-                    // Contenedor Interior Glass
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(26.dp))
-                            .background(innerGlassGradient, RoundedCornerShape(26.dp))
-                            .border(
-                                0.5.dp,
-                                Color.White.copy(alpha = 0.28f),
-                                RoundedCornerShape(26.dp)
-                            )
-                            .padding(24.dp)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
+                        // Header con Logo
+                        JamHorizontalLogo(modifier = Modifier.height(38.dp))
+                        
+                        Text(
+                            text = "Tu privacidad es importante",
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Text(
+                            text = "Utilizamos cookies propias y de terceros para mejorar tu experiencia, analizar el tráfico y mostrarte contenido personalizado. Puedes aceptar todas, rechazarlas o configurar tus preferencias.",
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                            color = Color(0xFFE0ECFF),
+                            textAlign = TextAlign.Center,
+                            lineHeight = 20.sp
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Botones de acción
                         Column(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Text(
-                                text = "Valoramos tu privacidad 🍪",
-                                color = Color.White,
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.Center
-                            )
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            // Contenido scrollable por si el texto legal es largo
-                            Column(
-                                modifier = Modifier
-                                    .heightIn(max = 200.dp)
-                                    .verticalScroll(rememberScrollState())
+                            Button(
+                                onClick = onAcceptAll,
+                                modifier = Modifier.fillMaxWidth().height(48.dp),
+                                shape = RoundedCornerShape(999.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent
+                                ),
+                                contentPadding = PaddingValues()
                             ) {
-                                Text(
-                                    text = "Utilizamos cookies propias y de terceros para mejorar tu experiencia, analizar el tráfico y mostrar contenido personalizado. Puedes aceptar todas las cookies, rechazarlas o configurar tus preferencias.",
-                                    color = Color(0xFFE6EEF9), // Texto claro legible
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    lineHeight = 20.sp,
-                                    textAlign = TextAlign.Center
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(
+                                            Brush.horizontalGradient(listOf(Color(0xFF00F0FF), Color(0xFF0055FF))),
+                                            RoundedCornerShape(999.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text("Aceptar todas", color = Color.White, fontWeight = FontWeight.SemiBold)
+                                }
                             }
 
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            // --- Botones de Acción ---
-                            Column(
+                            Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                // 1. Botón Principal: Aceptar Todo
-                                Button(
-                                    onClick = onAcceptAll,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(50.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Transparent
-                                    ),
+                                OutlinedButton(
+                                    onClick = onCustomize,
+                                    modifier = Modifier.weight(1f).height(48.dp),
                                     shape = RoundedCornerShape(999.dp),
-                                    contentPadding = ButtonDefaults.ContentPadding
+                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFCCF9FF)),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.3f))
                                 ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .clip(RoundedCornerShape(999.dp))
-                                            .background(acceptButtonBrush),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = "Aceptar todo",
-                                            color = Color.White,
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontSize = 16.sp
-                                        )
-                                    }
+                                    Text("Personalizar", fontSize = 12.sp)
                                 }
 
-                                // 2. Botones Secundarios: Personalizar y Rechazar (en fila)
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                OutlinedButton(
+                                    onClick = onReject,
+                                    modifier = Modifier.weight(1f).height(48.dp),
+                                    shape = RoundedCornerShape(999.dp),
+                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFFF8A80)),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.3f))
                                 ) {
-                                    OutlinedButton(
-                                        onClick = onReject,
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .height(48.dp),
-                                        shape = RoundedCornerShape(999.dp),
-                                        colors = ButtonDefaults.outlinedButtonColors(
-                                            contentColor = Color(0xFFE6EEF9)
-                                        ),
-                                        border = androidx.compose.foundation.BorderStroke(
-                                            1.dp,
-                                            Color.White.copy(alpha = 0.3f)
-                                        )
-                                    ) {
-                                        Text("Rechazar")
-                                    }
-
-                                    OutlinedButton(
-                                        onClick = onCustomize,
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .height(48.dp),
-                                        shape = RoundedCornerShape(999.dp),
-                                        colors = ButtonDefaults.outlinedButtonColors(
-                                            contentColor = Color(0xFFE6EEF9)
-                                        ),
-                                        border = androidx.compose.foundation.BorderStroke(
-                                            1.dp,
-                                            Color.White.copy(alpha = 0.3f)
-                                        )
-                                    ) {
-                                        Text("Personalizar")
-                                    }
+                                    Text("Rechazar solo", fontSize = 12.sp)
                                 }
                             }
                         }

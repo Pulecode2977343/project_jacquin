@@ -11,5 +11,8 @@ data class AuthUiState(
     // Register flow
     val isRegistering: Boolean = false,
     val registerSuccess: Boolean = false,
-    val registerMessage: String? = null
+    val registerMessage: String? = null,
+
+    // Robustness
+    val isConnectionError: Boolean = false
 )

@@ -33,9 +33,11 @@ class AuthViewModel(
                 }
 
                 is JamResult.Error -> {
+                    val isConnError = result.message == "CONNECTION_ERROR"
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        error = result.message
+                        error = if (isConnError) null else result.message,
+                        isConnectionError = isConnError
                     )
                 }
 
@@ -49,7 +51,8 @@ class AuthViewModel(
             isRegistering = true,
             registerSuccess = false,
             registerMessage = null,
-            error = null
+            error = null,
+            isConnectionError = false
         )
 
         viewModelScope.launch {
@@ -63,9 +66,11 @@ class AuthViewModel(
                 }
 
                 is JamResult.Error -> {
+                    val isConnError = result.message == "CONNECTION_ERROR"
                     _uiState.value = _uiState.value.copy(
                         isRegistering = false,
-                        error = result.message
+                        error = if (isConnError) null else result.message,
+                        isConnectionError = isConnError
                     )
                 }
 
@@ -75,7 +80,7 @@ class AuthViewModel(
     }
 
     fun clearError() {
-        _uiState.value = _uiState.value.copy(error = null)
+        _uiState.value = _uiState.value.copy(error = null, isConnectionError = false)
     }
 
     fun consumeRegisterSuccess() {

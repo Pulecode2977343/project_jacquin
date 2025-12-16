@@ -25,10 +25,8 @@ class AuthRepository(
                 } else {
                     JamResult.Error(response.bestMessage())
                 }
-            } catch (e: IOException) {
-                JamResult.Error("No se pudo conectar con el servidor. Verifica tu red e intenta de nuevo.")
             } catch (e: Exception) {
-                JamResult.Error(e.message?.takeIf { it.isNotBlank() } ?: "Error inesperado. Intenta de nuevo.")
+                handleException(e)
             }
         }
     }
@@ -55,10 +53,24 @@ class AuthRepository(
                 } else {
                     JamResult.Error(response.bestMessage())
                 }
-            } catch (e: IOException) {
-                JamResult.Error("No se pudo conectar con el servidor. Verifica tu red e intenta de nuevo.")
             } catch (e: Exception) {
-                JamResult.Error(e.message?.takeIf { it.isNotBlank() } ?: "Error inesperado. Intenta de nuevo.")
+                handleException(e)
+            }
+        }
+    }
+
+    private fun <T> handleException(e: Exception): JamResult<T> {
+        return when (e) {
+            is java.net.ConnectException,
+            is java.net.SocketTimeoutException,
+            is java.net.UnknownHostException -> {
+                JamResult.Error("CONNECTION_ERROR")
+            }
+            is IOException -> {
+                JamResult.Error("No se pudo conectar con el servidor. Verifica tu red.")
+            }
+            else -> {
+                JamResult.Error(e.message?.takeIf { it.isNotBlank() } ?: "Error inesperado.")
             }
         }
     }

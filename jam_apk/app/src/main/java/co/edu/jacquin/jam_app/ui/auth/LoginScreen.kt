@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
@@ -252,6 +254,65 @@ fun LoginScreen(
             onContactClick = onContactClick,
             onSpecialClick = onSpecialClick
         )
+
+        // Robust Error Overlay
+        if (state.isConnectionError) {
+            JamConnectionErrorOverlay(
+                onRetry = { viewModel.clearError() }
+            )
+        }
+    }
+}
+
+@Composable
+private fun JamConnectionErrorOverlay(onRetry: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.6f))
+            .clickable(enabled = false) {}, // Block clicks
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(32.dp)
+                .clip(RoundedCornerShape(24.dp))
+                .background(Brush.verticalGradient(listOf(Color(0xCC1A1A2E), Color(0xCC16213E))))
+                .border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(24.dp))
+                .padding(24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CloudOff, // Requires importing Icons.Default.CloudOff or similar
+                    contentDescription = null,
+                    tint = Color(0xFFFF6B6B),
+                    modifier = Modifier.size(48.dp)
+                )
+                Text(
+                    text = "Servidor no disponible",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "No pudimos conectar con el servidor (modo pruebas).\nVerifica tu túnel Ngrok o tu conexión a internet.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFFB0C4DE),
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = onRetry,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4ECCA3)),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Reintentar", color = Color.Black, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
     }
 }
 

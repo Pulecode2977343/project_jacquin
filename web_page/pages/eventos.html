@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>J.A.M - Eventos</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .events-section {
+        padding: 3rem 5%;
+        min-height: 70vh;
+      }
+
+      .events-intro {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: var(--color-blanco-neutro);
+      }
+
+      .events-intro h1 {
+        font-weight: 300;
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+        color: var(--color-blanco-neutro);
+      }
+
+      .events-intro p {
+        max-width: 700px;
+        margin: 0 auto;
+        opacity: 0.9;
+        font-size: 1.1rem;
+      }
+
+      .events-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .event-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .event-date {
+        display: inline-block;
+        background: var(--color-acento-naranja);
+        color: var(--color-principal-azul);
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .event-card h3 {
+        color: var(--color-blanco-neutro);
+        font-size: 1.5rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .event-card p {
+        color: var(--color-humo-gris);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      .event-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .event-detail-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--color-acento-azul);
+        font-size: 0.9rem;
+      }
+
+      .event-detail-item i {
+        font-size: 1.1rem;
+      }
+
+      .no-events {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--color-humo-gris);
+      }
+
+      .no-events i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+
+      @media (max-width: 768px) {
+        .events-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <jam-header></jam-header>
+
+    <main>
+      <section class="events-section">
+        <div class="events-intro">
+          <h1>Eventos y Presentaciones</h1>
+          <p>
+            Descubre nuestros próximos conciertos, recitales y actividades
+            especiales. ¡Únete a la comunidad musical JACQUIN!
+          </p>
+        </div>
+
+        <div class="events-grid">
+          <!-- Event Card 1 -->
+          <div class="event-card">
+            <span class="event-date">
+              <i class="bi bi-calendar-event"></i> 15 Enero 2026
+            </span>
+            <h3>Recital de Piano Clásico</h3>
+            <p>
+              Nuestros estudiantes avanzados de piano presentarán obras de
+              Mozart, Beethoven y Chopin en una velada inolvidable.
+            </p>
+            <div class="event-details">
+              <div class="event-detail-item">
+                <i class="bi bi-clock"></i>
+                <span>7:00 PM - 9:00 PM</span>
+              </div>
+              <div class="event-detail-item">
+                <i class="bi bi-geo-alt"></i>
+                <span>Auditorio Principal JACQUIN</span>
+              </div>
+              <div class="event-detail-item">
+                <i class="bi bi-ticket-perforated"></i>
+                <span>Entrada Libre</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Event Card 2 -->
+          <div class="event-card">
+            <span class="event-date">
+              <i class="bi bi-calendar-event"></i> 22 Enero 2026
+            </span>
+            <h3>Concierto de Guitarra Acústica</h3>
+            <p>
+              Una noche de melodías suaves y ritmos vibrantes con nuestros
+              talentosos guitarristas.
+            </p>
+            <div class="event-details">
+              <div class="event-detail-item">
+                <i class="bi bi-clock"></i>
+                <span>6:30 PM - 8:30 PM</span>
+              </div>
+              <div class="event-detail-item">
+                <i class="bi bi-geo-alt"></i>
+                <span>Sala de Conciertos</span>
+              </div>
+              <div class="event-detail-item">
+                <i class="bi bi-ticket-perforated"></i>
+                <span>Entrada Libre</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Event Card 3 -->
+          <div class="event-card">
+            <span class="event-date">
+              <i class="bi bi-calendar-event"></i> 5 Febrero 2026
+            </span>
+            <h3>Taller de Técnica Vocal</h3>
+            <p>
+              Masterclass abierta con invitados especiales. Aprende técnicas
+              profesionales de respiración y proyección vocal.
+            </p>
+            <div class="event-details">
+              <div class="event-detail-item">
+                <i class="bi bi-clock"></i>
+                <span>10:00 AM - 12:00 PM</span>
+              </div>
+              <div class="event-detail-item">
+                <i class="bi bi-geo-alt"></i>
+                <span>Aula 3 - Edificio Principal</span>
+              </div>
+              <div class="event-detail-item">
+                <i class="bi bi-ticket-perforated"></i>
+                <span>Cupos Limitados - Inscripción Previa</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Uncomment if no events -->
+        <!-- <div class="no-events">
+          <i class="bi bi-calendar-x"></i>
+          <h3>No hay eventos programados</h3>
+          <p>Pronto anunciaremos nuevas actividades. ¡Mantente atento!</p>
+        </div> -->
+      </section>
+    </main>
+
+    <jam-footer></jam-footer>
+
+    <script src="js/components/Navbar.js"></script>
+    <script src="js/components/Header.js"></script>
+    <script src="js/components/Footer.js"></script>
+    <script src="js/logoSound.js"></script>
+  </body>
+</html>

@@ -5,8 +5,12 @@
  */
 
 const API_CONFIG = {
-    // Ngrok Tunnel URL discovered from Android App source
+    // URL del Túnel Ngrok (Actual)
     BASE_URL: "https://coincidental-zoe-fermentatively.ngrok-free.dev/jacquin_api/public/",
+    
+    // URL Local (Descomentar si estás en la misma red y usas XAMPP/WAMP)
+    // BASE_URL: "http://192.168.0.16/jacquin_api/public/", 
+
     HEADERS: {
         "Content-Type": "application/json",
         "Accept": "application/json"
@@ -14,6 +18,23 @@ const API_CONFIG = {
 };
 
 const ApiService = {
+
+    // ==========================================
+    // CONTACT
+    // ==========================================
+
+    async sendContactMessage(data) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}contact.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify(data)
+            });
+            return await response.json();
+        } catch (error) {
+            return { success: false, message: "Error enviando mensaje." };
+        }
+    },
 
     // ==========================================
     // AUTHENTICATION

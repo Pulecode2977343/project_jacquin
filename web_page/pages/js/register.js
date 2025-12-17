@@ -1,57 +1,53 @@
+// Register Logic
 document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.getElementById('register-form');
     const mensajeRespuesta = document.getElementById('mensaje-respuesta');
 
-    // Verificamos que el formulario exista para evitar errores
     if (registerForm) {
         registerForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); // 1. Evita que la página se recargue
+            event.preventDefault();
 
-            // 2. Capturar los datos del HTML
+            // Prepare User Data
             const fullName = document.getElementById('full-name').value;
             const email = document.getElementById('email').value;
+            const nPhone = document.getElementById('phone')?.value || ""; // Handle phone if present
             const password = document.getElementById('password').value;
 
-            // 3. Lógica para separar Nombre y Apellido
-            const nameParts = fullName.trim().split(' ');
-            const nombre = nameParts[0];
-            const apellido = nameParts.slice(1).join(' ') || 'Pendiente'; // Si no pone apellido, guarda 'Pendiente'
+            // Simple Validation
+            if (!fullName || !email || !password) {
+                mensajeRespuesta.textContent = 'Complete todos los campos obligatorios.';
+                mensajeRespuesta.style.color = 'var(--color-acento-naranja)';
+                return;
+            }
 
-            // 4. Preparar el paquete de datos (JSON)
-            // Las claves (izquierda) deben coincidir con lo que espera tu Backend
-            const datosUsuario = {
-                nombre: nombre,
-                apellido: apellido,
-                correo_electronico: email,
-                contrasena: password
-                // El backend asigna id_rol: 3 automáticamente
+            const userData = {
+                fullName: fullName,
+                email: email,
+                nPhone: nPhone,
+                password: password
             };
 
+            mensajeRespuesta.textContent = 'Registrando...';
+            mensajeRespuesta.style.color = '#ccc';
+
             try {
-                // 5. Enviar los datos a la API
-                const response = await fetch('http://localhost:3000/api/empleados', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(datosUsuario)
-                });
+                const result = await ApiService.register(userData);
 
-                const result = await response.json();
-
-                // 6. Mostrar el resultado al usuario
-                if (response.ok) {
-                    mensajeRespuesta.textContent = '¡Registro Exitoso! Usuario guardado.';
-                    mensajeRespuesta.style.color = 'green';
-                    registerForm.reset(); // Limpia el formulario
+                if (result.success) {
+                    mensajeRespuesta.textContent = '¡Registro Exitoso! Redirigiendo...';
+                    mensajeRespuesta.style.color = '#2ecc71';
+                    registerForm.reset();
+                    
+                    setTimeout(() => {
+                        window.location.href = "login.html";
+                    }, 2000);
                 } else {
-                    mensajeRespuesta.textContent = 'Error: ' + (result.status || 'No se pudo guardar');
-                    mensajeRespuesta.style.color = 'red';
+                    mensajeRespuesta.textContent = result.message || 'Error al registrar.';
+                    mensajeRespuesta.style.color = 'var(--color-acento-naranja)';
                 }
-
             } catch (error) {
-                console.error('Error de conexión:', error);
-                mensajeRespuesta.textContent = 'Error: No se pudo conectar con el servidor.';
+                console.error('Register Error:', error);
+                mensajeRespuesta.textContent = 'Error de conexión.';
                 mensajeRespuesta.style.color = 'red';
             }
         });

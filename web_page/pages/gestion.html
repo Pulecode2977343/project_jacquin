@@ -85,16 +85,39 @@
       <section class="gestion-section">
         <div class="gestion-intro">
           <h1>Sistema de Gestión</h1>
-          <p>
-            Plataforma centralizada para la administración académica, control de
-            estudiantes y recursos docentes.
-          </p>
+          <p id="welcome-message">Bienvenido al Panel de Control</p>
+          <div id="user-widget" style="margin-top: 20px; display: none">
+            <span
+              id="user-name"
+              style="font-weight: bold; color: var(--color-acento-naranja)"
+              >Usuario</span
+            >
+            <span
+              id="user-role"
+              style="font-size: 0.8em; opacity: 0.8; margin-left: 10px"
+              >(Rol)</span
+            >
+            <button
+              onclick="ApiService.logout()"
+              class="btn-module"
+              style="
+                width: auto;
+                padding: 5px 15px;
+                margin-left: 20px;
+                font-size: 0.8em;
+              "
+            >
+              Cerrar Sesión
+            </button>
+          </div>
         </div>
 
         <div class="bento-grid">
           <!-- Módulo Profesores (Grande) -->
           <div
+            id="mod-profesores"
             class="bento-card dashboard-card card-piano"
+            style="display: none"
             onclick="accesoModulo('profesores')"
           >
             <div class="icon-glow"><i class="bi bi-person-video3"></i></div>
@@ -112,7 +135,9 @@
 
           <!-- Módulo Administradores -->
           <div
+            id="mod-admin"
             class="bento-card dashboard-card"
+            style="display: none"
             onclick="accesoModulo('administradores')"
           >
             <div class="icon-glow"><i class="bi bi-shield-lock"></i></div>
@@ -129,7 +154,9 @@
 
           <!-- Módulo Estudiantes -->
           <div
+            id="mod-estudiantes"
             class="bento-card dashboard-card"
+            style="display: none"
             onclick="accesoModulo('estudiantes')"
           >
             <div class="icon-glow"><i class="bi bi-mortarboard"></i></div>
@@ -146,6 +173,7 @@
 
           <!-- Módulo Interesados / Leads -->
           <div
+            id="mod-interesados"
             class="bento-card dashboard-card card-guitar"
             onclick="accesoModulo('interesados')"
           >
@@ -171,7 +199,10 @@
     <script src="js/components/Navbar.js"></script>
     <script src="js/components/Header.js"></script>
     <script src="js/components/Footer.js"></script>
-    <!-- Logic -->
+
+    <!-- API & Logic -->
+    <script src="js/services/api.js"></script>
+    <script src="js/dashboard.js"></script>
     <script src="js/script.js"></script>
     <script src="js/tilt.js"></script>
     <!-- Reuse 3D effect -->

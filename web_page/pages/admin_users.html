@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administración de Usuarios - JACQUIN</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <style>
+      .admin-section {
+        padding: 2rem 5%;
+        min-height: 80vh;
+        color: white;
+      }
+
+      .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 1rem;
+      }
+
+      .table-container {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        overflow-x: auto;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      th {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: var(--color-acento-naranja);
+        font-weight: 600;
+      }
+
+      tr:hover {
+        background-color: rgba(255, 255, 255, 0.02);
+      }
+
+      .role-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: bold;
+      }
+
+      .role-1 {
+        background-color: #e74c3c;
+        color: white;
+      } /* Admin */
+      .role-2 {
+        background-color: #f1c40f;
+        color: black;
+      } /* Docente */
+      .role-3 {
+        background-color: #3498db;
+        color: white;
+      } /* Estudiante */
+      .role-4 {
+        background-color: #95a5a6;
+        color: white;
+      } /* Aspirante */
+
+      .btn-action {
+        background: none;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn-action:hover {
+        background: white;
+        color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <jam-header></jam-header>
+
+    <main>
+      <section class="admin-section">
+        <div class="admin-header">
+          <h1>Gestión de Usuarios</h1>
+          <a
+            href="gestion.html"
+            class="btn-module"
+            style="width: auto; display: inline-block"
+            >Volver al Dashboard</a
+          >
+        </div>
+
+        <div class="table-container">
+          <table id="users-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol Actual</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rows injected by JS -->
+              <tr id="loading-row">
+                <td colspan="5" style="text-align: center">
+                  Cargando usuarios...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <jam-footer></jam-footer>
+
+    <!-- Scripts -->
+    <script src="js/components/Navbar.js"></script>
+    <script src="js/components/Header.js"></script>
+    <script src="js/components/Footer.js"></script>
+    <script src="js/services/api.js"></script>
+    <script src="js/admin_users.js"></script>
+  </body>
+</html>

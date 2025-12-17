@@ -4,6 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('login-form');
   const mensajeRespuesta = document.getElementById('mensaje-respuesta');
 
+  // Password Toggle Logic
+  const togglePassword = document.getElementById("togglePassword");
+  const passwordInput = document.getElementById("password");
+
+  if (togglePassword && passwordInput) {
+      togglePassword.addEventListener("click", () => {
+          const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+          passwordInput.setAttribute("type", type);
+          
+          togglePassword.classList.toggle("bi-eye");
+          togglePassword.classList.toggle("bi-eye-slash");
+      });
+  }
+
   if (!loginForm) return;
 
   loginForm.addEventListener('submit', async (event) => {

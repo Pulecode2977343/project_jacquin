@@ -1,0 +1,65 @@
+
+/* =========================================
+   FORM ICONS & BUTTON STYLES
+   ========================================= */
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.form-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-acento-azul);
+    font-size: 1.1rem;
+    z-index: 10;
+    pointer-events: none; /* Let clicks pass through to input */
+    transition: color 0.3s ease;
+}
+
+/* Adjust input padding to make room for icon */
+.form-input-neumorph.with-icon {
+    padding-left: 45px !important;
+}
+
+/* Password Toggle Eye */
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-humo-gris);
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: var(--color-acento-naranja);
+}
+
+/* Submit Button Icon Styling */
+.btn-login-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 20px; /* Balance visually */
+}
+
+.icon-send {
+    /* bi-send-fill natively points ~45deg (Top-Right) which is roughly 1:30 */
+    /* If user specifically asked for rotation, we can fine tune or animate it */
+    transform: rotate(0deg); 
+    transition: transform 0.3s ease;
+}
+
+.btn-login-submit:hover .icon-send {
+    /* "Launch" effect on hover */
+    transform: translate(3px, -3px);
+}

@@ -186,6 +186,19 @@ const ApiService = {
         }
     },
 
+    async deleteUser(id_usuario) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_delete_user.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify({ id_usuario: parseInt(id_usuario) })
+            });
+            return await response.json();
+        } catch (error) {
+            return { success: false, message: "Error eliminando usuario." };
+        }
+    },
+
     // ==========================================
     // LOCAL STORAGE HELPERS
     // ==========================================

@@ -1,0 +1,87 @@
+
+/* ==========================================================================
+   DEFINITIVE FORM STYLING FIXES (RE-APPLIED)
+   ========================================================================== */
+
+/* 1. Ensure Icons are Smoke Gray and clearly visible */
+.form-icon, .toggle-password {
+    color: var(--color-humo-gris) !important;
+    opacity: 0.9;
+    z-index: 20 !important; /* Above input background */
+}
+
+/* Hover state for toggle */
+.toggle-password:hover {
+    color: var(--color-acento-naranja) !important;
+}
+
+/* 2. Position Wrapper & Radius */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* 3. Input Padding (Make room for icon) */
+.form-input-neumorph.with-icon {
+    padding-left: 45px !important;
+    background-color: transparent; /* Essential for Z-index to work */
+}
+
+/* 4. AUTOFILL AGGRESSIVE FIX */
+/* Forces the background to be #192f48 (Dark Blue) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #192f48 inset !important;
+    box-shadow: 0 0 0 1000px #192f48 inset !important;
+    -webkit-text-fill-color: var(--color-blanco-neutro) !important;
+    color: var(--color-blanco-neutro) !important;
+    border-radius: 50px !important; /* Force radius */
+    transition: background-color 5000s ease-in-out 0s;
+    caret-color: var(--color-blanco-neutro);
+}
+
+/* Fix for Textarea with Icon (Align top) */
+.input-wrapper textarea {
+    padding-top: 15px !important;
+}
+
+/* Ensure placeholder color */
+::placeholder {
+    color: var(--color-humo-gris);
+    opacity: 0.7;
+}
+
+/* Icon Positioning Fix */
+.form-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+/* Submit Button Layout */
+.btn-login-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 20px;
+}

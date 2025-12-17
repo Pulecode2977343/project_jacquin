@@ -69,6 +69,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         modAdmin.onclick = () => window.location.href = "admin_users.html";
         modAdmin.style.cursor = "pointer";
     }
+
+    if (modProfes) {
+        modProfes.onclick = () => window.location.href = "profesores.html";
+        modProfes.style.cursor = "pointer";
+    }
+
+    if (modEstudiantes) {
+        modEstudiantes.onclick = () => window.location.href = "estudiantes.html";
+        modEstudiantes.style.cursor = "pointer";
+    }
+
+    if (modInteresados) {
+        // Keep or redirect to contact? Let's redirect to contact for now as "Consultar"
+        modInteresados.onclick = () => window.location.href = "contactanos.html";
+        modInteresados.style.cursor = "pointer";
+    }
 });
 
 function show(element) {

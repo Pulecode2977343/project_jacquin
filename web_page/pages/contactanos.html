@@ -100,37 +100,52 @@
         <div style="flex: 1; min-width: 300px">
           <form id="contact-form" class="contactanos">
             <div class="form-group">
-              <input
-                type="text"
-                name="nombre"
-                class="form-input-neumorph"
-                placeholder="Nombre completo"
-              />
+              <div class="input-wrapper">
+                <i class="bi bi-person form-icon"></i>
+                <input
+                  type="text"
+                  name="nombre"
+                  class="form-input-neumorph with-icon"
+                  placeholder="Nombre completo"
+                />
+              </div>
             </div>
             <div class="form-group">
-              <input
-                type="email"
-                name="email"
-                class="form-input-neumorph"
-                placeholder="Correo electrónico"
-              />
+              <div class="input-wrapper">
+                <i class="bi bi-envelope form-icon"></i>
+                <input
+                  type="email"
+                  name="email"
+                  class="form-input-neumorph with-icon"
+                  placeholder="Correo electrónico"
+                />
+              </div>
             </div>
             <div class="form-group">
-              <input
-                type="tel"
-                name="telefono"
-                class="form-input-neumorph"
-                placeholder="Número de teléfono"
-              />
+              <div class="input-wrapper">
+                <i class="bi bi-telephone form-icon"></i>
+                <input
+                  type="tel"
+                  name="telefono"
+                  class="form-input-neumorph with-icon"
+                  placeholder="Número de teléfono"
+                />
+              </div>
             </div>
             <div class="form-group">
-              <textarea
-                name="mensaje"
-                class="form-input-neumorph"
-                rows="5"
-                placeholder="Escribe tu mensaje aquí..."
-                style="border-radius: 20px"
-              ></textarea>
+              <div class="input-wrapper">
+                <i
+                  class="bi bi-chat-dots form-icon"
+                  style="top: 20px; transform: none"
+                ></i>
+                <textarea
+                  name="mensaje"
+                  class="form-input-neumorph with-icon"
+                  rows="5"
+                  placeholder="Escribe tu mensaje aquí..."
+                  style="border-radius: 20px"
+                ></textarea>
+              </div>
             </div>
 
             <div class="form-group">

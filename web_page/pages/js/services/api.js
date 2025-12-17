@@ -5,11 +5,11 @@
  */
 
 const API_CONFIG = {
-    // URL del Túnel Ngrok (Actual)
-    BASE_URL: "https://coincidental-zoe-fermentatively.ngrok-free.dev/jacquin_api/public/",
+    // URL del Túnel Ngrok (Opcional - Para acceso remoto)
+    // BASE_URL: "https://coincidental-zoe-fermentatively.ngrok-free.dev/jacquin_api/public/",
     
-    // URL Local (Descomentar si estás en la misma red y usas XAMPP/WAMP)
-    // BASE_URL: "http://192.168.0.16/jacquin_api/public/", 
+    // URL Local (Recomendada para pruebas en tu PC)
+    BASE_URL: "http://localhost/jacquin_api/public/", 
 
     HEADERS: {
         "Content-Type": "application/json",

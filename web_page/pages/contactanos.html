@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>J.A.M. Contáctenos</title>
+  </head>
+  <body>
+    <jam-header></jam-header>
+
+    <main class="main-submit">
+      <section
+        class="form-card"
+        style="
+          max-width: 900px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 2rem;
+          padding: 2rem;
+        "
+      >
+        <!-- Contact Info Side -->
+        <div style="flex: 1; min-width: 300px; padding: 1rem">
+          <h2
+            style="
+              color: var(--color-acento-naranja);
+              margin-bottom: 1rem;
+              font-size: 1.8rem;
+            "
+          >
+            ¡Hablemos!
+          </h2>
+          <p
+            style="
+              color: var(--color-humo-gris);
+              margin-bottom: 2rem;
+              line-height: 1.6;
+            "
+          >
+            Si buscas asistencia experta, nuestro equipo dedicado está preparado
+            para apoyarlo en cada paso del camino.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 1.5rem">
+            <div style="display: flex; align-items: center; gap: 15px">
+              <i
+                class="bi bi-telephone-outbound"
+                style="font-size: 1.5rem; color: var(--color-acento-azul)"
+              ></i>
+              <div>
+                <p style="color: white; margin: 0">Llámanos</p>
+                <span style="color: var(--color-humo-gris)"
+                  >+57 304 232 8575</span
+                >
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px">
+              <i
+                class="bi bi-envelope"
+                style="font-size: 1.5rem; color: var(--color-acento-azul)"
+              ></i>
+              <div>
+                <p style="color: white; margin: 0">Email</p>
+                <span style="color: var(--color-humo-gris)"
+                  >adminadmin@jacquin.com.co</span
+                >
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px">
+              <i
+                class="bi bi-whatsapp"
+                style="font-size: 1.5rem; color: var(--color-acento-azul)"
+              ></i>
+              <div>
+                <p style="color: white; margin: 0">WhatsApp</p>
+                <span style="color: var(--color-humo-gris)"
+                  >+57 304 232 8575</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 3rem">
+            <p style="color: white; margin-bottom: 1rem">Síguenos:</p>
+            <div class="social-icons" style="justify-content: flex-start">
+              <a href="#"><i class="bi bi-facebook"></i></a>
+              <a href="#"><i class="bi bi-tiktok"></i></a>
+              <a href="#"><i class="bi bi-twitter-x"></i></a>
+              <a href="#"><i class="bi bi-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Side -->
+        <div style="flex: 1; min-width: 300px">
+          <form
+            class="contactanos"
+            action=""
+            method="post"
+            enctype="text/plain"
+          >
+            <div class="form-group">
+              <input
+                type="text"
+                name="nombre"
+                class="form-input-neumorph"
+                placeholder="Nombre completo"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="email"
+                name="email"
+                class="form-input-neumorph"
+                placeholder="Correo electrónico"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="tel"
+                name="telefono"
+                class="form-input-neumorph"
+                placeholder="Número de teléfono"
+              />
+            </div>
+            <div class="form-group">
+              <textarea
+                name="mensaje"
+                class="form-input-neumorph"
+                rows="5"
+                placeholder="Escribe tu mensaje aquí..."
+                style="border-radius: 20px"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label style="margin-bottom: 10px; color: white"
+                >¿Cómo nos conociste?</label
+              >
+              <select name="origen" class="form-input-neumorph">
+                <option value="internet">Búsqueda en internet</option>
+                <option value="referencia">Referencia de amigo/familiar</option>
+                <option value="redes">Redes sociales</option>
+                <option value="otros">Otros</option>
+              </select>
+            </div>
+
+            <div
+              style="
+                margin-top: 2rem;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+              "
+            >
+              <button type="submit" class="btn" style="width: 100%">
+                ENVIAR MENSAJE
+              </button>
+
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--color-humo-gris);
+                  margin-top: 10px;
+                "
+              >
+                <label style="display: flex; gap: 8px; align-items: flex-start">
+                  <input type="checkbox" style="margin-top: 3px" />
+                  <span
+                    >Acepto los
+                    <a href="terms.html" style="color: var(--color-acento-azul)"
+                      >términos y condiciones</a
+                    >.</span
+                  >
+                </label>
+                <label
+                  style="
+                    display: flex;
+                    gap: 8px;
+                    align-items: flex-start;
+                    margin-top: 5px;
+                  "
+                >
+                  <input type="checkbox" style="margin-top: 3px" />
+                  <span
+                    >Acepto la
+                    <a
+                      href="dataPolicy.html"
+                      style="color: var(--color-acento-azul)"
+                      >política de datos</a
+                    >.</span
+                  >
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <jam-footer></jam-footer>
+
+    <script src="js/components/Navbar.js"></script>
+    <script src="js/components/Header.js"></script>
+    <script src="js/components/Footer.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JACQUIN - Gestión Institucional</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <style>
+      .gestion-section {
+        padding: 2rem 5%;
+        min-height: 60vh;
+      }
+      .gestion-intro {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: var(--color-blanco-neutro);
+      }
+      .gestion-intro h1 {
+        font-weight: 300;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+      .gestion-intro p {
+        max-width: 800px;
+        margin: 0 auto;
+        opacity: 0.8;
+        font-weight: 300;
+      }
+      /* Specific overrides for dashboard cards */
+      .dashboard-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        cursor: default; /* Logic handles click */
+      }
+      .dashboard-card h3 {
+        margin-top: 1rem;
+        color: var(--color-acento-naranja);
+      }
+      .dashboard-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 1rem;
+      }
+      .dashboard-list li {
+        color: var(--color-humo-gris);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+      }
+      .dashboard-list li::before {
+        content: "•";
+        color: var(--color-acento-azul);
+        font-weight: bold;
+      }
+      .btn-module {
+        margin-top: auto;
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .btn-module:hover {
+        background: var(--color-acento-azul);
+        color: var(--color-principal-azul);
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <jam-header></jam-header>
+
+    <main>
+      <section class="gestion-section">
+        <div class="gestion-intro">
+          <h1>Sistema de Gestión</h1>
+          <p>
+            Plataforma centralizada para la administración académica, control de
+            estudiantes y recursos docentes.
+          </p>
+        </div>
+
+        <div class="bento-grid">
+          <!-- Módulo Profesores (Grande) -->
+          <div
+            class="bento-card dashboard-card card-piano"
+            onclick="accesoModulo('profesores')"
+          >
+            <div class="icon-glow"><i class="bi bi-person-video3"></i></div>
+            <div class="card-content">
+              <h3>Módulo Profesores</h3>
+              <ul class="dashboard-list">
+                <li>Planificación y horarios</li>
+                <li>Registro de asistencia</li>
+                <li>Recursos digitales</li>
+              </ul>
+              <button class="btn-module">Acceder</button>
+            </div>
+            <div class="card-shine"></div>
+          </div>
+
+          <!-- Módulo Administradores -->
+          <div
+            class="bento-card dashboard-card"
+            onclick="accesoModulo('administradores')"
+          >
+            <div class="icon-glow"><i class="bi bi-shield-lock"></i></div>
+            <div class="card-content">
+              <h3>Administración</h3>
+              <ul class="dashboard-list">
+                <li>Gestión de usuarios</li>
+                <li>Control de aulas</li>
+              </ul>
+              <button class="btn-module">Acceder</button>
+            </div>
+            <div class="card-shine"></div>
+          </div>
+
+          <!-- Módulo Estudiantes -->
+          <div
+            class="bento-card dashboard-card"
+            onclick="accesoModulo('estudiantes')"
+          >
+            <div class="icon-glow"><i class="bi bi-mortarboard"></i></div>
+            <div class="card-content">
+              <h3>Estudiantes</h3>
+              <ul class="dashboard-list">
+                <li>Notas y Progreso</li>
+                <li>Pagos y Facturas</li>
+              </ul>
+              <button class="btn-module">Acceder</button>
+            </div>
+            <div class="card-shine"></div>
+          </div>
+
+          <!-- Módulo Interesados / Leads -->
+          <div
+            class="bento-card dashboard-card card-guitar"
+            onclick="accesoModulo('interesados')"
+          >
+            <div class="icon-glow"><i class="bi bi-person-plus"></i></div>
+            <div class="card-content">
+              <h3>Aspirantes</h3>
+              <ul class="dashboard-list">
+                <li>Información de Cursos</li>
+                <li>Proceso de Inscripción</li>
+                <li>Contacto Directo</li>
+              </ul>
+              <button class="btn-module">Consultar</button>
+            </div>
+            <div class="card-shine"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <jam-footer></jam-footer>
+
+    <!-- Web Components -->
+    <script src="js/components/Navbar.js"></script>
+    <script src="js/components/Header.js"></script>
+    <script src="js/components/Footer.js"></script>
+    <!-- Logic -->
+    <script src="js/script.js"></script>
+    <script src="js/tilt.js"></script>
+    <!-- Reuse 3D effect -->
+  </body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>J.A.M Inicio</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <jam-header></jam-header>
+
+    <main>
+      <!-- Hero / Bento Introduction -->
+      <section class="bento-section">
+        <div class="section-header">
+          <h2>Nuestros Programas</h2>
+          <p>Explora tu talento con nuestra metodología personalizada</p>
+        </div>
+
+        <div class="bento-grid">
+          <!-- Card de PIANO (Hero) - Span Large -->
+          <div class="bento-card card-piano" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow">
+                <i class="bi bi-music-note-beamed"></i>
+              </div>
+              <h3>Piano</h3>
+              <p>Domina las teclas desde lo clásico a lo moderno.</p>
+              <span class="card-cta"
+                >Ver Programa <i class="bi bi-arrow-right"></i
+              ></span>
+            </div>
+            <!-- Capas decorativas para el efecto 3D -->
+            <div class="card-shine"></div>
+            <div class="card-background"></div>
+          </div>
+
+          <!-- Card de GUITARRA - Medium -->
+          <div class="bento-card card-guitar" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow">
+                <i class="bi bi-guitar"></i>
+              </div>
+              <h3>Guitarra</h3>
+              <p>Acústica o eléctrica, encuentra tu sonido.</p>
+            </div>
+            <div class="card-shine"></div>
+            <div class="card-background"></div>
+          </div>
+
+          <!-- Card de VIOLÍN - Small -->
+          <div class="bento-card card-violin" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow">
+                <i class="bi bi-music-note"></i>
+                <!-- Icono genérico pero estilizado -->
+              </div>
+              <h3>Violín</h3>
+            </div>
+            <div class="card-shine"></div>
+            <div class="card-background"></div>
+          </div>
+
+          <!-- Card de TÉCNICA VOCAL - Tall -->
+          <div class="bento-card card-vocal" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow">
+                <i class="bi bi-mic"></i>
+              </div>
+              <h3>Técnica Vocal</h3>
+              <p>Descubre el poder de tu propia voz.</p>
+            </div>
+            <div class="card-shine"></div>
+            <div class="card-background"></div>
+          </div>
+
+          <!-- Card de BATERÍA - Wide -->
+          <div class="bento-card card-drums" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow">
+                <i class="bi bi-speaker"></i>
+              </div>
+              <h3>Batería</h3>
+              <p>Ritmo y percusión al máximo nivel.</p>
+            </div>
+            <div class="card-shine"></div>
+            <div class="card-background"></div>
+          </div>
+
+          <!-- Card de TEORÍA - Small -->
+          <div class="bento-card card-theory" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow">
+                <i class="bi bi-book"></i>
+              </div>
+              <h3>Teoría</h3>
+            </div>
+            <div class="card-shine"></div>
+            <div class="card-background"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <jam-footer></jam-footer>
+
+    <!-- Componentes Web -->
+    <script src="js/components/Navbar.js"></script>
+    <script src="js/components/Header.js"></script>
+    <script src="js/components/Footer.js"></script>
+
+    <!-- Scripts Logica -->
+    <script src="js/logoSound.js"></script>
+    <script src="js/tilt.js"></script>
+    <!-- Nuevo script 3D -->
+  </body>
+</html>

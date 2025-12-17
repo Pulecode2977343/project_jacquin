@@ -1,0 +1,920 @@
+:root {
+    /* Paleta de Colores */
+    --color-principal-azul: #223F61;
+    --neomorph-ppal-blue: #426080;
+    --background-menu-movil: #193658be;
+    --color-acento-azul: #93B6EE;
+    --azul-neon: #3b82f6;
+    --color-acento-naranja: #E78C3B;
+    --naranja-neon: #f97316;
+    --color-blanco-neutro: #dddddd;
+    --color-humo-gris: #CDCDCD;
+    --verde-neon: #2ecc71; /* Emerald Neon Green */
+}
+
+/* Global Custom Checkbox */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background-color: var(--color-principal-azul);
+    border-radius: 4px;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+    margin-top: 3px;
+    position: relative;
+    /* Neumorphic Inset (Sunken) */
+    box-shadow: inset 3px 3px 6px #192f48, 
+                inset -3px -3px 6px #2b4f7a;
+    transition: all 0.3s ease;
+}
+
+input[type="checkbox"]::before {
+    content: "\F26A"; /* Bootstrap Icon 'check' code (bi-check) fallback or just use simple shape */
+    content: "";
+    width: 10px;
+    height: 10px;
+    transform: scale(0);
+    transition: 0.2s transform ease-in-out;
+    background-color: var(--verde-neon);
+    box-shadow: 0 0 10px var(--verde-neon); /* Glow effect */
+    border-radius: 2px;
+}
+
+input[type="checkbox"]:checked {
+    /* Optional: Change background or keep sunken */
+    box-shadow: inset 3px 3px 6px #192f48, 
+                inset -3px -3px 6px #2b4f7a; 
+}
+
+input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+
+/* Add hover effect */
+input[type="checkbox"]:hover {
+    box-shadow: inset 4px 4px 8px #192f48, 
+                inset -4px -4px 8px #2b4f7a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Helvetica, sans-serif;
+    background: linear-gradient(to top, #1a324b 0%, var(--color-principal-azul) 100%); /* Subtle depth */
+    background-attachment: fixed; /* Ensure gradient covers full scroll */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-blanco-neutro);
+}
+
+.header {
+    height: 14vh; /* Reduced from 20vh */
+    width: 100%;
+}
+
+.btns-log-reg {
+    height: 6.5vh; /* Increased slightly for breathing room */
+    width: 100%;
+    margin: 0;
+    padding: 0 5%;
+    display: flex;
+    gap: 30px;
+    box-sizing: border-box;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: var(--color-principal-azul);
+    box-shadow: inset 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.btn {
+    display: flex;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-principal-azul);
+    color: var(--color-humo-gris);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    /* Soft UI / Convex Neomorphism */
+    box-shadow: 5px 5px 10px #192f48, 
+                -5px -5px 10px #2b4f7a;
+}
+
+.btn:hover {
+    color: var(--color-acento-naranja);
+    transform: translateY(1px);
+    /* Pressed / Concave Neomorphism */
+    box-shadow: inset 4px 4px 8px #192f48, 
+                inset -4px -4px 8px #2b4f7a;
+}
+
+/* Specific targeting for links inside buttons to ensure visibility */
+.btn a {
+    color: var(--color-blanco-neutro); /* Force white text */
+    text-decoration: none;
+    font-weight: 700; /* Make it bold */
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5); /* Add slight shadow for contrast/pop */
+    transition: color 0.3s ease;
+}
+
+.btn:hover a {
+    color: var(--color-acento-naranja); /* Orange on hover */
+    text-shadow: none; /* Remove shadow on glow state */
+}
+
+/* Ensure global a:hover doesn't conflict */
+.btn a:hover {
+    color: var(--color-acento-naranja);
+}
+
+/* Call to Action Special Effects */
+@keyframes softPulse {
+    0% {
+        box-shadow: 5px 5px 10px #192f48, -5px -5px 10px #2b4f7a;
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 5px 5px 15px #192f48, -5px -5px 15px #2b4f7a;
+        transform: scale(1.03);
+    }
+    100% {
+        box-shadow: 5px 5px 10px #192f48, -5px -5px 10px #2b4f7a;
+        transform: scale(1);
+    }
+}
+
+/* Target the "Inscríbete" button (Primary CTA) */
+.btn-login {
+    animation: softPulse 3s infinite ease-in-out;
+    border: none;
+    position: relative; 
+    overflow: hidden; 
+    background-color: transparent !important; /* Let pseudo-elements handle bg */
+    z-index: 1; /* Establish stacking context */
+}
+
+/* Ensure text stays on top */
+.btn-login a {
+    position: relative;
+    z-index: 10;
+}
+
+/* The "Face" / Mask - Covers the center to create "Border Only" effect */
+.btn-login::before {
+    content: '';
+    position: absolute;
+    inset: 3px; /* Thickness of the border shine */
+    background-color: var(--color-principal-azul);
+    border-radius: 48px; /* Slightly smaller than container */
+    z-index: 2; /* Sit on top of the shine */
+    transition: all 0.3s ease;
+}
+
+/* Shine / Reflection Effect (Now acts as Border Shine) */
+.btn-login::after {
+    content: '';
+    position: absolute;
+    top: -50%; /* Extend to ensure coverage during skew */
+    bottom: -50%;
+    left: 150%; 
+    width: 60%;
+    /* Gradient with subtle Neon Orange tint in the center */
+    background: linear-gradient(to left, 
+        rgba(255,255,255,0) 0%, 
+        rgba(249, 115, 22, 0.5) 50%, /* Orange pop, visible in gap */
+        rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg);
+    animation: shine 6s infinite ease-in-out; 
+    z-index: 1; /* Behind the mask */
+    pointer-events: none;
+}
+
+@keyframes shine {
+    0% { left: 150%; } 
+    20% { left: -150%; } 
+    100% { left: -150%; } 
+}
+
+.btn-login:hover {
+    animation: none; 
+}
+
+/* On hover, expand mask to fill or change style */
+.btn-login:hover::before {
+    /* Mimic the pressed state on the mask */
+    box-shadow: inset 4px 4px 8px #192f48, inset -4px -4px 8px #2b4f7a;
+    inset: 1px; /* Make border thinner on hover or keep it */
+    background-color: var(--color-principal-azul);
+}
+
+.btn-login:hover::after {
+    display: none; /* Hide shine on hover */
+}
+
+
+.link {
+    color: var(--color-principal-azul);
+    font-weight: 700;
+}
+
+.logo-links {
+    height: 9vh; /* Adjusted for better fit */
+    width: 100%;
+    display:block;
+    padding: 0 20%; /* Removed vertical percentage padding */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.logo {
+    width: 6vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.key:hover {
+    fill:var(--color-humo-gris);
+}
+
+.navbar-link:hover {
+    box-shadow: -5px -5px 16px -16px white,
+                5px 5px 16px -16px rgb(44, 37, 37);
+}
+
+.menuToggle {
+    display: none !important; /* Force hide against global input styling */
+}
+
+.hamb-btn {
+    display: none;
+    cursor: pointer;
+    padding: 20px;
+    z-index: 1002;
+}
+
+.hamb-line {
+    position: relative;
+    display: block;  
+    width: 30px;
+    height: 3px;
+    background: var(--color-blanco-neutro);
+}
+
+.hamb-line::before,
+.hamb-line::after {
+    content: '';
+    width: 100%;
+    height: 3px;
+    background: var(--color-blanco-neutro);
+    position: absolute;
+    left: 0;
+    transition: all 0.3s ease-out;
+}
+
+.hamb-line::after {
+    top: 8px;
+}
+
+.hamb-line::before {
+    top: -8px;
+}
+
+/* Mobile Only Utility */
+.mobile-only {
+    display: none;
+}
+
+.navbar-list {
+    display: flex;
+    gap: 1.5em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.4s ease-in-out;
+}
+
+/* Neomorphism Styles for Navbar */
+.navbar-link {
+    width: 90px;
+    height: 38px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    overflow: hidden;
+    color: var(--color-humo-gris);
+    background-color: var(--color-principal-azul);
+    box-shadow: 5px 5px 10px #192f48, 
+                -5px -5px 10px #2b4f7a;
+    transition: height 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.txt-menu {
+    max-height: 0;
+    opacity: 0;
+    order: 2;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+/* Hover State */
+.navbar-link:hover {
+    height: 70px;
+    background-color: var(--color-principal-azul);
+    color: var(--color-acento-naranja);
+    box-shadow: inset 5px 5px 10px #192f48, 
+                inset -5px -5px 10px #2b4f7a;
+    transform: none;
+    padding: 8px 10px;
+}
+
+.navbar-link:hover .txt-menu {
+    max-height: 30px;
+    opacity: 1;
+    margin-top: 10px;
+}
+
+.navbar-link .bi {
+    display: flex;
+    margin: 0;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    padding: 0px;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.navbar-link:hover .bi {
+    transform: scale(1.1);
+}
+
+/* Custom Elements Display Fix */
+jam-header, jam-navbar, jam-footer {
+    display: block;
+}
+
+/* Push footer to bottom */
+jam-footer {
+    margin-top: auto;
+    width: 100%;
+}
+
+/* Sticky Header Implementation */
+jam-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    display: block; 
+    /* Gradient Fade for Seamless Fusion */
+    background: linear-gradient(to bottom, 
+        rgba(34, 63, 97, 0.95) 0%, 
+        rgba(34, 63, 97, 0.8) 60%, 
+        rgba(34, 63, 97, 0) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: none;
+    border-bottom: none;
+    transition: background 0.3s ease;
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+/* Desktop Navbar Alignment */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* Responsive Logic (Fixed) */
+@media (max-width: 1250px) {
+
+    .logo {
+        display: flex;
+        height: 10vh;
+        width: 30vw;
+        justify-content: flex-start;
+        margin-left: 2rem;
+        z-index: 1001;
+    }
+
+    .hamb-btn {
+        display: block;
+        position: absolute;
+        top: 50%; 
+        transform: translateY(-50%);
+        right: 5%;
+        padding: 0;
+    }
+
+    /* Hide Top Buttons on Mobile */
+    .btns-log-reg {
+        display: none !important;
+    }
+
+    /* Show Mobile Menu Items */
+    .mobile-only {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Reduce Header Height */
+    .header, jam-header {
+        height: 10vh !important;
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        background: var(--color-principal-azul); 
+    }
+
+    /* Full Screen Overlay Container (Starts below Header) */
+    .navbar {
+        position: fixed;
+        top: 10vh; /* Below the 10vh Header */
+        left: 0;
+        width: 100vw;
+        height: 90vh; /* Remaining height */
+        background-color: rgba(0, 0, 0, 0.6); /* Backdrop Shadow */
+        z-index: 1000;
+        
+        /* Hidden State */
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+    }
+
+    /* Open State */
+    .menuToggle:checked ~ .navbar {
+        visibility: visible;
+        opacity: 1;
+        transition-delay: 0s;
+        pointer-events: all;
+    }
+
+    /* Drawer Content (Half Width) */
+    jam-navbar {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%; /* Half Screen */
+        height: 100%;
+        background-color: var(--color-principal-azul);
+        box-shadow: -10px 0 30px rgba(0,0,0,0.5); /* Depth Shadow */
+        
+        /* Styling: Round only Top-Left Corner */
+        border-top-left-radius: 30px;
+        
+        /* Slide Logic */
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        padding-top: 2rem; /* Adjusted padding */
+    }
+
+    .menuToggle:checked ~ .navbar jam-navbar {
+        transform: translateX(0); /* Slide In */
+    }
+
+    .navbar-list {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        padding: 30px 0;
+        height: 100%;
+        gap: 20px;
+    }
+
+    .navbar-list li {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .btn {
+        height: 30px;
+        width: 100px;
+        font-size: 0.6em;
+        letter-spacing: 1px;
+    }
+}
+
+.menuToggle:checked ~ .hamb-btn .hamb-line {
+    background: transparent;
+}
+
+.menuToggle:checked ~ .hamb-btn .hamb-line::before {
+    transform: rotate(45deg);
+    top: 0;
+}
+
+.menuToggle:checked ~ .hamb-btn .hamb-line::after {
+    transform: rotate(-45deg);
+    top: 0;
+}
+
+/* =========================================
+   BENTO GLASS GRID STYLES
+   ========================================= */
+
+.bento-section {
+    padding: 4rem 8%;
+    margin-top: -20px;
+    position: relative;
+    z-index: 10;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    color: var(--color-blanco-neutro);
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    color: var(--color-humo-gris);
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 300px);
+    gap: 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* --- Card Base Styles --- */
+.bento-card {
+    position: relative;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    transform-style: preserve-3d;
+    transform: perspective(1000px) rotateX(var(--rotateX, 0deg)) rotateY(var(--rotateY, 0deg));
+    transition: transform 0.1s ease-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.card-content {
+    position: relative;
+    z-index: 2;
+    transform: translateZ(20px);
+    pointer-events: none;
+}
+
+.bento-card h3 {
+    font-size: 1.8rem;
+    color: white;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.bento-card p {
+    color: var(--color-humo-gris);
+    font-size: 0.95rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.icon-glow {
+    font-size: 3rem;
+    color: var(--color-acento-azul);
+    opacity: 0.8;
+    margin-bottom: auto;
+    filter: drop-shadow(0 0 10px rgba(147, 182, 238, 0.3));
+    transition: all 0.4s ease;
+}
+
+.bento-card:hover .icon-glow {
+    transform: scale(1.1) translateZ(10px);
+    color: var(--color-acento-naranja);
+    filter: drop-shadow(0 0 15px rgba(231, 140, 59, 0.5));
+}
+
+.bento-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.card-shine {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(
+        circle at var(--sheenX, 50%) var(--sheenY, 50%), 
+        rgba(255, 255, 255, 0.15) 0%, 
+        transparent 50%
+    );
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.6;
+    mix-blend-mode: overlay;
+}
+
+.card-piano {
+    grid-column: span 2;
+    grid-row: span 2;
+    background: linear-gradient(135deg, rgba(8, 20, 36, 0.6), rgba(30, 50, 80, 0.4));
+}
+
+.card-guitar {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(50, 30, 20, 0.4), rgba(40, 40, 60, 0.4));
+}
+
+.card-vocal {
+    grid-row: span 2;
+}
+
+@media (max-width: 1250px) {
+    .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .card-piano, .card-guitar, .card-vocal {
+        grid-column: span 1;
+        grid-row: auto;
+        min-height: 250px;
+    }
+    .section-header h2 {
+        font-size: 2rem;
+    }
+}
+
+.card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-acento-naranja);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+}
+
+.bento-card:hover .card-cta {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Footer Styling */
+.footer {
+    background-color: #192f48;
+    color: var(--color-humo-gris);
+    padding: 1.5rem 5% 1rem;
+    font-size: 0.85rem;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 1rem;
+    text-align: center;
+}
+
+.footer-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-section h4 {
+    color: var(--color-acento-naranja);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-info-extra {
+    margin-top: 15px;
+    opacity: 0.8;
+}
+
+.footer-info-extra p {
+    margin: 4px 0;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.contact-list {
+    list-style: none;
+    padding: 0;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.contact-list i {
+    color: var(--color-acento-azul);
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.social-icons a {
+    color: var(--color-humo-gris);
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: var(--color-acento-naranja);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: var(--color-humo-gris);
+    opacity: 0.7;
+    font-size: 0.85rem;
+    transition: opacity 0.3s;
+}
+
+.footer-links a:hover {
+    opacity: 1;
+    color: var(--color-acento-naranja);
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* =========================================
+   NEUMORPHIC FORM STYLES
+   ========================================= */
+
+.main-submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 5%;
+    min-height: 70vh;
+}
+
+.form-card {
+    background: var(--color-principal-azul);
+    padding: 3rem;
+    border-radius: 30px;
+    box-shadow: 10px 10px 20px #192f48, 
+                -10px -10px 20px #2b4f7a;
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-card h1, 
+.form-card h2 {
+    color: var(--color-blanco-neutro); /* White titles */
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 300;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-humo-gris);
+    font-size: 0.9rem;
+    margin-left: 10px;
+}
+
+.form-input-neumorph {
+    width: 100%;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 15px;
+    background: var(--color-principal-azul);
+    color: var(--color-blanco-neutro);
+    box-shadow: inset 5px 5px 10px #192f48, 
+                inset -5px -5px 10px #2b4f7a;
+    outline: none;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.form-input-neumorph:focus {
+    box-shadow: inset 8px 8px 16px #192f48, 
+                inset -8px -8px 16px #2b4f7a;
+    color: var(--color-blanco-neutro);
+}
+
+.form-input-neumorph::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+select.form-input-neumorph {
+    appearance: none;
+    cursor: pointer;
+    color: var(--color-blanco-neutro);
+}
+
+select.form-input-neumorph option {
+    background-color: var(--color-principal-azul);
+    color: white;
+}

@@ -9,7 +9,11 @@ const API_CONFIG = {
     // BASE_URL: "https://coincidental-zoe-fermentatively.ngrok-free.dev/jacquin_api/public/",
     
     // URL Local (Recomendada para pruebas en tu PC)
-    BASE_URL: "http://localhost/jacquin_api/public/", 
+    // Usa 127.0.0.1:8080 porque tu servidor está en el puerto 8080
+    BASE_URL: "http://127.0.0.1:8080/jacquin_api/public/", 
+
+    // Tu IP específica (Descomentar si la anterior falla)
+    // BASE_URL: "http://198.162.0.16:8080/jacquin_api/public/",
 
     HEADERS: {
         "Content-Type": "application/json",

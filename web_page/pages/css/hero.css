@@ -11,19 +11,9 @@
     justify-content: center;
     overflow: hidden;
     background-image: url('../images/hero-banner.png');
-    background-size: cover;
+    background-size: 115%;
     background-position: center;
     background-attachment: fixed;
-    animation: zoomIn 20s ease-in-out infinite alternate;
-}
-
-@keyframes zoomIn {
-    0% {
-        background-size: 100%;
-    }
-    100% {
-        background-size: 110%;
-    }
 }
 
 .hero-overlay {
@@ -47,7 +37,7 @@
     text-align: center;
     color: var(--color-blanco-neutro);
     padding: 2rem;
-    padding-bottom: 8rem;
+    padding-bottom: 25vh;
     animation: fadeInUp 1.2s ease-out;
     position: absolute;
     bottom: 0;

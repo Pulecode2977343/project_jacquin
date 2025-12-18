@@ -9,13 +9,31 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
     />
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/hero.css" />
   </head>
   <body>
     <jam-header></jam-header>
 
     <main>
-      <!-- Hero / Bento Introduction -->
-      <section class="bento-section">
+      <!-- Hero Section - Fullscreen -->
+      <section class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <h1 class="hero-title">JACQUIN</h1>
+          <p class="hero-subtitle">Academia Musical</p>
+          <p class="hero-tagline">Donde la pasión se convierte en arte</p>
+          <a href="#programas" class="hero-cta">
+            <span>Descubre Nuestros Programas</span>
+            <i class="bi bi-arrow-down"></i>
+          </a>
+        </div>
+        <div class="hero-scroll-indicator">
+          <i class="bi bi-chevron-down"></i>
+        </div>
+      </section>
+
+      <!-- Nuestros Programas Section -->
+      <section class="bento-section" id="programas">
         <div class="section-header">
           <h2>Nuestros Programas</h2>
           <p>Explora tu talento con nuestra metodología personalizada</p>

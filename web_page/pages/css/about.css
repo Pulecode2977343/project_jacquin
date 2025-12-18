@@ -1,0 +1,140 @@
+/* =========================================
+   ABOUT US SECTION STYLES
+   ========================================= */
+
+.about-section {
+    padding: 3rem 5%;
+    min-height: auto;
+    background: transparent;
+}
+
+/* Scroll offset for about section */
+#nosotros {
+    scroll-margin-top: 100px;
+    padding-top: 3rem;
+}
+
+.about-hero {
+    text-align: center;
+    margin-bottom: 4rem;
+    color: var(--color-blanco-neutro);
+}
+
+.about-hero h2 {
+    font-weight: 300;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-blanco-neutro);
+}
+
+.about-hero p {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.2rem;
+    opacity: 0.9;
+    line-height: 1.8;
+}
+
+.about-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+}
+
+.about-card {
+    background: rgba(43, 85, 131, 0.3); /* Matches other sections */
+    border-radius: 20px;
+    padding: 2.5rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.about-card-icon {
+    font-size: 3rem;
+    color: var(--color-acento-naranja);
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.about-card h3 {
+    color: var(--color-blanco-neutro);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.about-card p {
+    color: var(--color-humo-gris);
+    line-height: 1.8;
+}
+
+.mission-vision {
+    margin-top: 4rem;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mission-vision h2 {
+    color: var(--color-acento-azul);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.mission-vision p {
+    color: var(--color-humo-gris);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.values-grid {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.value-item {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.value-item i {
+    font-size: 2.5rem;
+    color: var(--color-acento-azul);
+    margin-bottom: 1rem;
+}
+
+.value-item h4 {
+    color: var(--color-blanco-neutro);
+    margin-bottom: 0.5rem;
+}
+
+.value-item p {
+    color: var(--color-humo-gris);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .about-hero h2 {
+        font-size: 2rem;
+    }
+
+    .about-content {
+        grid-template-columns: 1fr;
+    }
+}

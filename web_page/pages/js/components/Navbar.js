@@ -18,7 +18,7 @@ class Navbar extends HTMLElement {
 
                 <!-- 2. Eventos -->
                 <li>
-                    <a class="navbar-link" href="eventos.html">
+                    <a class="navbar-link" href="index.html#eventos">
                         <span class="txt-menu">Eventos</span>
                         <svg viewBox="0 0 60.77 125.05" width="25" height="25" xmlns="http://www.w3.org/2000/svg">
                           <defs>

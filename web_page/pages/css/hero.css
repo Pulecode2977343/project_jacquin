@@ -37,7 +37,11 @@
     text-align: center;
     color: var(--color-blanco-neutro);
     padding: 2rem;
+    padding-bottom: 8rem;
     animation: fadeInUp 1.2s ease-out;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 .hero-title {

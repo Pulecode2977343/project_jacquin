@@ -7,7 +7,7 @@
 const API_CONFIG = {
     // URL del Túnel Ngrok (Opcional - Para acceso remoto)
     // BASE_URL: "https://coincidental-zoe-fermentatively.ngrok-free.dev/jacquin_api/public/",
-    
+
     // URL Local (Standard XAMPP Deployment - Unified Structure)
     BASE_URL: "http://localhost:8080/jacquin_api/",
 
@@ -22,12 +22,12 @@ const ApiService = {
     /**
      * Auth Methods
      */
-    async login(credentials) {
+    async login(email, password) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}login.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(credentials)
+                body: JSON.stringify({ email, password })
             });
             return await response.json();
         } catch (error) {
@@ -46,7 +46,7 @@ const ApiService = {
             try {
                 return JSON.parse(text);
             } catch (e) {
-                return { success: false, message: `Error respuesta: ${text.substring(0,50)}` };
+                return { success: false, message: `Error respuesta: ${text.substring(0, 50)}` };
             }
         } catch (error) {
             return { success: false, message: "Error de conexión en Registro." };
@@ -71,7 +71,7 @@ const ApiService = {
             });
 
             const text = await response.text();
-            
+
             if (!response.ok) {
                 return { success: false, message: `HTTP Error ${response.status}: ${text.substring(0, 50)}...` };
             }

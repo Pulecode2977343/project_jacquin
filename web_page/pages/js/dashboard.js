@@ -36,27 +36,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Default: Hide protected modules (already hidden in HTML via style="display:none")
     // We only need to SHOW what they are allowed to see.
 
-    const modAdmin = document.getElementById("mod-admin");
-    const modProfes = document.getElementById("mod-profesores");
-    const modEstudiantes = document.getElementById("mod-estudiantes");
+    const modProfes = document.getElementById("mod-profesores"); // Now "Users"
+    const modEvents = document.getElementById("mod-events");
+    const modAcademic = document.getElementById("mod-academic");
     const modInteresados = document.getElementById("mod-interesados");
 
     const roleId = parseInt(user.id_rol);
 
     switch (roleId) {
         case 1: // ADMIN
-            show(modAdmin);
             show(modProfes);
-            show(modEstudiantes);
+            show(modEvents);
+            show(modAcademic);
             show(modInteresados);
+            
+            // Show the combined Admin Container
+            const adminContainer = document.getElementById("admin-modules-container");
+            if(adminContainer) adminContainer.style.display = "block";
             break;
 
         case 2: // DOCENTE
             show(modProfes);
+            // Docentes might need access to Academic too? For now, stick to original.
             break;
 
         case 3: // ESTUDIANTE
-            show(modEstudiantes);
+            // Currently no dedicated module for students in this dashboard
             break;
             
         default: // ASPIRANTE / GUEST
@@ -65,19 +70,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Link Modules to Real Pages
-    if (modAdmin) {
-        modAdmin.onclick = () => window.location.href = "admin_users.html";
-        modAdmin.style.cursor = "pointer";
-    }
-
+    
     if (modProfes) {
-        modProfes.onclick = () => window.location.href = "profesores.html";
+        if (roleId === 1) {
+            // Admin: Scroll to Users Directory
+            modProfes.onclick = () => {
+                const section = document.getElementById('section-directory');
+                if(section) section.scrollIntoView({ behavior: 'smooth' });
+            };
+        } else {
+            // Others (Docentes): Go to external page or their view
+            // Assuming simplified view for now or same logic
+             modProfes.onclick = () => {
+                const section = document.getElementById('section-directory'); // They can see it too (read only logic inside)
+                if(section) section.scrollIntoView({ behavior: 'smooth' });
+            };
+        }
         modProfes.style.cursor = "pointer";
     }
 
-    if (modEstudiantes) {
-        modEstudiantes.onclick = () => window.location.href = "estudiantes.html";
-        modEstudiantes.style.cursor = "pointer";
+    if (modEvents) {
+        modEvents.onclick = () => {
+            const section = document.getElementById('section-events');
+            if(section) section.scrollIntoView({ behavior: 'smooth' });
+        };
+        modEvents.style.cursor = "pointer";
+    }
+
+    if (modAcademic) {
+        modAcademic.onclick = () => {
+            const section = document.getElementById('section-academic');
+            if(section) section.scrollIntoView({ behavior: 'smooth' });
+        };
+        modAcademic.style.cursor = "pointer";
     }
 
     if (modInteresados) {

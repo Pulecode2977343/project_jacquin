@@ -8,12 +8,8 @@ const API_CONFIG = {
     // URL del Túnel Ngrok (Opcional - Para acceso remoto)
     // BASE_URL: "https://coincidental-zoe-fermentatively.ngrok-free.dev/jacquin_api/public/",
     
-    // URL Local (Recomendada para pruebas en tu PC)
-    // Usa 127.0.0.1:8080 porque tu servidor está en el puerto 8080
-    BASE_URL: "http://127.0.0.1:8080/jacquin_api/public/", 
-
-    // Tu IP específica (Descomentar si la anterior falla)
-    // BASE_URL: "http://198.162.0.16:8080/jacquin_api/public/",
+    // URL Local (Standard XAMPP Deployment - Unified Structure)
+    BASE_URL: "http://localhost:8080/jacquin_api/",
 
     HEADERS: {
         "Content-Type": "application/json",
@@ -23,140 +19,46 @@ const API_CONFIG = {
 
 const ApiService = {
 
-    // ==========================================
-    // CONTACT
-    // ==========================================
-
-    async sendContactMessage(data) {
-        try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}contact.php`, {
-                method: "POST",
-                headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(data)
-            });
-            return await response.json();
-        } catch (error) {
-            return { success: false, message: "Error enviando mensaje." };
-        }
-    },
-
-    // ==========================================
-    // AUTHENTICATION
-    // ==========================================
-
     /**
-     * Login User
-     * @param {string} email 
-     * @param {string} password 
-     * @returns {Promise<object>} Response data
+     * Auth Methods
      */
-    async login(email, password) {
+    async login(credentials) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}login.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify(credentials)
             });
-            const data = await response.json();
-            
-            // Store Session if successful
-            if (data.success && (data.user || data.data)) {
-                const user = data.user || data.data;
-                this.saveSession(user);
-            }
-            return data;
+            return await response.json();
         } catch (error) {
-            console.error("Login Error:", error);
-            return { success: false, message: "Error de conexión con el servidor." };
+            return { success: false, message: "Error de conexión en Login." };
         }
     },
 
-    /**
-     * Register New User
-     * @param {object} userData { fullName, email, nPhone, password }
-     */
     async register(userData) {
         try {
-            // Map keys to API expectation if needed (snake_case vs camelCase)
-            const payload = {
-                full_name: userData.fullName,
-                email: userData.email,
-                n_phone: userData.nPhone,
-                password: userData.password
-            };
-
             const response = await fetch(`${API_CONFIG.BASE_URL}register.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(payload)
+                body: JSON.stringify(userData)
             });
-            return await response.json();
-        } catch (error) {
-            console.error("Register Error:", error);
-            return { success: false, message: "Error al registrar usuario." };
-        }
-    },
-
-    logout() {
-        localStorage.removeItem("jam_user_session");
-        window.location.href = "login.html";
-    },
-
-    // ==========================================
-    // RECOVERY
-    // ==========================================
-
-    async requestRecoveryCode(email) {
-        try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}recover.php`, {
-                method: "POST",
-                headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ email })
-            });
-            
-            // Note: PHP might return raw text or JSON depending on implementation. 
-            // JamApiService says it returns ResponseBody but likely JSON for app logic.
-            // We'll try to parse JSON, fallback to text if fails.
             const text = await response.text();
             try {
                 return JSON.parse(text);
-            } catch {
-                return { success: response.ok, message: text };
+            } catch (e) {
+                return { success: false, message: `Error respuesta: ${text.substring(0,50)}` };
             }
         } catch (error) {
-            return { success: false, message: "Error de red." };
+            return { success: false, message: "Error de conexión en Registro." };
         }
     },
 
-    async verifyRecoveryCode(email, code) {
-        try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}verify_code.php`, {
-                method: "POST",
-                headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ email, code })
-            });
-            return await response.json();
-        } catch (error) {
-            return { success: false, message: "Error verificando código." };
-        }
+    async logout() {
+        localStorage.removeItem("jam_user_session");
+        window.location.href = "index.html";
     },
 
-    async resetPassword(email, code, newPassword) {
-        try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}reset_password.php`, {
-                method: "POST",
-                headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ email, code, new_password: newPassword })
-            });
-            return await response.json();
-        } catch (error) {
-            return { success: false, message: "Error reseteando contraseña." };
-        }
-    },
-
-    // ==========================================
-    // ADMIN
-    // ==========================================
+    // ... (omitted methods) ...
 
     /**
      * Get All Users (Admin Only)
@@ -167,9 +69,76 @@ const ApiService = {
                 method: "GET",
                 headers: API_CONFIG.HEADERS
             });
+
+            const text = await response.text();
+            
+            if (!response.ok) {
+                return { success: false, message: `HTTP Error ${response.status}: ${text.substring(0, 50)}...` };
+            }
+
+            try {
+                return JSON.parse(text);
+            } catch (jsonError) {
+                console.error("JSON Parse Error:", text);
+                return { success: false, message: `Respuesta inválida (No JSON): ${text.substring(0, 50)}...` };
+            }
+        } catch (error) {
+            console.error("Networking Error:", error);
+            return { success: false, message: `Error de red: ${error.message}` };
+        }
+    },
+
+    async getCourses() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}get_courses.php`, {
+                method: "GET",
+                headers: API_CONFIG.HEADERS
+            });
             return await response.json();
         } catch (error) {
-            return { success: false, message: "Error obteniendo usuarios." };
+            return { success: false, message: "Error obteniendo cursos." };
+        }
+    },
+
+    async getUserDetails(userId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}get_user_details.php?id=${userId}`, {
+                method: "GET",
+                headers: API_CONFIG.HEADERS
+            });
+            return await response.json();
+        } catch (error) {
+            return { success: false, message: "Error obteniendo detalles." };
+        }
+    },
+
+    async uploadAvatar(userId, file) {
+        try {
+            const formData = new FormData();
+            formData.append('user_id', userId);
+            formData.append('avatar_file', file);
+
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_upload_avatar.php`, {
+                method: "POST",
+                // Headers auto-set for FormData (multipart)
+                body: formData
+            });
+            return await response.json();
+        } catch (error) {
+            return { success: false, message: "Error subiendo foto." };
+        }
+    },
+
+    async enrollStudent(studentId, courseId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_enroll_student.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify({ student_id: studentId, course_id: courseId })
+            });
+            return await response.json();
+        } catch (error) {
+            return { success: false, message: "Error en inscripción." };
         }
     },
 

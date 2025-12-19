@@ -12,8 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     const user = ApiService.getSession();
     if (user.id_rol != 1) {
-        alert("Acceso denegado. Solo administradores.");
-        window.location.href = "gestion.html";
+        console.warn("Acceso denegado: Usuario no es admin. Deteniendo script de usuarios.");
         return;
     }
 
@@ -63,6 +62,8 @@ window.changeRole = async function(userId, userName) {
         if (result.success) {
             alert("Rol actualizado correctamente");
             loadUsers(); // Refresh
+            if(window.loadProfessors) window.loadProfessors(); 
+            if(window.loadAdmins) window.loadAdmins();
         } else {
             alert("Error: " + result.message);
         }

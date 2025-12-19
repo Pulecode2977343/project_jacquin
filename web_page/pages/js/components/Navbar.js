@@ -109,6 +109,27 @@ class Navbar extends HTMLElement {
                 </li>
 
                 <!-- Mobile Only: Login & Register -->
+                ${this.renderAuthLinks()}
+            </ul>
+        `;
+    }
+
+    renderAuthLinks() {
+        const isAuthenticated = window.ApiService && window.ApiService.isAuthenticated();
+        
+        if (isAuthenticated) {
+            return `
+                <li class="mobile-only">
+                    <a class="navbar-link" href="gestion.html">
+                        <span class="txt-menu">Mi Dashboard</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-speedometer2" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4M3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.389.389 0 0 0-.527-.02l-.755.755a.5.5 0 0 1-.708-.708l.755-.755a.389.389 0 0 0-.019-.527l-5-5a.5.5 0 0 0-.708 0l-5 5a.389.389 0 0 0 0 .527c.478.478 1.127.568 1.517.457l.581-.18A5.002 5.002 0 0 1 8 5c1.11 0 2.126.376 2.937.994l.581.18c.39.111 1.039.021 1.517-.457a.389.389 0 0 0 0-.527zM8 4.5a.5.5 0 0 1 .5.5v1.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                        </svg>
+                    </a>
+                </li>
+            `;
+        } else {
+            return `
                 <li class="mobile-only">
                     <a class="navbar-link" href="login.html">
                         <span class="txt-menu">Iniciar Sesión</span>
@@ -127,8 +148,8 @@ class Navbar extends HTMLElement {
                         </svg>
                     </a>
                 </li>
-            </ul>
-        `;
+            `;
+        }
     }
 }
 

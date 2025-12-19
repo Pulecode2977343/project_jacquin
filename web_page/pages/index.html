@@ -43,83 +43,7 @@
         </div>
 
         <div class="events-grid">
-          <!-- Event Card 1 -->
-          <div class="event-card" data-tilt>
-            <span class="event-date">
-              <i class="bi bi-calendar-event"></i> 15 Enero 2026
-            </span>
-            <h3>Recital de Piano Clásico</h3>
-            <p>
-              Nuestros estudiantes avanzados de piano presentarán obras de
-              Mozart, Beethoven y Chopin en una velada inolvidable.
-            </p>
-            <div class="event-details">
-              <div class="event-detail-item">
-                <i class="bi bi-clock"></i>
-                <span>7:00 PM - 9:00 PM</span>
-              </div>
-              <div class="event-detail-item">
-                <i class="bi bi-geo-alt"></i>
-                <span>Auditorio Principal JACQUIN</span>
-              </div>
-              <div class="event-detail-item">
-                <i class="bi bi-ticket-perforated"></i>
-                <span>Entrada Libre</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Event Card 2 -->
-          <div class="event-card" data-tilt>
-            <span class="event-date">
-              <i class="bi bi-calendar-event"></i> 22 Enero 2026
-            </span>
-            <h3>Concierto de Guitarra Acústica</h3>
-            <p>
-              Una noche de melodías suaves y ritmos vibrantes con nuestros
-              talentosos guitarristas.
-            </p>
-            <div class="event-details">
-              <div class="event-detail-item">
-                <i class="bi bi-clock"></i>
-                <span>6:30 PM - 8:30 PM</span>
-              </div>
-              <div class="event-detail-item">
-                <i class="bi bi-geo-alt"></i>
-                <span>Sala de Conciertos</span>
-              </div>
-              <div class="event-detail-item">
-                <i class="bi bi-ticket-perforated"></i>
-                <span>Entrada Libre</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Event Card 3 -->
-          <div class="event-card" data-tilt>
-            <span class="event-date">
-              <i class="bi bi-calendar-event"></i> 5 Febrero 2026
-            </span>
-            <h3>Taller de Técnica Vocal</h3>
-            <p>
-              Masterclass abierta con invitados especiales. Aprende técnicas
-              profesionales de respiración y proyección vocal.
-            </p>
-            <div class="event-details">
-              <div class="event-detail-item">
-                <i class="bi bi-clock"></i>
-                <span>10:00 AM - 12:00 PM</span>
-              </div>
-              <div class="event-detail-item">
-                <i class="bi bi-geo-alt"></i>
-                <span>Aula 3 - Edificio Principal</span>
-              </div>
-              <div class="event-detail-item">
-                <i class="bi bi-ticket-perforated"></i>
-                <span>Cupos Limitados - Inscripción Previa</span>
-              </div>
-            </div>
-          </div>
+          <!-- Dynamic Content Loaded by JS -->
         </div>
       </section>
 
@@ -131,85 +55,101 @@
         </div>
 
         <div class="bento-grid">
-          <!-- Card de PIANO (Hero) - Span Large -->
-          <div class="bento-card card-piano" data-tilt>
+          <!-- 1. PERCUSIÓN (Wide) -->
+          <div class="bento-card card-drums" data-tilt>
             <div class="card-content">
               <div class="icon-glow">
                 <i class="bi bi-music-note-beamed"></i>
               </div>
+              <h3>Percusión</h3>
+              <p>Ritmo y energía.</p>
+            </div>
+            <div class="card-shine"></div>
+          </div>
+
+          <!-- 2. GUITARRA (Wide) -->
+          <div class="bento-card card-guitar" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow"><i class="bi bi-guitar"></i></div>
+              <h3>Guitarra</h3>
+              <p>Acústica y Electrica.</p>
+            </div>
+            <div class="card-shine"></div>
+          </div>
+
+          <!-- 3. PIANO (Large 2x2) -->
+          <div class="bento-card card-piano" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow"><i class="bi bi-grid-3x3-gap"></i></div>
               <h3>Piano</h3>
-              <p>Domina las teclas desde lo clásico a lo moderno.</p>
+              <p>Clásico y Moderno.</p>
               <span class="card-cta"
                 >Ver Programa <i class="bi bi-arrow-right"></i
               ></span>
             </div>
-            <!-- Capas decorativas para el efecto 3D -->
             <div class="card-shine"></div>
-            <div class="card-background"></div>
           </div>
 
-          <!-- Card de GUITARRA - Medium -->
-          <div class="bento-card card-guitar" data-tilt>
-            <div class="card-content">
-              <div class="icon-glow">
-                <i class="bi bi-guitar"></i>
-              </div>
-              <h3>Guitarra</h3>
-              <p>Acústica o eléctrica, encuentra tu sonido.</p>
-            </div>
-            <div class="card-shine"></div>
-            <div class="card-background"></div>
-          </div>
-
-          <!-- Card de VIOLÍN - Small -->
-          <div class="bento-card card-violin" data-tilt>
-            <div class="card-content">
-              <div class="icon-glow">
-                <i class="bi bi-music-note"></i>
-                <!-- Icono genérico pero estilizado -->
-              </div>
-              <h3>Violín</h3>
-            </div>
-            <div class="card-shine"></div>
-            <div class="card-background"></div>
-          </div>
-
-          <!-- Card de TÉCNICA VOCAL - Tall -->
+          <!-- 4. VOZ (Tall) -->
           <div class="bento-card card-vocal" data-tilt>
             <div class="card-content">
-              <div class="icon-glow">
-                <i class="bi bi-mic"></i>
-              </div>
-              <h3>Técnica Vocal</h3>
-              <p>Descubre el poder de tu propia voz.</p>
+              <div class="icon-glow"><i class="bi bi-mic"></i></div>
+              <h3>Voz</h3>
+              <p>Técnica Vocal.</p>
             </div>
             <div class="card-shine"></div>
-            <div class="card-background"></div>
           </div>
 
-          <!-- Card de BATERÍA - Wide -->
-          <div class="bento-card card-drums" data-tilt>
+          <!-- 5. SENIOR'S (Std) -->
+          <div class="bento-card card-seniors" data-tilt>
             <div class="card-content">
-              <div class="icon-glow">
-                <i class="bi bi-speaker"></i>
-              </div>
-              <h3>Batería</h3>
-              <p>Ritmo y percusión al máximo nivel.</p>
+              <div class="icon-glow"><i class="bi bi-person-hearts"></i></div>
+              <h3>Senior's</h3>
+              <p>Adulto Mayor.</p>
             </div>
             <div class="card-shine"></div>
-            <div class="card-background"></div>
           </div>
 
-          <!-- Card de TEORÍA - Small -->
-          <div class="bento-card card-theory" data-tilt>
+          <!-- 6. SHOWS (Wide) -->
+          <div class="bento-card card-shows" data-tilt>
             <div class="card-content">
               <div class="icon-glow">
-                <i class="bi bi-book"></i>
+                <i class="bi bi-ticket-perforated"></i>
               </div>
-              <h3>Teoría</h3>
+              <h3>Shows</h3>
+              <p>Presentaciones en vivo.</p>
             </div>
             <div class="card-shine"></div>
-            <div class="card-background"></div>
+          </div>
+
+          <!-- 7. EXPLORACIÓN (Std) -->
+          <div class="bento-card card-exploration" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow"><i class="bi bi-balloon"></i></div>
+              <h3>Exploración</h3>
+              <p>Iniciación Musical.</p>
+            </div>
+            <div class="card-shine"></div>
+          </div>
+
+          <!-- 8. PSICOMÚSICA (Std) -->
+          <div class="bento-card card-psychomusic" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow"><i class="bi bi-heart-pulse"></i></div>
+              <h3>Psicomúsica</h3>
+              <p>Bienestar y Terapia.</p>
+            </div>
+            <div class="card-shine"></div>
+          </div>
+
+          <!-- 9. INSTALACIONES (Wide) -->
+          <div class="bento-card card-facilities" data-tilt>
+            <div class="card-content">
+              <div class="icon-glow"><i class="bi bi-house-heart"></i></div>
+              <h3>Instalaciones</h3>
+              <p>Espacios Creativos.</p>
+            </div>
+            <div class="card-shine"></div>
           </div>
         </div>
       </section>
@@ -298,6 +238,9 @@
 
     <jam-footer></jam-footer>
 
+    <!-- Servicios -->
+    <script src="js/services/api.js"></script>
+
     <!-- Componentes Web -->
     <script src="js/components/Navbar.js"></script>
     <script src="js/components/Header.js"></script>
@@ -307,6 +250,7 @@
     <script src="js/logoSound.js"></script>
     <script src="js/tilt.js"></script>
     <script src="js/heroScroll.js"></script>
+    <script type="module" src="js/home_events.js"></script>
     <!-- Nuevo script 3D -->
   </body>
 </html>

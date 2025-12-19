@@ -4,15 +4,14 @@ class Header extends HTMLElement {
     }
 
     connectedCallback() {
+        this.render();
+    }
+
+    render() {
         this.innerHTML = `
         <header class="header">
-            <div class="btns-log-reg">
-                <button class="btn btn-register" id="btnLogin">
-                    <a href="login.html" class="link link-login">Iniciar Sesión</a>
-                </button>
-                <button class="btn btn-login" id="btnLogin">
-                    <a href="newUser.html" class="link link-register">Inscríbete</a>
-                </button>
+            <div class="btns-log-reg" id="authButtons">
+                ${this.renderAuthButtons()}
             </div>
 
             <div class="logo-links">
@@ -67,6 +66,33 @@ class Header extends HTMLElement {
             </div>
         </header>
         `;
+    }
+
+    renderAuthButtons() {
+        const isAuthenticated = window.ApiService && window.ApiService.isAuthenticated();
+
+        if (isAuthenticated) {
+            const user = window.ApiService.getSession();
+            const roleName = user.id_rol == 1 ? 'Admin' : (user.id_rol == 2 ? 'Profe' : 'Estudiante');
+            
+            return `
+                <button class="btn btn-register" onclick="window.location.href='gestion.html'">
+                    <a href="gestion.html" class="link link-login">Dashboard</a>
+                </button>
+                <button class="btn btn-login" onclick="window.ApiService.logout()">
+                    <a href="#" class="link link-register">Salir <i class="bi bi-box-arrow-right"></i></a>
+                </button>
+            `;
+        } else {
+            return `
+                <button class="btn btn-register">
+                    <a href="login.html" class="link link-login">Iniciar Sesión</a>
+                </button>
+                <button class="btn btn-login">
+                    <a href="newUser.html" class="link link-register">Inscríbete</a>
+                </button>
+            `;
+        }
     }
 }
 

@@ -683,6 +683,34 @@ jam-header {
 
 .card-vocal {
     grid-row: span 2;
+    background: linear-gradient(135deg, rgba(60, 20, 60, 0.4), rgba(90, 40, 90, 0.4));
+}
+
+.card-drums {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(80, 30, 30, 0.4), rgba(100, 50, 50, 0.4));
+}
+
+.card-seniors {
+    background: linear-gradient(135deg, rgba(30, 80, 60, 0.4), rgba(50, 100, 80, 0.4));
+}
+
+.card-shows {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(70, 70, 90, 0.4), rgba(90, 90, 120, 0.4));
+}
+
+.card-exploration {
+    background: linear-gradient(135deg, rgba(100, 80, 20, 0.4), rgba(120, 100, 40, 0.4));
+}
+
+.card-psychomusic {
+    background: linear-gradient(135deg, rgba(30, 100, 150, 0.4), rgba(50, 120, 180, 0.4));
+}
+
+.card-facilities {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(60, 70, 80, 0.4), rgba(80, 90, 100, 0.4));
 }
 
 @media (max-width: 1250px) {

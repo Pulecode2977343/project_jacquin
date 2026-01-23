@@ -1,0 +1,30 @@
+@startuml Diagrama
+title Diagrama de Actividades - Proceso de Autenticación y Redirección por Rol (JAM)
+
+start
+
+:Usuario abre página de inicio de sesión (login.jsp);
+:Ingresa correo y contraseña;
+:Envía formulario a LoginServlet;
+
+:LoginServlet recibe credenciales;
+:Consulta base de datos (tabla usuario + rol);
+
+if (Credenciales válidas?) then (Sí)
+  :Crea sesión HttpSession;
+  :Obtiene id_usuario, nombre, rol;
+  switch (Rol del usuario)
+    case (Administrador)
+      :Redirigir a /admin/dashboard.jsp;
+    case (Profesor)
+      :Redirigir a /profesor/dashboard.jsp;
+    case (Estudiante)
+      :Redirigir a /estudiante/dashboard.jsp;
+  endswitch
+else (No)
+  :Mostrar mensaje de error "Credenciales incorrectas";
+  :Volver a login.jsp;
+endif
+
+stop
+@enduml

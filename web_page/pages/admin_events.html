@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Admin Eventos - JACQUIN</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* Specific styles for this dashboard */
+      .admin-container {
+        padding: 2rem 5%;
+        margin-top: 5vh;
+      }
+
+      .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .event-form-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 3rem;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .full-width {
+        grid-column: span 2;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group label {
+        display: block;
+        color: var(--color-acento-azul);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: white;
+        font-family: inherit;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--color-acento-naranja);
+      }
+
+      /* Type Selector Tabs */
+      .type-selector {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 1.5rem;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 5px;
+        border-radius: 10px;
+      }
+
+      .type-btn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        background: transparent;
+        color: var(--color-humo-gris);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .type-btn.active {
+        background: var(--color-principal-azul);
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Dynamic Fields */
+      .dynamic-field {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .dynamic-field.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Preview Area */
+      .preview-container {
+        margin-top: 1rem;
+        max-width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      .preview-media {
+        max-width: 100%;
+        max-height: 300px;
+      }
+
+      .events-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .admin-event-item {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 1rem;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .btn-action {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+
+      .btn-delete {
+        background: rgba(255, 59, 48, 0.2);
+        color: #ff3b30;
+      }
+
+      .btn-delete:hover {
+        background: #ff3b30;
+        color: white;
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        display: none; /* Controlled by JS */
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .modal-content {
+        background: rgba(43, 85, 131, 0.4);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      
+      .modal-close-btn:hover {
+        background: rgba(255, 59, 48, 0.8);
+      }
+    </style>
+  </head>
+  <body>
+    <jam-header></jam-header>
+
+    <main class="admin-container">
+      <!-- Breadcrumb / Header -->
+      <div class="admin-header">
+        <div>
+          <a
+            href="gestion.html"
+            class="link"
+            style="font-size: 0.9rem; opacity: 0.7"
+          >
+            <i class="bi bi-arrow-left"></i> Volver a Mi Panel
+          </a>
+          <h1 style="color: white; margin-top: 0.5rem">Gestión de Eventos</h1>
+          <p style="color: var(--color-humo-gris)">
+            Crea, edita y administra el contenido multimedia.
+          </p>
+        </div>
+        <button onclick="window.resetForm()" class="btn btn-login" style="height: auto; padding: 12px 25px;">
+          <i class="bi bi-plus-circle"></i> Nuevo Evento
+        </button>
+      </div>
+
+      <!-- Events List -->
+      <section>
+        <h3 style="color: white; margin-bottom: 1rem">Eventos Programados</h3>
+        <div id="adminEventsList" class="events-list">
+          <div style="text-align: center; color: gray">Cargando...</div>
+        </div>
+      </section>
+
+      <!-- Event Modal Overlay -->
+      <div id="eventModal" class="modal-overlay">
+        <div class="modal-content glass-panel">
+            <button class="modal-close-btn" onclick="closeModal()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            
+            <h3 style="color: white; margin-bottom: 1.5rem; text-align: center;">
+              Crear / Editar Evento
+            </h3>
+    
+            <div class="type-selector">
+              <button class="type-btn active" data-type="comunicado" onclick="setEventType('comunicado')">
+                <i class="bi bi-file-text"></i> Comunicado
+              </button>
+              <button class="type-btn" data-type="imagen" onclick="setEventType('imagen')">
+                <i class="bi bi-image"></i> Imagen
+              </button>
+              <button class="type-btn" data-type="video_link" onclick="setEventType('video_link')">
+                <i class="bi bi-youtube"></i> Video Link
+              </button>
+              <button class="type-btn" data-type="video_upload" onclick="setEventType('video_upload')">
+                <i class="bi bi-camera-video"></i> Video Upload
+              </button>
+              <button class="type-btn" data-type="stream" onclick="setEventType('stream')">
+                <i class="bi bi-broadcast"></i> Streaming
+              </button>
+            </div>
+    
+            <form id="eventForm">
+              <input type="hidden" id="event_id" name="id" />
+              <input type="hidden" id="event_type" name="type" value="comunicado" />
+    
+              <div class="form-grid">
+                <div class="form-group full-width">
+                  <label>Título del Evento</label>
+                  <input type="text" class="form-control" name="title" required placeholder="Ej: Concierto de Fin de Año" />
+                </div>
+    
+                <div class="form-group full-width">
+                  <label>Descripción</label>
+                  <textarea class="form-control" name="description" rows="3" placeholder="Detalles del evento..."></textarea>
+                </div>
+    
+                <div class="form-group">
+                  <label>Fecha y Hora</label>
+                  <input type="datetime-local" class="form-control" name="event_date" required />
+                </div>
+    
+                <div class="form-group">
+                  <label>Ubicación</label>
+                  <input type="text" class="form-control" name="location" placeholder="Ej: Auditorio Principal" />
+                </div>
+    
+                <!-- Dynamic Fields -->
+                <div class="form-group full-width dynamic-field" id="field-image">
+                  <label>Subir Imagen (Poster/Flyer)</label>
+                  <input type="file" class="form-control" name="image_file" accept="image/*" onchange="previewFile(this, 'img')" />
+                  <div class="preview-container" id="preview-img">Vista previa</div>
+                </div>
+    
+                <div class="form-group full-width dynamic-field" id="field-video-link">
+                  <label>Enlace de Video (YouTube/Vimeo)</label>
+                  <input type="url" class="form-control" name="video_url" placeholder="https://youtube.com/watch?v=..." />
+                </div>
+    
+                <div class="form-group full-width dynamic-field" id="field-video-upload">
+                  <label>Subir Video (MP4, Max 50MB)</label>
+                  <input type="file" class="form-control" name="video_file" accept="video/mp4,video/webm" onchange="previewFile(this, 'video')" />
+                  <div class="preview-container" id="preview-video">Vista previa</div>
+                </div>
+    
+                <div class="form-group full-width dynamic-field" id="field-stream">
+                  <label>Enlace de Transmisión en Vivo</label>
+                  <input type="url" class="form-control" name="stream_url" placeholder="https://youtube.com/live/..." />
+                  <div style="margin-top: 1rem; display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="is_live" name="is_live" style="width: auto; height: auto" />
+                    <label for="is_live" style="margin: 0; color: #ff3b30; font-weight: bold">🔴 Marcar como EN VIVO AHORA</label>
+                  </div>
+                </div>
+    
+                <div class="full-width" style="margin-top: 1rem; display: flex; gap: 10px;">
+                    <button type="button" class="btn" style="flex: 1; background: rgba(255,255,255,0.1); border:none; color:white;" onclick="closeModal()">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-login" style="flex: 2">
+                        <span id="btnText">Guardar Evento</span>
+                    </button>
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+    </main>
+
+    <jam-footer></jam-footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/services/api.js"></script>
+    <script src="js/components/Header.js"></script>
+    <script src="js/components/Footer.js"></script>
+    <script src="js/toast_overlay.js"></script>
+    <script src="js/admin_events.js?v=3.0"></script>
+  </body>
+</html>

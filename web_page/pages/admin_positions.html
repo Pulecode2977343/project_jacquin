@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargos y Funciones - JACQUIN</title>
+    <link rel="stylesheet" href="css/style.css?v=21">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary-bg: #0a0a14;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-hover-bg: rgba(255, 255, 255, 0.06);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --text-muted: rgba(255, 255, 255, 0.4);
+            --accent-blue: #3498db;
+            --accent-orange: #e67e22;
+            --accent-green: #2ecc71;
+            --accent-red: #e74c3c;
+        }
+
+        .admin-section {
+            padding: 2rem 5%;
+            padding-top: 180px;
+            min-height: 100vh;
+            color: white;
+        }
+
+        /* Header de página */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 0;
+        }
+
+        .page-header h1 i {
+            color: var(--accent-orange);
+        }
+
+        /* Position Cards Grid */
+        .positions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .position-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .position-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-orange));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .position-card:hover {
+            background: var(--card-hover-bg);
+            border-color: var(--accent-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .position-card:hover::before {
+            opacity: 1;
+        }
+
+        .position-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+            color: var(--accent-blue);
+        }
+
+        .position-icon i {
+            font-size: 2.5rem;
+        }
+
+        .position-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .position-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .position-stats {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .stat-badge {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--accent-blue);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-badge.users {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--accent-green);
+        }
+
+        .predefined-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
+        /* Create Card */
+        .create-card {
+            background: rgba(230, 126, 34, 0.05);
+            border: 2px dashed rgba(230, 126, 34, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 220px;
+        }
+
+        .create-card:hover {
+            background: rgba(230, 126, 34, 0.1);
+            border-color: var(--accent-orange);
+        }
+
+        .create-card .position-icon {
+            color: var(--accent-orange);
+            opacity: 0.5;
+        }
+
+        .create-card .position-name {
+            color: var(--accent-orange);
+        }
+
+        /* Loading State */
+        .loading-container {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner {
+            font-size: 3rem;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-section {
+                padding: 1.5rem 4%;
+                padding-top: 150px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .positions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <jam-header></jam-header>
+
+    <main>
+        <section class="admin-section">
+            <div class="page-header">
+                <h1>
+                    <i class="bi bi-briefcase-fill"></i>
+                    Cargos y Funciones
+                </h1>
+            </div>
+
+            <div id="positions-content">
+                <div class="loading-container">
+                    <div class="loading-spinner"><i class="bi bi-arrow-repeat"></i></div>
+                    <p>Cargando cargos...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <jam-footer></jam-footer>
+
+    <!-- Scripts -->
+    <script src="js/services/api.js?v=3.5"></script>
+    <script src="js/components/Navbar.js"></script>
+    <script src="js/components/Header.js?v=4.0"></script>
+    <script src="js/components/Footer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/toast_overlay.js"></script>
+    <script src="js/admin_positions.js"></script>
+</body>
+
+</html>

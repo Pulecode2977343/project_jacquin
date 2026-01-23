@@ -1,0 +1,14 @@
+# dependencies
+node_modules/
+
+# build outputs
+android/
+ios/
+
+# logs
+npm-debug.log
+yarn-error.log
+
+# secrets
+.env
+config/secrets.php

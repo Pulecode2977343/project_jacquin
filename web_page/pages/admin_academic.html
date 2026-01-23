@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión Académica - JACQUIN</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .admin-container {
+      padding: 2rem 5%;
+      margin-top: 5vh;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .academic-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .card-glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .form-group label {
+      display: block;
+      color: var(--color-acento-azul);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .course-list {
+      margin-top: 2rem;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .course-item {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border-left: 3px solid var(--color-principal-azul);
+    }
+
+    .schedule-badge {
+      display: inline-block;
+      background: var(--color-acento-naranja);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-top: 5px;
+    }
+
+    .alert-info {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <jam-header></jam-header>
+
+  <main class="admin-container">
+    <div class="admin-header">
+      <div>
+        <a href="gestion.html" class="link" style="font-size: 0.9rem; opacity: 0.7">
+          <i class="bi bi-arrow-left"></i> Volver a Mi Panel
+        </a>
+        <h1 style="color: white; margin-top: 0.5rem">Gestión Académica</h1>
+        <p style="color: var(--color-humo-gris)">
+          Administra cursos, profesores y asigna horarios.
+        </p>
+      </div>
+    </div>
+
+    <div class="academic-grid">
+      <!-- Left: Create Course -->
+      <section class="card-glass">
+        <h3 style="color: white; margin-bottom: 1.5rem">Crear Nuevo Curso</h3>
+
+        <form id="createCourseForm">
+          <div class="form-group">
+            <label>Nombre del Curso</label>
+            <input type="text" class="form-control" name="name" required placeholder="Ej: Piano Iniciación" />
+          </div>
+
+          <div class="form-group">
+            <label>Profesor Asignado</label>
+            <select class="form-control" name="teacher_id" id="teacherSelect" required>
+              <option value="">Cargando profesores...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Descripción (Opcional)</label>
+            <textarea class="form-control" name="description" rows="2"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-login" style="width: 100%">
+            Crear Curso
+          </button>
+        </form>
+      </section>
+
+      <!-- Right: Assign Schedule -->
+      <section class="card-glass">
+        <h3 style="color: white; margin-bottom: 1.5rem">Asignar Horario</h3>
+
+        <div class="alert-info">
+          <i class="bi bi-info-circle"></i> <strong>Reglas de Horario:</strong><br />
+          • Lunes a Viernes: <strong>3:00 PM - 6:00 PM</strong><br />
+          • Sábados: <strong>9:00 AM - 12:00 PM</strong>
+        </div>
+
+        <form id="assignScheduleForm">
+          <div class="form-group">
+            <label>Seleccionar Curso</label>
+            <select class="form-control" name="course_id" id="courseSelect" required>
+              <option value="">Selecciona un curso primero...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Profesor (Opcional)</label>
+            <select class="form-control" name="teacher_id" id="scheduleTeacherSelect">
+              <option value="">-- Sin Asignar (Usar Profesor del Curso) --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Día de la Semana</label>
+            <select class="form-control" name="day" required>
+              <option value="Lunes">Lunes</option>
+              <option value="Martes">Martes</option>
+              <option value="Miércoles">Miércoles</option>
+              <option value="Jueves">Jueves</option>
+              <option value="Viernes">Viernes</option>
+              <option value="Sábado">Sábado</option>
+            </select>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+            <div class="form-group">
+              <label>Hora Inicio</label>
+              <input type="time" class="form-control" name="start_time" required />
+            </div>
+            <div class="form-group">
+              <label>Hora Fin</label>
+              <input type="time" class="form-control" name="end_time" required />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-register" style="width: 100%">
+            Asignar Horario
+          </button>
+        </form>
+      </section>
+    </div>
+
+    <!-- Pending Requests Section -->
+    <section class="card-glass" style="margin-top: 2rem; border-color:var(--color-acento-naranja);">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="color: white; margin:0;"><i class="bi bi-calendar-plus-fill"></i> Solicitudes de Horario Pendientes
+        </h3>
+        <button onclick="window.loadPendingRequests()" class="btn-refresh"
+          style="background:none; border:none; color:var(--color-acento-azul); cursor:pointer;"><i
+            class="bi bi-arrow-clockwise" style="font-size:1.5rem;"></i></button>
+      </div>
+      <div id="pendingRequestsList" class="course-list" style="margin-top:1rem;">
+        <div style="text-align: center; color: #ccc; padding: 20px;">No hay solicitudes pendientes.</div>
+      </div>
+    </section>
+
+    <!-- Bottom: Course List -->
+    <section class="card-glass" style="margin-top: 2rem">
+      <h3 style="color: white">Listado de Cursos y Horarios</h3>
+      <div id="courseList" class="course-list">
+        <!-- Populated by JS -->
+        <div style="text-align: center; color: white">Cargando cursos...</div>
+      </div>
+    </section>
+  </main>
+
+  <jam-footer></jam-footer>
+
+  <script src="js/services/api.js"></script>
+  <script src="js/components/Navbar.js"></script>
+  <script src="js/components/Header.js"></script>
+  <script src="js/components/Footer.js"></script>
+  <script src="js/admin_academic_schedules.js"></script>
+</body>
+
+</html>

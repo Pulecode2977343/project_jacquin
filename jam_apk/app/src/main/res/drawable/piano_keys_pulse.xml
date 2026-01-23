@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/piano">
+
+    <!-- Tecla F -->
+    <target
+        android:name="F_key"
+        android:animation="@animator/key_pulse_f" />
+
+    <!-- Tecla G -->
+    <target
+        android:name="G_key"
+        android:animation="@animator/key_pulse_g" />
+
+    <!-- Tecla A -->
+    <target
+        android:name="A_key"
+        android:animation="@animator/key_pulse_a" />
+
+    <!-- Tecla B -->
+    <target
+        android:name="B_key"
+        android:animation="@animator/key_pulse_b" />
+
+</animated-vector>

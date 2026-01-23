@@ -1,0 +1,43 @@
+<?php
+
+header("Content-Type: application/json");
+require_once "../config/connection.php";
+
+$data = json_decode(file_get_contents("php://input"), true);
+
+$email    = $data["email"] ?? null;
+$password = $data["password"] ?? null;
+
+if(!$email || !$password){
+    echo json_encode(["error" => "Faltan campos"]);
+    exit;
+}
+
+// Buscar usuario
+$sql = "SELECT * FROM usuario WHERE email = :email LIMIT 1";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([":email" => $email]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if(!$user){
+    echo json_encode(["error" => "Correo no encontrado"]);
+    exit;
+}
+
+// Verificar contraseña
+if(!password_verify($password, $user["password"])){
+    echo json_encode(["error" => "Contraseña incorrecta"]);
+    exit;
+}
+
+// Respuesta exitosa
+echo json_encode([
+    "success" => true,
+    "message" => "Login correcto",
+    "user" => [
+        "id_usuario" => $user["id_usuario"],
+        "full_name"  => $user["full_name"],
+        "email"      => $user["email"],
+        "id_rol"     => $user["id_rol"]
+    ]
+]);

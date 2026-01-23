@@ -1,0 +1,25 @@
+:root {
+    /* Paleta de Colores */
+    --color-principal-azul: #223F61;
+    --neomorph-ppal-blue: #426080;
+    --background-menu-movil: #193658be;
+    --color-acento-azul: #93B6EE;
+    --color-acento-naranja: #E78C3B;
+    --color-blanco-neutro: #dddddd;
+    --color-humo-gris: #CDCDCD;
+}
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

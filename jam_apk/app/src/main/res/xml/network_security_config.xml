@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Config global para DESARROLLO: permite HTTP (cleartext) en todos los dominios -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

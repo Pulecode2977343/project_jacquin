@@ -10,7 +10,7 @@ window.TeacherAcademic = {
 
     init() {
         this.session = ApiService.getSession();
-        if (!this.session || this.session.id_rol != 2) return; // Solo docentes
+        if (!this.session || parseInt(this.session.id_rol) !== 2) return; // Solo docentes
 
         // Usar botón existente del HTML
         const button = document.getElementById('btn-teacher-academic-access');
@@ -29,52 +29,130 @@ window.TeacherAcademic = {
         modal.className = 'modal-overlay';
         modal.style.display = 'none';
         modal.innerHTML = `
-            <div class="modal-content glass-effect" style="max-width: 1100px; width: 95%; height: 90vh; display:flex; flex-direction:column; padding:0;">
-                <div class="modal-header">
-                    <h2 style="margin:0;"><i class="fas fa-graduation-cap"></i> Gestión Académica</h2>
-                    <button class="close-modal-btn" onclick="TeacherAcademic.closeModal()"><i class="fas fa-times"></i></button>
+            <style>
+                #teacher-academic-modal * {
+                    font-family: 'Outfit', sans-serif !important;
+                }
+                .teacher-label {
+                    display:block; 
+                    margin-bottom: 5px; 
+                    color: rgba(255,255,255,0.7);
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                }
+                .teacher-select {
+                    width:100%; 
+                    height: 48px; 
+                    background: rgba(0,0,0,0.4) !important; 
+                    color: white !important; 
+                    border: 1px solid rgba(255,255,255,0.1) !important; 
+                    border-radius: 12px !important;
+                    padding: 0 15px;
+                    outline: none;
+                    transition: all 0.3s ease;
+                }
+                .teacher-select:focus {
+                    border-color: var(--color-acento-azul) !important;
+                    box-shadow: 0 0 15px rgba(147, 182, 238, 0.1);
+                }
+                .teacher-table {
+                    width:100%; 
+                    border-collapse:collapse; 
+                    color: white;
+                }
+                .teacher-table th {
+                    background: rgba(255,255,255,0.03);
+                    padding: 15px;
+                    text-align: left;
+                    color: rgba(255,255,255,0.5);
+                    font-size: 0.8rem;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+                .teacher-table td {
+                    padding: 15px;
+                    border-bottom: 1px solid rgba(255,255,255,0.05);
+                    color: white;
+                }
+                .teacher-tab-btn {
+                    padding: 12px 25px; 
+                    background: none; 
+                    border: none; 
+                    color: rgba(255,255,255,0.5); 
+                    border-bottom: 3px solid transparent; 
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                }
+                .teacher-tab-btn.active {
+                    color: var(--color-acento-azul);
+                    border-bottom-color: var(--color-acento-azul);
+                    background: rgba(147, 182, 238, 0.05);
+                }
+                .teacher-tab-btn:hover:not(.active) {
+                    color: white;
+                    background: rgba(255,255,255,0.02);
+                }
+                .teacher-input-dark {
+                    background: rgba(0,0,0,0.3) !important;
+                    border: 1px solid rgba(255,255,255,0.1) !important;
+                    color: white !important;
+                    border-radius: 8px !important;
+                    padding: 8px 12px !important;
+                }
+            </style>
+            <div class="modal-content glass-effect" style="max-width: 1100px; width: 95%; height: 90vh; display:flex; flex-direction:column; padding:0; background: rgba(10, 25, 41, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; box-shadow: 0 50px 100px rgba(0,0,0,0.5);">
+                <div class="modal-header" style="padding: 25px 30px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="margin:0; color: white; font-weight: 300; font-size: 1.8rem;"><i class="fas fa-graduation-cap" style="color: var(--color-acento-azul); margin-right: 15px;"></i> Gestión Académica</h2>
+                    <button class="close-modal-btn" onclick="TeacherAcademic.closeModal()" style="background: rgba(255,255,255,0.05); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">&times;</button>
                 </div>
                 
-                <div class="modal-body" style="flex:1; overflow-y:auto; padding: 20px;">
+                <div class="modal-body custom-scroll" style="flex:1; overflow-y:auto; padding: 30px;">
                     <!-- Selector de Curso/Horario -->
-                    <div id="course-schedule-selector" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div id="course-schedule-selector" style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 0;">
                             <div>
-                                <label style="display:block; margin-bottom: 5px; color: rgba(255,255,255,0.8);">Curso</label>
-                                <select id="select-teacher-course" class="swal2-select" style="width:100%;">
-                                    <option value="">Seleccione un curso...</option>
+                                <label class="teacher-label">Curso</label>
+                                <select id="select-teacher-course" class="teacher-select">
+                                    <option value="" style="background: #0a1929;">Seleccione un curso...</option>
                                 </select>
                             </div>
                             <div>
-                                <label style="display:block; margin-bottom: 5px; color: rgba(255,255,255,0.8);">Horario</label>
-                                <select id="select-teacher-schedule" class="swal2-select" style="width:100%;" disabled>
-                                    <option value="">Primero seleccione un curso</option>
+                                <label class="teacher-label">Horario</label>
+                                <select id="select-teacher-schedule" class="teacher-select" disabled>
+                                    <option value="" style="background: #0a1929;">Primero seleccione un curso</option>
                                 </select>
                             </div>
                         </div>
-                        <div id="selected-info" style="display:none; padding: 10px; background: rgba(147, 182, 238, 0.1); border-left: 3px solid var(--color-acento-azul); border-radius: 5px;">
-                            <strong id="info-course-name"></strong> - <span id="info-schedule-details"></span>
+                        <div id="selected-info" style="display:none; margin-top: 20px; padding: 15px 20px; background: rgba(147, 182, 238, 0.08); border-left: 4px solid var(--color-acento-azul); border-radius: 12px; animation: fadeIn 0.3s ease;">
+                            <span style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">Gestionando:</span>
+                            <strong id="info-course-name" style="color: white; margin-left: 10px; font-size: 1.1rem;"></strong>
+                            <span style="color: rgba(255,255,255,0.3); margin: 0 10px;">|</span>
+                            <span id="info-schedule-details" style="color: var(--color-acento-azul); font-weight: 500;"></span>
                         </div>
                     </div>
 
                     <!-- Tabs -->
-                    <div class="tab-container">
-                        <button class="tab-btn active" data-tab="attendance">Asistencia</button>
-                        <button class="tab-btn" data-tab="assignments">Tareas</button>
-                        <button class="tab-btn" data-tab="notes">Notas</button>
+                    <div class="tab-container" style="display: flex; gap: 5px; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <button class="teacher-tab-btn active" data-tab="attendance">Asistencia</button>
+                        <button class="teacher-tab-btn" data-tab="assignments">Tareas</button>
+                        <button class="teacher-tab-btn" data-tab="notes">Notas</button>
                     </div>
 
                     <!-- Tab Content: Asistencia -->
-                    <div id="tab-attendance" class="tab-content active">
+                    <div id="tab-attendance" class="tab-content active" style="display: block;">
                         <div id="attendance-content">
-                            <p style="color: rgba(255,255,255,0.5); text-align:center; padding: 40px;">Seleccione un curso y horario para tomar asistencia.</p>
+                            <div style="text-align:center; padding: 60px; color:rgba(255,255,255,0.2);">
+                                <i class="fas fa-calendar-check" style="font-size: 3rem; margin-bottom: 20px; display: block;"></i>
+                                Seleccione un curso y horario para tomar asistencia.
+                            </div>
                         </div>
                     </div>
 
                     <!-- Tab Content: Tareas -->
-                    <div id="tab-assignments" class="tab-content">
+                    <div id="tab-assignments" class="tab-content" style="display: none;">
                         <div id="assignments-content">
-                            <button class="btn-primary" onclick="TeacherAcademic.showCreateAssignmentForm()" style="margin-bottom: 20px;" disabled id="btn-new-assignment">
+                            <button class="btn-primary" onclick="TeacherAcademic.showCreateAssignmentForm()" style="margin-bottom: 25px; padding: 12px 25px; border-radius: 12px; cursor: pointer; background: var(--color-acento-azul); color: #0a1929; border: none; font-weight: 700; display: flex; align-items: center; gap: 10px;" disabled id="btn-new-assignment">
                                 <i class="fas fa-plus"></i> Nueva Tarea
                             </button>
                             <div id="assignments-list"></div>
@@ -82,9 +160,12 @@ window.TeacherAcademic = {
                     </div>
 
                     <!-- Tab Content: Notas -->
-                    <div id="tab-notes" class="tab-content">
+                    <div id="tab-notes" class="tab-content" style="display: none;">
                         <div id="notes-content">
-                            <p style="color: rgba(255,255,255,0.5); text-align:center; padding: 40px;">Seleccione un curso para gestionar notas.</p>
+                            <div style="text-align:center; padding: 60px; color:rgba(255,255,255,0.2);">
+                                <i class="fas fa-star" style="font-size: 3rem; margin-bottom: 20px; display: block;"></i>
+                                Seleccione un curso para gestionar notas.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,30 +173,19 @@ window.TeacherAcademic = {
         `;
         document.body.appendChild(modal);
 
-        // Cerrar al hacer clic fuera del modal (en el overlay)
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                console.log('[TeacherAcademic] Click en overlay, cerrando modal');
-                this.closeModal();
-            }
-        });
+        modal.onclick = (e) => { if (e.target === modal) this.closeModal(); };
 
-        // Event listeners para tabs
-        modal.querySelectorAll('.tab-btn').forEach(btn => {
+        modal.querySelectorAll('.teacher-tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
         });
     },
 
     async openModal() {
-        console.log('[TeacherAcademic] Abriendo modal...');
         const modal = document.getElementById('teacher-academic-modal');
         if (modal) {
             modal.style.display = 'flex';
-            console.log('[TeacherAcademic] Modal visible, cargando cursos...');
             await this.loadTeacherCourses();
             this.setupCourseSelector();
-        } else {
-            console.error('[TeacherAcademic] ERROR: Modal no encontrado');
         }
     },
 
@@ -126,86 +196,39 @@ window.TeacherAcademic = {
     },
 
     async loadTeacherCourses() {
-        console.log('[TeacherAcademic] ==================== INICIO ====================');
-        console.log('[TeacherAcademic] ID de usuario:', this.session.id_usuario);
-        console.log('[TeacherAcademic] Rol:', this.session.id_rol);
-
         const selectCourse = document.getElementById('select-teacher-course');
-
         try {
-            // Método 1: getUserDetails
-            console.log('[TeacherAcademic] Método 1: getUserDetails...');
             const result = await ApiService.getUserDetails(this.session.id_usuario);
-            console.log('[TeacherAcademic] Respuesta completa:', JSON.stringify(result, null, 2));
-
-            if (result.success && result.user) {
-                console.log('[TeacherAcademic] result.user.teacher_courses:', result.user.teacher_courses);
-                console.log('[TeacherAcademic] result.user.courses:', result.user.courses);
-
-                // Intentar múltiples propiedades
-                let courses = result.user.teacher_courses || result.user.courses || [];
-
-                if (courses && courses.length > 0) {
-                    console.log('[TeacherAcademic] ✅ Encontrados', courses.length, 'cursos');
-                    console.log('[TeacherAcademic] Cursos:', courses);
+            if (result.success && result.data) {
+                const courses = result.data.teaching || [];
+                if (courses.length > 0) {
                     this.populateCoursesDropdown(courses);
                     return;
                 }
             }
 
-            // Método 2: getCourses con filtro
-            console.log('[TeacherAcademic] Método 2: getCourses...');
-            const coursesResult = await ApiService.getCourses();
-            console.log('[TeacherAcademic] Respuesta getCourses:', coursesResult);
-
-            if (coursesResult.success && coursesResult.data) {
-                console.log('[TeacherAcademic] Total cursos en sistema:', coursesResult.data.length);
-
-                // Filtrar cursos del profesor actual
-                const teacherCourses = coursesResult.data.filter(course => {
-                    return course.teacher_id == this.session.id_usuario ||
-                        course.id_teacher == this.session.id_usuario ||
-                        course.id_usuario_teacher == this.session.id_usuario;
-                });
-
-                console.log('[TeacherAcademic] Cursos filtrados:', teacherCourses.length);
-
-                if (teacherCourses.length > 0) {
-                    console.log('[TeacherAcademic] ✅ Usando cursos filtrados');
-                    this.populateCoursesDropdown(teacherCourses);
-                    return;
-                }
-
-                // FALLBACK: Mostrar todos (temporal para debugging)
-                console.warn('[TeacherAcademic] ⚠️ Mostrando todos los cursos (DEBUG)');
-                this.populateCoursesDropdown(coursesResult.data);
-                return;
+            // Fallback: getCourses
+            const res = await ApiService.getCourses();
+            if (res.success && res.data) {
+                const teacherCourses = res.data.filter(c => c.teacher_id == this.session.id_usuario);
+                this.populateCoursesDropdown(teacherCourses);
             }
-
-            // Sin cursos
-            console.error('[TeacherAcademic] ❌ No se encontraron cursos');
-            if (selectCourse) {
-                selectCourse.innerHTML = '<option value="">Sin cursos - revisar BD</option>';
-            }
-
         } catch (error) {
-            console.error('[TeacherAcademic] ❌ Excepción:', error);
-            if (selectCourse) {
-                selectCourse.innerHTML = '<option value="">Error cargando</option>';
-            }
+            console.error('[TeacherAcademic] Error loading courses:', error);
         }
     },
 
     populateCoursesDropdown(courses) {
-        const selectCourse = document.getElementById('select-teacher-course');
-        selectCourse.innerHTML = '<option value="">Seleccione un curso...</option>';
-
-        courses.forEach(course => {
-            const option = document.createElement('option');
-            option.value = course.id;
-            option.textContent = course.name;
-            option.dataset.courseData = JSON.stringify(course);
-            selectCourse.appendChild(option);
+        const select = document.getElementById('select-teacher-course');
+        if (!select) return;
+        select.innerHTML = '<option value="" style="background: #0a1929;">Seleccione un curso...</option>';
+        courses.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id_course || c.id;
+            opt.textContent = c.name || c.course_name;
+            opt.style.background = "#0a1929";
+            opt.dataset.courseData = JSON.stringify(c);
+            select.appendChild(opt);
         });
     },
 
@@ -213,573 +236,339 @@ window.TeacherAcademic = {
         const selectCourse = document.getElementById('select-teacher-course');
         const selectSchedule = document.getElementById('select-teacher-schedule');
 
-        selectCourse.addEventListener('change', async (e) => {
+        selectCourse.onchange = async (e) => {
             const courseId = e.target.value;
-            console.log('[TeacherAcademic] Curso seleccionado:', courseId);
-
             if (!courseId) {
                 selectSchedule.disabled = true;
-                selectSchedule.innerHTML = '<option value="">Primero seleccione un curso</option>';
+                selectSchedule.innerHTML = '<option value="" style="background: #0a1929;">Primero seleccione un curso</option>';
                 this.selectedCourse = null;
                 return;
             }
 
-            const courseData = JSON.parse(e.target.selectedOptions[0].dataset.courseData);
-            this.selectedCourse = courseData;
-            console.log('[TeacherAcademic] Datos del curso:', courseData);
+            this.selectedCourse = JSON.parse(e.target.selectedOptions[0].dataset.courseData);
 
-            // Cargar horarios
-            console.log('[TeacherAcademic] Cargando horarios del curso...');
-            const result = await ApiService.getSchedules(courseId);
-            console.log('[TeacherAcademic] Respuesta de horarios:', result);
-
-            if (result.success && result.data && result.data.length > 0) {
+            const res = await ApiService.getSchedules(courseId);
+            if (res.success && res.data && res.data.length > 0) {
                 selectSchedule.disabled = false;
-                selectSchedule.innerHTML = '<option value="">Seleccione un horario...</option>';
-
-                result.data.forEach(schedule => {
-                    const option = document.createElement('option');
-                    option.value = schedule.id;
-                    option.textContent = `${schedule.day} ${ApiService.formatTime(schedule.time_start)} - ${ApiService.formatTime(schedule.time_end)}`;
-                    option.dataset.scheduleData = JSON.stringify(schedule);
-                    selectSchedule.appendChild(option);
+                selectSchedule.innerHTML = '<option value="" style="background: #0a1929;">Seleccione un horario...</option>';
+                res.data.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.id_schedule;
+                    opt.textContent = `${s.day} ${ApiService.formatTime(s.time_start)} - ${ApiService.formatTime(s.time_end)}`;
+                    opt.style.background = "#0a1929";
+                    opt.dataset.scheduleData = JSON.stringify(s);
+                    selectSchedule.appendChild(opt);
                 });
 
-                console.log('[TeacherAcademic] Horarios cargados:', result.data.length);
-
-                // Mostrar mensaje instructivo en las tabs
-                const instructionMsg = `
-                    <div style="background: rgba(147, 182, 238, 0.1); border: 1px solid var(--color-acento-azul); border-radius: 12px; padding: 30px; text-align: center; margin: 40px auto; max-width: 500px;">
-                        <i class="fas fa-clock" style="font-size: 3rem; color: var(--color-acento-azul); margin-bottom: 15px;"></i>
-                        <h4 style="color: white; margin-bottom: 10px;">Seleccione un horario</h4>
-                        <p style="color: rgba(255,255,255,0.7); margin: 0;">
-                            Para ver la asistencia, tareas y notas, seleccione uno de los ${result.data.length} horarios disponibles arriba.
-                        </p>
-                    </div>
-                `;
-
-                document.getElementById('attendance-content').innerHTML = instructionMsg;
-                document.getElementById('assignments-list').innerHTML = instructionMsg;
-                document.getElementById('notes-content').innerHTML = instructionMsg;
+                // Show info message
+                const msg = `<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.2);"><i class="fas fa-clock" style="font-size: 2.5rem; margin-bottom: 20px; display: block;"></i> Seleccione un horario para ver la información.</div>`;
+                document.getElementById('attendance-content').innerHTML = msg;
+                document.getElementById('assignments-list').innerHTML = msg;
+                document.getElementById('notes-content').innerHTML = msg;
             } else {
-                console.error('[TeacherAcademic] Error cargando horarios o sin horarios disponibles');
                 selectSchedule.disabled = true;
-                selectSchedule.innerHTML = '<option value="">No hay horarios disponibles</option>';
-
-                const noScheduleMsg = `
-                    <div style="background: rgba(255, 82, 82, 0.1); border: 1px solid #FF5252; border-radius: 12px; padding: 30px; text-align: center; margin: 40px auto; max-width: 500px;">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #FF5252; margin-bottom: 15px;"></i>
-                        <h4 style="color: white; margin-bottom: 10px;">Sin horarios</h4>
-                        <p style="color: rgba(255,255,255,0.7); margin: 0;">
-                            Este curso no tiene horarios configurados aún.
-                        </p>
-                    </div>
-                `;
-
-                document.getElementById('attendance-content').innerHTML = noScheduleMsg;
-                document.getElementById('assignments-list').innerHTML = noScheduleMsg;
-                document.getElementById('notes-content').innerHTML = noScheduleMsg;
+                selectSchedule.innerHTML = '<option value="" style="background: #0a1929;">Sin horarios disponibles</option>';
             }
-        });
+        };
 
-        selectSchedule.addEventListener('change', (e) => {
-            const scheduleId = e.target.value;
-            if (!scheduleId) {
+        selectSchedule.onchange = (e) => {
+            const sid = e.target.value;
+            if (!sid) {
                 this.selectedSchedule = null;
                 document.getElementById('selected-info').style.display = 'none';
                 document.getElementById('btn-new-assignment').disabled = true;
                 return;
             }
-
             this.selectedSchedule = JSON.parse(e.target.selectedOptions[0].dataset.scheduleData);
-
-            // Mostrar info
-            document.getElementById('info-course-name').textContent = this.selectedCourse.name;
-            document.getElementById('info-schedule-details').textContent =
-                `${this.selectedSchedule.day} ${ApiService.formatTime(this.selectedSchedule.time_start)} - ${ApiService.formatTime(this.selectedSchedule.time_end)}`;
             document.getElementById('selected-info').style.display = 'block';
+            document.getElementById('info-course-name').textContent = this.selectedCourse.name || this.selectedCourse.course_name;
+            document.getElementById('info-schedule-details').textContent = `${this.selectedSchedule.day} ${ApiService.formatTime(this.selectedSchedule.time_start)}`;
             document.getElementById('btn-new-assignment').disabled = false;
 
-            // Recargar contenido de tabs
             this.loadAttendanceTab();
             this.loadAssignmentsTab();
             this.loadNotesTab();
-        });
+        };
     },
 
-    switchTab(tabName) {
-        // Update buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.tab === tabName);
-        });
-
-        // Update content
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.toggle('active', content.id === `tab-${tabName}`);
-        });
+    switchTab(tab) {
+        document.querySelectorAll('.teacher-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+        document.querySelectorAll('.tab-content').forEach(c => c.style.display = c.id === `tab-${tab}` ? 'block' : 'none');
     },
 
     async loadAttendanceTab() {
         if (!this.selectedSchedule) return;
-
         const container = document.getElementById('attendance-content');
-        container.innerHTML = '<div class="loading-spinner"></div>';
+        container.innerHTML = '<div style="text-align:center; padding:40px;"><div class="loading-spinner"></div><p style="color:rgba(255,255,255,0.5);margin-top:15px;">Cargando estudiantes...</p></div>';
 
-        try {
-            // Obtener estudiantes del horario
-            const studentsResult = await ApiService.getAcademicData('get_schedule_students', {
-                schedule_id: this.selectedSchedule.id
-            });
-
-            if (!studentsResult.success || !studentsResult.data || studentsResult.data.length === 0) {
-                container.innerHTML = '<p style="color: rgba(255,255,255,0.5); text-align:center; padding: 40px;">No hay estudiantes inscritos en este horario.</p>';
-                return;
-            }
-
-            // Fecha de hoy
-            const today = new Date().toISOString().split('T')[0];
-
-            // Intentar cargar asistencia existente
-            const attendanceResult = await ApiService.teacherGetAttendance(this.selectedSchedule.id, today);
-            const existingAttendance = attendanceResult.success ? attendanceResult.data : [];
-
-            this.renderAttendanceChecklist(studentsResult.data, existingAttendance, today);
-        } catch (error) {
-            container.innerHTML = '<p style="color: #FF5252;">Error cargando estudiantes.</p>';
+        const res = await ApiService.getAcademicData('get_schedule_students', { schedule_id: this.selectedSchedule.id_schedule || this.selectedSchedule.id });
+        if (res.success && res.data) {
+            this.renderAttendanceList(res.data);
+        } else {
+            container.innerHTML = '<p style="text-align:center; padding:40px; color:#e74c3c;"><i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i> No se pudieron cargar los estudiantes.</p>';
         }
     },
 
-    renderAttendanceChecklist(students, existingAttendance, date) {
+    renderAttendanceList(students) {
         const container = document.getElementById('attendance-content');
+        const today = new Date().toISOString().split('T')[0];
 
-        const html = `
-            <div style="margin-bottom: 20px;">
-                <label style="color: rgba(255,255,255,0.8);">Fecha:</label>
-                <input type="date" id="attendance-date" value="${date}" class="swal2-input" style="width: auto; display: inline-block; margin-left: 10px;">
-                <button class="btn-primary" onclick="TeacherAcademic.loadAttendanceForDate()" style="margin-left: 10px;">Cargar</button>
+        let html = `
+            <div style="margin-bottom:25px; display:flex; align-items:center; gap:15px; background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); width: fit-content;">
+                <label style="color: white; font-weight: 500;">Fecha de clase:</label>
+                <input type="date" id="att-date" value="${today}" class="teacher-input-dark">
             </div>
-
-            <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px;">
-                <table style="width: 100%; color: white; border-collapse: collapse;">
+            <div style="background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden;">
+                <table class="teacher-table">
                     <thead>
-                        <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
-                            <th style="text-align: left; padding: 10px;">Estudiante</th>
-                            <th style="text-align: center; padding: 10px;">Presente</th>
-                            <th style="text-align: center; padding: 10px;">Ausente</th>
-                            <th style="text-align: center; padding: 10px;">Tardanza</th>
-                            <th style="text-align: center; padding: 10px;">Justificado</th>
+                        <tr>
+                            <th style="width: 70%;">Estudiante</th>
+                            <th style="text-align:center;">Estado de Asistencia</th>
                         </tr>
                     </thead>
-                    <tbody id="attendance-table-body">
-                        ${students.map(student => {
-            const existing = existingAttendance.find(a => a.student_id == student.id_usuario);
-            const status = existing ? existing.status : 'present';
+                    <tbody>
+        `;
 
-            return `
-                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                                    <td style="padding: 10px;">${student.full_name}</td>
-                                    <td style="text-align: center;"><input type="radio" name="attendance-${student.id_usuario}" value="present" ${status === 'present' ? 'checked' : ''}></td>
-                                    <td style="text-align: center;"><input type="radio" name="attendance-${student.id_usuario}" value="absent" ${status === 'absent' ? 'checked' : ''}></td>
-                                    <td style="text-align: center;"><input type="radio" name="attendance-${student.id_usuario}" value="late" ${status === 'late' ? 'checked' : ''}></td>
-                                    <td style="text-align: center;"><input type="radio" name="attendance-${student.id_usuario}" value="excused" ${status === 'excused' ? 'checked' : ''}></td>
-                                </tr>
-                            `;
-        }).join('')}
+        students.forEach(s => {
+            html += `
+                <tr>
+                    <td style="font-weight: 500;">${s.full_name}</td>
+                    <td style="text-align:center;">
+                        <select class="att-status" data-uid="${s.id_usuario}" style="background:rgba(0,0,0,0.5); color:white; border:1px solid rgba(255,255,255,0.2); padding:8px 12px; border-radius:10px; outline:none; font-size: 0.9rem;">
+                            <option value="present" style="background: #0a1929;">Presente</option>
+                            <option value="late" style="background: #0a1929;">Tarde</option>
+                            <option value="absent" style="background: #0a1929;">Ausente</option>
+                            <option value="excused" style="background: #0a1929;">Justificado</option>
+                        </select>
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `
                     </tbody>
                 </table>
-
-                <button class="btn-primary" onclick="TeacherAcademic.saveAttendance()" style="margin-top: 20px;">
-                    <i class="fas fa-save"></i> Guardar Asistencia
+            </div>
+            <div style="margin-top:25px; text-align: right;">
+                <button onclick="TeacherAcademic.saveAttendance()" style="background: linear-gradient(135deg, var(--color-acento-azul), #4facfe); color: #0a1929; border:none; padding:14px 35px; border-radius:12px; cursor:pointer; font-weight:700; font-size: 1rem; box-shadow: 0 10px 20px rgba(79, 172, 254, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 15px 25px rgba(79, 172, 254, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 20px rgba(79, 172, 254, 0.2)'">
+                    <i class="fas fa-check-circle" style="margin-right: 8px;"></i> Guardar Asistencia de Hoy
                 </button>
             </div>
         `;
-
         container.innerHTML = html;
     },
 
-    async loadAttendanceForDate() {
-        const date = document.getElementById('attendance-date').value;
-        if (!date) return;
-
-        const container = document.getElementById('attendance-content');
-        container.innerHTML = '<div class="loading-spinner"></div>';
-
-        const attendanceResult = await ApiService.teacherGetAttendance(this.selectedSchedule.id, date);
-        const studentsResult = await ApiService.getAcademicData('get_schedule_students', {
-            schedule_id: this.selectedSchedule.id
-        });
-
-        if (studentsResult.success) {
-            this.renderAttendanceChecklist(
-                studentsResult.data,
-                attendanceResult.success ? attendanceResult.data : [],
-                date
-            );
-        }
-    },
-
     async saveAttendance() {
-        const date = document.getElementById('attendance-date').value;
-        const tbody = document.getElementById('attendance-table-body');
-        const rows = tbody.querySelectorAll('tr');
+        const date = document.getElementById('att-date').value;
+        const records = Array.from(document.querySelectorAll('.att-status')).map(sel => ({
+            student_id: sel.dataset.uid,
+            status: sel.value
+        }));
 
-        const students = [];
-        rows.forEach(row => {
-            const radio = row.querySelector('input[type="radio"]:checked');
-            if (radio) {
-                const studentId = radio.name.replace('attendance-', '');
-                students.push({
-                    student_id: parseInt(studentId),
-                    status: radio.value
-                });
-            }
-        });
-
-        const result = await ApiService.teacherSaveAttendance({
-            schedule_id: this.selectedSchedule.id,
+        const res = await ApiService.teacherSaveAttendance({
+            schedule_id: this.selectedSchedule.id_schedule || this.selectedSchedule.id,
             date: date,
-            students: students
+            students: records
         });
 
-        if (result.success) {
-            Swal.fire('Guardado', 'Asistencia registrada correctamente', 'success');
+        if (res.success) {
+            Swal.fire({ title: '¡Guardado!', text: 'Asistencia registrada con éxito', icon: 'success', background: '#1a1a2e', color: '#fff' });
         } else {
-            Swal.fire('Error', result.message, 'error');
+            Swal.fire({ title: 'Error', text: res.message, icon: 'error', background: '#1a1a2e', color: '#fff' });
         }
     },
 
     async loadAssignmentsTab() {
         if (!this.selectedCourse) return;
-
         const container = document.getElementById('assignments-list');
-        container.innerHTML = '<div class="loading-spinner"></div>';
-
-        const result = await ApiService.teacherGetAssignments(this.selectedCourse.id);
-
-        if (result.success && result.data) {
-            this.renderAssignmentsList(result.data);
-        } else {
-            container.innerHTML = '<p style="color: rgba(255,255,255,0.5);">No hay tareas creadas aún.</p>';
-        }
-    },
-
-    renderAssignmentsList(assignments) {
-        const container = document.getElementById('assignments-list');
-
-        if (assignments.length === 0) {
-            container.innerHTML = '<p style="color: rgba(255,255,255,0.5);">No hay tareas creadas aún.</p>';
-            return;
-        }
-
-        container.innerHTML = assignments.map(a => `
-            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid var(--color-acento-naranja);">
-                <h4 style="margin: 0 0 5px 0;">${a.title}</h4>
-                <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin: 5px 0;">${a.description || 'Sin descripción'}</p>
-                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">
-                    Vence: ${a.due_date ? new Date(a.due_date).toLocaleDateString() : 'Sin fecha límite'}
+        const cid = this.selectedCourse.id_course || this.selectedCourse.id;
+        const res = await ApiService.teacherGetAssignments(cid);
+        if (res.success && res.data) {
+            container.innerHTML = res.data.map(a => `
+                <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:16px; margin-bottom:15px; border-left:5px solid var(--color-acento-naranja); border: 1px solid rgba(255,255,255,0.05); position: relative; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
+                    <div style="font-weight:700; font-size:1.2rem; color:white; margin-bottom: 8px;">${a.title}</div>
+                    <div style="color:rgba(255,255,255,0.6); font-size:0.95rem; line-height: 1.5;">${a.description || 'Sin descripción detallada.'}</div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top:15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <i class="far fa-calendar-alt" style="color: var(--color-acento-azul);"></i>
+                        <span style="font-size:0.85rem; color:rgba(255,255,255,0.4);">Fecha Límite:</span>
+                        <span style="font-size:0.85rem; color:var(--color-acento-azul); font-weight: 600;">${a.due_date || 'Abierta'}</span>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('') || '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.2);"><i class="fas fa-tasks" style="font-size: 2.5rem; margin-bottom: 20px; display: block;"></i> No hay tareas para este curso.</div>';
+        }
     },
 
     showCreateAssignmentForm() {
-        if (!this.selectedCourse) {
-            Swal.fire('Error', 'Seleccione un curso primero', 'warning');
-            return;
-        }
-
-        const formHtml = `
-            <div style="text-align:left;">
-                <label>Título</label>
-                <input type="text" id="swal-assign-title" class="swal2-input" placeholder="Ej: Tarea de Matemáticas">
-                
-                <label>Descripción</label>
-                <textarea id="swal-assign-desc" class="swal2-textarea" placeholder="Instrucciones..."></textarea>
-                
-                <label>Tipo de Material</label>
-                <select id="swal-assign-type" class="swal2-select">
-                    <option value="none">Ninguno</option>
-                    <option value="document">Documento</option>
-                    <option value="video">Video</option>
-                    <option value="link">Enlace</option>
-                </select>
-
-                <label>URL del Material</label>
-                <input type="text" id="swal-assign-url" class="swal2-input" placeholder="https://...">
-
-                <label>Fecha Límite</label>
-                <input type="date" id="swal-assign-date" class="swal2-input">
-            </div>
-        `;
-
         Swal.fire({
-            title: 'Nueva Tarea',
-            html: formHtml,
+            title: 'Nueva Tarea Académica',
+            html: `
+                <div style="text-align: left;">
+                    <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Título de la Tarea</label>
+                    <input id="ta-title" class="swal2-input" placeholder="Ej: Proyecto Final Armonía" style="margin: 0 0 15px 0; width: 100%;">
+                    <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Instrucciones</label>
+                    <textarea id="ta-desc" class="swal2-textarea" placeholder="Describe los requisitos..." style="margin: 0 0 15px 0; width: 100%; height: 100px;"></textarea>
+                    <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Fecha de Entrega</label>
+                    <input id="ta-date" type="date" class="swal2-input" style="margin: 0; width: 100%;">
+                </div>
+            `,
             showCancelButton: true,
-            confirmButtonText: 'Crear',
-            preConfirm: () => {
-                return {
-                    course_id: this.selectedCourse.id,
-                    teacher_id: this.session.id_usuario,
-                    title: document.getElementById('swal-assign-title').value,
-                    description: document.getElementById('swal-assign-desc').value,
-                    media_type: document.getElementById('swal-assign-type').value,
-                    media_url: document.getElementById('swal-assign-url').value,
-                    due_date: document.getElementById('swal-assign-date').value
-                };
-            }
+            confirmButtonText: 'Crear Tarea',
+            cancelButtonText: 'Cancelar',
+            background: '#1a1a2e',
+            color: '#fff',
+            confirmButtonColor: '#ff9f43',
+            preConfirm: () => ({
+                title: document.getElementById('ta-title').value,
+                description: document.getElementById('ta-desc').value,
+                due_date: document.getElementById('ta-date').value,
+                course_id: this.selectedCourse.id_course || this.selectedCourse.id,
+                teacher_id: this.session.id_usuario
+            })
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const resp = await ApiService.teacherCreateAssignment(result.value);
-                if (resp.success) {
-                    Swal.fire('Creada', 'La tarea ha sido creada', 'success');
+                const res = await ApiService.teacherCreateAssignment(result.value);
+                if (res.success) {
+                    Swal.fire({ title: '¡Creada!', text: 'La tarea ha sido publicada', icon: 'success', background: '#1a1a2e', color: '#fff' });
                     this.loadAssignmentsTab();
                 } else {
-                    Swal.fire('Error', resp.message, 'error');
+                    Swal.fire({ title: 'Error', text: res.message, icon: 'error', background: '#1a1a2e', color: '#fff' });
                 }
             }
         });
     },
 
     async loadNotesTab() {
-        if (!this.selectedSchedule) {
-            const container = document.getElementById('notes-content');
-            container.innerHTML = '<p style="color: rgba(255,255,255,0.5); text-align:center; padding: 40px;">Seleccione un curso y horario para gestionar notas.</p>';
-            return;
-        }
-
+        if (!this.selectedSchedule) return;
         const container = document.getElementById('notes-content');
-        container.innerHTML = '<div class="loading-spinner"></div>';
+        container.innerHTML = '<div style="text-align:center; padding:40px;"><div class="loading-spinner"></div><p style="color:rgba(255,255,255,0.5);margin-top:15px;">Cargando cuadro de notas...</p></div>';
 
-        try {
-            // Obtener estudiantes del horario
-            const studentsResult = await ApiService.getAcademicData('get_schedule_students', {
-                schedule_id: this.selectedSchedule.id
+        const cid = this.selectedCourse.id_course || this.selectedCourse.id;
+        const sid = this.selectedSchedule.id_schedule || this.selectedSchedule.id;
+
+        const res = await ApiService.getAcademicData('get_schedule_students', { schedule_id: sid });
+        const notesRes = await ApiService.teacherGetNotes(cid, sid);
+
+        if (res.success && res.data) {
+            let html = `
+                <div style="margin-bottom:25px; display:flex; justify-content: space-between; align-items: center;">
+                    <h4 style="color: white; margin: 0; font-weight: 500;">Calificaciones del Grupo</h4>
+                    <button onclick="TeacherAcademic.showAddNoteForm()" style="background:rgba(255, 159, 67, 0.15); color: #ff9f43; border: 1px solid rgba(255, 159, 67, 0.3); padding:10px 22px; border-radius:10px; cursor:pointer; font-weight:700; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255, 159, 67, 0.25)'" onmouseout="this.style.background='rgba(255, 159, 67, 0.15)'">
+                        <i class="fas fa-plus"></i> Calificar Estudiante
+                    </button>
+                </div>
+                <div style="background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden;">
+                    <table class="teacher-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Nombre Completo</th>
+                                <th style="text-align:center; width: 25%;">Promedio</th>
+                                <th style="text-align:center; width: 25%;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            res.data.forEach(s => {
+                const sNotes = notesRes.success ? notesRes.data.filter(n => n.student_id == s.id_usuario) : [];
+                const avg = sNotes.length > 0 ? (sNotes.reduce((acc, n) => acc + parseFloat(n.score), 0) / sNotes.length).toFixed(1) : '-';
+
+                html += `
+                    <tr>
+                        <td style="font-weight: 500;">${s.full_name}</td>
+                        <td style="text-align:center;">
+                            <span style="background: ${avg !== '-' ? 'linear-gradient(135deg, #a8cfee, var(--color-acento-azul))' : 'rgba(255,255,255,0.05)'}; padding: 6px 15px; border-radius: 12px; font-weight:800; color: ${avg !== '-' ? '#0a1929' : 'rgba(255,255,255,0.3)'}; font-size: 1.1rem;">
+                                ${avg}
+                            </span>
+                        </td>
+                        <td style="text-align:center;">
+                            <button onclick="TeacherAcademic.viewStudentNotes(${s.id_usuario}, '${s.full_name}')" style="background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; width: 40px; height: 40px; border-radius: 12px; cursor:pointer; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='var(--color-acento-azul)'; this.style.color='var(--color-acento-azul)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='white'">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
             });
 
-            if (!studentsResult.success || !studentsResult.data || studentsResult.data.length === 0) {
-                container.innerHTML = '<p style="color: rgba(255,255,255,0.5); text-align:center; padding: 40px;">No hay estudiantes inscritos en este horario.</p>';
-                return;
-            }
-
-            // Obtener notas existentes
-            const notesResult = await ApiService.teacherGetNotes(this.selectedCourse.id, this.selectedSchedule.id);
-            const existingNotes = notesResult.success ? notesResult.data : [];
-
-            this.renderNotesInterface(studentsResult.data, existingNotes);
-        } catch (error) {
-            console.error('Error loading notes:', error);
-            container.innerHTML = '<p style="color: #FF5252;">Error cargando estudiantes.</p>';
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
         }
-    },
-
-    renderNotesInterface(students, existingNotes) {
-        const container = document.getElementById('notes-content');
-
-        const html = `
-            <div style="margin-bottom: 20px;">
-                <button class="btn-primary" onclick="TeacherAcademic.showAddNoteForm()" style="margin-bottom: 15px;">
-                    <i class="fas fa-plus"></i> Agregar Nota/Calificación
-                </button>
-            </div>
-
-            <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px;">
-                <h4 style="color: #fff; margin-top: 0; margin-bottom: 20px;">
-                    <i class="fas fa-chart-line"></i> Listado de Estudiantes
-                </h4>
-                <table style="width: 100%; color: white; border-collapse: collapse;">
-                    <thead>
-                        <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
-                            <th style="text-align: left; padding: 12px;">Estudiante</th>
-                            <th style="text-align: center; padding: 12px;">Notas Registradas</th>
-                            <th style="text-align: center; padding: 12px;">Promedio</th>
-                            <th style="text-align: center; padding: 12px;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${students.map(student => {
-            const studentNotes = existingNotes.filter(n => n.student_id == student.id_usuario);
-            const avg = studentNotes.length > 0
-                ? (studentNotes.reduce((sum, n) => sum + parseFloat(n.score || 0), 0) / studentNotes.length).toFixed(1)
-                : '-';
-
-            return `
-                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                                    <td style="padding: 12px;">${student.full_name}</td>
-                                    <td style="text-align: center; padding: 12px;">${studentNotes.length}</td>
-                                    <td style="text-align: center; padding: 12px;">
-                                        <span style="background: ${avg !== '-' ? 'linear-gradient(135deg, var(--color-acento-azul), var(--color-acento-naranja))' : 'rgba(255,255,255,0.1)'}; padding: 4px 12px; border-radius: 12px; font-weight: 600;">
-                                            ${avg}
-                                        </span>
-                                    </td>
-                                    <td style="text-align: center; padding: 12px;">
-                                        <button class="btn-sm btn-outline" onclick="TeacherAcademic.viewStudentNotes(${student.id_usuario}, '${student.full_name}')">
-                                            <i class="fas fa-eye"></i> Ver
-                                        </button>
-                                    </td>
-                                </tr>
-                            `;
-        }).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
-
-        container.innerHTML = html;
     },
 
     showAddNoteForm() {
-        if (!this.selectedSchedule) {
-            Swal.fire('Error', 'Seleccione un horario primero', 'warning');
-            return;
-        }
-
-        // Obtener estudiantes para el selector
-        ApiService.getAcademicData('get_schedule_students', {
-            schedule_id: this.selectedSchedule.id
-        }).then(result => {
-            if (!result.success || !result.data) {
-                Swal.fire('Error', 'No se pudieron cargar los estudiantes', 'error');
-                return;
-            }
-
-            const formHtml = `
-                <div style="text-align:left;">
-                    <label>Estudiante</label>
-                    <select id="swal-note-student" class="swal2-select" style="width:100%;">
-                        <option value="">Seleccione un estudiante</option>
-                        ${result.data.map(s => `
-                            <option value="${s.id_usuario}">${s.full_name}</option>
-                        `).join('')}
-                    </select>
-
-                    <label style="margin-top: 15px;">Tipo de Evaluación</label>
-                    <select id="swal-note-type" class="swal2-select" style="width:100%;">
-                        <option value="quiz">Quiz</option>
-                        <option value="exam">Examen</option>
-                        <option value="assignment">Tarea</option>
-                        <option value="participation">Participación</option>
-                        <option value="project">Proyecto</option>
-                    </select>
-
-                    <label style="margin-top: 15px;">Calificación (0-10)</label>
-                    <input type="number" id="swal-note-score" class="swal2-input" min="0" max="10" step="0.1" placeholder="Ej: 8.5">
-
-                    <label style="margin-top: 15px;">Comentarios</label>
-                    <textarea id="swal-note-comment" class="swal2-textarea" placeholder="Retroalimentación para el estudiante..."></textarea>
-                </div>
-            `;
-
+        ApiService.getAcademicData('get_schedule_students', { schedule_id: this.selectedSchedule.id_schedule || this.selectedSchedule.id }).then(res => {
+            if (!res.success) return;
             Swal.fire({
-                title: 'Nueva Nota/Calificación',
-                html: formHtml,
+                title: 'Nueva Calificación',
+                html: `
+                    <div style="text-align: left;">
+                        <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Seleccionar Estudiante</label>
+                        <select id="n-st" class="swal2-select" style="width: 100%; margin: 0 0 15px 0;">
+                            ${res.data.map(s => `<option value="${s.id_usuario}">${s.full_name}</option>`).join('')}
+                        </select>
+                        <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Calificación (0-10)</label>
+                        <input id="n-sc" type="number" step="0.1" class="swal2-input" placeholder="Ej: 9.5" style="width: 100%; margin: 0 0 15px 0;">
+                        <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Tipo de Evaluación</label>
+                        <input id="n-tp" class="swal2-input" placeholder="Ej: Examen Final" style="width: 100%; margin: 0;">
+                    </div>
+                `,
                 showCancelButton: true,
-                confirmButtonText: 'Guardar',
+                confirmButtonText: 'Guardar Nota',
                 cancelButtonText: 'Cancelar',
-                preConfirm: () => {
-                    const studentId = document.getElementById('swal-note-student').value;
-                    const score = document.getElementById('swal-note-score').value;
-
-                    if (!studentId) {
-                        Swal.showValidationMessage('Seleccione un estudiante');
-                        return false;
-                    }
-                    if (!score || score < 0 || score > 10) {
-                        Swal.showValidationMessage('Ingrese una calificación válida (0-10)');
-                        return false;
-                    }
-
-                    return {
-                        student_id: parseInt(studentId),
-                        course_id: this.selectedCourse.id,
-                        schedule_id: this.selectedSchedule.id,
-                        note_type: document.getElementById('swal-note-type').value,
-                        score: parseFloat(score),
-                        comment: document.getElementById('swal-note-comment').value
-                    };
-                }
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    const resp = await ApiService.teacherAddNote(result.value);
+                background: '#1a1a2e',
+                color: '#fff',
+                confirmButtonColor: '#3498db',
+                preConfirm: () => ({
+                    student_id: document.getElementById('n-st').value,
+                    score: document.getElementById('n-sc').value,
+                    note_type: document.getElementById('n-tp').value,
+                    course_id: this.selectedCourse.id_course || this.selectedCourse.id,
+                    schedule_id: this.selectedSchedule.id_schedule || this.selectedSchedule.id
+                })
+            }).then(async r => {
+                if (r.isConfirmed) {
+                    const resp = await ApiService.teacherAddNote(r.value);
                     if (resp.success) {
-                        Swal.fire('Guardado', 'La nota ha sido registrada correctamente', 'success');
+                        Swal.fire({ title: '¡Guardado!', text: 'Calificación registrada', icon: 'success', background: '#1a1a2e', color: '#fff' });
                         this.loadNotesTab();
-                    } else {
-                        Swal.fire('Error', resp.message || 'No se pudo guardar la nota', 'error');
                     }
                 }
             });
         });
     },
 
-    async viewStudentNotes(studentId, studentName) {
-        const result = await ApiService.teacherGetNotes(this.selectedCourse.id, this.selectedSchedule.id);
-        if (!result.success) {
-            Swal.fire('Error', 'No se pudieron cargar las notas', 'error');
-            return;
-        }
-
-        const studentNotes = result.data.filter(n => n.student_id == studentId);
-
-        if (studentNotes.length === 0) {
-            Swal.fire('Sin Notas', `${studentName} no tiene notas registradas aún.`, 'info');
-            return;
-        }
-
-        const notesHtml = `
-            <div style="max-height: 400px; overflow-y: auto;">
-                ${studentNotes.map(note => `
-                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--color-acento-azul);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; text-transform: uppercase;">
-                                ${note.note_type}
-                            </span>
-                            <span style="background: linear-gradient(135deg, var(--color-acento-azul), var(--color-acento-naranja)); padding: 6px 14px; border-radius: 12px; font-weight: 700; font-size: 1.1rem;">
-                                ${note.score}
-                            </span>
-                        </div>
-                        ${note.comment ? `
-                            <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0; font-size: 0.9rem;">
-                                <i class="fas fa-comment"></i> ${note.comment}
-                            </p>
-                        ` : ''}
-                        <p style="color: rgba(255,255,255,0.5); margin: 8px 0 0 0; font-size: 0.75rem;">
-                            <i class="fas fa-calendar"></i> ${new Date(note.created_at).toLocaleDateString()}
-                        </p>
+    async viewStudentNotes(uid, name) {
+        const cid = this.selectedCourse.id_course || this.selectedCourse.id;
+        const sid = this.selectedSchedule.id_schedule || this.selectedSchedule.id;
+        const res = await ApiService.teacherGetNotes(cid, sid);
+        if (res.success) {
+            const sNotes = res.data.filter(n => n.student_id == uid);
+            Swal.fire({
+                title: `Notas de ${name}`,
+                background: '#1a1a2e',
+                color: '#fff',
+                html: `
+                    <div style="text-align: left; max-height: 400px; overflow-y: auto;">
+                        ${sNotes.map(n => `
+                            <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:10px; background: rgba(255,255,255,0.03); padding:12px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-weight: 700; color: white;">${n.note_type}</span>
+                                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">${new Date().toLocaleDateString()}</span>
+                                </div>
+                                <strong style="color:var(--color-acento-azul); font-size: 1.4rem; font-weight: 800;">${n.score}</strong>
+                            </div>
+                        `).join('') || '<p style="text-align:center; padding:20px; color:rgba(255,255,255,0.2);">Sin notas registradas</p>'}
                     </div>
-                `).join('')}
-            </div>
-        `;
-
-        const avg = (studentNotes.reduce((sum, n) => sum + parseFloat(n.score), 0) / studentNotes.length).toFixed(2);
-
-        Swal.fire({
-            title: `Notas de ${studentName}`,
-            html: `
-                <div style="text-align: left;">
-                    <div style="background: linear-gradient(135deg, var(--color-acento-azul), var(--color-acento-naranja)); padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
-                        <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px;">Promedio General</div>
-                        <div style="font-size: 2.5rem; font-weight: 700;">${avg}</div>
-                    </div>
-                    ${notesHtml}
-                </div>
-            `,
-            width: '600px',
-            confirmButtonText: 'Cerrar'
-        });
+                `,
+                confirmButtonText: 'Cerrar',
+                confirmButtonColor: '#555'
+            });
+        }
     }
 };
 
-// Auto-init: Sistema mejorado sin condiciones de carrera
 document.addEventListener('DOMContentLoaded', () => {
-    // Intentar inicialización inmediata
     TeacherAcademic.init();
-
-    // También escuchar evento personalizado para reintentar cuando el dashboard termine de cargar
     document.addEventListener('dashboard-role-loaded', (e) => {
-        if (e.detail && e.detail.role === 2) { // Rol 2 = Docente
-            console.log('[TeacherAcademic] Reintentando inicialización después de dashboard-role-loaded');
-            TeacherAcademic.init();
-        }
+        if (e.detail && e.detail.role == 2) TeacherAcademic.init();
     });
 });

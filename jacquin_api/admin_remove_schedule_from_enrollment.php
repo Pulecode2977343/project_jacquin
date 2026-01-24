@@ -10,7 +10,7 @@ header('Content-Type: application/json');
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!isset($data['enrollment_id']) || !isset($data['schedule_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Datos incompletos']);
+    echo json_encode(['success' => false, 'message' => 'Falta el ID de inscripción o el ID de horario']);
     exit;
 }
 

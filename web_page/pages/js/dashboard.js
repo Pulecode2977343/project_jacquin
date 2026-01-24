@@ -48,10 +48,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (greetingEl) greetingEl.textContent = `Hola, ${userName}`;
 
     // Elements - CORRECTED IDs based on gestion.html
-    const modAdminInventory = document.getElementById("mod-inventario"); // Check HTML if this exists
+    const modAdminInventory = document.getElementById("mod-inventory"); // Corrected ID
     const modAdminUsers = document.getElementById("mod-profesores"); // This is the "Usuarios" card
     const modAcademic = document.getElementById("mod-academic"); // Cursos / Notas
     const modEvents = document.getElementById("mod-events");     // Eventos
+    const modPositions = document.getElementById("mod-positions"); // Cargos
     const modStudentCourses = document.getElementById("mod-student-courses"); // Student Card
 
     // Legacy fallback (User Widget)
@@ -65,6 +66,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // NEW: Programs Card
     const modPrograms = document.getElementById("mod-programs");
     if (modPrograms) modPrograms.style.display = "none";
+    if (modPositions) modPositions.style.display = "none";
     if (modAcademic) modAcademic.style.display = "none"; // Hide by default
 
     // Filter Logic
@@ -73,7 +75,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (modAdminInventory) modAdminInventory.style.display = "flex";
             const modHero = document.getElementById("mod-hero");
             if (modHero) modHero.style.display = "flex";
-            const modEvents = document.getElementById("mod-events");
             if (modEvents) modEvents.style.display = "flex";
 
             // Show Programs Card for Admin
@@ -108,6 +109,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (modContent) {
                 modContent.style.display = "flex";
                 modContent.style.cursor = "pointer";
+            }
+
+            // Show Positions Card for Admin
+            if (modPositions) {
+                modPositions.style.display = "flex";
+                modPositions.onclick = () => window.location.href = "admin_positions.html";
+                modPositions.style.cursor = "pointer";
             }
 
             // Dispatch evento para notificar que el dashboard de admin está cargado
@@ -201,9 +209,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Link Modules (Navigation)
     if (modAcademic) {
-        modAcademic.onclick = () => {
+        modAcademic.onclick = (e) => {
             if (roleId === 1) {
-                if (window.openCourseManagement) window.openCourseManagement();
+                if (window.openCourseManagement) {
+                    window.openCourseManagement();
+                } else {
+                    console.error("openCourseManagement not found");
+                    showToast("Error: Módulo académico no cargado.", "error");
+                }
             } else {
                 const section = document.getElementById('section-academic');
                 if (section) section.scrollIntoView({ behavior: 'smooth' });
@@ -724,9 +737,12 @@ window.showTeacherScheduleStudents = async function (scheduleId, courseName, tim
                 background: '#1a1a2e',
                 color: '#fff'
             });
+        } else {
+            Swal.fire('Atención', res.message || 'No se pudieron recuperar los alumnos.', 'warning');
         }
     } catch (e) {
-        Swal.fire('Error', 'No se pudieron cargar los alumnos', 'error');
+        console.error("Student list error:", e);
+        Swal.fire('Error', 'Error interno al procesar la lista.', 'error');
     }
 };
 
@@ -840,7 +856,7 @@ window.contactAdmin = function (courseName = '') {
             });
 
             if (res.success) {
-                showToast('Mensaje enviado correctamente. Recibir├ís respuesta pronto.', 'success');
+                showToast('Mensaje enviado correctamente. Recibirás respuesta pronto.', 'success');
             } else {
                 showToast('Error al enviar: ' + (res.message || 'Intenta de nuevo'), 'error');
             }
@@ -887,7 +903,7 @@ function openCourseDetailOverlay(course) {
                 ${scheduleHtml}
                 
                 <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
-                    <p style="color:#888; font-size:0.85rem; margin:0;"><i class="bi bi-info-circle"></i> Si necesitas cambiar de horario, contacta a administraci├│n.</p>
+                    <p style="color:#888; font-size:0.85rem; margin:0;"><i class="bi bi-info-circle"></i> Si necesitas cambiar de horario, contacta a administración.</p>
                 </div>
             </div>
         </div>
@@ -1119,14 +1135,7 @@ async function loadCourses() {
     }
 }
 
-// Ensure Admin Redirect works
-window.openCourseManagement = function () {
-    const section = document.getElementById('section-academic');
-    if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-        loadCourses(); // Refresh to ensure badges are up to date
-    }
-};
+// [window.openCourseManagement moved to admin_shared_academic.js]
 
 window.showCourseModal = async function (id, name, desc) {
     const session = ApiService.getSession();
@@ -1386,7 +1395,7 @@ window.openHeroManager = function () {
             const res = await ApiService.updateHeroImage(file, payload);
             if (res.success) {
                 modal.style.display = "none";
-                await showToast("┬íPortada actualizada con ├®xito!", "success");
+                await showToast("¡Portada actualizada con éxito!", "success");
             } else {
                 await showToast("Error: " + res.message, "error");
                 btn.innerHTML = originalText;
@@ -1562,7 +1571,7 @@ window.openEnrollmentModal = async function () {
                     </div>
                     <div style="display:flex; gap:10px;">
                         <button onclick="enrollPrevStep()" style="flex:1; background:#333; color:white; border:1px solid #444; padding:12px; border-radius:10px; cursor:pointer; font-size:0.9rem;">
-                            <i class="bi bi-arrow-left"></i> Atr├ís
+                            <i class="bi bi-arrow-left"></i> Atrás
                         </button>
                         <button id="btn-confirm-student-enroll" onclick="submitMultipleEnrollments()" style="flex:2; background:linear-gradient(135deg, #2ecc71, #27ae60); color:white; border:none; padding:12px; border-radius:10px; cursor:pointer; font-size:0.95rem; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <i class="bi bi-check-circle"></i> Confirmar
@@ -1607,7 +1616,7 @@ window.openEnrollmentModal = async function () {
         }
     } catch (e) {
         console.error(e);
-        select.innerHTML = '<option value="">Error de conexi├│n</option>';
+        select.innerHTML = '<option value="">Error de conexión</option>';
     }
 };
 
@@ -1659,7 +1668,7 @@ window.enrollNextStep = async function () {
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <div>
                                     <span style="color:var(--color-acento-azul); font-weight:600; font-size:0.9rem;">${s.day}</span>
-                                    <span style="color:#888; margin:0 6px;">ÔÇó</span>
+                                    <span style="color:#888; margin:0 6px;">•</span>
                                     <span style="color:white; font-size:0.9rem;">${s.time_start ? ApiService.formatTime(s.time_start) : ''} - ${s.time_end ? ApiService.formatTime(s.time_end) : ''}</span>
                                 </div>
                                 ${isFull

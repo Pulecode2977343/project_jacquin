@@ -111,12 +111,12 @@ window.enrollStudentDirect = async function (user) {
             }, () => openProfile(user.id_usuario));
 
         } else {
-            alert("No se pudieron cargar los cursos");
+            showToast("No se pudieron cargar los cursos", "error");
             openProfile(user.id_usuario);
         }
     } catch (e) {
         console.error(e);
-        alert("Error de conexión");
+        showToast("Error de conexión", "error");
         openProfile(user.id_usuario);
     }
 };
@@ -140,12 +140,12 @@ window.assignTeacherDirect = async function (user) {
                 }
             }, () => openProfile(user.id_usuario));
         } else {
-            alert("No se pudieron cargar los cursos");
+            showToast("No se pudieron cargar los cursos", "error");
             openProfile(user.id_usuario);
         }
     } catch (e) {
         console.error(e);
-        alert("Error de conexión");
+        showToast("Error de conexión", "error");
         openProfile(user.id_usuario);
     }
 };

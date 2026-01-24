@@ -643,7 +643,7 @@
             </div>
           </div>
 
-          <!-- M├│dulo Docente: Tarjeta Principal de Perfil -->
+          <!-- Módulo Docente: Tarjeta Principal de Perfil -->
           <div id="mod-teacher-main" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(230, 126, 34, 0.4), rgba(211, 84, 0, 0.4)); grid-column: 1 / -1; flex-direction: column; padding: 2rem; gap: 1rem;">
             <!-- Top: Name & Role -->
@@ -701,7 +701,7 @@
             </div>
           </div>
 
-          <!-- M├│dulo Colaborador: Dashboard Principal (NUEVO) -->
+          <!-- Módulo Colaborador: Dashboard Principal (NUEVO) -->
           <div id="mod-collaborator-main" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(22, 160, 133, 0.4), rgba(26, 188, 156, 0.4)); grid-column: 1 / -1; flex-direction: column; padding: 2rem; gap: 1rem;">
             <!-- Top: Name & Role -->
@@ -730,15 +730,15 @@
 
                   <button class="btn-module"
                     style="margin:0; background: rgba(255, 255, 255, 0.1); color: white; grid-column: span 1; font-weight: bold; padding: 12px; cursor: not-allowed; opacity: 0.7;"
-                    title="Pr├│ximamente"><i class="bi bi-box-seam"></i> Inventario</button>
+                    title="Próximamente"><i class="bi bi-box-seam"></i> Inventario</button>
 
                   <button class="btn-module"
                     style="margin:0; background: rgba(255, 255, 255, 0.1); color: white; grid-column: span 1; font-weight: bold; padding: 12px; cursor: not-allowed; opacity: 0.7;"
-                    title="Pr├│ximamente"><i class="bi bi-list-check"></i> Mis Tareas</button>
+                    title="Próximamente"><i class="bi bi-list-check"></i> Mis Tareas</button>
 
                   <button class="btn-module"
                     style="margin:0; background: rgba(255, 255, 255, 0.1); color: white; grid-column: span 2; font-weight: bold; padding: 12px; cursor: not-allowed; opacity: 0.7;"
-                    title="Pr├│ximamente"><i class="bi bi-calendar3"></i> Mi Calendario</button>
+                    title="Próximamente"><i class="bi bi-calendar3"></i> Mi Calendario</button>
 
                   <button class="btn-module"
                     style="margin:0; background: linear-gradient(135deg, var(--color-acento-azul), #2980b9); color: white; grid-column: span 2; font-weight: bold; padding: 12px;"
@@ -750,6 +750,19 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Módulo Cargos (NUEVO) -->
+          <div id="mod-positions" class="bento-card dashboard-card"
+            style="display: none; background: linear-gradient(135deg, #8e44ad, #9b59b6);"
+            onclick="window.location.href='admin_positions.html'">
+            <div class="icon-glow"><i class="bi bi-briefcase-fill"></i></div>
+            <div class="card-content">
+              <h3>Gestión de Cargos</h3>
+              <p>Estructura organizacional y funciones del personal</p>
+              <button class="btn-module">Configurar</button>
+            </div>
+            <div class="card-shine"></div>
           </div>
 
           <!-- Módulo Hero (Portada) -->
@@ -778,13 +791,14 @@
           </div>
 
           <!-- Módulo Académico -->
-          <div id="mod-academic" class="bento-card dashboard-card" style="display: none">
+          <div id="mod-academic" class="bento-card dashboard-card" style="display: none; grid-column: span 1;"
+            onclick="if(window.openCourseManagement) window.openCourseManagement()">
             <div class="icon-glow"><i class="bi bi-calendar-week"></i></div>
             <div class="card-content">
               <h3>Gestión Académica</h3>
               <ul class="dashboard-list">
-                <li>Cursos</li>
-                <li>Horarios</li>
+                <li>Cursos y Materias</li>
+                <li>Asignación de Estudiantes</li>
               </ul>
               <button class="btn-module">Acceder</button>
             </div>
@@ -806,14 +820,14 @@
             <div class="card-shine"></div>
           </div>
 
-          <!-- M├│dulo Contenido Web (NUEVO) -->
+          <!-- Módulo Contenido Web (NUEVO) -->
           <div id="mod-content" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(155, 89, 182, 0.4), rgba(142, 68, 173, 0.4));"
             onclick="window.openContentManager()">
             <div class="icon-glow"><i class="bi bi-layout-text-window-reverse"></i></div>
             <div class="card-content">
               <h3>Contenido Web</h3>
-              <p>Gestionar secci├│n "Sobre Nosotros" y contenido din├ímico</p>
+              <p>Gestionar sección "Sobre Nosotros" y contenido dinámico</p>
               <button class="btn-module">Gestionar</button>
             </div>
             <div class="card-shine"></div>
@@ -956,27 +970,26 @@
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!-- Admin Scripts -->
-  <script src="js/services/api.js?v=3.5"></script>
-  <script src="js/admin_shared_academic.js?v=1.0"></script>
-  <script src="js/user_profile_modal.js?v=4.2"></script>
-  <script src="js/admin_users.js?v=26"></script>
-  <script src="js/admin_directory.js?v=20"></script>
+  <script src="js/services/api.js?v=3.8"></script>
+  <script src="js/admin_shared_academic.js?v=1.2"></script>
+  <script src="js/user_profile_modal.js?v=4.7"></script>
+  <script src="js/admin_users.js?v=30"></script>
+  <script src="js/admin_directory.js?v=24"></script>
   <!-- Note: admin_directory replaces script.js legacy logic eventually -->
-  <script src="js/admin_academic_schedules.js?v=20"></script>
-  <script src="js/admin_content.js?v=21"></script>
-  <script src="js/admin_compliance.js?v=1.0"></script>
-  <script src="js/teacher_academic.js?v=2.0"></script>
-  <script src="js/student_academic.js?v=2.0"></script>
+  <script src="js/admin_academic_schedules.js?v=24"></script>
+  <script src="js/admin_content.js?v=25"></script>
+  <script src="js/admin_compliance.js?v=1.4"></script>
+  <script src="js/teacher_academic.js?v=2.5"></script>
+  <script src="js/student_academic.js?v=2.5"></script>
 
   <!-- Main Logic -->
-  <script src="js/components/Navbar.js?v=2.3"></script>
-  <script src="js/components/Header.js?v=3.6"></script>
-  <script src="js/components/Footer.js?v=2.1"></script>
-  <script src="js/dashboard.js?v=7.1"></script>
-  <script src="js/notifications.js?v=1.0"></script>
-  <script src="js/toast_overlay.js?v=2.1"></script>
-  <script src="js/events_manager.js?v=2.1"></script>
+  <script src="js/components/Navbar.js?v=2.7"></script>
+  <script src="js/components/Header.js?v=4.0"></script>
+  <script src="js/components/Footer.js?v=2.5"></script>
+  <script src="js/dashboard.js?v=7.6"></script>
+  <script src="js/notifications.js?v=1.1"></script>
+  <script src="js/toast_overlay.js?v=2.2"></script>
+  <script src="js/events_manager.js?v=2.2"></script>
 </body>
 
 </html>

@@ -12,25 +12,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadAdmins();
 });
 
-window.loadAdmins = async function() {
+window.loadAdmins = async function () {
     const tableBody = document.querySelector("#admins-table tbody");
-    if(!tableBody) return;
+    if (!tableBody) return;
 
-    const response = await ApiService.getUsers(); 
+    const response = await ApiService.getUsers();
     const currentUser = ApiService.getSession();
 
     if (response.success && response.data) {
         // Filter for Role 1 (Admin)
         const admins = response.data.filter(u => u.id_rol == 1);
-        
-        if(admins.length > 0) {
-            tableBody.innerHTML = ""; 
+
+        if (admins.length > 0) {
+            tableBody.innerHTML = "";
             admins.forEach(p => {
                 const isMe = (p.id_usuario == currentUser.id_usuario);
                 const row = document.createElement("tr");
-                
+
                 let actions = '';
-                if(isMe) {
+                if (isMe) {
                     actions = `<span style="font-size:0.8rem; color:var(--color-humo-gris);">(Tú)</span>`;
                 } else {
                     actions = `
@@ -60,14 +60,14 @@ window.loadAdmins = async function() {
     }
 };
 
-window.deleteAdmin = async function(userId, userName) {
-    if (!confirm(`PELIGRO: ¿Eliminar al ADMINISTRADOR "${userName}"?\n\nEsta acción es irreversible y podría perder acceso al sistema si no hay otros admins.`)) return;
-    
+window.deleteAdmin = async function (userId, userName) {
+    if (!await showConfirm(`PELIGRO: ¿Eliminar al ADMINISTRADOR "${userName}"?\n\nEsta acción es irreversible y podría perder acceso al sistema si no hay otros admins.`)) return;
+
     const result = await ApiService.deleteUser(userId);
     if (result.success) {
-        alert("Administrador eliminado correctamente");
-        loadAdmins(); 
+        showToast("Administrador eliminado correctamente", "success");
+        loadAdmins();
     } else {
-        alert("Error: " + result.message);
+        showToast("Error: " + result.message, "error");
     }
 };

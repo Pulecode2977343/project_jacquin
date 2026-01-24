@@ -263,7 +263,7 @@ window.deleteUser = async function (userId, userName) {
 
 window.openManageUserModal = async function (userId, userName) {
     const detailsRes = await ApiService.getUserDetails(userId);
-    if (!detailsRes.success) return alert("Error cargando detalles");
+    if (!detailsRes.success) return showToast("Error cargando detalles", "error");
 
     const enrollments = detailsRes.data.enrolled || [];
 
@@ -303,7 +303,7 @@ window.openManageUserModal = async function (userId, userName) {
 };
 
 window.manageUnenroll = async function (eid, uid, uname) {
-    if (!confirm("¿Desinscribir?")) return;
+    if (!await showConfirm("¿Desinscribir?")) return;
     await ApiService.unenrollStudent(eid);
     openManageUserModal(uid, uname);
 };

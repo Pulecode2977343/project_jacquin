@@ -66,7 +66,7 @@ try {
         $sql = "SELECT u.id_usuario, u.full_name, u.avatar_url
                 FROM usuario u
                 JOIN enrollments e ON u.id_usuario = e.student_id
-                JOIN enrollment_schedules es ON e.id = es.enrollment_id
+                JOIN enrollment_schedules es ON e.id_enrollment = es.enrollment_id
                 WHERE es.schedule_id = ?";
 
         $stmt = $pdo->prepare($sql);
@@ -84,11 +84,11 @@ try {
         if (!$studentId)
             throw new Exception("student_id requerido");
 
-        $sql = "SELECT a.*, c.name as course_name, 
+        $sql = "SELECT a.*, c.course_name as course_name, 
                 s.status as submission_status, s.grade, s.feedback
                 FROM course_assignments a
-                JOIN courses c ON a.course_id = c.id
-                JOIN enrollments e ON c.id = e.course_id
+                JOIN courses c ON a.course_id = c.id_course
+                JOIN enrollments e ON c.id_course = e.course_id
                 LEFT JOIN student_submissions s ON a.id = s.assignment_id AND s.student_id = ?
                 WHERE e.student_id = ? AND a.is_active = 1
                 ORDER BY a.due_date ASC";
@@ -108,9 +108,9 @@ try {
         if (!$studentId)
             throw new Exception("student_id requerido");
 
-        $sql = "SELECT n.*, c.name as course_name, u.full_name as teacher_name
+        $sql = "SELECT n.*, c.course_name as course_name, u.full_name as teacher_name
                  FROM academic_notes n
-                 JOIN courses c ON n.course_id = c.id
+                 JOIN courses c ON n.course_id = c.id_course
                  JOIN usuario u ON n.teacher_id = u.id_usuario
                  WHERE n.student_id = ? AND n.is_private_admin = 0
                  ORDER BY n.created_at DESC";

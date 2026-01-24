@@ -1038,6 +1038,17 @@ const ApiService = {
         } catch (error) { return { success: false, message: "Error obteniendo tareas." }; }
     },
 
+    async teacherGetNotes(courseId, scheduleId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_notes.php?course_id=${courseId}&schedule_id=${scheduleId}`);
+            return await response.json();
+        } catch (error) { return { success: false, message: "Error obteniendo notas." }; }
+    },
+
+    async teacherAddNote(data) {
+        return this.teacherSaveNote(data);
+    },
+
     // MISSION & VALUES
     async getMissionValues() {
         try {

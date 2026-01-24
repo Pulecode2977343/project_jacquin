@@ -7,6 +7,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 include_once 'config/connection.php';
 require_once 'services/EmailService.php';
+require_once 'helpers/conflict_helper.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
@@ -34,6 +35,13 @@ if (
 
             if ($checkDup->fetch()) {
                 echo json_encode(["success" => false, "message" => "El estudiante ya tiene asignado este horario específico para este curso."]);
+                exit;
+            }
+
+            // 3. Check for TIME CONFLICTS (Overlapping schedules)
+            $conflict = checkScheduleConflict($pdo, (int) $data->student_id, (int) $data->schedule_id);
+            if ($conflict['conflict']) {
+                echo json_encode(["success" => false, "message" => $conflict['message']]);
                 exit;
             }
 

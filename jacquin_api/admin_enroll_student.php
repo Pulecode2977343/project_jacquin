@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/config/cors.php';
 require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/helpers/conflict_helper.php';
 
 header('Content-Type: application/json');
 
@@ -21,7 +22,8 @@ if (isset($data['schedule_ids']) && is_array($data['schedule_ids'])) {
 
 // Validate that we have valid schedule IDs
 $scheduleIds = array_filter($scheduleIds, function ($id) {
-    return $id > 0; });
+    return $id > 0;
+});
 
 if (empty($scheduleIds)) {
     echo json_encode(['success' => false, 'message' => 'ID de horario inválido o no proporcionado', 'received_data' => $data]);
@@ -56,6 +58,15 @@ try {
 
         if ($checkDup->fetch()) {
             $schedResult['message'] = 'Ya inscrito en este horario';
+            $results[] = $schedResult;
+            $failCount++;
+            continue;
+        }
+
+        // 1b. Check for TIME CONFLICTS (Overlapping schedules)
+        $conflict = checkScheduleConflict($pdo, (int) $data['student_id'], (int) $schedId);
+        if ($conflict['conflict']) {
+            $schedResult['message'] = $conflict['message'];
             $results[] = $schedResult;
             $failCount++;
             continue;

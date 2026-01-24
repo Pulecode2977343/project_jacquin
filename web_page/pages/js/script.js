@@ -4,25 +4,25 @@
 // Espera a que el contenido de la página esté cargado
 document.addEventListener("DOMContentLoaded", function () {
   console.log("Sistema de Gestión JACQUIN listo.");
-}); 
+});
 
 function accesoModulo(modulo) {
   if (modulo === "interesados") {
     const contacto = prompt("Por favor, ingrese su correo o número de contacto:");
     if (contacto) {
-      alert("Gracias. Pronto nos comunicaremos contigo a " + contacto);
+      showToast("Gracias. Pronto nos comunicaremos contigo a " + contacto, "success");
     } else {
-      alert("Debes ingresar un correo o número para continuar.");
+      showToast("Debes ingresar un correo o número para continuar.", "warning");
     }
   } else {
     const usuario = prompt("Ingrese su usuario para el módulo de " + modulo);
     const clave = prompt("Ingrese su clave");
-    
+
     if (usuario && clave) {
       // Aquí puedes agregar lógica real de validación en el futuro
-      alert("Bienvenido al módulo de " + modulo + ", " + usuario + ".");
+      showToast("Bienvenido al módulo de " + modulo + ", " + usuario + ".", "success");
     } else {
-      alert("Debes ingresar usuario y clave para acceder.");
+      showToast("Debes ingresar usuario y clave para acceder.", "warning");
     }
   }
 }

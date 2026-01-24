@@ -30,8 +30,15 @@ window.openCourseManagement = async function () {
         modal = document.createElement("div");
         modal.id = modalId;
         modal.className = "modal-overlay";
-        modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:20002; display:flex; justify-content:center; align-items:center; opacity:0; transition:opacity 0.3s;";
+        modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,8,20,0.8); z-index:20002; display:flex; justify-content:center; align-items:center; opacity:0; transition:opacity 0.3s; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);";
         document.body.appendChild(modal);
+
+        const style = document.createElement('style');
+        style.textContent = `
+            #admin-courses-modal * { font-family: 'Outfit', sans-serif !important; }
+            .admin-academic-card:hover { border-color: var(--color-acento-azul) !important; background: rgba(255,255,255,0.08) !important; }
+        `;
+        document.head.appendChild(style);
     }
 
     const coursesListHtml = courses.map(c => {
@@ -50,7 +57,7 @@ window.openCourseManagement = async function () {
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
                     <div style="color:white; font-weight:700; font-size:1.1rem; margin-bottom:4px;">${c.name}</div>
-                    <div style="color:#666; font-size:0.8rem; font-family:monospace;">ID: ${c.id_course} | DOCENTE: ${c.teacher_name || 'SIN ASIGNAR'}</div>
+                    <div style="color:rgba(255,255,255,0.4); font-size:0.8rem;">ID: ${c.id_course} | DOCENTE: <span style="color: var(--color-acento-azul); font-weight: 600;">${c.teacher_name || 'SIN ASIGNAR'}</span></div>
                 </div>
                 ${hasAction ? `
                     <div title="Solicitudes Pendientes" style="width:32px; height:32px; border-radius:50%; background:#ff9f43; display:flex; justify-content:center; align-items:center; color:black; font-weight:900; font-size:0.85rem; box-shadow:0 0 15px rgba(255, 159, 67, 0.6); animation: pulse-alert 2s infinite; border: 2px solid rgba(255,255,255,0.2);">
@@ -67,7 +74,7 @@ window.openCourseManagement = async function () {
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:30px;">
                 <div>
                     <h2 style="color:white; margin:0; font-size:1.8rem; font-weight:300;">Gestión Académica</h2>
-                    <p style="color:#666; margin:5px 0 0 0;">Selecciona una materia para gestionar inscritos y horarios.</p>
+                    <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">Selecciona una materia para gestionar inscritos y horarios.</p>
                 </div>
                 <button onclick="document.getElementById('${modalId}').style.opacity='0'; setTimeout(()=>document.getElementById('${modalId}').style.display='none', 300)" style="background:rgba(255,255,255,0.05); border:none; color:white; width:40px; height:40px; border-radius:50%; font-size:1.5rem; cursor:pointer;">&times;</button>
             </div>
@@ -140,7 +147,7 @@ window.openCourseDetails = async function (courseId, courseName) {
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
                 <div>
                     <h2 style="color:white; margin:0; font-size:1.8rem;">${courseName}</h2>
-                    <p style="color:#666; margin:5px 0 0 0;">Gestión de alumnos y programación.</p>
+                    <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">Gestión de alumnos y programación.</p>
                 </div>
                 <button onclick="closeCourseDetailsModal()" style="background:rgba(255,255,255,0.05); border:none; color:white; padding:8px 20px; border-radius:50px; cursor:pointer;">Cerrar</button>
             </div>

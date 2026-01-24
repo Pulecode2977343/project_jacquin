@@ -79,9 +79,9 @@ window.openProfile = async function (userId) {
 
             <div style="background: rgba(0,0,0,0.2); display: flex; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 20px;">
                 <button onclick="switchUserTab('info')" id="tab-btn-info" class="modal-tab-btn active">Información</button>
-                ${(user.id_rol == 2 || user.id_rol == 1) ? `<button onclick="switchUserTab('courses')" id="tab-btn-courses" class="modal-tab-btn">Cursos Asignados</button>` : ''}
-                ${(user.id_rol == 5) ? `<button onclick="switchUserTab('position')" id="tab-btn-position" class="modal-tab-btn">Cargo</button>` : ''}
-                ${(currentUser.id_rol == 1 && (user.id_rol == 3 || user.id_rol == 4)) ? `<button onclick="switchUserTab('academic')" id="tab-btn-academic" class="modal-tab-btn">Gestión Académica</button>` : ''}
+                ${(user.id_rol == 2 || user.id_rol == 1) ? `<button onclick="switchUserTab('courses')" id="tab-btn-courses" class="modal-tab-btn">${user.id_rol == 2 ? 'Horario de Clases' : 'Cursos Asignados'}</button>` : ''}
+                ${(currentUser.id_rol == 1 || user.id_rol == 5 || user.id_rol == 2) ? `<button onclick="switchUserTab('position')" id="tab-btn-position" class="modal-tab-btn">Cargo e Id</button>` : ''}
+                ${(currentUser.id_rol == 1 && (user.id_rol == 2 || user.id_rol == 3 || user.id_rol == 4)) ? `<button onclick="switchUserTab('academic')" id="tab-btn-academic" class="modal-tab-btn">Gestión Académica</button>` : ''}
             </div>
 
             <div id="modal-tab-content" style="padding: 35px; max-height: 60vh; overflow-y: auto;" class="custom-scroll">
@@ -207,104 +207,226 @@ window.switchUserTab = async function (tab) {
         } else if (tab === 'courses') {
             const res = await ApiService.getUserDetails(user.id_usuario || user.id);
             if (res.success) {
-                const courses = user.id_rol == 2 ? (res.data.teaching || []) : (res.data.enrolled || []);
+                const isTeacher = user.id_rol == 2;
+                const courses = isTeacher ? (res.data.teaching || []) : (res.data.enrolled || []);
+
                 if (courses.length === 0) {
-                    content.innerHTML = '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.3);">No hay cursos registrados.</div>';
+                    content.innerHTML = `<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.3);">No hay ${isTeacher ? 'materias asignadas' : 'cursos inscritos'}.</div>`;
                 } else {
                     content.innerHTML = `
                         <div style="display: grid; gap: 10px;">
-                            ${courses.map(c => `
-                                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
-                                    <div style="color:white; font-weight:600;">${c.name}</div>
-                                    <div style="color:rgba(255,255,255,0.4); font-size:0.8rem;">Status: ${c.status || 'Activo'}</div>
-                                </div>
-                            `).join('')}
+                            ${courses.map(c => {
+                        const idToUse = isTeacher ? c.id_course : c.id_enrollment;
+                        const actionFn = isTeacher ? 'unassignTeacherFromCourse' : 'unenrollUserFromCourse';
+                        const btnTitle = isTeacher ? 'Remover asignación de docente' : 'Desvincular del curso';
+
+                        return `
+                                    <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                                            <div>
+                                                <div style="color:white; font-weight:600;">${c.name}</div>
+                                                ${isTeacher ? `<div style="color:rgba(255,255,255,0.3); font-size:0.75rem; margin-top:2px;">Materia Principal</div>` : ''}
+                                            </div>
+                                            <div style="display:flex; gap:10px; align-items:center;">
+                                                <span style="color:rgba(255,255,255,0.4); font-size:0.8rem;">${c.status || 'Activo'}</span>
+                                                ${currentUser.id_rol == 1 ? `
+                                                    <button onclick="${actionFn}(${idToUse}, ${user.id_usuario || user.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; padding:5px;" title="${btnTitle}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                    }).join('')}
                         </div>
                     `;
                 }
             }
         } else if (tab === 'academic') {
             const targetUserId = user.id_usuario || user.id;
-            const detailRes = await ApiService.getUserDetails(targetUserId);
-            const allCoursesRes = await ApiService.getCourses();
+            const isTeacher = user.id_rol == 2;
 
-            const enrolled = detailRes.success ? (detailRes.data.enrolled || []) : [];
-            const allCourses = allCoursesRes.success ? allCoursesRes.data : [];
-            const enrolledIds = enrolled.map(e => e.id_course);
-            const availableCourses = allCourses.filter(c => !enrolledIds.includes(c.id_course));
+            if (isTeacher) {
+                // TEACHER ACADEMIC MANAGEMENT
+                const res = await ApiService.getCourses();
+                const allCourses = res.success ? res.data : [];
+                const teaching = allCourses.filter(c => c.teacher_id == targetUserId);
+                const available = allCourses.filter(c => c.teacher_id != targetUserId && c.name !== 'Instalaciones');
+
+                content.innerHTML = `
+                    <div style="animation: fadeInModal 0.3s ease-out;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding: 18px 22px; background: linear-gradient(135deg, rgba(39, 174, 96, 0.15), rgba(39, 174, 96, 0.05)); border-radius: 15px; border-left: 4px solid #27ae60;">
+                            <i class="bi bi-person-video3" style="font-size: 1.8rem; color: #27ae60;"></i>
+                            <div>
+                                <div style="color: white; font-weight: 700; font-size: 1.1rem;">Carga Docente</div>
+                                <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">Gestiona las materias asignadas a este profesor</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 30px;">
+                            <h4 style="color: white; margin-bottom: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px;">
+                                <i class="bi bi-journal-check" style="color: #27ae60;"></i> 
+                                Materias Actuales
+                                <span style="background: rgba(39, 174, 96, 0.2); color: #27ae60; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;">${teaching.length}</span>
+                            </h4>
+                            ${teaching.length > 0 ? `
+                                <div style="display: grid; gap: 10px;">
+                                    ${teaching.map(c => `
+                                        <div style="background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <div style="color: white; font-weight: 600;">${c.name}</div>
+                                                <div style="color: rgba(255,255,255,0.4); font-size: 0.75rem;">ID: ${c.id_course}</div>
+                                            </div>
+                                            <button onclick="unassignTeacherFromCourse(${c.id_course}, ${targetUserId})" style="background: rgba(231, 76, 60, 0.1); color: #ff7675; border: 1px solid rgba(231, 76, 60, 0.3); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(231, 76, 60, 0.2)'" onmouseout="this.style.background='rgba(231, 76, 60, 0.1)'">Remover</button>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : `<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.2); border:1px dashed rgba(255,255,255,0.1); border-radius:12px;">Sin materias asignadas</div>`}
+                        </div>
+
+                        <h4 style="color: white; margin-bottom: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px;">
+                            <i class="bi bi-plus-circle-fill" style="color: var(--color-acento-azul);"></i> 
+                            Asignar Nueva Materia
+                        </h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;">
+                            ${available.map(c => `
+                                <div onclick="assignTeacherToCourse(${c.id_course}, ${targetUserId}, '${c.name.replace(/'/g, "\\'")}')" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='var(--color-acento-azul)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)'">
+                                    <div style="color: white; font-weight: 500; font-size: 0.85rem; margin-bottom: 8px;">${c.name}</div>
+                                    <div style="color: var(--color-acento-azul); font-size: 0.7rem; font-weight: 700;"><i class="bi bi-plus-lg"></i> Asignar</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                // STUDENT ACADEMIC MANAGEMENT (Existing Logic)
+                const detailRes = await ApiService.getUserDetails(targetUserId);
+                const allCoursesRes = await ApiService.getCourses();
+
+                const enrolled = detailRes.success ? (detailRes.data.enrolled || []) : [];
+                const allCourses = allCoursesRes.success ? allCoursesRes.data : [];
+                const enrolledIds = enrolled.map(e => e.id_course);
+                const availableCourses = allCourses.filter(c => !enrolledIds.includes(c.id_course) && c.name !== 'Instalaciones');
+
+                content.innerHTML = `
+                    <div style="animation: fadeInModal 0.3s ease-out;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding: 18px 22px; background: linear-gradient(135deg, rgba(52, 152, 219, 0.15), rgba(52, 152, 219, 0.05)); border-radius: 15px; border-left: 4px solid #3498db;">
+                            <i class="bi bi-mortarboard" style="font-size: 1.8rem; color: #3498db;"></i>
+                            <div>
+                                <div style="color: white; font-weight: 700; font-size: 1.1rem;">Gestión Académica</div>
+                                <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">Administra inscripciones y cursos del usuario</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 30px;">
+                            <h4 style="color: white; margin-bottom: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px;">
+                                <i class="bi bi-bookmark-check-fill" style="color: var(--color-acento-azul);"></i> 
+                                Plan de Aprendizaje
+                                <span style="background: rgba(147, 182, 238, 0.2); color: var(--color-acento-azul); padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;">${enrolled.length} cursos</span>
+                            </h4>
+                            ${enrolled.length > 0 ? `
+                                <div style="display: grid; gap: 12px;">
+                                    ${enrolled.map(e => `
+                                        <div style="background: rgba(255,255,255,0.03); border-radius: 14px; border: 1px solid rgba(255,255,255,0.06); overflow: hidden;">
+                                            <div onclick="toggleEnrollmentAccordion(${e.id_enrollment}, ${e.id_course}, ${targetUserId})" style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                                                <div style="display: flex; align-items: center; gap: 12px;">
+                                                    <i class="bi bi-journal-bookmark" style="color: var(--color-acento-azul); font-size: 1.2rem;"></i>
+                                                    <div>
+                                                        <div style="color: white; font-weight: 600;">${e.name}</div>
+                                                        <div style="color: rgba(255,255,255,0.4); font-size: 0.75rem;">Click para gestionar horarios</div>
+                                                    </div>
+                                                </div>
+                                                <div style="display: flex; align-items: center; gap: 10px;">
+                                                    <i class="bi bi-chevron-down" id="chevron-${e.id_enrollment}" style="color: rgba(255,255,255,0.4); transition: transform 0.3s;"></i>
+                                                </div>
+                                            </div>
+                                            <div id="accordion-content-${e.id_enrollment}" style="display: none; padding: 0 20px 20px 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                                                <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.3);">Cargando horarios...</div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : `<div style="text-align: center; padding: 25px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; color: rgba(255,255,255,0.2);">Sin inscripciones activas</div>`}
+                        </div>
+
+                        <h4 style="color: white; margin-bottom: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px;">
+                            <i class="bi bi-plus-circle-fill" style="color: var(--color-acento-naranja);"></i> 
+                            Inscribir en Nuevo Curso
+                        </h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;">
+                            ${availableCourses.map(c => `
+                                <div onclick="enrollUserInCourse(${targetUserId}, ${c.id_course}, '${c.name.replace(/'/g, "\\'")}')" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 18px; border-radius: 14px; cursor: pointer; transition: 0.25s;" onmouseover="this.style.borderColor='var(--color-acento-naranja)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'; this.style.transform='translateY(0)'">
+                                    <div style="color: white; font-weight: 600; font-size: 0.95rem; margin-bottom: 12px;">${c.name}</div>
+                                    <div style="color: var(--color-acento-naranja); font-size: 0.75rem; font-weight: 700;"><i class="bi bi-plus-lg"></i> Inscribir</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        } else if (tab === 'position') {
+            const targetUserId = user.id_usuario || user.id;
+
+            // 1. Fetch current positions and all available positions
+            const [userPositionsRes, allPositionsRes] = await Promise.all([
+                ApiService.getUserPositions(targetUserId),
+                ApiService.getPositions()
+            ]);
+
+            const current = userPositionsRes.success ? userPositionsRes.data : [];
+            const allPositions = allPositionsRes.success ? allPositionsRes.data : [];
+            const currentIds = current.map(p => p.position_id);
+            const available = allPositions.filter(p => !currentIds.includes(p.id_position));
 
             content.innerHTML = `
                 <div style="animation: fadeInModal 0.3s ease-out;">
-                    <!-- Header Section -->
-                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding: 18px 22px; background: linear-gradient(135deg, rgba(52, 152, 219, 0.15), rgba(52, 152, 219, 0.05)); border-radius: 15px; border-left: 4px solid #3498db;">
-                        <i class="bi bi-mortarboard" style="font-size: 1.8rem; color: #3498db;"></i>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding: 18px 22px; background: linear-gradient(135deg, rgba(155, 89, 182, 0.15), rgba(155, 89, 182, 0.05)); border-radius: 15px; border-left: 4px solid #9b59b6;">
+                        <i class="bi bi-person-badge" style="font-size: 1.8rem; color: #9b59b6;"></i>
                         <div>
-                            <div style="color: white; font-weight: 700; font-size: 1.1rem;">Gestión Académica</div>
-                            <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 2px;">Administra inscripciones y cursos del usuario</div>
+                            <div style="color: white; font-weight: 700; font-size: 1.1rem;">Estructura de Cargos</div>
+                            <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">Define la jerarquía e identificación institucional</div>
                         </div>
                     </div>
-                    
-                    <!-- Current Enrollments with Accordion -->
+
                     <div style="margin-bottom: 30px;">
                         <h4 style="color: white; margin-bottom: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px;">
-                            <i class="bi bi-bookmark-check-fill" style="color: var(--color-acento-azul);"></i> 
-                            Plan de Aprendizaje
-                            <span style="background: rgba(147, 182, 238, 0.2); color: var(--color-acento-azul); padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;">${enrolled.length} cursos</span>
+                            <i class="bi bi-award" style="color: #9b59b6;"></i> 
+                            Cargos Asignados
                         </h4>
-                        ${enrolled.length > 0 ? `
-                            <div style="display: grid; gap: 12px;">
-                                ${enrolled.map(e => `
-                                    <div style="background: rgba(255,255,255,0.03); border-radius: 14px; border: 1px solid rgba(255,255,255,0.06); overflow: hidden;">
-                                        <!-- Accordion Header -->
-                                        <div onclick="toggleEnrollmentAccordion(${e.id_enrollment}, ${e.id_course}, ${targetUserId})" style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
-                                            <div style="display: flex; align-items: center; gap: 12px;">
-                                                <i class="bi bi-journal-bookmark" style="color: var(--color-acento-azul); font-size: 1.2rem;"></i>
-                                                <div>
-                                                    <div style="color: white; font-weight: 600;">${e.name}</div>
-                                                    <div style="color: rgba(255,255,255,0.4); font-size: 0.75rem; margin-top: 2px;">Click para ver/editar horarios</div>
-                                                </div>
-                                            </div>
-                                            <div style="display: flex; align-items: center; gap: 10px;">
-                                                <i class="bi bi-chevron-down" id="chevron-${e.id_enrollment}" style="color: rgba(255,255,255,0.4); transition: transform 0.3s;"></i>
-                                            </div>
+                        ${current.length > 0 ? `
+                            <div style="display: grid; gap: 10px;">
+                                ${current.map(p => `
+                                    <div style="background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(155, 89, 182, 0.2); display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <div style="color: white; font-weight: 600;">${p.position_name}</div>
+                                            <div style="color: rgba(255,255,255,0.4); font-size: 0.75rem;">Asignado el: ${new Date(p.assigned_at).toLocaleDateString()}</div>
                                         </div>
-                                        <!-- Accordion Content (Hidden by default) -->
-                                        <div id="accordion-content-${e.id_enrollment}" style="display: none; padding: 0 20px 20px 20px; border-top: 1px solid rgba(255,255,255,0.05);">
-                                            <div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.3);">
-                                                <div class="spinner-border spinner-border-sm" role="status"></div> Cargando horarios...
-                                            </div>
-                                        </div>
+                                        ${currentUser.id_rol == 1 ? `
+                                            <button onclick="removeUserPosition(${p.id}, ${targetUserId})" style="background: none; color: #ff7675; border: 1px solid rgba(231, 76, 60, 0.3); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; cursor: pointer;">Remover</button>
+                                        ` : ''}
                                     </div>
                                 `).join('')}
                             </div>
-                        ` : `
-                            <div style="text-align: center; padding: 25px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
-                                <i class="bi bi-inbox" style="font-size: 2rem; color: rgba(255,255,255,0.2); display: block; margin-bottom: 10px;"></i>
-                                <div style="color: rgba(255,255,255,0.4); font-size: 0.85rem;">Sin inscripciones activas</div>
-                            </div>
-                        `}
+                        ` : `<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.2); border:1px dashed rgba(255,255,255,0.1); border-radius:12px;">Sin cargos asignados</div>`}
                     </div>
 
-                    <!-- Available Courses -->
-                    <h4 style="color: white; margin-bottom: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px;">
-                        <i class="bi bi-plus-circle-fill" style="color: var(--color-acento-naranja);"></i> 
-                        Inscribir en Nuevo Curso
-                    </h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;">
-                        ${availableCourses.map(c => `
-                            <div onclick="enrollUserInCourse(${targetUserId}, ${c.id_course}, '${c.name.replace(/'/g, "\\'")}')" style="background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid rgba(255,255,255,0.08); padding: 18px; border-radius: 14px; cursor: pointer; transition: all 0.25s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.3)'; this.style.borderColor='var(--color-acento-naranja)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'; this.style.borderColor='rgba(255,255,255,0.08)'">
-                                <div style="position: absolute; top: -20px; right: -20px; width: 60px; height: 60px; background: var(--color-acento-naranja); filter: blur(40px); opacity: 0.15;"></div>
-                                <div style="color: white; font-weight: 600; font-size: 0.95rem; margin-bottom: 12px; position: relative;">${c.name}</div>
-                                <div style="display: flex; align-items: center; gap: 6px; color: var(--color-acento-naranja); font-size: 0.75rem; font-weight: 700; position: relative;">
-                                    <i class="bi bi-plus-lg"></i> Inscribir
+                    ${currentUser.id_rol == 1 ? `
+                        <h4 style="color: white; margin-bottom: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px;">
+                            <i class="bi bi-plus-circle" style="color: #9b59b6;"></i> 
+                            Disponible para Asignar
+                        </h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+                            ${available.map(p => `
+                                <div onclick="assignPositionToUser(${p.id_position}, ${targetUserId}, '${p.name.replace(/'/g, "\\'")}')" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(155, 89, 182, 0.1); padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#9b59b6'; this.style.background='rgba(155, 89, 182, 0.05)'" onmouseout="this.style.borderColor='rgba(155, 89, 182, 0.1)'; this.style.background='rgba(255,255,255,0.04)'">
+                                    <div style="color: white; font-weight: 500; font-size: 0.85rem; margin-bottom: 5px;">${p.name}</div>
+                                    <div style="color: #9b59b6; font-size: 1.2rem;"><i class="bi bi-plus-square-dotted"></i></div>
                                 </div>
-                            </div>
-                        `).join('')}
-                    </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
                 </div>
             `;
-        } else if (tab === 'position') {
-            content.innerHTML = '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.3);">Gestión de cargo en desarrollo.</div>';
         }
     } catch (e) {
         console.error(e);
@@ -435,14 +557,14 @@ window.enrollUserInCourse = async function (userId, courseId, courseName) {
 };
 
 window.unenrollUserFromCourse = async function (enrollmentId, userId) {
-    if (confirm('¿Estás seguro de desinscribir a este usuario del curso?')) {
+    if (await showConfirm('¿Estás seguro de desinscribir a este usuario del curso?')) {
         try {
             const res = await ApiService.unenrollStudent(enrollmentId);
             if (res.success) {
-                if (window.showToast) showToast("Usuario desinscrito correctamente", "success");
+                showToast("Usuario desinscrito correctamente", "success");
                 switchUserTab('academic');
             } else {
-                if (window.showToast) showToast(res.message || "Error al desinscribir", "error");
+                showToast(res.message || "Error al desinscribir", "error");
             }
         } catch (e) {
             console.error(e);
@@ -452,12 +574,89 @@ window.unenrollUserFromCourse = async function (enrollmentId, userId) {
 };
 
 window.deleteUserDirectlyModal = async function (uid, uname) {
-    if (confirm(`¿Eliminar permanentemente a ${uname}?`)) {
+    if (await showConfirm(`¿Eliminar permanentemente a ${uname}? Esta acción es irreversible.`)) {
         const res = await ApiService.deleteUser(uid);
         if (res.success) {
-            document.getElementById('user-profile-modal').style.display = 'none';
+            showToast("Usuario eliminado correctamente", "success");
+            const modal = document.getElementById('user-profile-modal');
+            if (modal) modal.style.display = 'none';
+
+            // Refresh underlying lists if they exist
             if (window.loadUsers) window.loadUsers();
+            if (window.loadDirectory) window.loadDirectory();
+            if (window.loadAdmins) window.loadAdmins();
+        } else {
+            showToast(res.message || "Error al eliminar usuario", "error");
         }
+    }
+};
+
+// === TEACHER ASSIGNMENT HELPERS ===
+
+window.unassignTeacherFromCourse = async function (courseId, teacherId) {
+    if (!(await showConfirm("¿Deseas remover a este docente de la materia?"))) return;
+
+    try {
+        const res = await ApiService.updateCourseTeacher(courseId, null);
+        if (res.success) {
+            showToast("Docente removido", "success");
+            switchUserTab('academic');
+        } else {
+            showToast(res.message, "error");
+        }
+    } catch (e) {
+        showToast("Error al remover docente", "error");
+    }
+};
+
+window.assignTeacherToCourse = async function (courseId, teacherId, courseName) {
+    if (!(await showConfirm(`¿Asignar a este docente la materia ${courseName}?`))) return;
+
+    try {
+        const res = await ApiService.updateCourseTeacher(courseId, teacherId);
+        if (res.success) {
+            showToast("Docente asignado", "success");
+            switchUserTab('academic');
+        } else {
+            showToast(res.message, "error");
+        }
+    } catch (e) {
+        showToast("Error al asignar docente", "error");
+    }
+};
+
+// === POSITION ASSIGNMENT HELPERS ===
+
+window.assignPositionToUser = async function (positionId, userId, positionName) {
+    if (!(await showConfirm(`¿Asignar el cargo de ${positionName} a este usuario?`))) return;
+
+    const currentUser = ApiService.getSession();
+    try {
+        const res = await ApiService.assignPosition(userId, positionId, currentUser.id_usuario);
+        if (res.success) {
+            showToast("Cargo asignado", "success");
+            switchUserTab('position');
+        } else {
+            showToast(res.message, "error");
+        }
+    } catch (e) {
+        showToast("Error al asignar cargo", "error");
+    }
+};
+
+window.removeUserPosition = async function (assignmentId, userId) {
+    if (!(await showConfirm("¿Remover esta asignación de cargo?"))) return;
+
+    try {
+        const res = await ApiService.removePositionAssignment(assignmentId);
+        if (res.success) {
+            showToast("Cargo removido", "success");
+            switchUserTab('position');
+        } else {
+            showToast(res.message, "error");
+        }
+    } catch (e) {
+        showToast("Error al remover cargo", "error");
     }
 };
 
@@ -606,7 +805,7 @@ function renderWeeklyScheduleView(schedules, enrollmentId, userId, availableSche
                         <div style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(52, 152, 219, 0.1)); padding: 8px 4px; border-radius: 6px; margin-bottom: 4px; position: relative; border: 1px solid rgba(52, 152, 219, 0.3);">
                             <div style="font-size: 0.7rem; color: white; font-weight: 600;">${ApiService.formatTime ? ApiService.formatTime(s.time_start || s.start_time) : (s.time_start || s.start_time)}</div>
                             <div style="font-size: 0.6rem; color: rgba(255,255,255,0.5);">${ApiService.formatTime ? ApiService.formatTime(s.time_end || s.end_time) : (s.time_end || s.end_time)}</div>
-                            <button onclick="event.stopPropagation(); removeScheduleBlock(${enrollmentId}, ${s.id_schedule}, ${userId})" style="position: absolute; top: -5px; right: -5px; background: #e74c3c; border: none; width: 16px; height: 16px; border-radius: 50%; color: white; font-size: 0.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Eliminar este horario">×</button>
+                            <button onclick="event.stopPropagation(); removeScheduleBlock(${enrollmentId}, ${s.schedule_id}, ${userId})" style="position: absolute; top: -5px; right: -5px; background: #e74c3c; border: none; width: 16px; height: 16px; border-radius: 50%; color: white; font-size: 0.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Eliminar este horario">×</button>
                         </div>
                     `).join('') : `
                         <!-- Slot vacío - clickeable si hay disponibles -->
@@ -726,7 +925,7 @@ window.addScheduleToEnrollment = async function (enrollmentId, scheduleId, userI
                     color: '#ffffff'
                 });
             } else {
-                alert('Conflicto: ' + conflictRes.conflictWith);
+                showToast('Conflicto: ' + conflictRes.conflictWith, 'warning');
             }
             return;
         }
@@ -750,7 +949,7 @@ window.addScheduleToEnrollment = async function (enrollmentId, scheduleId, userI
 
 // Eliminar un bloque de horario específico del enrollment
 window.removeScheduleBlock = async function (enrollmentId, scheduleId, userId) {
-    if (!confirm('¿Eliminar este bloque de horario?')) return;
+    if (!await showConfirm('¿Eliminar este bloque de horario?')) return;
 
     try {
         const res = await ApiService.removeScheduleFromEnrollment(enrollmentId, scheduleId);

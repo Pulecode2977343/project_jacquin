@@ -10,12 +10,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
-    // AUTO-SYNC: Verify user ID matches DB (non-blocking)
-    if (sessionUser.email) {
-        fetch(`/jacquin_api/get_user_by_email.php?email=${encodeURIComponent(sessionUser.email)}`)
+    // AUTO-SYNC: Verify user ID matches DB (Efficient: runs once per hour or if ID missing)
+    const now = Date.now();
+    const lastSync = localStorage.getItem('last_session_sync') || 0;
+
+    if (sessionUser.email && (now - lastSync > 3600000 || !sessionUser.id_usuario)) {
+        fetch(`${API_CONFIG.BASE_URL}get_user_by_email.php?email=${encodeURIComponent(sessionUser.email)}`)
             .then(res => res.json())
             .then(syncData => {
                 if (syncData.success && syncData.user) {
+                    localStorage.setItem('last_session_sync', now);
                     const realId = syncData.user.id_usuario;
                     const realRole = syncData.user.id_rol;
                     if (sessionUser.id_usuario != realId || sessionUser.id_rol != realRole) {
@@ -256,12 +260,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         `;
     }
 
-    // 3. Load Dynamic Content (Directory)
-    if (document.getElementById("section-directory")) {
-        loadUsers();
-    }
-    if (document.getElementById("section-academic")) {
-        loadCourses();
+    // 3. Load Dynamic Content (Directory/Academic) for Admins only
+    if (roleId === 1) {
+        if (document.getElementById("section-directory")) {
+            loadUsers();
+        }
+        if (document.getElementById("section-academic")) {
+            loadCourses();
+        }
     }
 
     // 4. Mobile/Tablet Logout Fallback
@@ -713,13 +719,13 @@ window.showTeacherScheduleStudents = async function (scheduleId, courseName, tim
                                 <div style="display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:10px 15px; border-radius:10px; border:1px solid rgba(255,255,255,0.05);">
                                     <div style="color:var(--color-acento-azul); font-weight:700; width: 20px;">${i + 1}</div>
                                     <div style="width: 35px; height: 35px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                                        <img src="${s.avatar_url || 'assets/images/default_avatar.svg'}" style="width:100%; height:100%; object-fit:cover;">
+                                        <img src="${s.avatar_url ? (s.avatar_url.startsWith('http') ? s.avatar_url : '../' + s.avatar_url) : '../assets/images/default_avatar.svg'}" style="width:100%; height:100%; object-fit:cover;">
                                     </div>
                                     <div style="flex:1;">
                                         <div style="color:white; font-size:0.95rem; font-weight:600;">${s.full_name}</div>
                                         <div style="color:rgba(255,255,255,0.4); font-size:0.75rem;">${s.email || 'Sin correo'}</div>
                                     </div>
-                                    <button onclick="Swal.close(); openProfile(${s.id_usuario})" style="background:transparent; border:none; color:var(--color-acento-azul); cursor:pointer;">
+                                    <button onclick="Swal.close(); window.openProfile(${s.id_usuario}, 'academic')" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--color-acento-azul); width:35px; height:35px; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;" onmouseover="this.style.background='rgba(147,182,238,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </div>
@@ -731,11 +737,14 @@ window.showTeacherScheduleStudents = async function (scheduleId, courseName, tim
             Swal.fire({
                 title: 'Alumnos Inscritos',
                 html: html,
-                width: '500px',
+                width: '550px',
                 confirmButtonText: 'Cerrar',
                 confirmButtonColor: '#3498db',
                 background: '#1a1a2e',
-                color: '#fff'
+                color: '#fff',
+                didOpen: () => {
+                    // Ensure profile modal is ready if needed
+                }
             });
         } else {
             Swal.fire('Atención', res.message || 'No se pudieron recuperar los alumnos.', 'warning');
@@ -937,112 +946,10 @@ function getRoleName(id) {
 // ==========================================
 // PROFILE MODAL (Enhanced with Tabs & Security)
 // ==========================================
-window.openMyProfile = function () {
-    const user = ApiService.getSession();
-    const modalId = "modal-my-profile";
-    let modal = document.getElementById(modalId);
-
-    if (!modal) {
-        modal = document.createElement("div");
-        modal.id = modalId;
-        modal.className = "modal-overlay";
-        modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; justify-content:center; align-items:center; backdrop-filter:blur(5px);";
-        modal.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
-        document.body.appendChild(modal);
-    }
-
-    modal.innerHTML = `
-        <div style="background:#1a1a1a; padding:0; border-radius:20px; width:95%; max-width:650px; position:relative; overflow:hidden; border:1px solid #333; box-shadow:0 10px 40px rgba(0,0,0,0.5);">
-            <!-- Header -->
-            <div style="background:linear-gradient(90deg, #1e3c72, #2a5298); padding:30px; display:flex; align-items:center; gap:20px; color:white; position:relative;">
-                <div style="position:relative;">
-                    <img src="${user.avatar_url || 'assets/images/default_avatar.svg'}" id="profile-modal-avatar"
-                         style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:4px solid rgba(255,255,255,0.2);">
-                    <button onclick="triggerAvatarUpload()" style="position:absolute; bottom:0; right:0; background:var(--color-acento-naranja); border:none; color:white; width:30px; height:30px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,0.3);">
-                        <i class="bi bi-camera-fill"></i>
-                    </button>
-                </div>
-                <div>
-                    <h2 style="margin:0; font-size:1.8rem;">${user.full_name}</h2>
-                    <p style="margin:5px 0 0; opacity:0.8;">${getRoleName(parseInt(user.id_rol))} | @${user.email.split('@')[0]}</p>
-                </div>
-                <button onclick="document.getElementById('${modalId}').style.display='none'" style="position:absolute; top:15px; right:15px; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; opacity:0.5;">&times;</button>
-            </div>
-
-            <!-- Tabs Nav -->
-            <div style="display:flex; background:#222; border-bottom:1px solid #333;">
-                <button onclick="switchProfileTab('info')" id="btn-tab-info" style="flex:1; padding:15px; border:none; background:none; color:var(--color-acento-azul); font-weight:bold; cursor:pointer; border-bottom:2px solid var(--color-acento-azul);">Información</button>
-                <button onclick="switchProfileTab('security')" id="btn-tab-security" style="flex:1; padding:15px; border:none; background:none; color:#777; font-weight:bold; cursor:pointer;">Seguridad</button>
-            </div>
-
-            <!-- Tab: Info -->
-            <div id="tab-profile-info" style="padding:30px;">
-                <form id="profile-edit-form" onsubmit="handleProfileUpdate(event)">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;">
-                        <div>
-                            <label style="display:block; color:#888; margin-bottom:5px; font-size:0.9rem;">Nombre Completo</label>
-                            <input type="text" name="fullName" value="${user.full_name}" style="width:100%; padding:10px; background:#222; border:1px solid #444; color:white; border-radius:8px;">
-                        </div>
-                        <div>
-                            <label style="display:block; color:#888; margin-bottom:5px; font-size:0.9rem;">Teléfono de Contacto</label>
-                            <input type="text" name="nPhone" value="${user.n_phone || ''}" placeholder="+57..." style="width:100%; padding:10px; background:#222; border:1px solid #444; color:white; border-radius:8px;">
-                        </div>
-                    </div>
-                    <div style="margin-bottom:25px;">
-                        <label style="display:block; color:#888; margin-bottom:5px; font-size:0.9rem;">Correo Electrónico</label>
-                        <input type="email" value="${user.email}" disabled style="width:100%; padding:10px; background:#181818; border:1px solid #333; color:#666; border-radius:8px; cursor:not-allowed;">
-                    </div>
-                    <button type="submit" style="width:100%; padding:12px; background:var(--color-acento-azul); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.3s;">Guardar Cambios</button>
-                </form>
-            </div>
-
-            <!-- Tab: Security -->
-            <div id="tab-profile-security" style="padding:30px; display:none;">
-                <form id="password-change-form" onsubmit="handlePasswordChange(event)">
-                    <div style="margin-bottom:15px;">
-                        <label style="display:block; color:#888; margin-bottom:5px; font-size:0.9rem;">Contraseña Actual</label>
-                        <input type="password" name="currentPassword" required style="width:100%; padding:10px; background:#222; border:1px solid #444; color:white; border-radius:8px;">
-                    </div>
-                    <div style="margin-bottom:15px;">
-                        <label style="display:block; color:#888; margin-bottom:5px; font-size:0.9rem;">Nueva Contraseña</label>
-                        <input type="password" name="newPassword" required style="width:100%; padding:10px; background:#222; border:1px solid #444; color:white; border-radius:8px;">
-                        <small style="color:#666; font-size:0.75rem;">Mínimo 8 caracteres, una mayúscula y un símbolo.</small>
-                    </div>
-                    <div style="margin-bottom:25px;">
-                        <label style="display:block; color:#888; margin-bottom:5px; font-size:0.9rem;">Confirmar Nueva Contraseña</label>
-                        <input type="password" name="confirmPassword" required style="width:100%; padding:10px; background:#222; border:1px solid #444; color:white; border-radius:8px;">
-                    </div>
-                    <button type="submit" style="width:100%; padding:12px; background:var(--color-acento-naranja); color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.3s;">Actualizar Contraseña</button>
-                </form>
-            </div>
-        </div>
-    `;
-    modal.style.display = "flex";
-
-    // Switch Tabs Logic
-    window.switchProfileTab = (tab) => {
-        const info = document.getElementById('tab-profile-info');
-        const security = document.getElementById('tab-profile-security');
-        const bInfo = document.getElementById('btn-tab-info');
-        const bSecurity = document.getElementById('btn-tab-security');
-
-        if (tab === 'info') {
-            info.style.display = 'block';
-            security.style.display = 'none';
-            bInfo.style.color = 'var(--color-acento-azul)';
-            bInfo.style.borderBottom = '2px solid var(--color-acento-azul)';
-            bSecurity.style.color = '#777';
-            bSecurity.style.borderBottom = 'none';
-        } else {
-            info.style.display = 'none';
-            security.style.display = 'block';
-            bSecurity.style.color = 'var(--color-acento-naranja)';
-            bSecurity.style.borderBottom = '2px solid var(--color-acento-naranja)';
-            bInfo.style.color = '#777';
-            bInfo.style.borderBottom = 'none';
-        }
-    };
-};
+/**
+ * PRE-REQUISITE: window.openMyProfile is now handled globally in user_profile_modal.js
+ * to ensure the Premium Unified Modal is used consistently.
+ */
 
 window.handleProfileUpdate = async function (e) {
     e.preventDefault();

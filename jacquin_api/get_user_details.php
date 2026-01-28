@@ -101,25 +101,20 @@ if ($id_usuario > 0) {
                 }
             }
 
-            // 3. Teaching (Teacher)
+            // 3. Teaching (Teacher) - Optimized join and grouping
             if ($user['id_rol'] == 2) {
-                // FIXED: Include courses where they are primary teacher OR assigned to schedule
-                // LEFT JOIN ensures courses without schedules still appear
                 $stmtTeach = $pdo->prepare("
                     SELECT 
-                        s.id_schedule,
                         c.id_course,
                         c.course_name,
+                        s.id_schedule,
                         s.day,
                         s.time_start,
                         s.time_end,
                         s.quota,
-                        (
-                            SELECT COUNT(DISTINCT es.enrollment_id) 
-                            FROM enrollment_schedules es 
-                            JOIN enrollments e ON es.enrollment_id = e.id_enrollment 
-                            WHERE es.schedule_id = s.id_schedule AND e.status = 'Activo'
-                        ) as student_count
+                        (SELECT COUNT(*) FROM enrollment_schedules es 
+                         JOIN enrollments e ON es.enrollment_id = e.id_enrollment
+                         WHERE es.schedule_id = s.id_schedule AND e.status = 'Activo') as student_count
                     FROM courses c
                     LEFT JOIN schedules s ON c.id_course = s.id_course
                     WHERE c.teacher_id = ? OR s.teacher_id = ?
@@ -130,10 +125,10 @@ if ($id_usuario > 0) {
 
                 $coursesMap = [];
                 foreach ($teachingRaw as $t) {
-                    $courseId = $t['id_course'];
-                    if (!isset($coursesMap[$courseId])) {
-                        $coursesMap[$courseId] = [
-                            'id_course' => (int) $courseId,
+                    $cid = $t['id_course'];
+                    if (!isset($coursesMap[$cid])) {
+                        $coursesMap[$cid] = [
+                            'id_course' => (int) $cid,
                             'name' => $t['course_name'],
                             'schedules' => [],
                             'total_students' => 0
@@ -141,15 +136,16 @@ if ($id_usuario > 0) {
                     }
 
                     if ($t['id_schedule']) {
-                        $coursesMap[$courseId]['schedules'][] = [
+                        $sCount = (int) $t['student_count'];
+                        $coursesMap[$cid]['schedules'][] = [
                             'id_schedule' => (int) $t['id_schedule'],
                             'day_of_week' => $t['day'],
                             'start_time' => $t['time_start'],
                             'end_time' => $t['time_end'],
                             'quota' => (int) $t['quota'],
-                            'student_count' => (int) $t['student_count']
+                            'student_count' => $sCount
                         ];
-                        $coursesMap[$courseId]['total_students'] += (int) $t['student_count'];
+                        $coursesMap[$cid]['total_students'] += $sCount;
                     }
                 }
                 $result['teaching'] = array_values($coursesMap);

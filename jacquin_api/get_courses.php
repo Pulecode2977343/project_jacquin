@@ -17,9 +17,15 @@ try {
             c.image_url,
             c.teacher_id,
             u.full_name as teacher_name,
-            (SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id_course AND e.status IN ('Pendiente', 'Pre-inscrito')) as pending_count
+            COALESCE(pending.p_count, 0) as pending_count
         FROM courses c
         LEFT JOIN usuario u ON c.teacher_id = u.id_usuario
+        LEFT JOIN (
+            SELECT course_id, COUNT(*) as p_count 
+            FROM enrollments 
+            WHERE status IN ('Pendiente', 'Pre-inscrito')
+            GROUP BY course_id
+        ) as pending ON c.id_course = pending.course_id
         ORDER BY c.course_name ASC
     ";
     $stmt = $pdo->prepare($query);

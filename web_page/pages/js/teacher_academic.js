@@ -334,12 +334,17 @@ window.TeacherAcademic = {
                 <tr>
                     <td style="font-weight: 500;">${s.full_name}</td>
                     <td style="text-align:center;">
-                        <select class="att-status" data-uid="${s.id_usuario}" style="background:rgba(0,0,0,0.5); color:white; border:1px solid rgba(255,255,255,0.2); padding:8px 12px; border-radius:10px; outline:none; font-size: 0.9rem;">
-                            <option value="present" style="background: #0a1929;">Presente</option>
-                            <option value="late" style="background: #0a1929;">Tarde</option>
-                            <option value="absent" style="background: #0a1929;">Ausente</option>
-                            <option value="excused" style="background: #0a1929;">Justificado</option>
-                        </select>
+                        <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+                            <select class="att-status" data-uid="${s.id_usuario}" style="background:rgba(0,0,0,0.5); color:white; border:1px solid rgba(255,255,255,0.2); padding:8px 12px; border-radius:10px; outline:none; font-size: 0.9rem;">
+                                <option value="present" style="background: #0a1929;">Presente</option>
+                                <option value="late" style="background: #0a1929;">Tarde</option>
+                                <option value="absent" style="background: #0a1929;">Ausente</option>
+                                <option value="excused" style="background: #0a1929;">Justificado</option>
+                            </select>
+                            <button onclick="TeacherAcademic.openStudentDetail(${s.id_usuario}, '${s.full_name}')" style="background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.4); width: 35px; height: 35px; border-radius: 8px; cursor:pointer;" title="Ver progreso">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `;
@@ -481,7 +486,7 @@ window.TeacherAcademic = {
                             </span>
                         </td>
                         <td style="text-align:center;">
-                            <button onclick="TeacherAcademic.viewStudentNotes(${s.id_usuario}, '${s.full_name}')" style="background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; width: 40px; height: 40px; border-radius: 12px; cursor:pointer; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='var(--color-acento-azul)'; this.style.color='var(--color-acento-azul)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='white'">
+                            <button onclick="TeacherAcademic.openStudentDetail(${s.id_usuario}, '${s.full_name}')" style="background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; width: 40px; height: 40px; border-radius: 12px; cursor:pointer; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='var(--color-acento-azul)'; this.style.color='var(--color-acento-azul)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='white'">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td>
@@ -536,7 +541,17 @@ window.TeacherAcademic = {
         });
     },
 
-    async viewStudentNotes(uid, name) {
+    async openStudentDetail(uid, name) {
+        if (window.openProfile) {
+            // Close the teacher modal first to avoid overlay issues or keep it?
+            // Usually, these models are stacked. Let's just open it.
+            window.openProfile(uid, 'academic');
+        } else {
+            this.viewStudentNotesLegacy(uid, name);
+        }
+    },
+
+    async viewStudentNotesLegacy(uid, name) {
         const cid = this.selectedCourse.id_course || this.selectedCourse.id;
         const sid = this.selectedSchedule.id_schedule || this.selectedSchedule.id;
         const res = await ApiService.teacherGetNotes(cid, sid);
@@ -552,7 +567,7 @@ window.TeacherAcademic = {
                             <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom:10px; background: rgba(255,255,255,0.03); padding:12px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
                                 <div style="display: flex; flex-direction: column;">
                                     <span style="font-weight: 700; color: white;">${n.note_type}</span>
-                                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">${new Date().toLocaleDateString()}</span>
+                                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.3);">${new Date(n.created_at).toLocaleDateString()}</span>
                                 </div>
                                 <strong style="color:var(--color-acento-azul); font-size: 1.4rem; font-weight: 800;">${n.score}</strong>
                             </div>

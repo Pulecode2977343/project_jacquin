@@ -5,8 +5,17 @@
  */
 
 const API_CONFIG = {
-    // URL Universal (Junction/Symlink Compatible)
-    BASE_URL: "/jacquin_api/",
+    // Detect subfolder levels to reach /jacquin_api/ correctly
+    get BASE_URL() {
+        const path = window.location.pathname;
+        if (window.location.protocol === 'file:') return "./jacquin_api/"; // Local fallback (will still have CORS issues but path is correct)
+
+        // If in /web_page/pages/index.html, we need to go up two levels
+        if (path.includes('/web_page/pages/')) return "../../jacquin_api/";
+        if (path.includes('/jacquin_web/pages/')) return "../../jacquin_api/";
+
+        return "/jacquin_api/"; // Default root
+    },
 
     HEADERS: {
         "Content-Type": "application/json",

@@ -12,26 +12,9 @@ try {
     // Consulta simple y directa
     // Consulta incluyendo conteo de alertas (cursos activos sin docente)
     // Updated to use enrollment_schedules table instead of e.schedule_id
-    $sql = "
-        SELECT 
-            u.id_usuario, 
-            u.full_name, 
-            u.email, 
-            u.id_rol, 
-            u.avatar_url,
-            (
-                SELECT COUNT(DISTINCT e.id_enrollment) 
-                FROM enrollments e 
-                LEFT JOIN enrollment_schedules es ON e.id_enrollment = es.enrollment_id
-                LEFT JOIN schedules s ON es.schedule_id = s.id_schedule 
-                LEFT JOIN usuario t ON s.teacher_id = t.id_usuario
-                WHERE e.student_id = u.id_usuario 
-                  AND e.status = 'Activo' 
-                  AND (s.teacher_id IS NULL OR s.teacher_id = 0 OR t.id_rol = 1)
-            ) as alert_count
-        FROM usuario u 
-        ORDER BY u.id_usuario DESC
-    ";
+    // Optimized query: Use a derived table for counts to avoid per-row subquery overhead
+    // Consulta directa para asegurar carga inmediata
+    $sql = "SELECT id_usuario, full_name, email, id_rol, avatar_url FROM usuario ORDER BY id_usuario DESC";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);

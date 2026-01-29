@@ -5,14 +5,29 @@
 // Load and display events in Swiper carousel
 // Load and display events in Swiper carousel
 async function loadEventsCarousel() {
+    const ApiService = window.ApiService;
     const res = await ApiService.getEvents();
 
+    const wrapper = document.getElementById('events-carousel-wrapper');
+    const container = wrapper.closest('.events-swiper');
+
     if (!res.success || !res.data || res.data.length === 0) {
-        document.getElementById('events-carousel-wrapper').innerHTML = `
-            <div class="swiper-slide" style="display:flex; justify-content:center; align-items:center; min-height:300px;">
-                <p style="color:#666; text-align:center;">No hay eventos disponibles en este momento.</p>
+        wrapper.innerHTML = `
+            <div class="swiper-slide no-events-slide" style="display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:300px; width:100%; cursor:default;">
+                <div style="background:rgba(255,255,255,0.05); padding:30px; border-radius:50%; margin-bottom:20px;">
+                    <i class="bi bi-calendar2-range" style="font-size: 2.5rem; color: var(--naranja-neon, #e67e22);"></i>
+                </div>
+                <h4 style="color:white; margin-bottom:10px; font-weight:600;">Sin Eventos Programados</h4>
+                <p style="color:#888; text-align:center; max-width:300px;">
+                    Actualmente no tenemos eventos públicos activos. <br>¡Síguenos para enterarte de los próximos!
+                </p>
             </div>
         `;
+
+        // Hide navigation controls if no events
+        if (container) {
+            container.querySelectorAll('.swiper-button-next, .swiper-button-prev, .swiper-pagination').forEach(el => el.style.display = 'none');
+        }
         return;
     }
 
@@ -21,26 +36,31 @@ async function loadEventsCarousel() {
         .sort((a, b) => b.id_event - a.id_event)
         .slice(0, 7);
 
-    const wrapper = document.getElementById('events-carousel-wrapper');
-
     // Generate event cards using PROGRAM CARD STYLES
     wrapper.innerHTML = latestEvents.map(event => `
         <div class="swiper-slide">
-            <div class="program-card event-card-styled" data-event-id="${event.id_event}" style="background-image: url('${event.image_url || 'assets/default-event.jpg'}');">
+            <div class="program-card event-card-styled" data-event-id="${event.id_event}" style="background-image: url('${event.image_url || 'images/hero-banner.jpg'}');">
                 <div class="program-overlay"></div>
                 <div class="program-content">
                     <div class="program-icon"><i class="bi ${getEventIcon(event.event_type)}"></i></div>
                     <h3>${event.title}</h3>
                     <p>${event.event_date ? formatDate(event.event_date) : 'Próximamente'}</p>
                     
-                    ${event.is_featured ? `
-                    <div style="position:absolute; top:15px; right:15px; background:var(--naranja-neon); color:white; padding:4px 10px; border-radius:15px; font-size:0.7rem; font-weight:bold; box-shadow:0 0 10px var(--naranja-neon);">
+                    ${event.is_featured == 1 ? `
+                    <div style="position:absolute; top:15px; right:15px; background:var(--naranja-neon, #e67e22); color:white; padding:4px 10px; border-radius:15px; font-size:0.7rem; font-weight:bold; box-shadow:0 0 10px rgba(230,126,34,0.5);">
                         <i class="bi bi-star-fill"></i>
                     </div>` : ''}
                 </div>
             </div>
         </div>
     `).join('');
+
+    // Ensure controls are visible if they were hidden
+    if (container) {
+        container.querySelectorAll('.swiper-button-next, .swiper-button-prev, .swiper-pagination').forEach(el => el.style.display = 'flex'); // Or whatever initial display was, usually flex or block for swiper buttons but swiper handles it mostly via css classes. Resetting style.display might be enough.
+        container.querySelectorAll('.swiper-button-next, .swiper-button-prev').forEach(el => el.style.removeProperty('display'));
+        container.querySelector('.swiper-pagination').style.removeProperty('display');
+    }
 
     // Initialize Swiper with Navigation & Pagination
     new Swiper('.events-swiper', {

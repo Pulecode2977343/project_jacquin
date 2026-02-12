@@ -12,3 +12,23 @@ yarn-error.log
 # secrets
 .env
 config/secrets.php
+
+# Excluded folders (backups and documentation)
+Documentation/
+Documentation&BkUp's/
+fonts/
+components/
+.agent/
+
+# Excluded non-essential root files
+CAMBIOS_PAPEL_RECICLADO.md
+COMPONENTE_LOGO_MEMBRETE.md
+CONTEXTO_PROYECTO.md
+Conditions.txt
+GUIA_SUBIR_ACTUALIZACION.md
+INICIAR_ZROK.bat
+REINICIAR_ZROK.md
+UQrtostnk9DYaO3.txt
+"croll hint + enable terms checkbox toggle"
+sync_fix.bat
+

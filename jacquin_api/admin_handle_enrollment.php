@@ -5,6 +5,10 @@ header("Access-Control-Allow-Methods: POST");
 
 include_once 'config/connection.php';
 require_once 'services/EmailService.php';
+require_once 'helpers/auth_helper.php';
+
+// Protegemos el endpoint: Solo administradores
+validateAdmin();
 
 $data = json_decode(file_get_contents("php://input"));
 

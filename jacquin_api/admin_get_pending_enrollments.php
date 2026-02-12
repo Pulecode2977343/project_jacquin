@@ -3,6 +3,10 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 include_once 'config/connection.php';
+require_once 'helpers/auth_helper.php';
+
+// Protegemos el endpoint: Solo administradores
+validateAdmin();
 
 try {
     $stmt = $pdo->prepare("

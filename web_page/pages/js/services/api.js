@@ -506,6 +506,19 @@ const ApiService = {
         }
     },
 
+    async updateCourse(courseData) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_update_course.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify(courseData)
+            });
+            return await response.json();
+        } catch (error) {
+            return { success: false, message: "Error de conexión." };
+        }
+    },
+
     saveSession(user) {
         localStorage.setItem("jam_user_session", JSON.stringify(user));
     },

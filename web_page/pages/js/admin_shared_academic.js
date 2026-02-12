@@ -4,6 +4,11 @@
  */
 
 window.openCourseManagement = async function () {
+    const session = ApiService.getSession();
+    if (!session || session.id_rol != 1) {
+        return Toast.fire({ icon: 'error', title: 'Acceso Denegado', text: 'Solo los administradores pueden acceder a esta sección.' });
+    }
+
     const res = await ApiService.getCourses();
     if (!res.success) return showToast("Error cargando cursos.", "error");
 
@@ -149,7 +154,13 @@ window.openCourseDetails = async function (courseId, courseName) {
                     <h2 style="color:white; margin:0; font-size:1.8rem;">${courseName}</h2>
                     <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">Gestión de alumnos y programación.</p>
                 </div>
-                <button onclick="closeCourseDetailsModal()" style="background:rgba(255,255,255,0.05); border:none; color:white; padding:8px 20px; border-radius:50px; cursor:pointer;">Cerrar</button>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="editCourseBasicInfo(${courseId}, '${courseName.replace(/'/g, "\\'")}', '${(res.data.info.description || '').replace(/'/g, "\\'")}', ${res.data.info.price || 0})" 
+                            style="background:var(--color-acento-azul); border:none; color:white; padding:8px 20px; border-radius:50px; cursor:pointer; font-weight:bold; font-size:0.85rem;">
+                        <i class="bi bi-pencil-square"></i> Editar Datos
+                    </button>
+                    <button onclick="closeCourseDetailsModal()" style="background:rgba(255,255,255,0.05); border:none; color:white; padding:8px 20px; border-radius:50px; cursor:pointer;">Cerrar</button>
+                </div>
             </div>
             
             <div style="display:flex; gap:15px; margin-bottom:25px; border-bottom:1px solid #222; padding-bottom:15px;">
@@ -478,8 +489,8 @@ window.assignStudentSchedule = async function (enrollmentId, courseId, courseNam
             
             <div style="overflow-y:auto; flex:1; margin-bottom:20px; padding-right:5px;" class="custom-scroll">
                 ${schedules.map(s => `
-                    <label style="display:flex; align-items:center; gap:15px; padding:15px; background:rgba(255,255,255,0.03); border:1px solid #333; border-radius:10px; margin-bottom:10px; cursor:pointer; transition:0.2s;">
-                        <input type="radio" name="sched_selection" value="${s.id_schedule}" ${existingIds.includes(s.id_schedule) ? 'checked' : ''} style="width:20px; height:20px; accent-color:var(--color-acento-azul);">
+                    <label style="display:flex; align-items:center; gap:15px; padding:15px; background:rgba(255,255,255,0.03); border:1px solid ${existingIds.includes(s.id_schedule) ? 'var(--color-acento-azul)' : '#333'}; border-radius:10px; margin-bottom:10px; cursor:pointer; transition:0.2s;" class="student-sched-label">
+                        <input type="checkbox" name="sched_selection" value="${s.id_schedule}" ${existingIds.includes(s.id_schedule) ? 'checked' : ''} style="width:20px; height:20px; accent-color:var(--color-acento-azul);" onchange="this.parentElement.style.borderColor = this.checked ? 'var(--color-acento-azul)' : '#333'">
                         <div style="flex:1;">
                             <div style="color:white; font-weight:bold;">${s.day}</div>
                             <div style="color:#888; font-size:0.85rem;">${ApiService.formatTime(s.time_start)} - ${ApiService.formatTime(s.time_end)}</div>
@@ -504,15 +515,15 @@ window.assignStudentSchedule = async function (enrollmentId, courseId, courseNam
         if (!saveBtn) return;
 
         saveBtn.onclick = async () => {
-            const selected = document.querySelector('input[name="sched_selection"]:checked');
-            if (!selected) return showToast("Selecciona un horario.", "warning");
+            const selectedCheckboxes = document.querySelectorAll('input[name="sched_selection"]:checked');
+            if (selectedCheckboxes.length === 0) return showToast("Selecciona al menos un horario.", "warning");
 
-            const scheduleId = selected.value;
+            const scheduleIds = Array.from(selectedCheckboxes).map(cb => cb.value);
             saveBtn.disabled = true;
             saveBtn.textContent = "Guardando...";
 
             try {
-                const resAssign = await ApiService.assignSchedules(enrollmentId, [scheduleId]);
+                const resAssign = await ApiService.assignSchedules(enrollmentId, scheduleIds);
                 if (resAssign.success) {
                     await showToast("Horario asignado e inscripción completada.", "success");
                     modal.remove();
@@ -627,5 +638,51 @@ window.editStudentSchedules = async function (enrollmentId, courseId) {
         const modal = document.getElementById("admin-courses-modal");
         const courseName = modal ? modal.querySelector('h2')?.textContent || 'Curso' : 'Curso';
         await window.assignStudentSchedule(enrollmentId, courseId, courseName);
+    }
+};
+// Edit course basic info modal
+window.editCourseBasicInfo = async function (id, name, description, price) {
+    const { value: formValues } = await Swal.fire({
+        title: 'Editar Información del Curso',
+        html: `
+            <div style="text-align:left; font-family:'Outfit', sans-serif;">
+                <label style="display:block; margin-bottom:5px; color:#888; font-size:0.8rem;">Nombre del Curso</label>
+                <input id="swal-course-name" class="swal2-input" style="width:90%; margin:0 0 15px 0;" value="${name}">
+                
+                <label style="display:block; margin-bottom:5px; color:#888; font-size:0.8rem;">Descripción</label>
+                <textarea id="swal-course-desc" class="swal2-textarea" style="width:90%; margin:0 0 15px 0; height:100px;">${description}</textarea>
+                
+                <label style="display:block; margin-bottom:5px; color:#888; font-size:0.8rem;">Precio ($)</label>
+                <input id="swal-course-price" type="number" class="swal2-input" style="width:90%; margin:0 0 5px 0;" value="${price}">
+            </div>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar Cambios',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: 'var(--color-acento-azul)',
+        background: '#1a1a1a',
+        color: '#fff',
+        preConfirm: () => {
+            return {
+                id_course: id,
+                course_name: document.getElementById('swal-course-name').value,
+                description: document.getElementById('swal-course-desc').value,
+                price: document.getElementById('swal-course-price').value
+            }
+        }
+    });
+
+    if (formValues) {
+        if (!formValues.course_name) return showToast("El nombre es obligatorio.", "warning");
+
+        const res = await ApiService.updateCourse(formValues);
+        if (res.success) {
+            showToast("Información actualizada con éxito.", "success");
+            window.openCourseDetails(id, formValues.course_name);
+            if (window.loadCourses) window.loadCourses();
+        } else {
+            showToast("Error: " + res.message, "error");
+        }
     }
 };

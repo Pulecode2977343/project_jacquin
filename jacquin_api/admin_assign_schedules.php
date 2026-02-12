@@ -17,6 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 include_once 'config/connection.php';
+require_once 'helpers/auth_helper.php';
+
+// Protegemos el endpoint: Solo administradores
+validateAdmin();
 
 $data = json_decode(file_get_contents("php://input"));
 

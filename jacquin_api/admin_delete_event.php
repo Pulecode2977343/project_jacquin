@@ -5,6 +5,7 @@
 session_start();
 require_once 'config/cors.php';
 require_once 'config/connection.php';
+require_once 'helpers/PathHelper.php';
 
 // Verify admin session
 if (!isset($_SESSION['user']) || $_SESSION['user']['id_rol'] != 1) {
@@ -21,27 +22,23 @@ try {
         throw new Exception("ID de evento inválido.");
     }
 
-    // Get file paths before deleting
-    $stmt = $conn->prepare("SELECT image_url, media_url, media_type FROM events WHERE id_event = ?");
-    $stmt->bind_param("i", $event_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $event = $result->fetch_assoc();
+    // Get file paths before deleting using PDO
+    $stmt = $pdo->prepare("SELECT image_url, media_url, media_type FROM events WHERE id_event = ?");
+    $stmt->execute([$event_id]);
+    $event = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$event) {
         throw new Exception("Evento no encontrado.");
     }
 
-    // Soft delete
-    $stmt = $conn->prepare("UPDATE events SET is_active = 0 WHERE id_event = ?");
-    $stmt->bind_param("i", $event_id);
-
-    if (!$stmt->execute()) {
+    // Soft delete using PDO
+    $stmt = $pdo->prepare("UPDATE events SET is_active = 0 WHERE id_event = ?");
+    if (!$stmt->execute([$event_id])) {
         throw new Exception("Error al eliminar evento.");
     }
 
-    // Delete physical files
-    $base_path = "c:/xampp/htdocs/jacquin_web/pages/";
+    // Base path using PathHelper
+    $base_path = PathHelper::getUploadBaseDir();
 
     if ($event['image_url'] && file_exists($base_path . $event['image_url'])) {
         @unlink($base_path . $event['image_url']);

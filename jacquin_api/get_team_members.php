@@ -42,7 +42,7 @@ try {
 
         // Default avatar si no tiene
         if (empty($member['avatar_url'])) {
-            $member['avatar_url'] = '/jacquin_web/pages/assets/default_avatar.svg';
+            $member['avatar_url'] = null;
         }
     }
 

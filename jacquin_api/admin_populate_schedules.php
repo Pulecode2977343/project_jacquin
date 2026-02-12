@@ -4,7 +4,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 // Handle CLI vs Web pathing
 // Hardcoded XAMPP path for this one-off script
-require_once 'C:/xampp/htdocs/jacquin_api/config/connection.php';
+require_once __DIR__ . '/config/connection.php';
 
 // 1. Reset Table (Force Clean State - Requested by User "Assign All")
 try {

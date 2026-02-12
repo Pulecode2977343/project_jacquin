@@ -28,7 +28,7 @@ class CookieBanner extends HTMLElement {
                         <h4 style="color: white; margin: 0 0 5px 0; font-size: 1rem;">Usamos Cookies</h4>
                         <p style="color: #aaa; font-size: 0.85rem; margin: 0; line-height: 1.4;">
                             Utilizamos cookies para mejorar tu experiencia y analizar el tráfico. 
-                            <a href="coockie.html" style="color: var(--color-acento-azul, #3498db); text-decoration: underline;">Leer Política</a>.
+                            <a href="cookies.html" style="color: var(--color-acento-azul, #3498db); text-decoration: underline;">Leer Política</a>.
                         </p>
                     </div>
                 </div>

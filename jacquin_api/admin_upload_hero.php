@@ -7,8 +7,10 @@ ini_set('memory_limit', '512M'); // High memory for image manipulation
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
+require_once 'helpers/PathHelper.php';
 
-$target_dir = "c:/xampp/htdocs/jacquin_web/pages/images/";
+$base_dir = PathHelper::getUploadBaseDir();
+$target_dir = $base_dir . "images" . DIRECTORY_SEPARATOR;
 $target_file = $target_dir . "hero-banner.jpg";
 
 // --- IA / LOGIC SETTINGS ---

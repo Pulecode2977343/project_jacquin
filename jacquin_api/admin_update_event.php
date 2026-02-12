@@ -5,6 +5,7 @@
 session_start();
 require_once 'config/cors.php';
 require_once 'config/connection.php';
+require_once 'helpers/PathHelper.php';
 
 // Verify admin session
 if (!isset($_SESSION['user']) || $_SESSION['user']['id_rol'] != 1) {
@@ -23,12 +24,10 @@ try {
         throw new Exception("ID de evento inválido.");
     }
 
-    // Get current event data
-    $stmt = $conn->prepare("SELECT image_url, media_url, media_type FROM events WHERE id_event = ?");
-    $stmt->bind_param("i", $event_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $current = $result->fetch_assoc();
+    // Get current event data using PDO
+    $stmt = $pdo->prepare("SELECT image_url, media_url, media_type FROM events WHERE id_event = ?");
+    $stmt->execute([$event_id]);
+    $current = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$current) {
         throw new Exception("Evento no encontrado.");
@@ -50,7 +49,8 @@ try {
         throw new Exception("El título es obligatorio.");
     }
 
-    $upload_dir = "c:/xampp/htdocs/jacquin_web/pages/uploads/events/";
+    $base_dir = PathHelper::getUploadBaseDir();
+    $upload_dir = $base_dir . "uploads" . DIRECTORY_SEPARATOR . "events" . DIRECTORY_SEPARATOR;
     $image_url = $current['image_url'];
     $media_url = $current['media_url'];
 
@@ -70,8 +70,8 @@ try {
         }
 
         // Delete old image
-        if ($image_url && file_exists("c:/xampp/htdocs/jacquin_web/pages/" . $image_url)) {
-            @unlink("c:/xampp/htdocs/jacquin_web/pages/" . $image_url);
+        if ($image_url && file_exists($base_dir . $image_url)) {
+            @unlink($base_dir . $image_url);
         }
 
         $ext = pathinfo($image_file['name'], PATHINFO_EXTENSION);
@@ -88,8 +88,8 @@ try {
     // Process media update
     if ($media_type === 'video_youtube') {
         // Delete old file if exists
-        if ($current['media_type'] !== 'video_youtube' && $current['media_url'] && file_exists("c:/xampp/htdocs/jacquin_web/pages/" . $current['media_url'])) {
-            @unlink("c:/xampp/htdocs/jacquin_web/pages/" . $current['media_url']);
+        if ($current['media_type'] !== 'video_youtube' && $current['media_url'] && file_exists($base_dir . $current['media_url'])) {
+            @unlink($base_dir . $current['media_url']);
         }
         $media_url = $media_url_input;
     } elseif (in_array($media_type, ['video_nativo', 'pdf', 'ppt']) && isset($_FILES['media_file']) && $_FILES['media_file']['error'] === UPLOAD_ERR_OK) {
@@ -118,8 +118,8 @@ try {
         }
 
         // Delete old media file
-        if ($current['media_url'] && file_exists("c:/xampp/htdocs/jacquin_web/pages/" . $current['media_url'])) {
-            @unlink("c:/xampp/htdocs/jacquin_web/pages/" . $current['media_url']);
+        if ($current['media_url'] && file_exists($base_dir . $current['media_url'])) {
+            @unlink($base_dir . $current['media_url']);
         }
 
         $ext = pathinfo($media_file['name'], PATHINFO_EXTENSION);
@@ -133,22 +133,21 @@ try {
         $media_url = "uploads/events/" . $media_filename;
     } elseif ($media_type === 'ninguno') {
         // Delete old media if switching to none
-        if ($current['media_url'] && $current['media_type'] !== 'video_youtube' && file_exists("c:/xampp/htdocs/jacquin_web/pages/" . $current['media_url'])) {
-            @unlink("c:/xampp/htdocs/jacquin_web/pages/" . $current['media_url']);
+        if ($current['media_url'] && $current['media_type'] !== 'video_youtube' && file_exists($base_dir . $current['media_url'])) {
+            @unlink($base_dir . $current['media_url']);
         }
         $media_url = null;
     }
 
-    // Update database
-    $stmt = $conn->prepare("
+    // Update database using PDO
+    $stmt = $pdo->prepare("
         UPDATE events 
         SET title = ?, description = ?, event_date = ?, event_time = ?, event_type = ?, 
             location = ?, cost = ?, image_url = ?, media_type = ?, media_url = ?, is_featured = ?
         WHERE id_event = ?
     ");
 
-    $stmt->bind_param(
-        "ssssssdsssii",
+    if (!$stmt->execute([
         $title,
         $description,
         $event_date,
@@ -161,9 +160,7 @@ try {
         $media_url,
         $is_featured,
         $event_id
-    );
-
-    if (!$stmt->execute()) {
+    ])) {
         throw new Exception("Error al actualizar el evento.");
     }
 

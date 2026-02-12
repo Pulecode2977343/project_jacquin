@@ -107,8 +107,8 @@ async function renderProgramsCarousel() {
         // Note: data-tilt might need re-initialization if using VanillaTilt.js dynamically, 
         // but for now we render structure.
         slide.innerHTML = `
-            <div class="program-card" onclick="openProgramModal('${key}')" 
-                 style="background-image: url('${p.image || 'assets/default.png'}');">
+                <div class="program-card" onclick="openProgramModal('${key}')" 
+                     style="background-image: url('${p.image || 'assets/default.png'}');">
                 <div class="program-overlay"></div>
                 <div class="program-content">
                     <div class="program-icon"><i class="bi ${p.icon}"></i></div>

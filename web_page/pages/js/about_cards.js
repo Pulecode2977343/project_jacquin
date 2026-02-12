@@ -19,7 +19,8 @@
 
     async function loadAboutCards(container) {
         try {
-            const response = await fetch('/jacquin_api/get_about_cards.php');
+            const apiBase = (window.ApiService && API_CONFIG) ? API_CONFIG.BASE_URL : '../../jacquin_api/';
+            const response = await fetch(apiBase + 'get_about_cards.php');
             const result = await response.json();
 
             if (result.success && result.data.length > 0) {
@@ -39,7 +40,8 @@
         if (!missionText && !valuesGrid) return;
 
         try {
-            const response = await fetch('/jacquin_api/get_mission_values.php');
+            const apiBase = (window.ApiService && API_CONFIG) ? API_CONFIG.BASE_URL : '../../jacquin_api/';
+            const response = await fetch(apiBase + 'get_mission_values.php');
             const result = await response.json();
 
             if (result.success && result.data) {
@@ -137,7 +139,8 @@
 
             // Load team members
             try {
-                const response = await fetch('/jacquin_api/get_team_members.php');
+                const apiBase = (window.ApiService && API_CONFIG) ? API_CONFIG.BASE_URL : '../../jacquin_api/';
+                const response = await fetch(apiBase + 'get_team_members.php');
                 const result = await response.json();
                 const grid = document.getElementById('team-modal-grid');
 
@@ -155,7 +158,7 @@
                         }
 
                         return `
-                            <div class="team-card-mini" style="background-image: url('${member.avatar_url || '/jacquin_web/pages/assets/images/default_avatar.svg'}');">
+                            <div class="team-card-mini" style="background-image: url('${member.avatar_url || 'assets/images/default_avatar.svg'}');">
                                 <div class="team-card-mini-overlay"></div>
                                 <div class="team-card-mini-shine"></div>
                                 <div class="team-card-mini-info">

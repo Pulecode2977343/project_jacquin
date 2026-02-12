@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>J.A.M Cookies</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/doc-Cookie.css" />
+</head>
+
+<body>
+  <jam-header></jam-header>
+
+  <main>
+    <div class="a4" id="contenido">
+      <div class="search-bar">
+        <input id="buscar" type="text" placeholder="Buscar en la política de cookies..." aria-label="Buscar" />
+      </div>
+
+      <h2>Política de Cookies</h2>
+      <p>
+        La presente <strong>Política de Cookies</strong> explica cómo Jacquin
+        Academia Musical utiliza cookies y tecnologías similares en su sitio
+        web institucional, en cumplimiento de la
+        <strong>Ley 1581 de 2012</strong>, el
+        <strong>Decreto 1377 de 2013</strong> y las recomendaciones de la
+        <strong>Superintendencia de Industria y Comercio (SIC)</strong>.
+      </p>
+
+      <h3>1. ¿Qué son las cookies?</h3>
+      <p>
+        Las cookies son pequeños archivos de texto que se almacenan en el
+        dispositivo del usuario cuando visita un sitio web. Permiten reconocer
+        al navegador, recordar preferencias, mejorar la experiencia de
+        navegación y recopilar información estadística anónima.
+      </p>
+
+      <h3>2. Tipos de cookies utilizadas</h3>
+      <p>Jacquin Academia Musical utiliza los siguientes tipos de cookies:</p>
+      <ul>
+        <li>
+          <strong>Cookies necesarias:</strong> esenciales para el
+          funcionamiento del sitio y la prestación de servicios solicitados
+          por el usuario.
+        </li>
+        <li>
+          <strong>Cookies de rendimiento:</strong> permiten analizar cómo los
+          usuarios interactúan con el sitio para optimizar su funcionamiento.
+        </li>
+        <li>
+          <strong>Cookies funcionales:</strong> guardan preferencias
+          personales, como idioma o región.
+        </li>
+        <li>
+          <strong>Cookies de terceros:</strong> pueden ser instaladas por
+          servicios externos (p. ej. YouTube, Google Maps, redes sociales)
+          integrados en la web.
+        </li>
+      </ul>
+
+      <h3>3. Finalidades del uso de cookies</h3>
+      <p>
+        Las cookies empleadas por la Academia se utilizan con las siguientes
+        finalidades:
+      </p>
+      <ul>
+        <li>
+          Recordar las credenciales de inicio de sesión y mantener sesiones
+          seguras.
+        </li>
+        <li>
+          Analizar el tráfico y uso del sitio para mejorar su rendimiento.
+        </li>
+        <li>
+          Personalizar el contenido educativo y promocional mostrado a los
+          usuarios.
+        </li>
+        <li>
+          Permitir la integración de funcionalidades multimedia o de redes
+          sociales.
+        </li>
+      </ul>
+
+      <h3>4. Consentimiento del usuario</h3>
+      <p>
+        Al acceder a nuestro sitio por primera vez, el usuario será informado
+        sobre el uso de cookies y podrá aceptarlas, rechazarlas o
+        configurarlas. El consentimiento puede modificarse en cualquier
+        momento a través del navegador o los ajustes de cookies disponibles en
+        el sitio.
+      </p>
+
+      <h3>5. Gestión y eliminación de cookies</h3>
+      <p>
+        Los usuarios pueden eliminar o bloquear las cookies mediante la
+        configuración de su navegador. A continuación, se indican las rutas
+        más comunes:
+      </p>
+      <ul>
+        <li>
+          Google Chrome: Configuración → Privacidad y seguridad → Cookies y
+          otros datos de sitios.
+        </li>
+        <li>
+          Mozilla Firefox: Opciones → Privacidad y seguridad → Cookies y datos
+          del sitio.
+        </li>
+        <li>
+          Microsoft Edge: Configuración → Privacidad → Cookies y permisos del
+          sitio.
+        </li>
+        <li>
+          Safari: Preferencias → Privacidad → Administrar datos de sitios web.
+        </li>
+      </ul>
+
+      <h3>6. Cookies de terceros</h3>
+      <p>
+        Algunos servicios externos integrados (como YouTube, Meta, Google
+        Analytics o proveedores de publicidad) pueden instalar cookies
+        propias. Jacquin Academia Musical no controla dichas cookies y
+        recomienda consultar las políticas de cada proveedor para más
+        información.
+      </p>
+
+      <h3>7. Protección de datos personales</h3>
+      <p>
+        La información obtenida a través de las cookies es tratada conforme a
+        la
+        <a href="politicas.html">Política de Tratamiento de Datos Personales</a>. En ningún caso se recopilarán datos
+        sensibles ni se usará la
+        información con fines distintos a los declarados.
+      </p>
+
+      <h3>8. Vigencia y actualizaciones</h3>
+      <p>
+        Esta política entra en vigencia desde su publicación y podrá
+        actualizarse cuando existan cambios tecnológicos, regulatorios o de
+        funcionamiento. La última versión estará siempre disponible en el
+        sitio web oficial de la Academia.
+      </p>
+
+      <p><strong>Última actualización:</strong> Octubre de 2025</p>
+
+      <div class="actions">
+        <label>
+          <input type="checkbox" id="aceptar" /> He leído y acepto la Política
+          de Cookies
+        </label>
+        <br />
+        <button id="descargar" disabled>Descargar PDF</button>
+      </div>
+    </div>
+  </main>
+
+  <jam-footer></jam-footer>
+
+  <script src="js/components/Navbar.js"></script>
+  <script src="js/components/Header.js"></script>
+  <script src="js/components/Footer.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="js/logoSound.js"></script>
+  <script src="js/cookies.js"></script>
+</body>
+
+</html>

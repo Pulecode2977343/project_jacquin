@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/config/cors.php';
 require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/helpers/PathHelper.php';
 
 header('Content-Type: application/json');
 
@@ -24,17 +25,10 @@ if (!in_array($file['type'], $allowed)) {
     exit;
 }
 
-// Correct path relative to backend: ../jacquin_web/pages/uploads/avatars/
-// We target the 'jacquin_web' symlink to ensure it matches the serving URL.
-$uploadDir = __DIR__ . '/../jacquin_web/pages/uploads/avatars/';
-
-// Create directory if not exists
-if (!is_dir($uploadDir)) {
-    if (!mkdir($uploadDir, 0777, true)) {
-        echo json_encode(['success' => false, 'message' => 'No se pudo crear carpeta uploads: ' . $uploadDir]);
-        exit;
-    }
-}
+// Correct path dynamic using PathHelper
+$baseDir = PathHelper::getUploadBaseDir();
+$uploadDir = $baseDir . 'uploads' . DIRECTORY_SEPARATOR . 'avatars' . DIRECTORY_SEPARATOR;
+PathHelper::ensureDir($uploadDir);
 
 $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
 $filename = 'avatar_' . $userId . '_' . time() . '.' . $ext;

@@ -7,9 +7,12 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-include_once 'config/connection.php';
+include_once __DIR__ . '/config/connection.php';
 
 try {
+    if (!isset($pdo)) {
+        throw new Exception("Error de conexión a la base de datos.");
+    }
     $stmt = $pdo->query("
         SELECT 
             id_card,

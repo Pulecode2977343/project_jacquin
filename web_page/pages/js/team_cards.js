@@ -12,7 +12,8 @@
         if (!container) return;
 
         try {
-            const response = await fetch('/jacquin_api/get_team_members.php');
+            const apiBase = (window.ApiService && typeof API_CONFIG !== 'undefined') ? API_CONFIG.BASE_URL : '../../jacquin_api/';
+            const response = await fetch(apiBase + 'get_team_members.php');
             const result = await response.json();
 
             if (result.success && result.data.length > 0) {
@@ -54,9 +55,9 @@
                 <div class="team-card-premium">
                     <div class="team-card-shine"></div>
                     <div class="team-card-avatar">
-                        <img src="${member.avatar_url || '/jacquin_web/pages/assets/images/default_avatar.svg'}" 
+                        <img src="${member.avatar_url || 'assets/images/default_avatar.svg'}" 
                              alt="${member.full_name}"
-                             onerror="this.src='/jacquin_web/pages/assets/images/default_avatar.svg'">
+                             onerror="this.src='assets/images/default_avatar.svg'">
                     </div>
                     <div class="team-card-info">
                         <h4>${member.full_name}</h4>

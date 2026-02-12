@@ -4,6 +4,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/helpers/PathHelper.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -22,10 +23,9 @@ try {
 
     // Handle File Upload
     if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../jacquin_web/uploads/submissions/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
+        $baseDir = PathHelper::getUploadBaseDir();
+        $uploadDir = $baseDir . 'uploads' . DIRECTORY_SEPARATOR . 'submissions' . DIRECTORY_SEPARATOR;
+        PathHelper::ensureDir($uploadDir);
 
         $fileName = time() . '_' . basename($_FILES['file']['name']);
         $targetPath = $uploadDir . $fileName;

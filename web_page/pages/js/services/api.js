@@ -6,15 +6,17 @@
 
 const API_CONFIG = {
     // Detect subfolder levels to reach /jacquin_api/ correctly
+    // URL Base para estructura aplanada (index.html en raíz de web_page)
     get BASE_URL() {
         const path = window.location.pathname;
-        if (window.location.protocol === 'file:') return "./jacquin_api/"; // Local fallback (will still have CORS issues but path is correct)
 
-        // If in /web_page/pages/index.html, we need to go up two levels
-        if (path.includes('/web_page/pages/')) return "../../jacquin_api/";
-        if (path.includes('/jacquin_web/pages/')) return "../../jacquin_api/";
+        // Si estamos dentro de subcarpetas (por si acaso quedaron archivos en pages/)
+        if (path.includes('/pages/')) {
+            return "../../jacquin_api/";
+        }
 
-        return "/jacquin_api/"; // Default root
+        // Desde la raíz del frontend (web_page/) hacia la API hermana (jacquin_api/)
+        return "../jacquin_api/";
     },
 
     HEADERS: {
@@ -523,7 +525,15 @@ const ApiService = {
 
     async getEvents() {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}get_events.php`);
+            const url = `${API_CONFIG.BASE_URL}get_events.php`;
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                const text = await response.text();
+                console.error("API Error Response:", text);
+                return { success: false, message: `Error ${response.status}: ${text.substring(0, 100)}` };
+            }
+
             return await response.json();
         } catch (error) {
             console.error("Error fetching events:", error);

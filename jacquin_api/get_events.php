@@ -2,13 +2,17 @@
 // API Endpoint: Get Events
 // Public endpoint - Returns all active events
 
-require_once 'config/connection.php';
+require_once __DIR__ . '/config/connection.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 try {
-    $stmt = $conn->prepare("
+    if (!isset($pdo)) {
+        throw new Exception("Error interno: No se pudo establecer la conexión a la base de datos.");
+    }
+
+    $stmt = $pdo->prepare("
         SELECT 
             id_event,
             title,
@@ -29,12 +33,7 @@ try {
     ");
 
     $stmt->execute();
-    $result = $stmt->get_result();
-    $events = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $events[] = $row;
-    }
+    $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
         "success" => true,

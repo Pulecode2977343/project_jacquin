@@ -8,6 +8,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json; charset=UTF-8");
+require_once __DIR__ . '/helpers/PathHelper.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
@@ -62,11 +63,10 @@ if ($file['size'] > $maxSize) {
     exit;
 }
 
-// Create upload directory if not exists
-$uploadDir = __DIR__ . '/../jacquin_web/pages/images/about/';
-if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
-}
+// Create upload directory dynamic using PathHelper
+$baseDir = PathHelper::getUploadBaseDir();
+$uploadDir = $baseDir . 'images' . DIRECTORY_SEPARATOR . 'about' . DIRECTORY_SEPARATOR;
+PathHelper::ensureDir($uploadDir);
 
 // Generate unique filename
 $extension = pathinfo($file['name'], PATHINFO_EXTENSION);

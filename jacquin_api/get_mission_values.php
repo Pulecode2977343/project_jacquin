@@ -2,9 +2,12 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-include_once 'config/connection.php';
+include_once __DIR__ . '/config/connection.php';
 
 try {
+    if (!isset($pdo)) {
+        throw new Exception("Error de conexión a la base de datos.");
+    }
     // Get Mission
     $stmt_mission = $pdo->query("SELECT title, description FROM web_mission LIMIT 1");
     $mission = $stmt_mission->fetch(PDO::FETCH_ASSOC);

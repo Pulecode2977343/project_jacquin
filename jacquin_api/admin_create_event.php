@@ -5,6 +5,7 @@
 session_start();
 require_once 'config/cors.php';
 require_once 'config/connection.php';
+require_once 'helpers/PathHelper.php';
 
 // Verify admin session
 if (!isset($_SESSION['user']) || $_SESSION['user']['id_rol'] != 1) {
@@ -35,11 +36,10 @@ try {
         throw new Exception("El título es obligatorio.");
     }
 
-    // Upload directory
-    $upload_dir = "c:/xampp/htdocs/jacquin_web/pages/uploads/events/";
-    if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0755, true);
-    }
+    // Upload directory using PathHelper
+    $base_dir = PathHelper::getUploadBaseDir();
+    $upload_dir = $base_dir . "uploads" . DIRECTORY_SEPARATOR . "events" . DIRECTORY_SEPARATOR;
+    PathHelper::ensureDir($upload_dir);
 
     $image_url = null;
     $media_url = null;
@@ -113,14 +113,13 @@ try {
         }
     }
 
-    // Insert into database
-    $stmt = $conn->prepare("
+    // Insert into database using PDO
+    $stmt = $pdo->prepare("
         INSERT INTO events (title, description, event_date, event_time, event_type, location, cost, image_url, media_type, media_url, is_featured)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
-    $stmt->bind_param(
-        "ssssssdsssi",
+    if (!$stmt->execute([
         $title,
         $description,
         $event_date,
@@ -132,13 +131,11 @@ try {
         $media_type,
         $media_url,
         $is_featured
-    );
-
-    if (!$stmt->execute()) {
-        throw new Exception("Error al crear el evento: " . $stmt->error);
+    ])) {
+        throw new Exception("Error al crear el evento.");
     }
 
-    $event_id = $conn->insert_id;
+    $event_id = $pdo->lastInsertId();
 
     echo json_encode([
         "success" => true,

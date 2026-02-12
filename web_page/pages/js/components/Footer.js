@@ -78,9 +78,9 @@ class Footer extends HTMLElement {
                     &copy; ${new Date().getFullYear()} <strong>Jacquin Academia Musical</strong>. <span class="rights">Todos los derechos reservados.</span>
                 </div>
                 <div class="footer-bottom-links">
-                    <a href="#">Soporte</a>
+                    <a href="contactanos.html">Soporte</a>
                     <span class="separator">•</span>
-                    <a href="#">Mapa del Sitio</a>
+                    <a href="index.html#programas">Mapa del Sitio</a>
                 </div>
             </div>
         </footer>

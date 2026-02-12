@@ -2,287 +2,287 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>JACQUIN Academia Musical</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/style.css?v=25" />
-  <link rel="stylesheet" href="css/hero.css?v=3" />
-  <link rel="stylesheet" href="css/events.css" />
-  <link rel="stylesheet" href="css/about.css" />
-  <!-- Swiper CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>JACQUIN Academia Musical</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="css/style.css?v=25" />
+    <link rel="stylesheet" href="css/hero.css?v=3" />
+    <link rel="stylesheet" href="css/events.css" />
+    <link rel="stylesheet" href="css/about.css" />
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 </head>
 
 <body>
-  <jam-header></jam-header>
+    <jam-header></jam-header>
 
-  <main>
-    <!-- Hero Section - Fullscreen -->
-    <section class="hero-section">
-      <div class="hero-bg-wrapper">
-        <picture>
-          <!-- Hero banner image -->
-          <source media="(max-width: 768px)" srcset="images/hero-banner.jpg">
-          <img src="images/hero-banner.jpg" alt="Academia Musical Jacquin - Instrumentos" class="hero-bg-img">
-        </picture>
-      </div>
-      <div class="hero-overlay"></div>
-      <div class="hero-content">
-        <p class="hero-tagline">Donde la pasión se convierte en arte</p>
-        <a href="#eventos" class="hero-cta">
-          <span>Descubre Nuestros Programas</span>
-          <i class="bi bi-arrow-down"></i>
-        </a>
-      </div>
-    </section>
-
-    <!-- Eventos Section (Moved from separate page) -->
-    <section class="events-section" id="eventos">
-      <div class="events-intro">
-        <h2>Eventos y Presentaciones</h2>
-        <p>
-          Descubre nuestros próximos conciertos, recitales y actividades
-          especiales. ¡Únete a la comunidad musical JACQUIN!
-        </p>
-      </div>
-
-      <!-- Swiper Carousel -->
-      <div class="swiper events-swiper">
-        <div class="swiper-wrapper" id="events-carousel-wrapper">
-          <!-- Dynamic event cards loaded by JS -->
-        </div>
-        <div class="swiper-pagination"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-      </div>
-    </section>
-
-    <!-- Nuestros Programas Section -->
-    <section class="bento-section" id="programas">
-      <div class="section-header">
-        <h2>Nuestros Programas</h2>
-        <p>Explora tu talento con nuestra metodología personalizada</p>
-      </div>
-
-      <!-- Swiper Carousel for Programs -->
-      <div class="swiper programs-swiper">
-        <div class="swiper-wrapper" id="programs-carousel-wrapper">
-          <!-- 1. PERCUSIÓN -->
-          <div class="swiper-slide">
-            <div class="program-card" data-tilt onclick="openProgramModal('percussion')"
-              style="background-image: url('images/programs/percussion.png');">
-              <div class="program-overlay"></div>
-              <div class="program-content">
-                <div class="program-icon"><i class="bi bi-music-note-beamed"></i></div>
-                <h3>Percusión</h3>
-                <p>Ritmo y energía.</p>
-              </div>
+    <main>
+        <!-- Hero Section - Fullscreen -->
+        <section class="hero-section">
+            <div class="hero-bg-wrapper">
+                <picture>
+                    <!-- Hero banner image -->
+                    <source media="(max-width: 768px)" srcset="images/hero-banner.jpg">
+                    <img src="images/hero-banner.jpg" alt="Academia Musical Jacquin - Instrumentos" class="hero-bg-img">
+                </picture>
             </div>
-          </div>
-
-          <!-- 2. GUITARRA -->
-          <div class="swiper-slide">
-            <div class="program-card" data-tilt onclick="openProgramModal('guitarra')"
-              style="background-image: url('images/programs/guitar.png');">
-              <div class="program-overlay"></div>
-              <div class="program-content">
-                <div class="program-icon"><i class="bi bi-guitar"></i></div>
-                <h3>Guitarra</h3>
-                <p>Acústica y Eléctrica.</p>
-              </div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <p class="hero-tagline">Donde la pasión se convierte en arte</p>
+                <a href="#eventos" class="hero-cta">
+                    <span>Descubre Nuestros Programas</span>
+                    <i class="bi bi-arrow-down"></i>
+                </a>
             </div>
-          </div>
+        </section>
 
-          <!-- 3. PIANO -->
-          <div class="swiper-slide">
-            <div class="program-card" data-tilt onclick="openProgramModal('piano')"
-              style="background-image: url('images/programs/piano.png');">
-              <div class="program-overlay"></div>
-              <div class="program-content">
-                <div class="program-icon"><i class="bi bi-grid-3x3-gap"></i></div>
-                <h3>Piano</h3>
-                <p>Clásico y Moderno.</p>
-              </div>
+        <!-- Eventos Section -->
+        <section class="events-section" id="eventos">
+            <div class="events-intro">
+                <h2>Eventos y Presentaciones</h2>
+                <p>
+                    Descubre nuestros próximos conciertos, recitales y actividades
+                    especiales. ¡Únete a la comunidad musical JACQUIN!
+                </p>
             </div>
-          </div>
 
-          <!-- 4. VOZ -->
-          <div class="swiper-slide">
-            <div class="program-card" data-tilt onclick="openProgramModal('voz')"
-              style="background-image: url('images/programs/voice.png');">
-              <div class="program-overlay"></div>
-              <div class="program-content">
-                <div class="program-icon"><i class="bi bi-mic"></i></div>
-                <h3>Voz</h3>
-                <p>Técnica Vocal.</p>
-              </div>
+            <!-- Swiper Carousel -->
+            <div class="swiper events-swiper">
+                <div class="swiper-wrapper" id="events-carousel-wrapper">
+                    <!-- Dynamic event cards loaded by JS -->
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
             </div>
-          </div>
+        </section>
 
-          <!-- 5. SENIOR'S -->
-          <div class="swiper-slide">
-            <div class="program-card" data-tilt onclick="openProgramModal('seniors')"
-              style="background-image: url('images/programs/seniors.png');">
-              <div class="program-overlay"></div>
-              <div class="program-content">
-                <div class="program-icon"><i class="bi bi-person-hearts"></i></div>
-                <h3>Senior's</h3>
-                <p>Adulto Mayor.</p>
-              </div>
+        <!-- Nuestros Programas Section -->
+        <section class="bento-section" id="programas">
+            <div class="section-header">
+                <h2>Nuestros Programas</h2>
+                <p>Explora tu talento con nuestra metodología personalizada</p>
             </div>
-          </div>
 
-          <!-- 6. SHOWS -->
-          <div class="swiper-slide">
-            <div class="program-card" data-tilt onclick="openProgramModal('shows')"
-              style="background-image: url('images/programs/shows.png');">
-              <div class="program-overlay"></div>
-              <div class="program-content">
-                <div class="program-icon"><i class="bi bi-ticket-perforated"></i></div>
-                <h3>Shows</h3>
-                <p>Presentaciones en vivo.</p>
-              </div>
+            <!-- Swiper Carousel for Programs -->
+            <div class="swiper programs-swiper">
+                <div class="swiper-wrapper" id="programs-carousel-wrapper">
+                    <!-- 1. PERCUSIÓN -->
+                    <div class="swiper-slide">
+                        <div class="program-card" data-tilt onclick="openProgramModal('percussion')"
+                            style="background-image: url('images/programs/percussion.png');">
+                            <div class="program-overlay"></div>
+                            <div class="program-content">
+                                <div class="program-icon"><i class="bi bi-music-note-beamed"></i></div>
+                                <h3>Percusión</h3>
+                                <p>Ritmo y energía.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. GUITARRA -->
+                    <div class="swiper-slide">
+                        <div class="program-card" data-tilt onclick="openProgramModal('guitarra')"
+                            style="background-image: url('images/programs/guitar.png');">
+                            <div class="program-overlay"></div>
+                            <div class="program-content">
+                                <div class="program-icon"><i class="bi bi-guitar"></i></div>
+                                <h3>Guitarra</h3>
+                                <p>Acústica y Eléctrica.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. PIANO -->
+                    <div class="swiper-slide">
+                        <div class="program-card" data-tilt onclick="openProgramModal('piano')"
+                            style="background-image: url('images/programs/piano.png');">
+                            <div class="program-overlay"></div>
+                            <div class="program-content">
+                                <div class="program-icon"><i class="bi bi-grid-3x3-gap"></i></div>
+                                <h3>Piano</h3>
+                                <p>Clásico y Moderno.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. VOZ -->
+                    <div class="swiper-slide">
+                        <div class="program-card" data-tilt onclick="openProgramModal('voz')"
+                            style="background-image: url('images/programs/voice.png');">
+                            <div class="program-overlay"></div>
+                            <div class="program-content">
+                                <div class="program-icon"><i class="bi bi-mic"></i></div>
+                                <h3>Voz</h3>
+                                <p>Técnica Vocal.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. SENIOR'S -->
+                    <div class="swiper-slide">
+                        <div class="program-card" data-tilt onclick="openProgramModal('seniors')"
+                            style="background-image: url('images/programs/seniors.png');">
+                            <div class="program-overlay"></div>
+                            <div class="program-content">
+                                <div class="program-icon"><i class="bi bi-person-hearts"></i></div>
+                                <h3>Senior's</h3>
+                                <p>Adulto Mayor.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. SHOWS -->
+                    <div class="swiper-slide">
+                        <div class="program-card" data-tilt onclick="openProgramModal('shows')"
+                            style="background-image: url('images/programs/shows.png');">
+                            <div class="program-overlay"></div>
+                            <div class="program-content">
+                                <div class="program-icon"><i class="bi bi-ticket-perforated"></i></div>
+                                <h3>Shows</h3>
+                                <p>Presentaciones en vivo.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7. EXPLORACIÓN -->
+                    <div class="swiper-slide">
+                        <div class="program-card" data-tilt onclick="openProgramModal('exploration')"
+                            style="background-image: url('images/programs/exploration.png');">
+                            <div class="program-overlay"></div>
+                            <div class="program-content">
+                                <div class="program-icon"><i class="bi bi-balloon"></i></div>
+                                <h3>Exploración</h3>
+                                <p>Iniciación Musical.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8. PSICOMÚSICA -->
+                    <div class="swiper-slide">
+                        <div class="program-card" data-tilt onclick="openProgramModal('psychomusic')"
+                            style="background-image: url('images/programs/psychomusic.png');">
+                            <div class="program-overlay"></div>
+                            <div class="program-content">
+                                <div class="program-icon"><i class="bi bi-heart-pulse"></i></div>
+                                <h3>Psicomúsica</h3>
+                                <p>Bienestar y Terapia.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Controles de Navegación -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
             </div>
-          </div>
+        </section>
 
-          <!-- 7. EXPLORACIÓN -->
-          <div class="swiper-slide">
-            <div class="program-card" data-tilt onclick="openProgramModal('exploration')"
-              style="background-image: url('images/programs/exploration.png');">
-              <div class="program-overlay"></div>
-              <div class="program-content">
-                <div class="program-icon"><i class="bi bi-balloon"></i></div>
-                <h3>Exploración</h3>
-                <p>Iniciación Musical.</p>
-              </div>
+        <!-- Sobre Nosotros Section -->
+        <section class="about-section" id="nosotros">
+            <div class="about-hero">
+                <h2>Sobre Nosotros</h2>
+                <p>
+                    En JACQUIN, transformamos la pasión por la música en excelencia
+                    artística. Somos una institución dedicada a formar músicos
+                    integrales a través de una metodología personalizada y profesores
+                    altamente calificados.
+                </p>
             </div>
-          </div>
 
-          <!-- 8. PSICOMÚSICA -->
-          <div class="swiper-slide">
-            <div class="program-card" data-tilt onclick="openProgramModal('psychomusic')"
-              style="background-image: url('images/programs/psychomusic.png');">
-              <div class="program-overlay"></div>
-              <div class="program-content">
-                <div class="program-icon"><i class="bi bi-heart-pulse"></i></div>
-                <h3>Psicomúsica</h3>
-                <p>Bienestar y Terapia.</p>
-              </div>
+            <div class="about-content" id="about-cards-container">
+                <!-- Tarjetas cargadas dinámicamente desde API por about_cards.js -->
+                <div class="about-card about-card-premium" style="background: rgba(43, 85, 131, 0.5);">
+                    <div class="about-card-overlay"></div>
+                    <div class="about-card-content">
+                        <i class="bi bi-hourglass-split about-card-icon" style="animation: pulse 1.5s infinite;"></i>
+                        <h3>Cargando...</h3>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <!-- Controles de Navegación -->
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-pagination"></div>
-      </div>
-    </section>
 
-    <!-- Sobre Nosotros Section (Moved from separate page) -->
-    <section class="about-section" id="nosotros">
-      <div class="about-hero">
-        <h2>Sobre Nosotros</h2>
-        <p>
-          En JACQUIN, transformamos la pasión por la música en excelencia
-          artística. Somos una institución dedicada a formar músicos
-          integrales a través de una metodología personalizada y profesores
-          altamente calificados.
-        </p>
-      </div>
+            <div class="mission-vision">
+                <h2>Nuestra Misión</h2>
+                <p id="mission-description-text">
+                    Formar músicos integrales con sólidas bases técnicas y artísticas,
+                    fomentando la creatividad, la disciplina y el amor por la música.
+                    Nos comprometemos a ofrecer educación musical de excelencia
+                    accesible para todos.
+                </p>
 
-      <div class="about-content" id="about-cards-container">
-        <!-- Tarjetas cargadas dinámicamente desde API por about_cards.js -->
-        <div class="about-card about-card-premium" style="background: rgba(43, 85, 131, 0.5);">
-          <div class="about-card-overlay"></div>
-          <div class="about-card-content">
-            <i class="bi bi-hourglass-split about-card-icon" style="animation: pulse 1.5s infinite;"></i>
-            <h3>Cargando...</h3>
-          </div>
-        </div>
-      </div>
+                <div class="values-grid" id="main-values-grid">
+                    <div class="value-item" style="background-image: url('images/values/excelencia.png');">
+                        <div class="value-item-overlay"></div>
+                        <div class="value-item-shine"></div>
+                        <div class="value-item-content">
+                            <i class="bi bi-star"></i>
+                            <h4>Excelencia</h4>
+                            <p>Compromiso con la calidad en cada clase</p>
+                        </div>
+                    </div>
 
-      <div class="mission-vision">
-        <h2>Nuestra Misión</h2>
-        <p id="mission-description-text">
-          Formar músicos integrales con sólidas bases técnicas y artísticas,
-          fomentando la creatividad, la disciplina y el amor por la música.
-          Nos comprometemos a ofrecer educación musical de excelencia
-          accesible para todos.
-        </p>
+                    <div class="value-item" style="background-image: url('images/values/pasion.png');">
+                        <div class="value-item-overlay"></div>
+                        <div class="value-item-shine"></div>
+                        <div class="value-item-content">
+                            <i class="bi bi-heart"></i>
+                            <h4>Pasión</h4>
+                            <p>Amor genuino por la música y la enseñanza</p>
+                        </div>
+                    </div>
 
-        <div class="values-grid" id="main-values-grid">
-          <div class="value-item" style="background-image: url('images/values/excelencia.png');">
-            <div class="value-item-overlay"></div>
-            <div class="value-item-shine"></div>
-            <div class="value-item-content">
-              <i class="bi bi-star"></i>
-              <h4>Excelencia</h4>
-              <p>Compromiso con la calidad en cada clase</p>
+                    <div class="value-item" style="background-image: url('images/values/innovacion.png');">
+                        <div class="value-item-overlay"></div>
+                        <div class="value-item-shine"></div>
+                        <div class="value-item-content">
+                            <i class="bi bi-lightbulb"></i>
+                            <h4>Innovación</h4>
+                            <p>Métodos actualizados y tecnología educativa</p>
+                        </div>
+                    </div>
+
+                    <div class="value-item" style="background-image: url('images/values/respeto.png');">
+                        <div class="value-item-overlay"></div>
+                        <div class="value-item-shine"></div>
+                        <div class="value-item-content">
+                            <i class="bi bi-hand-thumbs-up"></i>
+                            <h4>Respeto</h4>
+                            <p>Ambiente inclusivo y de apoyo mutuo</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+        </section>
+    </main>
 
-          <div class="value-item" style="background-image: url('images/values/pasion.png');">
-            <div class="value-item-overlay"></div>
-            <div class="value-item-shine"></div>
-            <div class="value-item-content">
-              <i class="bi bi-heart"></i>
-              <h4>Pasión</h4>
-              <p>Amor genuino por la música y la enseñanza</p>
-            </div>
-          </div>
+    <jam-footer></jam-footer>
 
-          <div class="value-item" style="background-image: url('images/values/innovacion.png');">
-            <div class="value-item-overlay"></div>
-            <div class="value-item-shine"></div>
-            <div class="value-item-content">
-              <i class="bi bi-lightbulb"></i>
-              <h4>Innovación</h4>
-              <p>Métodos actualizados y tecnología educativa</p>
-            </div>
-          </div>
+    <!-- Servicios -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/toast_overlay.js"></script>
+    <script src="js/services/api.js"></script>
 
-          <div class="value-item" style="background-image: url('images/values/respeto.png');">
-            <div class="value-item-overlay"></div>
-            <div class="value-item-shine"></div>
-            <div class="value-item-content">
-              <i class="bi bi-hand-thumbs-up"></i>
-              <h4>Respeto</h4>
-              <p>Ambiente inclusivo y de apoyo mutuo</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+    <!-- Componentes Web -->
+    <script src="js/components/Navbar.js?v=2.0"></script>
+    <script src="js/components/Header.js?v=3.5"></script>
+    <script src="js/components/Footer.js?v=2.0"></script>
+    <script src="js/components/CookieBanner.js"></script>
 
-  <jam-footer></jam-footer>
+    <jam-cookie-banner></jam-cookie-banner>
 
-  <!-- Servicios -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="js/toast_overlay.js"></script>
-  <script src="js/services/api.js"></script>
+    <!-- Scripts Logica -->
+    <script src="js/logoSound.js"></script>
+    <script src="js/tilt.js"></script>
+    <script src="js/heroScroll.js"></script>
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script type="module" src="js/home_events.js"></script>
+    <script src="js/programs_carousel.js"></script>
+    <script src="js/about_cards.js"></script>
+    <script src="js/team_cards.js"></script>
 
-  <!-- Componentes Web -->
-  <script src="js/components/Navbar.js?v=2.0"></script>
-  <script src="js/components/Header.js?v=3.5"></script>
-  <script src="js/components/Footer.js?v=2.0"></script>
-  <script src="js/components/CookieBanner.js"></script>
-
-  <jam-cookie-banner></jam-cookie-banner>
-
-  <!-- Scripts Logica -->
-  <script src="js/logoSound.js"></script>
-  <script src="js/tilt.js"></script>
-  <script src="js/heroScroll.js"></script>
-  <!-- Swiper JS -->
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script type="module" src="js/home_events.js"></script>
-  <script src="js/programs_carousel.js"></script>
-  <script src="js/about_cards.js"></script>
-  <script src="js/team_cards.js"></script>
-
-  <!-- Nuevo script 3D -->
+    <!-- Nuevo script 3D -->
 </body>
 
 </html>

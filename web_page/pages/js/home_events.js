@@ -4,40 +4,86 @@
 
 // Load and display events in Swiper carousel
 // Load and display events in Swiper carousel
+// Global state for events
+window.allEvents = [];
+window.eventsSwiperInstance = null;
+
+// Load and display events in Swiper carousel
 async function loadEventsCarousel() {
     const ApiService = window.ApiService;
     const res = await ApiService.getEvents();
 
+    // Cache events for filtering
+    if (res.success && res.data) {
+        window.allEvents = res.data.sort((a, b) => b.id_event - a.id_event); // Newest first
+    }
+
+    renderEventCards(window.allEvents);
+    setupEventFilters();
+}
+
+function setupEventFilters() {
+    const searchInput = document.getElementById('event-search');
+    const filterSelect = document.getElementById('event-filter-type');
+
+    if (!searchInput || !filterSelect) return;
+
+    const filterEvents = () => {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const filterType = filterSelect.value; // 'all' or specific type
+
+        const filtered = window.allEvents.filter(event => {
+            const matchesText = event.title.toLowerCase().includes(searchTerm) ||
+                (event.description && event.description.toLowerCase().includes(searchTerm));
+            const matchesType = filterType === 'all' || event.event_type === filterType;
+
+            return matchesText && matchesType;
+        });
+
+        renderEventCards(filtered);
+    };
+
+    searchInput.addEventListener('input', filterEvents);
+    filterSelect.addEventListener('change', filterEvents);
+}
+
+function renderEventCards(eventsList) {
     const wrapper = document.getElementById('events-carousel-wrapper');
     const container = wrapper.closest('.events-swiper');
 
-    if (!res.success || !res.data || res.data.length === 0) {
+    // Destroy existing swiper if it exists to avoid conflicts
+    if (window.eventsSwiperInstance) {
+        window.eventsSwiperInstance.destroy(true, true);
+        window.eventsSwiperInstance = null;
+    }
+
+    if (!eventsList || eventsList.length === 0) {
         wrapper.innerHTML = `
             <div class="swiper-slide no-events-slide" style="display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:300px; width:100%; cursor:default;">
                 <div style="background:rgba(255,255,255,0.05); padding:30px; border-radius:50%; margin-bottom:20px;">
-                    <i class="bi bi-calendar2-range" style="font-size: 2.5rem; color: var(--naranja-neon, #e67e22);"></i>
+                    <i class="bi bi-calendar-x" style="font-size: 2.5rem; color: var(--humo-gris, #888);"></i>
                 </div>
-                <h4 style="color:white; margin-bottom:10px; font-weight:600;">Sin Eventos Programados</h4>
+                <h4 style="color:white; margin-bottom:10px; font-weight:600;">No se encontraron eventos</h4>
                 <p style="color:#888; text-align:center; max-width:300px;">
-                    Actualmente no tenemos eventos públicos activos. <br>¡Síguenos para enterarte de los próximos!
+                    Intenta ajustar tus filtros de búsqueda.
                 </p>
             </div>
         `;
 
-        // Hide navigation controls if no events
+        // Setup a dummy swiper just to hold the layout if needed, or just hide controls
         if (container) {
             container.querySelectorAll('.swiper-button-next, .swiper-button-prev, .swiper-pagination').forEach(el => el.style.display = 'none');
         }
         return;
     }
 
-    // Sort by ID DESC (Newest first) and Limit to 7
-    const latestEvents = res.data
-        .sort((a, b) => b.id_event - a.id_event)
-        .slice(0, 7);
+    // Limit to 7 if showing all, otherwise show all matches
+    // (Optional: remove limit if filtering? Let's keep it for 'all' but maybe relaxing it is better for UX filtering)
+    // Let's show all filtered results.
+    const displayEvents = eventsList;
 
-    // Generate event cards using PROGRAM CARD STYLES
-    wrapper.innerHTML = latestEvents.map(event => `
+    // Generate event cards
+    wrapper.innerHTML = displayEvents.map(event => `
         <div class="swiper-slide">
             <div class="program-card event-card-styled" data-event-id="${event.id_event}" style="background-image: url('${event.image_url || 'images/hero-banner.jpg'}');">
                 <div class="program-overlay"></div>
@@ -55,22 +101,22 @@ async function loadEventsCarousel() {
         </div>
     `).join('');
 
-    // Ensure controls are visible if they were hidden
+    // Ensure controls are visible
     if (container) {
-        container.querySelectorAll('.swiper-button-next, .swiper-button-prev, .swiper-pagination').forEach(el => el.style.display = 'flex'); // Or whatever initial display was, usually flex or block for swiper buttons but swiper handles it mostly via css classes. Resetting style.display might be enough.
+        container.querySelectorAll('.swiper-button-next, .swiper-button-prev, .swiper-pagination').forEach(el => el.style.display = 'flex');
         container.querySelectorAll('.swiper-button-next, .swiper-button-prev').forEach(el => el.style.removeProperty('display'));
         container.querySelector('.swiper-pagination').style.removeProperty('display');
     }
 
-    // Initialize Swiper with Navigation & Pagination
-    new Swiper('.events-swiper', {
+    // Initialize Swiper
+    window.eventsSwiperInstance = new Swiper('.events-swiper', {
         effect: 'slide',
         grabCursor: true,
-        centeredSlides: false,
+        centeredSlides: false, // Changed to false to align left typically, or keep centered if preferred design
         spaceBetween: 20,
         slidesPerView: 1,
-
-        loop: true,
+        initialSlide: 0,
+        loop: eventsList.length > 3, // Only loop if enough items
         speed: 600,
 
         navigation: {

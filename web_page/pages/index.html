@@ -47,6 +47,23 @@
                 </p>
             </div>
 
+            <!-- Search & Filters (New) -->
+            <div class="events-filters-container">
+                <div class="events-search-wrapper">
+                    <input type="text" id="event-search" class="events-search-input" placeholder="Buscar evento...">
+                    <i class="bi bi-search events-search-icon"></i>
+                </div>
+
+                <select id="event-filter-type" class="events-filter-select">
+                    <option value="all">Todos los Eventos</option>
+                    <option value="concierto">Conciertos</option>
+                    <option value="recital">Recitales</option>
+                    <option value="taller">Talleres</option>
+                    <option value="masterclass">Masterclass</option>
+                    <option value="presentacion">Presentaciones</option>
+                </select>
+            </div>
+
             <!-- Swiper Carousel -->
             <div class="swiper events-swiper">
                 <div class="swiper-wrapper" id="events-carousel-wrapper">

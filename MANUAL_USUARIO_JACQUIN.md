@@ -31,8 +31,9 @@ Tú haces que todo funcione como una sinfonía perfecta. Tienes el control total
 *   **Nosotros y Misión:** Actualiza la visión, misión y valores de la academia directamente desde el panel para que siempre reflejen nuestra esencia.
 *   **Programas:** Gestiona la oferta académica (Percusión, Senior's, Psicomúsica, etc.).
 
-### Gestión de Usuarios
-*   **Inscripciones:** Revisa quién quiere entrar a la academia, aprueba sus solicitudes y asígnales un profesor y horario.
+### Gestión de Usuarios e Inscripciones
+*   **Inscripciones:** Revisa quién quiere entrar a la academia, aprueba sus solicitudes y asígnales uno o varios horarios y un profesor. El sistema ahora permite **asignación múltiple** para cubrir teoría, práctica o jornadas especiales.
+*   **Gestión de Cursos:** Desde el panel académico, puedes editar el nombre, la descripción y el precio de cada programa musical en tiempo real.
 *   **Usuarios:** Crea nuevos perfiles (estudiantes o profes) y gestiona los permisos de cada uno.
 *   **Inventario:** Mantén el control de los instrumentos y equipos de la academia. Si algo falta o sobra, regístralo aquí.
 

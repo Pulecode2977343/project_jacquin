@@ -40,8 +40,8 @@ Si quieres tenerlo en tu computadora para probar o desarrollar, sigue este paso 
 
 ### 📂 Jacquin API (Servicios)
 *   **`/config`**: La llave del sistema. Aquí se configura la base de datos y el correo.
-*   **`/helpers`**: Herramientas rápidas para validar datos o enviar mails.
-*   **`admin_*.php`**: Scripts que solo usa el administrador para crear o borrar cosas.
+*   **`/helpers`**: Herramientas rápidas para validar datos, enviar mails y **seguridad de acceso (`auth_helper.php`)**.
+*   **`admin_*.php`**: Scripts protegidos que solo usa el administrador para gestionar la academia.
 
 ---
 
@@ -54,7 +54,7 @@ Cuando hay un concierto nuevo, el administrador va al panel y sube la informaci�
 Los alumnos pueden registrarse y pedir clases. El sistema valida sus datos y, si el administrador lo aprueba, se le asigna un horario y un profesor. Todo queda registrado para que nadie se pierda una nota.
 
 ### Seguridad 🔒
-Usamos validación de sesiones y filtros de seguridad en la API para que los datos de los alumnos estén siempre protegidos. Las contraseñas se guardan de forma encriptada.
+El sistema implementa un **Helper de Autenticación (`auth_helper.php`)** que valida en cada petición administrativa que el usuario tenga una sesión activa y el rol de Administrador (`id_rol = 1`). Las contraseñas se almacenan mediante hashes seguros y el acceso al panel está restringido tanto en el Frontend como en el Backend.
 
 ---
 

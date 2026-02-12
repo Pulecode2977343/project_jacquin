@@ -19,6 +19,8 @@ Documentation&BkUp's/
 fonts/
 components/
 .agent/
+agent/
+
 
 # Excluded non-essential root files
 CAMBIOS_PAPEL_RECICLADO.md

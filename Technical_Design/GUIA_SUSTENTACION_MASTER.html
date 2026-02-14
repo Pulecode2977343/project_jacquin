@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustentación Master - Academia Jacquin</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Lancelot&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --azul-jacquin: #223F61;
+            --azul-glass: rgba(34, 63, 97, 0.7);
+            --naranja-acento: #E78C3B;
+            --blanco-neutro: #f5f5f5;
+            --gris-humo: #CDCDCD;
+            --font-principal: 'Poppins', sans-serif;
+            --font-decorativa: 'Lancelot', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-principal);
+            background: linear-gradient(135deg, #0a0f1d 0%, #223F61 100%);
+            color: var(--blanco-neutro);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        header {
+            height: 45vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: url('https://images.unsplash.com/photo-1514119412350-e174d90d280e?q=80&w=2070&auto=format&fit=crop') center/cover;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(10, 15, 29, 0.9), rgba(34, 63, 97, 0.7));
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        header h1 {
+            font-family: var(--font-decorativa);
+            font-size: 4.5rem;
+            color: var(--naranja-acento);
+            text-shadow: 0 0 30px rgba(231, 140, 59, 0.5);
+        }
+
+        header .subtitle {
+            font-size: 1.4rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: var(--gris-humo);
+            margin-top: -10px;
+        }
+
+        /* --- Container Layout --- */
+        .container {
+            max-width: 1300px;
+            margin: -60px auto 50px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                margin-top: 20px;
+            }
+
+            aside {
+                position: relative !important;
+                top: 0 !important;
+            }
+        }
+
+        /* --- Navigation Sidebar --- */
+        aside {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            background: var(--azul-glass);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        aside h3 {
+            font-family: var(--font-decorativa);
+            font-size: 1.8rem;
+            color: var(--naranja-acento);
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(231, 140, 59, 0.3);
+            text-align: center;
+        }
+
+        aside ul {
+            list-style: none;
+        }
+
+        aside li {
+            margin-bottom: 1.2rem;
+        }
+
+        aside a {
+            color: var(--blanco-neutro);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 0.95rem;
+        }
+
+        aside a:hover {
+            color: var(--naranja-acento);
+            transform: translateX(10px) scale(1.05);
+        }
+
+        /* --- Content Sections --- */
+        main section {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(25px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4rem;
+            margin-bottom: 40px;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-family: var(--font-decorativa);
+            font-size: 3rem;
+            color: var(--naranja-acento);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        h3 {
+            margin-top: 2.5rem;
+            margin-bottom: 1.2rem;
+            color: #93B6EE;
+            font-size: 1.5rem;
+        }
+
+        /* --- Requirements & Methodology --- */
+        .grid-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 2rem 0;
+        }
+
+        .item-card {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 2rem;
+            border-radius: 20px;
+            border-top: 3px solid var(--naranja-acento);
+            transition: 0.3s;
+        }
+
+        .item-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+        }
+
+        .tag {
+            background: rgba(231, 140, 59, 0.2);
+            color: var(--naranja-acento);
+            padding: 2px 10px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* --- Tables --- */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .data-table th {
+            background: rgba(231, 140, 59, 0.1);
+            color: var(--naranja-acento);
+        }
+
+        /* --- Pitch Box --- */
+        .pitch-container {
+            border-left: 5px solid var(--naranja-acento);
+            background: rgba(231, 140, 59, 0.05);
+            padding: 3rem;
+            border-radius: 0 25px 25px 0;
+            font-style: italic;
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .pitch-container::before {
+            content: '“';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 5rem;
+            color: var(--naranja-acento);
+            opacity: 0.3;
+        }
+
+        /* --- Conclusion Steps --- */
+        .step {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-num {
+            min-width: 40px;
+            height: 40px;
+            background: var(--naranja-acento);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-content">
+            <h1>Manual Pro de Sustentación</h1>
+            <div class="subtitle">Especialidad en Análisis y Diseño de Software</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside>
+            <h3>Ficha Técnica</h3>
+            <ul>
+                <li><a href="#intro"><i class="bi bi-journal-text"></i> Metodología</a></li>
+                <li><a href="#req"><i class="bi bi-list-check"></i> Requerimientos</a></li>
+                <li><a href="#logic"><i class="bi bi-gear-wide-connected"></i> Lógica Interna</a></li>
+                <li><a href="#engine"><i class="bi bi-braces"></i> Motor de API</a></li>
+                <li><a href="#security"><i class="bi bi-shield-check"></i> Seguridad (QA)</a></li>
+                <li><a href="#wrap"><i class="bi bi-flag-fill"></i> Conclusiones</a></li>
+            </ul>
+        </aside>
+
+        <main>
+            <section id="intro">
+                <h2><i class="bi bi-journal-text"></i> Metodología y Pitch</h2>
+                <p>Usa este discurso para posicionarte como el experto que diseñó la solución.</p>
+                <div class="pitch-container">
+                    "Jurados, presento la plataforma <strong>Academia Musical JACQUIN</strong>. Desarrollada bajo un
+                    modelo desacoplado, este proyecto no solo resuelve la gestión operativa, sino que implementa un
+                    motor de reglas de negocio en el backend que garantiza la integridad académica, demostrando una
+                    madurez técnica lista para escalar a entornos empresariales."
+                </div>
+                <h3>Claves Metodológicas:</h3>
+                <div class="grid-box">
+                    <div class="item-card">
+                        <span class="tag">Análisis</span>
+                        <p>Levantamiento de requerimientos RF/RNF basado en las necesidades reales de una academia de
+                            música.</p>
+                    </div>
+                    <div class="item-card">
+                        <span class="tag">Arquitectura</span>
+                        <p>Diseño de API RESTful nativa, priorizando la independencia entre datos y presentación.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="req">
+                <h2><i class="bi bi-list-check"></i> Matriz de Requerimientos</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Funcionalidad Crítica</th>
+                            <th>Módulo Backend</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>RF-01</strong></td>
+                            <td>Autenticación Multi-Perfil</td>
+                            <td><code>login.php</code> / <code>auth_helper.php</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>RF-02</strong></td>
+                            <td>Control de Traslapos Horarios</td>
+                            <td><code>conflict_helper.php</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>RF-03</strong></td>
+                            <td>Gestión de Inventario (Pianos)</td>
+                            <td><code>admin_inventory_get.php</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>RF-05</strong></td>
+                            <td>CMS Multimedia Dinámico</td>
+                            <td><code>admin_create_event.php</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="logic">
+                <h2><i class="bi bi-gear-wide-connected"></i> Lógica de Negocio</h2>
+                <p>El punto más fuerte para defender con ingenieros jurados.</p>
+                <div class="item-card">
+                    <h3>Motor de Validación Cross-Schedule</h3>
+                    <p>Cuando un estudiante intenta inscribirse, el backend ejecuta una consulta de comparación
+                        temporal:</p>
+                    <code
+                        style="display:block; padding:15px; background:rgba(0,0,0,0.4); margin-top:10px; border-radius:10px;">
+                        Intersect = (New_Start < Exist_End) AND (New_End > Exist_Start)
+                    </code>
+                    <p style="margin-top:10px; font-size:0.85rem">Esto se ejecuta en
+                        <code>helpers/conflict_helper.php</code>, garantizando 0 errores en la agenda del estudiante.
+                    </p>
+                </div>
+            </section>
+
+            <section id="engine">
+                <h2><i class="bi bi-braces"></i> Motor de API y Datos</h2>
+                <p>¿Por qué <strong>Decoupled</strong> y no un Monolito clásico?</p>
+                <div class="grid-box">
+                    <div class="item-card">
+                        <h3>Independencia Frontend</h3>
+                        <p>El HTML/JS solo consume JSON. Podemos rediseñar toda la web sin tocar la base de datos.</p>
+                    </div>
+                    <div class="item-card">
+                        <h3>Persistencia Segura</h3>
+                        <p>Uso de <strong>PDO</strong> con Prepared Statements. Protección nativa contra SQL Injection.
+                        </p>
+                    </div>
+                    <div class="item-card">
+                        <h3>Normalización 3NF</h3>
+                        <p>Estructura relacional optimizada para consultas de alto rendimiento.</p>
+                    </div>
+                    <div class="item-card"
+                        style="border-top-color: #3b82f6; grid-column: 1 / -1; background: rgba(59, 130, 246, 0.1);">
+                        <h3 style="color: #3b82f6;"><i class="bi bi-award"></i> Defensa Senior: Estructura de Endpoints
+                        </h3>
+                        <p><i>"La arquitectura de la API se diseñó bajo un modelo de <strong>Endpoints Ligeros</strong>.
+                                Cada archivo en la raíz actúa como un controlador independiente, lo que reduce la carga
+                                de memoria al no tener que instanciar enrutadores complejos o controladores pesados,
+                                optimizando la respuesta del servidor en entornos de hosting compartidos."</i></p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="security">
+                <h2><i class="bi bi-shield-check"></i> Seguridad y Evaluación</h2>
+                <div class="grid-box">
+                    <div class="item-card" style="border-top-color: #2ecc71;">
+                        <h3>Validación de Roles</h3>
+                        <p>Middleware en PHP que detiene el script antes de que el pirata informático pueda hacer nada
+                            si no es Admin.</p>
+                    </div>
+                    <div class="item-card" style="border-top-color: #2ecc71;">
+                        <h3>Integridad de Archivos</h3>
+                        <p>Verificación de tipo MIME en el servidor para evitar cargas de archivos ejecutables
+                            maliciosos.</p>
+                    </div>
+                    <div class="item-card"
+                        style="grid-column: 1 / -1; border-top-color: #f1c40f; background: rgba(241, 196, 15, 0.05);">
+                        <h3 style="color: #f1c40f;"><i class="bi bi-folder-symlink"></i> Resumen de Modularidad (API)
+                        </h3>
+                        <p><i>"La estructura de <strong>jacquin_api</strong> sigue un principio de Modularidad.
+                                Centralizamos la configuración y las herramientas de apoyo en <code>config</code> y
+                                <code>helpers</code>, protegemos la entrada de datos con <code>middleware</code>, y
+                                gestionamos las dependencias profesionales a través de un estándar de la industria como
+                                <strong>Composer</strong>."</i></p>
+                    </div>
+                    <div class="item-card"
+                        style="grid-column: 1 / -1; border-top-color: #9b59b6; background: rgba(155, 89, 182, 0.05); font-size: 0.9rem;">
+                        <h3 style="color: #9b59b6;"><i class="bi bi-diagram-3-fill"></i> Desglose de Arquitectura API
+                        </h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px;">
+                            <div>
+                                <p><strong>1. <code>config/</code></strong>: Conectividad y credenciales PDO (db.php).
+                                </p>
+                                <p><strong>2. <code>database/</code></strong>: Planos SQL para migraciones y
+                                    restauración.</p>
+                                <p><strong>3. <code>helpers/</code></strong>: Lógica reutilizable (Conflictos, Mail,
+                                    Auth).</p>
+                            </div>
+                            <div>
+                                <p><strong>4. <code>middleware/</code></strong>: Capa de interceptación y validación de
+                                    sesiones.</p>
+                                <p><strong>5. <code>public/</code></strong>: Almacén de activos multimedia y de usuario.
+                                </p>
+                                <p><strong>6. <code>vendor/</code></strong>: Dependencias profesionales vía Composer.
+                                </p>
+                            </div>
+                        </div>
+                        <p style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                            <strong>7. Raíz (Endpoints)</strong>: Scripts especializados que actúan como controladores
+                            únicos para máxima velocidad.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="wrap">
+                <h2><i class="bi bi-flag-fill"></i> Conclusiones del Proyecto</h2>
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div>
+                        <strong>Madurez Tecnológica:</strong> El sistema está preparado para despliegue en producción
+                        con una base de código limpia y sin dependencias externas pesadas.
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div>
+                        <strong>Impacto Administrativo:</strong> Reducción del error humano en la asignación horaria del
+                        100% mediante lógica algorítmica.
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div>
+                        <strong>Visión a Futuro:</strong> Arquitectura lista para API First, permitiendo el despliegue
+                        de Apps móviles en Android/iOS consumiendo el mismo backend.
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer style="text-align: center; padding: 3rem; opacity: 0.6; font-size: 0.8rem;">
+        Desarrollado para la Sustentación Final de Análisis y Diseño de Software - Jacquin © 2026.
+    </footer>
+
+</body>
+
+</html>

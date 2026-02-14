@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Estudio Didáctico - Academia Jacquin</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Lancelot&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --bg-body: #0a0f1d;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --primary: #38bdf8;
+            --secondary: #E78C3B;
+            --accent: #c084fc;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --font-main: 'Outfit', sans-serif;
+            --font-title: 'Lancelot', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(34, 63, 97, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(231, 140, 59, 0.1) 0px, transparent 50%);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 5rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: var(--font-title);
+            font-size: 4.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(231, 140, 59, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* --- Secciones Didácticas --- */
+        .section-box {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+        }
+
+        .section-box:hover {
+            border-color: rgba(56, 189, 248, 0.3);
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            font-family: var(--font-title);
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h2 i {
+            color: var(--secondary);
+        }
+
+        .concept-card {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .concept-card h3 {
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+        }
+
+        .definition {
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        /* --- Listas Desglosadas --- */
+        .folder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 2rem;
+        }
+
+        .folder-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .folder-card:hover {
+            background: rgba(56, 189, 248, 0.05);
+            border-color: var(--primary);
+        }
+
+        .folder-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .folder-card strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* --- Flujos --- */
+        .step-list {
+            list-style: none;
+            counter-reset: my-counter;
+        }
+
+        .step-item {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 2rem;
+        }
+
+        .step-item::before {
+            counter-increment: my-counter;
+            content: counter(my-counter);
+            position: absolute;
+            left: 0;
+            top: -5px;
+            width: 40px;
+            height: 40px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #000;
+            box-shadow: 0 0 15px rgba(231, 140, 59, 0.4);
+        }
+
+        /* --- Callouts --- */
+        .callout {
+            background: linear-gradient(90deg, rgba(231, 140, 59, 0.1) 0%, transparent 100%);
+            border-left: 4px solid var(--secondary);
+            padding: 2rem;
+            border-radius: 0 20px 20px 0;
+            margin-top: 2rem;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem;
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+
+            .section-box {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Manual de Estudio Jacquin</h1>
+            <p class="subtitle">Guía de Ingeniería Desglosada (Sin Jerga)</p>
+        </header>
+
+        <!-- 1. EL CONCEPTO -->
+        <div class="section-box">
+            <h2><i class="bi bi-lightbulb-fill"></i> 1. El Concepto Principal</h2>
+            <div class="concept-card">
+                <span class="definition">¿Qué hace el sistema?</span>
+                <h3>La Oficina Virtual Académica</h3>
+                <p>Es una plataforma que ayuda a la academia de música a funcionar sin caos. Imagina un recepcionista,
+                    un bibliotecario y un vigilante que trabajan 24/7 para que los horarios no se crucen y nadie entre
+                    donde no debe.</p>
+            </div>
+        </div>
+
+        <!-- 2. LAS TRES PIEZAS -->
+        <div class="section-box">
+            <h2><i class="bi bi-puzzle-fill"></i> 2. Las Tres Piezas Clave</h2>
+            <p style="color: var(--text-dim); margin-bottom: 2rem;">Todo el software se divide en tres partes que
+                trabajan en equipo:</p>
+
+            <div class="folder-grid">
+                <div class="folder-card">
+                    <i class="bi bi-window-sidebar"></i>
+                    <strong>La Cara (Frontend)</strong>
+                    <p>Lo que el usuario ve: botones, colores y fotos. Es la carpeta <code>web_page</code>.</p>
+                </div>
+                <div class="folder-card">
+                    <i class="bi bi-cpu"></i>
+                    <strong>El Cerebro (API)</strong>
+                    <p>La parte que piensa, calcula horarios y decide. Es la carpeta <code>jacquin_api</code>.</p>
+                </div>
+                <div class="folder-card">
+                    <i class="bi bi-database"></i>
+                    <strong>El Archivo (Base de Datos)</strong>
+                    <p>El libro gigante donde se anotan nombres, notas y horarios para siempre.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. EL CEREBRO DESGLOSADO -->
+        <div class="section-box">
+            <h2><i class="bi bi-folder-symlink-fill"></i> 3. ¿Qué hay dentro del Cerebro?</h2>
+            <p style="color: var(--text-dim);">Desarmamos la carpeta de la API pieza por pieza:</p>
+
+            <div class="concept-card" style="margin-top: 2rem;">
+                <span class="definition">Capa de Enchufe</span>
+                <h3>Configuración (config/)</h3>
+                <p>Es el archivo que le dice al sistema la dirección y la contraseña para poder entrar al "Archivo"
+                    (Base de Datos). Sin esto, el cerebro no recuerda nada.</p>
+            </div>
+
+            <div class="concept-card">
+                <span class="definition">Capa de Guardia</span>
+                <h3>Seguridad (middleware/)</h3>
+                <p>Es el vigilante que revisa el carnet. Si alguien intenta entrar a un área protegida (como las notas)
+                    sin permiso, este vigilante lo saca antes de que toque nada.</p>
+            </div>
+
+            <div class="concept-card">
+                <span class="definition">Capa de Asesores</span>
+                <h3>Herramientas (helpers/)</h3>
+                <p>Son expertos que el cerebro llama para tareas difíciles:
+                <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-dim);">
+                    <li><strong>Asesor de Horarios:</strong> El genio matemático que asegura que un alumno no esté en
+                        dos clases a la vez.</li>
+                    <li><strong>Asesor de Mensajes:</strong> Se encarga de enviar correos automáticos.</li>
+                </ul>
+                </p>
+            </div>
+
+            <div class="folder-grid">
+                <div class="folder-card">
+                    <i class="bi bi-people-fill"></i>
+                    <strong>Bodega Pública (public/)</strong>
+                    <p>Donde se guardan las fotos de perfil y las imágenes que todos ven en la web.</p>
+                </div>
+                <div class="folder-card">
+                    <i class="bi bi-gear-fill"></i>
+                    <strong>Herramientas Externas (vendor/)</strong>
+                    <p>Herramientas ya hechas por otros expertos (como el sistema para enviar emails). No se tocan.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. LOS PROCESOS -->
+        <div class="section-box">
+            <h2><i class="bi bi-arrow-repeat"></i> 4. ¿Cómo fluye la información?</h2>
+            <p style="margin-bottom: 2rem;">Ejemplo: Cuando un alumno se inscribe.</p>
+
+            <ul class="step-list">
+                <li class="step-item">
+                    <strong>Petición:</strong> El alumno hace clic en "Inscribirme" desde la web.
+                </li>
+                <li class="step-item">
+                    <strong>Verificación:</strong> El cerebro le pregunta al Asesor matemático por choques de horarios.
+                </li>
+                <li class="step-item">
+                    <strong>Respuesta:</strong> Si el horario está libre, se da permiso. Si está ocupado, se envía un
+                    aviso.
+                </li>
+                <li class="step-item">
+                    <strong>Guardado:</strong> Si todo está bien, se anota el nombre en el "Archivo" de forma
+                    permanente.
+                </li>
+            </ul>
+
+            <div class="callout">
+                <strong>Nota sobre Seguridad:</strong> Las contraseñas se guardan como "Huellas Digitales" (Hashes).
+                Nadie puede leer tu contraseña real, ni siquiera el dueño del sistema.
+            </div>
+        </div>
+
+        <!-- 5. CONCLUSIÓN -->
+        <div class="section-box" style="border-left: 10px solid var(--secondary);">
+            <h2><i class="bi bi-award"></i> 5. Resumen para la Defensa</h2>
+            <p>Este sistema fue diseñado para separar la **estética** (el diseño moderno) de la **lógica** (los cálculos
+                y datos). Esto lo hace seguro, rápido y fácil de mejorar en el futuro. Es una plataforma profesional
+                lista para la vida real.</p>
+        </div>
+
+        <footer>
+            Manual Didáctico por Antigravity AI - Academia Musical Jacquin © 2026
+        </footer>
+    </div>
+
+</body>
+
+</html>

@@ -20,6 +20,7 @@ fonts/
 components/
 .agent/
 agent/
+jam_apk/
 
 
 # Excluded non-essential root files

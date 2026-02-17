@@ -79,7 +79,7 @@ window.currentEvents = [];
 
 async function loadAdminEvents() {
     const list = document.getElementById('adminEventsList');
-    const baseUrl = 'http://127.0.0.1:8080/jacquin_api/public/';
+    const baseUrl = ApiService.BASE_URL;
 
     try {
         const response = await fetch(`${baseUrl}get_events.php`);
@@ -187,7 +187,7 @@ async function saveEvent(formData) {
     document.getElementById('btnText').innerText = "Procesando...";
 
     try {
-        const baseUrl = 'http://127.0.0.1:8080/jacquin_api/public/';
+        const baseUrl = ApiService.BASE_URL;
         const eventId = document.getElementById('event_id').value;
 
         // Switch between Create and Update endpoints
@@ -237,7 +237,7 @@ window.deleteEvent = async (id) => {
     if (!result.isConfirmed) return;
 
     try {
-        const baseUrl = 'http://127.0.0.1:8080/jacquin_api/public/';
+        const baseUrl = ApiService.BASE_URL;
         const response = await fetch(`${baseUrl}admin_delete_event.php`, {
             method: 'POST',
             body: JSON.stringify({ id: id })

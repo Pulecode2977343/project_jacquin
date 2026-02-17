@@ -311,7 +311,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                     // Update Local Session & UI
                     sessionUser.avatar_url = res.data; // URL
                     ApiService.saveSession(sessionUser);
-                    document.getElementById("dashboard-avatar").src = res.data + "?t=" + new Date().getTime();
+                    const avatarUrl = res.data.startsWith('http') ? res.data : (ApiService.BASE_URL + res.data);
+                    document.getElementById("dashboard-avatar").src = avatarUrl + "?t=" + new Date().getTime();
                 } else {
                     showToast("No pudimos actualizar la foto: " + res.message, "error");
                 }
@@ -548,7 +549,7 @@ window.showStudentScheduleClassmates = async function (scheduleId, courseName, t
                             ${students.map((s, i) => `
                                 <div style="display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:10px 15px; border-radius:10px; border:1px solid rgba(255,255,255,0.05);">
                                     <div style="width: 35px; height: 35px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                                        <img src="${s.avatar_url || 'assets/images/default_avatar.svg'}" style="width:100%; height:100%; object-fit:cover;">
+                                        <img src="${s.avatar_url ? (s.avatar_url.startsWith('http') ? s.avatar_url : ApiService.BASE_URL + s.avatar_url) : 'assets/images/default_avatar.svg'}" style="width:100%; height:100%; object-fit:cover;">
                                     </div>
                                     <div style="flex:1;">
                                         <div style="color:white; font-size:0.95rem; font-weight:600;">${s.full_name}</div>
@@ -719,7 +720,7 @@ window.showTeacherScheduleStudents = async function (scheduleId, courseName, tim
                                 <div style="display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:10px 15px; border-radius:10px; border:1px solid rgba(255,255,255,0.05);">
                                     <div style="color:var(--color-acento-azul); font-weight:700; width: 20px;">${i + 1}</div>
                                     <div style="width: 35px; height: 35px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                                        <img src="${s.avatar_url ? (s.avatar_url.startsWith('http') ? s.avatar_url : '../' + s.avatar_url) : '../assets/images/default_avatar.svg'}" style="width:100%; height:100%; object-fit:cover;">
+                                        <img src="${s.avatar_url ? (s.avatar_url.startsWith('http') ? s.avatar_url : ApiService.BASE_URL + s.avatar_url) : '../assets/images/default_avatar.svg'}" style="width:100%; height:100%; object-fit:cover;">
                                     </div>
                                     <div style="flex:1;">
                                         <div style="color:white; font-size:0.95rem; font-weight:600;">${s.full_name}</div>
@@ -1008,7 +1009,7 @@ async function loadUsers() {
 
         container.innerHTML = teachers.map(t => `
             <div class="card-glass" style="text-align:center;">
-                <img src="${t.avatar_url || 'assets/images/default_avatar.svg'}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
+                <img src="${t.avatar_url ? (t.avatar_url.startsWith('http') ? t.avatar_url : ApiService.BASE_URL + t.avatar_url) : 'assets/images/default_avatar.svg'}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
                 <h4 style="color:white; margin:0;">${t.full_name}</h4>
                 <p style="color:#aaa;">Docente</p>
             </div>

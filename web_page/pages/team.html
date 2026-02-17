@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J.A.M. | Nuestro Equipo</title>
-    
+
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/menu.css">
-    
+
     <style>
         .team-container {
-            padding: 120px 5% 50px; /* Espacio para el header fijo */
+            padding: 120px 5% 50px;
+            /* Espacio para el header fijo */
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -85,19 +87,23 @@
         }
     </style>
 
+    <script src="js/services/api.js?v=4.4" defer></script>
     <script src="js/app.js" defer></script>
-    <script src="js/team-loader.js" defer></script> </head>
+    <script src="js/team-loader.js" defer></script>
+</head>
+
 <body>
 
     <div id="header-container"></div>
 
     <main class="team-container">
         <h1 class="page-title">Equipo <span style="color: var(--azul-neon);">Docente</span></h1>
-        
+
         <div id="team-grid" class="team-grid">
             <p style="text-align:center; width:100%; color: gray;">Cargando datos...</p>
         </div>
     </main>
 
 </body>
+
 </html>

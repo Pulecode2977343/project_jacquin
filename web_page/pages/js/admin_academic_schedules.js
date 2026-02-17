@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = Object.fromEntries(formData);
 
             try {
-                const res = await fetch('/jacquin_api/create_course.php', {
+                const res = await fetch(`${ApiService.BASE_URL}create_course.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = Object.fromEntries(formData);
 
             try {
-                const res = await fetch('http://127.0.0.1:8080/jacquin_api/public/assign_schedule.php', {
+                const res = await fetch(`${ApiService.BASE_URL}assign_schedule.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -279,17 +279,17 @@ window.confirmTeacherChange = async function (courseId) {
 // ==========================================
 // PENDING REQUESTS LOGIC
 // ==========================================
-window.loadPendingRequests = async function() {
+window.loadPendingRequests = async function () {
     const list = document.getElementById('pendingRequestsList');
-    if(!list) return;
+    if (!list) return;
 
     list.innerHTML = '<div style="text-align:center; padding:10px;">Checking requests...</div>';
 
     try {
-        const response = await fetch('/jacquin_api/admin_get_schedule_requests.php');
+        const response = await fetch(`${ApiService.BASE_URL}admin_get_schedule_requests.php`);
         const result = await response.json();
 
-        if(result.success && result.data && result.data.length > 0) {
+        if (result.success && result.data && result.data.length > 0) {
             list.innerHTML = result.data.map(req => `
                 <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:10px; border-left:3px solid var(--color-acento-naranja); display:flex; justify-content:space-between; align-items:center;">
                     <div>
@@ -306,19 +306,19 @@ window.loadPendingRequests = async function() {
                 </div>
             `).join('');
         } else {
-             list.innerHTML = '<div style="text-align: center; color: #ccc; padding: 20px;">No hay solicitudes pendientes.</div>';
+            list.innerHTML = '<div style="text-align: center; color: #ccc; padding: 20px;">No hay solicitudes pendientes.</div>';
         }
-    } catch(e) {
+    } catch (e) {
         console.error(e);
         list.innerHTML = '<div style="color:#e74c3c; padding:10px;">Error cargando solicitudes</div>';
     }
 };
 
-window.handleRequest = async function(requestId, action) {
+window.handleRequest = async function (requestId, action) {
     const actionText = action === 'approve' ? 'Aprobar' : 'Rechazar';
-    
+
     // Create inputs for response
-    let htmlContent = action === 'approve' 
+    let htmlContent = action === 'approve'
         ? `<p>¿Seguro que deseas aprobar esta solicitud? Se creará el horario automáticamente.</p>`
         : `<p>¿Por qué rechazas esta solicitud?</p><textarea id="reject-reason" class="swal2-textarea" placeholder="Razón del rechazo..." style="width:100%;"></textarea>`;
 
@@ -331,19 +331,19 @@ window.handleRequest = async function(requestId, action) {
         cancelButtonText: 'Cancelar',
         confirmButtonColor: action === 'approve' ? '#2ecc71' : '#e74c3c',
         preConfirm: () => {
-            if(action === 'reject') {
+            if (action === 'reject') {
                 return document.getElementById('reject-reason').value || "Sin razón especificada.";
             }
             return "Solicitud aprobada.";
         }
     });
 
-    if(result.isConfirmed) {
+    if (result.isConfirmed) {
         const responseText = result.value;
         try {
-            const apiRes = await fetch('/jacquin_api/admin_handle_schedule_request.php', {
+            const apiRes = await fetch(`${ApiService.BASE_URL}admin_handle_schedule_request.php`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     request_id: requestId,
                     action: action,
@@ -351,15 +351,15 @@ window.handleRequest = async function(requestId, action) {
                 })
             });
             const apiResult = await apiRes.json();
-            
-            if(apiResult.success) {
+
+            if (apiResult.success) {
                 Swal.fire('Procesado', apiResult.message, 'success');
                 loadPendingRequests();
                 loadCourses(); // To refresh schedules counts
             } else {
                 Swal.fire('Error', apiResult.message, 'error');
             }
-        } catch(e) {
+        } catch (e) {
             Swal.fire('Error', 'Error de conexión', 'error');
         }
     }

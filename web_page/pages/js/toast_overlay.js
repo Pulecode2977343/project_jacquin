@@ -63,6 +63,9 @@
                 box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
                 font-family: inherit !important;
             }
+            .swal2-container {
+                z-index: 200000 !important; /* Ensure it's above everything (profile modal is 100000) */
+            }
         `;
         document.head.appendChild(style);
     }

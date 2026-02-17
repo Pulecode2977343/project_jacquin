@@ -214,7 +214,7 @@ window.openProfile = async function (userId, initialTab = 'info') {
                 <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--color-acento-azul); filter: blur(80px); opacity: 0.2; pointer-events: none;"></div>
                 <div style="display: flex; align-items: center; gap: 20px; position: relative; z-index: 1;">
                     <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 3px solid rgba(147, 182, 238, 0.3); background: rgba(0,0,0,0.3);" id="modal-avatar-container">
-                        <img src="${user.avatar_url || '../assets/images/default_avatar.svg'}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/default_avatar.svg'">
+                        <img src="${user.avatar_url ? (user.avatar_url.startsWith('http') ? user.avatar_url : ApiService.BASE_URL + user.avatar_url) : '../assets/images/default_avatar.svg'}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/default_avatar.svg'">
                     </div>
                     <div>
                         <h2 style="margin: 0; color: white; font-size: 1.6rem; font-weight: 600;">${user.full_name}</h2>
@@ -664,12 +664,12 @@ window.updateProfileFromModal = async function () {
     if (!fullName) return showToast("El nombre es requerido", "warning");
 
     try {
-        // We can use a direct fetch or ApiService if it exists
-        const response = await fetch('/jacquin_api/update_user_profile.php', {
+        // Use ApiService.BASE_URL instead of hardcoded path
+        const response = await fetch(`${ApiService.BASE_URL}update_profile.php`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                user_id: user.id_usuario,
+                id_usuario: user.id_usuario, // Changed from user_id to id_usuario to match api.js/update_profile.php
                 full_name: fullName,
                 n_phone: phone
             })
@@ -682,6 +682,7 @@ window.updateProfileFromModal = async function () {
             user.full_name = fullName;
             user.n_phone = phone;
             ApiService.saveSession(user);
+            window.closeProfileModal(); // Auto-close modal on success
             // Refresh UI if elements exist
             const nameEl = document.getElementById('dashboard-user-name') || document.getElementById('teacher-user-name');
             if (nameEl) nameEl.textContent = fullName;
@@ -689,7 +690,7 @@ window.updateProfileFromModal = async function () {
             showToast(result.message || "Error al actualizar", "error");
         }
     } catch (e) {
-        console.error(e);
+        console.error("Error updating profile:", e);
         showToast("Error de conexión al actualizar perfil", "error");
     }
 };

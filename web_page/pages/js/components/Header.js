@@ -1,3 +1,4 @@
+(function() { if (customElements.get('jam-header')) return; 
 class Header extends HTMLElement {
     constructor() {
         super();
@@ -245,3 +246,5 @@ class Header extends HTMLElement {
 
 customElements.define('jam-header', Header);
 
+
+})();

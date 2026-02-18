@@ -147,12 +147,54 @@
 
         <div class="log-entry resolved">
             <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span> <strong>ERR-003: Assets 404 (Avatars &
+                        Events)</strong>
+                </div>
+                <small>Build: 180220261055FIX</small>
+            </div>
+            <div class="log-content">
+                Se reportaron errores 404 en la carga de recursos (Avatares y Eventos).
+                <strong>Causa:</strong> Los archivos estaban en `web_page/pages/uploads` en lugar de
+                `jacquin_api/public/uploads`.
+                <strong>Solución:</strong> Se movieron los directorios `avatars` y `events` a la ruta correcta de la
+                API.
+            </div>
+        </div>
+
+        <div class="log-entry resolved">
+            <div class="log-header">
                 <div><span class="badge resolved">RESUELTO</span> <strong>ERR-002: Avatar Paths</strong></div>
                 <small>17 Feb 2026</small>
             </div>
             <div class="log-content">
                 Los avatares se rompían por rutas relativas incorrectas. Se implementó `ApiService.BASE_URL` en
                 `admin_users.js` para forzar rutas absolutas.
+            </div>
+        </div>
+
+        <div class="log-entry resolved">
+            <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span> <strong>SEC-001: Archivos Debug en Producción</strong>
+                </div>
+                <small>Build: 180220261050AUDIT</small>
+            </div>
+            <div class="log-content">
+                Se detectaron `debug_check.php` y `add_clarinete.php` en la raíz. Estos scripts exponen rutas completas
+                (`__DIR__`) y lógica de base de datos sin autenticación.
+                <strong>Acción:</strong> Eliminados durante auditoría.
+            </div>
+        </div>
+
+        <div class="log-entry resolved">
+            <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span> <strong>SEC-002: Enumeración de Usuarios</strong>
+                </div>
+                <small>Build: 180220261050AUDIT</small>
+            </div>
+            <div class="log-content">
+                `login.php` retornaba mensajes específicos ("Correo no encontrado"). Esto permitía a atacantes verificar
+                usuarios.
+                <strong>Acción:</strong> Se unificaron los mensajes a "Credenciales inválidas" o similar genérico.
             </div>
         </div>
 

@@ -198,6 +198,18 @@ window.openProfile = async function (userId, initialTab = 'info') {
         };
     }, 100);
 
+    // Calculate correct avatar path
+    let avatarSrc = '../assets/images/default_avatar.svg';
+    if (user.avatar_url && user.avatar_url.trim() !== '') {
+        if (user.avatar_url.startsWith('http')) {
+            avatarSrc = user.avatar_url;
+        } else {
+            // Remove 'uploads/avatars/' or 'public/' locally to just get filename
+            const filename = user.avatar_url.replace(/^(uploads\/avatars\/|public\/uploads\/avatars\/|public\/)/, '');
+            avatarSrc = ApiService.BASE_URL + 'public/uploads/avatars/' + filename;
+        }
+    }
+
     modal.innerHTML = `
         <div class="modal-card" style="
             width: 95%; max-width: 850px; padding: 0; overflow: hidden;
@@ -214,7 +226,7 @@ window.openProfile = async function (userId, initialTab = 'info') {
                 <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--color-acento-azul); filter: blur(80px); opacity: 0.2; pointer-events: none;"></div>
                 <div style="display: flex; align-items: center; gap: 20px; position: relative; z-index: 1;">
                     <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 3px solid rgba(147, 182, 238, 0.3); background: rgba(0,0,0,0.3);" id="modal-avatar-container">
-                        <img src="${user.avatar_url ? (user.avatar_url.startsWith('http') ? user.avatar_url : user.avatar_url) : '../assets/images/default_avatar.svg'}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/default_avatar.svg'">
+                        <img src="${avatarSrc}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/default_avatar.svg'">
                     </div>
                     <div>
                         <h2 style="margin: 0; color: white; font-size: 1.6rem; font-weight: 600;">${user.full_name}</h2>

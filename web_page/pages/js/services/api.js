@@ -40,9 +40,32 @@ var API_CONFIG = {
 };
 
 var ApiService = {
-    // Proxy for BASE_URL configuration
     get BASE_URL() {
         return API_CONFIG.BASE_URL;
+    },
+    /**
+     * Centralized response handler to detect 401 Unauthorized errors
+     * and redirect to login automatically.
+     */
+    async handleResponse(response) {
+        if (response.status === 401) {
+            console.warn("[ApiService] Sesión expirada o no autorizada (401).");
+            localStorage.removeItem("jam_user_session");
+            // Only redirect if we are not already in login/index
+            const path = window.location.pathname;
+            if (!path.includes('login.html') && !path.includes('index.html')) {
+                window.location.href = "login.html?error=session_expired";
+            }
+            const err = await response.json().catch(() => ({ message: "Sesión expirada" }));
+            return { success: false, message: err.message || "Sesión expirada", unauthorized: true };
+        }
+
+        try {
+            return await response.json();
+        } catch (e) {
+            const text = await response.text();
+            return { success: false, message: "Error parseando JSON del servidor: " + text.substring(0, 50) };
+        }
     },
 
     /**
@@ -153,18 +176,7 @@ var ApiService = {
                 credentials: 'include'
             });
 
-            const text = await response.text();
-
-            if (!response.ok) {
-                return { success: false, message: `HTTP Error ${response.status}: ${text.substring(0, 50)}...` };
-            }
-
-            try {
-                return JSON.parse(text);
-            } catch (jsonError) {
-                console.error("JSON Parse Error:", text);
-                return { success: false, message: `Respuesta inválida (No JSON): ${text.substring(0, 50)}...` };
-            }
+            return await this.handleResponse(response);
         } catch (error) {
             console.error("Networking Error:", error);
             return { success: false, message: `Error de red: ${error.message}` };
@@ -178,7 +190,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error cargando docentes." };
         }
@@ -262,7 +274,7 @@ var ApiService = {
                 body: JSON.stringify(payload),
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             console.error("Error enrolling student:", error);
             return { success: false, message: "Error de conexión" };
@@ -275,7 +287,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error obteniendo solicitudes." };
         }
@@ -289,7 +301,7 @@ var ApiService = {
                 body: JSON.stringify({ id_enrollment: idEnrollment, action }),
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error procesando solicitud." };
         }
@@ -302,7 +314,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 body: JSON.stringify({ student_id: studentId, course_id: courseId, schedule_id: scheduleId })
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error solicitando inscripción." };
         }
@@ -316,7 +328,7 @@ var ApiService = {
                 body: JSON.stringify({ id_enrollment: enrollmentId }),
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error al eliminar inscripción." };
         }
@@ -338,7 +350,7 @@ var ApiService = {
                 body: JSON.stringify(payload),
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error asignando docente." };
         }
@@ -352,7 +364,7 @@ var ApiService = {
                 body: JSON.stringify({ action: 'remove_single', schedule_id: scheduleId, teacher_id: teacherId }),
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error desasignando docente." };
         }
@@ -365,7 +377,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 body: JSON.stringify({ teacher_id: teacherId, course_id: courseId })
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error desasignando docente." };
         }
@@ -378,7 +390,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 body: JSON.stringify({ id_usuario: parseInt(id_usuario), id_rol: parseInt(id_rol) })
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error actualizando rol." };
         }
@@ -391,7 +403,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 body: JSON.stringify({ id_usuario: parseInt(id_usuario) })
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error eliminando usuario." };
         }
@@ -404,7 +416,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 body: JSON.stringify({ id_usuario, full_name, n_phone })
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error actualizando perfil." };
         }
@@ -417,7 +429,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 body: JSON.stringify({ id_usuario, currentPassword, newPassword })
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error actualizando contraseña." };
         }
@@ -428,7 +440,7 @@ var ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_inventory_get.php`, {
                 headers: API_CONFIG.HEADERS
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return [];
         }
@@ -441,7 +453,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 body: JSON.stringify(itemData)
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error de conexión." };
         }
@@ -454,7 +466,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 body: JSON.stringify({ id_item })
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error eliminando ítem." };
         }
@@ -497,7 +509,7 @@ var ApiService = {
                 body: JSON.stringify({ course_id: courseId, teacher_id: teacherId }),
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             console.error("Error updating course teacher:", error);
             return { success: false, message: "Error de conexión" };
@@ -511,7 +523,7 @@ var ApiService = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData)
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             console.error("Error updating user:", error);
             return { success: false, message: "Error de conexión" };
@@ -526,7 +538,7 @@ var ApiService = {
                 body: JSON.stringify({ id: courseId }),
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             console.error("Error deleting course:", error);
             return { success: false, message: "Error de conexión" };
@@ -539,7 +551,7 @@ var ApiService = {
                 headers: API_CONFIG.HEADERS,
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error obteniendo detalles del curso." };
         }
@@ -553,7 +565,7 @@ var ApiService = {
                 body: JSON.stringify(scheduleData),
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error actualizando horario." };
         }
@@ -567,9 +579,23 @@ var ApiService = {
                 body: JSON.stringify(courseData),
                 credentials: 'include'
             });
-            return await response.json();
+            return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error de conexión." };
+        }
+    },
+
+    async createCourse(courseData) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}create_course.php`, {
+                method: 'POST',
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify(courseData),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error al crear curso." };
         }
     },
 

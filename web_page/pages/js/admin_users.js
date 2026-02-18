@@ -142,11 +142,11 @@ function renderUsers(users) {
         if (u.avatar_url && u.avatar_url.trim() !== '') {
             if (u.avatar_url.startsWith('http')) {
                 avatarSrc = u.avatar_url;
-            } else if (u.avatar_url.includes('uploads/avatars/')) {
-                avatarSrc = u.avatar_url;
             } else {
-                // If DB has just filename "avatar_X_Y.png", prepend the known path
-                avatarSrc = 'uploads/avatars/' + u.avatar_url;
+                // Always prepend API BASE_URL + public/uploads path
+                // Remove 'uploads/avatars/' if it's already in the DB string to avoid duplication
+                const filename = u.avatar_url.replace('uploads/avatars/', '').replace('public/', '');
+                avatarSrc = API_CONFIG.BASE_URL + 'public/uploads/avatars/' + filename;
             }
         }
 

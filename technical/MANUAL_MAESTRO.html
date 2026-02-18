@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Maestro - Project Jacquin</title>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { primaryColor: '#153e6b', edgeLabelBackground: '#f9f9f9', tertiaryColor: '#fff' } });</script>
+
+    <style>
+        :root {
+            /* Jacquin Identity - Blue/Dark Theme */
+            --brand-primary: #153e6b;
+            /* Azul Corporativo */
+            --brand-secondary: #081d33;
+            /* Azul Profundo */
+            --brand-accent: #c5a065;
+            /* Toque Dorado (Heredado sutil) */
+            --text-main: #1a202c;
+            --text-light: #4a5568;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+
+            body {
+                background: white !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+
+            .section-box {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+
+            a {
+                text-decoration: none;
+                color: black;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-body);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 210mm;
+            /* A4 Width approx */
+            margin: 0 auto;
+            background: var(--bg-card);
+            min-height: 100vh;
+            padding: 4rem;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- Typography --- */
+        h1,
+        h2,
+        h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--brand-secondary);
+        }
+
+        h1 {
+            font-size: 3rem;
+            border-bottom: 4px solid var(--brand-primary);
+            padding-bottom: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--brand-primary);
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h2 i {
+            color: var(--brand-primary);
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: var(--brand-primary);
+            margin-top: 2rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        /* --- Components --- */
+        .section-box {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .hook-status {
+            background: #eff6ff;
+            border-left: 5px solid var(--brand-primary);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            font-style: italic;
+            color: #1e3a8a;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--brand-secondary);
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .badge.functional {
+            background: #3b82f6;
+        }
+
+        /* Blue */
+        .badge.quality {
+            background: #a855f7;
+        }
+
+        /* Purple */
+
+        /* --- Grid --- */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* --- Code & Pre --- */
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+        }
+
+        .mermaid {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* --- Table --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--brand-secondary);
+            font-weight: 700;
+        }
+
+        /* --- TOC --- */
+        .toc {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 4rem;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc li {
+            margin-bottom: 0.8rem;
+        }
+
+        .toc a {
+            text-decoration: none;
+            color: var(--brand-primary);
+            font-weight: 600;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 5rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- COVER -->
+        <header style="text-align: center; padding: 4rem 0;">
+            <div style="font-size: 3rem; color: var(--brand-primary); margin-bottom: 1rem;"><i
+                    class="bi bi-music-note-beamed"></i></div>
+            <h1>MANUAL MAESTRO</h1>
+            <p class="subtitle">PROJECT JACQUIN | INGENIERÍA & ARQUITECTURA</p>
+            <p style="font-size: 0.9rem; margin-top: 2rem;">Versión 2.0 - Unificada | 2026</p>
+        </header>
+
+        <div class="page-break"></div>
+
+        <!-- TOC -->
+        <div class="toc no-print">
+            <h3>Contenido del Manual</h3>
+            <ul>
+                <li><a href="#intro">1. Introducción y Concepto</a></li>
+                <li><a href="#requerimientos">2. Ingeniería de Requerimientos</a></li>
+                <li><a href="#arquitectura">3. Arquitectura del Sistema</a></li>
+                <li><a href="#datos">4. Modelo de Datos (ERD)</a></li>
+                <li><a href="#logica">5. Lógica de Negocio Crítica</a></li>
+                <li><a href="#seguridad">6. Seguridad y Roles</a></li>
+                <li><a href="#didactico">7. Anexo: Explicación Didáctica</a></li>
+            </ul>
+        </div>
+
+        <!-- 1. INTRODUCCIÓN -->
+        <section id="intro">
+            <h2><i class="bi bi-lightbulb"></i> 1. Introducción y Concepto</h2>
+            <div class="hook-status">
+                "La Academia JACQUIN es una sinfonía de ingeniería donde el diseño premium y la lógica algorítmica
+                trabajan en perfecta armonía administrativa."
+            </div>
+            <p>
+                Este documento consolida la totalidad del conocimiento técnico del <strong>Project Jacquin</strong>.
+                El sistema ha sido diseñado como una <strong>Oficina Virtual Académica</strong> que centraliza la
+                gestión de usuarios,
+                inscripciones, horarios y calificaciones, eliminando la redundancia y garantizando la integridad de los
+                datos
+                mediante un motor de conflictos algorítmico.
+            </p>
+        </section>
+
+        <!-- 2. REQUERIMIENTOS -->
+        <section id="requerimientos">
+            <h2><i class="bi bi-card-checklist"></i> 2. Ingeniería de Requerimientos</h2>
+            <div class="grid-2">
+                <div class="section-box">
+                    <span class="badge functional">Funcional</span>
+                    <h3>RF-01: Autenticación Robusta</h3>
+                    <p>Acceso diferenciado por perfiles (Admin, Docente, Estudiante) con sesiones controladas de 8 horas
+                        y manejo de timeouts.</p>
+                </div>
+                <div class="section-box">
+                    <span class="badge functional">Funcional</span>
+                    <h3>RF-02: Inscripción Inteligente</h3>
+                    <p>El sistema valida el aforo (`max_students`) y los conflictos de horario antes de permitir una
+                        matrícula.</p>
+                </div>
+                <div class="section-box">
+                    <span class="badge quality">Calidad</span>
+                    <h3>RNF-01: Hash BCRYPT</h3>
+                    <p>Las contraseñas nunca se almacenan en texto plano. Se utiliza el algoritmo BCRYPT con un coste
+                        computacional adecuado.</p>
+                </div>
+                <div class="section-box">
+                    <span class="badge quality">Calidad</span>
+                    <h3>RNF-02: API RESTful</h3>
+                    <p>Separación total entre Frontend (HTML/JS) y Backend (PHP/JSON), permitiendo futura expansión a
+                        aplicaciones móviles.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="page-break"></div>
+
+        <!-- 3. ARQUITECTURA -->
+        <section id="arquitectura">
+            <h2><i class="bi bi-cpu"></i> 3. Arquitectura del Sistema</h2>
+            <p>El sistema sigue un patrón de <strong>Capas Lógicas</strong> para asegurar mantenibilidad y seguridad.
+            </p>
+
+            <div class="mermaid">
+                graph TD
+                Client[Cliente Web / Browser] <-->|JSON| API[Backend API (PHP)]
+                    API <-->|SQL| DB[(Base de Datos MySQL)]
+
+                        subgraph "Capa API"
+                        Router[Router / Endpoints]
+                        Auth[Middleware Auth]
+                        Helpers[Helpers Lógicos]
+                        end
+
+                        Client --> Router
+                        Router --> Auth
+                        Auth --> Helpers
+            </div>
+
+            <h3>Componentes Clave</h3>
+            <ul>
+                <li><strong>Config (`config/db.php`)</strong>: Singleton de conexión a base de datos usando PDO.</li>
+                <li><strong>Middleware (`middleware/auth_helper.php`)</strong>: Interceptor que valida sesiones y roles
+                    antes de ejecutar lógica de negocio.</li>
+                <li><strong>Helpers (`helpers/`)</strong>: Bibliotecas de funciones puras para validación de horarios y
+                    envío de correos.</li>
+            </ul>
+        </section>
+
+        <!-- 4. DATOS -->
+        <section id="datos">
+            <h2><i class="bi bi-database"></i> 4. Modelo de Datos (ERD)</h2>
+            <p>El esquema relacional está normalizado para evitar redundancia. A continuación, las entidades core:</p>
+
+            <div class="mermaid">
+                erDiagram
+                USERS ||--o{ ENROLLMENTS : "se inscribe"
+                COURSES ||--o{ ENROLLMENTS : "tiene alumnos"
+                COURSES ||--o{ SCHEDULES : "horarios definidos"
+                ENROLLMENTS ||--o{ ENROLLMENT_SCHEDULES : "selecciona"
+                ROLES ||--|{ USERS : "define permiso"
+
+                USERS {
+                int id_usuario PK
+                string email
+                string password_hash
+                int id_rol FK
+                }
+
+                ENROLLMENTS {
+                int id_enrollment PK
+                int id_course FK
+                enum status "pending/accepted"
+                }
+
+                SCHEDULES {
+                int id_schedule PK
+                string day_of_week
+                time start_time
+                time end_time
+                }
+            </div>
+        </section>
+
+        <div class="page-break"></div>
+
+        <!-- 5. LÓGICA CRÍTICA -->
+        <section id="logica">
+            <h2><i class="bi bi-gear-wide-connected"></i> 5. Lógica de Negocio Crítica</h2>
+
+            <div class="section-box">
+                <h3>Algoritmo de Detección de Conflictos</h3>
+                <p>Para evitar que un estudiante se inscriba en dos clases simultáneas, o que un profesor sea asignado
+                    doblemente, se utiliza la **Intersección de Intervalos**:</p>
+                <pre><code>
+// Pseudocódigo de Validación
+function hasConflict($newStart, $newEnd, $existingSchedules) {
+    foreach ($existingSchedules as $schedule) {
+        // Fórmula de Superposición
+        if ($newStart < $schedule->end && $newEnd > $schedule->start) {
+            return true; // Conflicto detectado
+        }
+    }
+    return false;
+}
+                </code></pre>
+                <p>Esta lógica reside en <code>helpers/conflict_helper.php</code>.</p>
+            </div>
+
+            <div class="section-box">
+                <h3>Proceso de Validación de Cupos</h3>
+                <ol>
+                    <li>Endpoint <code>request_enrollment.php</code> recibe la solicitud.</li>
+                    <li>Consulta <code>SELECT count(*)</code> de inscripciones activas del curso.</li>
+                    <li>Compara contra <code>max_students</code> del curso.</li>
+                    <li>Si <code>count >= max</code>, retorna <strong>403 Forbidden</strong>: "Cupos Agotados".</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 6. SEGURIDAD -->
+        <section id="seguridad">
+            <h2><i class="bi bi-shield-lock"></i> 6. Seguridad y Roles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rol</th>
+                        <th>ID</th>
+                        <th>Permisos Principales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Admin</strong></td>
+                        <td>1</td>
+                        <td>Acceso total (`admin_*.php`). Crear cursos, asignar docentes, editar usuarios, CMS.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Docente</strong></td>
+                        <td>2</td>
+                        <td>Ver sus cursos asignados, gestionar asistencia y notas de sus alumnos.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estudiante</strong></td>
+                        <td>3</td>
+                        <td>Ver sus cursos, notas, solicitar inscripción y ver perfil propio.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Protección de Endpoints</h3>
+            <p>Todos los archivos administrativos inician con:</p>
+            <pre><code>
+session_start();
+if (!isset($_SESSION['user']) || $_SESSION['id_rol'] != 1) {
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+            </code></pre>
+        </section>
+
+        <div class="page-break"></div>
+
+        <!-- 7. ANEXO DIDÁCTICO -->
+        <section id="didactico">
+            <h2><i class="bi bi-mortarboard-fill"></i> 7. Anexo: Explicación Didáctica</h2>
+            <div class="hook-status" style="background: #f0fdf4; border-color: #22c55e; color: #15803d;">
+                Explicación simplificada para stakeholders no técnicos (Directivos, Jurados).
+            </div>
+
+            <div class="grid-2">
+                <div class="section-box">
+                    <h3>Frontend (La Cara)</h3>
+                    <p>Es lo que el usuario ve. Botones, formularios y colores. Fue diseñado para ser intuitivo y
+                        responsive.</p>
+                </div>
+                <div class="section-box">
+                    <h3>Backend (El Cerebro)</h3>
+                    <p>Es quien toma las decisiones. Calcula si hay espacio en el salón y guarda las notas de forma
+                        segura.</p>
+                </div>
+            </div>
+
+            <h3>Flujo de "La Recepcionista Virtual"</h3>
+            <ol>
+                <li>El alumno llega a la ventanilla virtual (Web).</li>
+                <li>Pide entrar a una clase (Inscripción).</li>
+                <li>La recepcionista (API) revisa el libro de reservas (Base de Datos).</li>
+                <li>Si hay espacio y no choca con otra clase, le da el carnet (OK).</li>
+            </ol>
+        </section>
+
+        <footer>
+            Documento generado por Agente Documentador Técnico Pro | Project Jacquin © 2026
+        </footer>
+    </div>
+
+</body>
+
+</html>

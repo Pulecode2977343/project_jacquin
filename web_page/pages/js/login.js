@@ -18,6 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Check for session expired error in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('error') === 'session_expired' && mensajeRespuesta) {
+        mensajeRespuesta.textContent = 'Tu sesión ha expirado por inactividad. Por favor ingresa de nuevo.';
+        mensajeRespuesta.style.color = 'var(--color-acento-naranja)';
+    } else if (ApiService.isAuthenticated() && !urlParams.get('error')) {
+        // If already logged in and no error, go to dashboard
+        window.location.href = 'gestion.html';
+    }
+
     if (!loginForm) return;
 
     loginForm.addEventListener('submit', async (event) => {

@@ -369,12 +369,7 @@ const AcademicManager = {
         const data = Object.fromEntries(fd);
 
         try {
-            const res = await fetch(`${ApiService.BASE_URL}create_course.php`, {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            const result = await res.json();
+            const result = await ApiService.createCourse(data);
             if (result.success) {
                 Swal.fire('Éxito', 'Curso creado', 'success');
                 e.target.reset();

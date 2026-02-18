@@ -6,7 +6,8 @@
  * PUT: Actualizar función
  * DELETE: Eliminar función
  */
-require_once __DIR__ . '/config/cors.php';
+include_once 'helpers/cors_helper.php';
+handleCors();
 require_once __DIR__ . '/config/connection.php';
 
 header('Content-Type: application/json; charset=UTF-8');

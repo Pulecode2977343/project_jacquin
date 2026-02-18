@@ -7,9 +7,23 @@
 var API_CONFIG = {
     // Detect subfolder levels to reach /jacquin_api/ correctly
     // URL Base para estructura aplanada (index.html en raíz de web_page)
+    // Detect subfolder levels to reach /jacquin_api/ correctly
     get BASE_URL() {
         const path = window.location.pathname;
+        const host = window.location.hostname;
 
+        // 1. Entorno LOCAL (XAMPP / Localhost)
+        // Asumimos que el proyecto está en htdocs/project_jacquin/
+        if (host === 'localhost' || host === '127.0.0.1') {
+            // Si estamos corriendo en Live Server (puerto 5500, etc), avisar error o intentar proxy
+            if (window.location.port && window.location.port !== '80' && window.location.port !== '443') {
+                console.warn("⚠️ Estás usando Live Server (o puerto no estándar). PHP no funcionará aquí. Usa XAMPP (Apache) en el puerto 80/443.");
+            }
+            return "/project_jacquin/jacquin_api/";
+        }
+
+        // 2. Entorno ZROK / PRODUCCIÓN
+        // Estructura plana o relativa
         // Si estamos dentro de subcarpetas (por si acaso quedaron archivos en pages/)
         if (path.includes('/pages/')) {
             return "../../jacquin_api/";
@@ -133,9 +147,10 @@ var ApiService = {
      */
     async getUsers() {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_users.php`, {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_users.php?t=${Date.now()}`, {
                 method: "GET",
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
 
             const text = await response.text();
@@ -160,7 +175,8 @@ var ApiService = {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_teachers.php`, {
                 method: "GET",
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -243,7 +259,8 @@ var ApiService = {
             const response = await fetch(API_CONFIG.BASE_URL + 'admin_enroll_student.php', {
                 method: 'POST',
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -254,7 +271,10 @@ var ApiService = {
 
     async getPendingEnrollments() {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_pending_enrollments.php`, { headers: API_CONFIG.HEADERS });
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_pending_enrollments.php`, {
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
             return await response.json();
         } catch (error) {
             return { success: false, message: "Error obteniendo solicitudes." };
@@ -266,7 +286,8 @@ var ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_handle_enrollment.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ id_enrollment: idEnrollment, action })
+                body: JSON.stringify({ id_enrollment: idEnrollment, action }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -292,7 +313,8 @@ var ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_unenroll_student.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ id_enrollment: enrollmentId })
+                body: JSON.stringify({ id_enrollment: enrollmentId }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -302,14 +324,37 @@ var ApiService = {
 
     async assignTeacher(teacherId, scheduleId) {
         try {
+            // Construct payload based on input type
+            const payload = { schedule_id: scheduleId };
+            if (Array.isArray(teacherId)) {
+                payload.teacher_ids = teacherId;
+            } else {
+                payload.teacher_id = teacherId;
+            }
+
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_assign_teacher.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ teacher_id: teacherId, schedule_id: scheduleId })
+                body: JSON.stringify(payload),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
             return { success: false, message: "Error asignando docente." };
+        }
+    },
+
+    async unassignSingleTeacher(scheduleId, teacherId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_assign_teacher.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify({ action: 'remove_single', schedule_id: scheduleId, teacher_id: teacherId }),
+                credentials: 'include'
+            });
+            return await response.json();
+        } catch (error) {
+            return { success: false, message: "Error desasignando docente." };
         }
     },
 
@@ -449,7 +494,8 @@ var ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_update_course_teacher.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ course_id: courseId, teacher_id: teacherId })
+                body: JSON.stringify({ course_id: courseId, teacher_id: teacherId }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -477,7 +523,8 @@ var ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_delete_course.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: courseId })
+                body: JSON.stringify({ id: courseId }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -489,7 +536,8 @@ var ApiService = {
     async getFullCourseDetails(courseId) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_course_full_details.php?course_id=${courseId}`, {
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -502,7 +550,8 @@ var ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_update_course_schedule.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(scheduleData)
+                body: JSON.stringify(scheduleData),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -515,7 +564,8 @@ var ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_update_course.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(courseData)
+                body: JSON.stringify(courseData),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -646,7 +696,8 @@ var ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_assign_schedules.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ enrollment_id: enrollmentId, schedule_ids: scheduleIds })
+                body: JSON.stringify({ enrollment_id: enrollmentId, schedule_ids: scheduleIds }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {

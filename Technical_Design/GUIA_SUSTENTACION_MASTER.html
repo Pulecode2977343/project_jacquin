@@ -352,9 +352,9 @@
                             <td><code>admin_inventory_get.php</code></td>
                         </tr>
                         <tr>
-                            <td><strong>RF-05</strong></td>
-                            <td>CMS Multimedia Dinámico</td>
-                            <td><code>admin_create_event.php</code></td>
+                            <td><strong>RF-06</strong></td>
+                            <td>Control de Roles (Admin)</td>
+                            <td><code>admin_update_user_full.php</code></td>
                         </tr>
                     </tbody>
                 </table>
@@ -362,19 +362,37 @@
 
             <section id="logic">
                 <h2><i class="bi bi-gear-wide-connected"></i> Lógica de Negocio</h2>
-                <p>El punto más fuerte para defender con ingenieros jurados.</p>
-                <div class="item-card">
-                    <h3>Motor de Validación Cross-Schedule</h3>
-                    <p>Cuando un estudiante intenta inscribirse, el backend ejecuta una consulta de comparación
-                        temporal:</p>
-                    <code
-                        style="display:block; padding:15px; background:rgba(0,0,0,0.4); margin-top:10px; border-radius:10px;">
+                <!-- ... existing content ... -->
+            </section>
+
+            <!-- ... existing content in logic/engine ... -->
+
+            <section id="security">
+                <h2><i class="bi bi-shield-check"></i> Seguridad y Evaluación</h2>
+                <div class="grid-box">
+                    <!-- ... existing security cards ... -->
+                    <div class="item-card" style="border-top-color: #2ecc71;">
+                        <h3>Camuflaje de Errores</h3>
+                        <p>En producción, los errores fatales (500) se interceptan y convierten en respuestas JSON
+                            controladas, evitando exponer rutas o credenciales.</p>
+                    </div>
+                    <div class="item-card"
+                        style="grid-column: 1 / -1; border-top-color: #f1c40f; background: rgba(241, 196, 15, 0.05);">
+                        <!-- ... -->
+                        <p>El punto más fuerte para defender con ingenieros jurados.</p>
+                        <div class="item-card">
+                            <h3>Motor de Validación Cross-Schedule</h3>
+                            <p>Cuando un estudiante intenta inscribirse, el backend ejecuta una consulta de comparación
+                                temporal:</p>
+                            <code
+                                style="display:block; padding:15px; background:rgba(0,0,0,0.4); margin-top:10px; border-radius:10px;">
                         Intersect = (New_Start < Exist_End) AND (New_End > Exist_Start)
                     </code>
-                    <p style="margin-top:10px; font-size:0.85rem">Esto se ejecuta en
-                        <code>helpers/conflict_helper.php</code>, garantizando 0 errores en la agenda del estudiante.
-                    </p>
-                </div>
+                            <p style="margin-top:10px; font-size:0.85rem">Esto se ejecuta en
+                                <code>helpers/conflict_helper.php</code>, garantizando 0 errores en la agenda del
+                                estudiante.
+                            </p>
+                        </div>
             </section>
 
             <section id="engine">
@@ -396,12 +414,14 @@
                     </div>
                     <div class="item-card"
                         style="border-top-color: #3b82f6; grid-column: 1 / -1; background: rgba(59, 130, 246, 0.1);">
-                        <h3 style="color: #3b82f6;"><i class="bi bi-award"></i> Defensa Senior: Estructura de Endpoints
+                        <h3 style="color: #3b82f6;"><i class="bi bi-award"></i> Defensa Senior: Optimización de
+                            Rendimiento
                         </h3>
-                        <p><i>"La arquitectura de la API se diseñó bajo un modelo de <strong>Endpoints Ligeros</strong>.
-                                Cada archivo en la raíz actúa como un controlador independiente, lo que reduce la carga
-                                de memoria al no tener que instanciar enrutadores complejos o controladores pesados,
-                                optimizando la respuesta del servidor en entornos de hosting compartidos."</i></p>
+                        <p><i>"Un punto crítico en la madurez de nuestra API fue la **eliminación de consultas N+1**.
+                                Originalmente, el motor de cursos realizaba peticiones iterativas que saturaban el
+                                servidor. Implementamos una lógica de **3 consultas SQL optimizadas** que consolidan
+                                toda la data relacional, reduciendo la latencia y garantizando un 100% de estabilidad
+                                incluso en entornos restrictivos como túneles zrok."</i></p>
                     </div>
                 </div>
             </section>
@@ -478,8 +498,9 @@
                 <div class="step">
                     <div class="step-num">3</div>
                     <div>
-                        <strong>Visión a Futuro:</strong> Arquitectura lista para API First, permitiendo el despliegue
-                        de Apps móviles en Android/iOS consumiendo el mismo backend.
+                        <strong>Experiencia de Usuario (UX):</strong> Se estandarizó la interfaz con una estética "Dark
+                        Premium" (Brandbook V2), utilizando botones de cierre circulares con efectos de cristal y
+                        transiciones suaves para una navegación más fluida y profesional.
                     </div>
                 </div>
             </section>

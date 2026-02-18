@@ -1,5 +1,6 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+include_once 'helpers/cors_helper.php';
+handleCors();
 header("Content-Type: application/json; charset=UTF-8");
 
 include_once 'config/connection.php';
@@ -31,24 +32,61 @@ if ($course_id > 0) {
 
             // Let's grab schedules first.
             $stmtSched = $pdo->prepare("
-                SELECT s.*, u.full_name as teacher_name 
+                SELECT s.*, 
+                       (SELECT GROUP_CONCAT(u.full_name SEPARATOR ', ') 
+                        FROM schedule_teachers st 
+                        JOIN usuario u ON st.id_teacher = u.id_usuario 
+                        WHERE st.id_schedule = s.id_schedule) as teacher_names,
+                       (SELECT GROUP_CONCAT(st.id_teacher SEPARATOR ',') 
+                        FROM schedule_teachers st 
+                        WHERE st.id_schedule = s.id_schedule) as teacher_ids,
+                       (SELECT COUNT(*) 
+                        FROM enrollment_schedules es 
+                        JOIN enrollments e ON es.enrollment_id = e.id_enrollment 
+                        WHERE es.schedule_id = s.id_schedule AND e.status = 'Activo') as enrolled_count,
+                       u_legacy.full_name as legacy_teacher_name
                 FROM schedules s
-                LEFT JOIN usuario u ON s.teacher_id = u.id_usuario 
+                LEFT JOIN usuario u_legacy ON s.teacher_id = u_legacy.id_usuario 
                 WHERE s.id_course = ?
                 ORDER BY FIELD(s.day, 'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'), s.time_start
             ");
-            // NOTE: If teacher_id is not in schedules, this query will fail. 
-            // But I'm writing this based on the plan. I will CORRECT it after the tool output if needed.
-            // Actually, safe bet: wait for describe? No, I want to be fast.
-            // I'll use a safer query that doesn't assume teacher yet for the first pass?
-            // No, I'll write the robust one and if it fails I'll fix it.
-
             $stmtSched->execute([$course_id]);
             $schedules = $stmtSched->fetchAll(PDO::FETCH_ASSOC);
 
+            // Fetch detailed teacher info for all these schedules
+            // We use FETCH_GROUP to group by id_schedule automatically
+            $stmtTeachers = $pdo->prepare("
+                SELECT st.id_schedule, u.id_usuario as id, u.full_name as name
+                FROM schedule_teachers st
+                JOIN usuario u ON st.id_teacher = u.id_usuario
+                WHERE st.id_schedule IN (
+                    SELECT id_schedule FROM schedules WHERE id_course = ?
+                )
+            ");
+            $stmtTeachers->execute([$course_id]);
+            $teachersMap = $stmtTeachers->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+
+            // Post-process to attach teachers array and legacy support
+            foreach ($schedules as &$sch) {
+                // Attach structured teachers array
+                // FETCH_GROUP returns array of arrays, removing the grouping key from the inner arrays
+                $sch['teachers'] = isset($teachersMap[$sch['id_schedule']]) ? $teachersMap[$sch['id_schedule']] : [];
+
+                // Validar legacy/display
+                if (!empty($sch['teacher_names'])) {
+                    $sch['teacher_name'] = $sch['teacher_names'];
+                } elseif (!empty($sch['teachers'])) {
+                    // Fallback: build string from array if teacher_names was null for some reason
+                    $names = array_column($sch['teachers'], 'name');
+                    $sch['teacher_name'] = implode(', ', $names);
+                } else {
+                    $sch['teacher_name'] = $sch['legacy_teacher_name'];
+                }
+            }
+
             // 3. Enrolled Students (Accepted)
             $stmtEnroll = $pdo->prepare("
-                SELECT e.id_enrollment, u.full_name, u.email, e.status
+                SELECT e.id_enrollment, u.full_name as student_name, u.email, e.status, DATE_FORMAT(e.enrollment_date, '%Y-%m-%d') as enrollment_date
                 FROM enrollments e
                 JOIN usuario u ON e.student_id = u.id_usuario
                 WHERE e.course_id = ? AND e.status = 'Activo'
@@ -56,14 +94,37 @@ if ($course_id > 0) {
             $stmtEnroll->execute([$course_id]);
             $students = $stmtEnroll->fetchAll(PDO::FETCH_ASSOC);
 
+            // Fetch assigned schedules for students
+             if (!empty($students)) {
+                $enrollmentIds = array_column($students, 'id_enrollment');
+                if (!empty($enrollmentIds)) {
+                    $inQuery = implode(',', array_fill(0, count($enrollmentIds), '?'));
+                    $stmtStudSched = $pdo->prepare("
+                        SELECT es.enrollment_id, s.day, s.time_start, s.time_end
+                        FROM enrollment_schedules es
+                        JOIN schedules s ON es.schedule_id = s.id_schedule
+                        WHERE es.enrollment_id IN ($inQuery)
+                    ");
+                    $stmtStudSched->execute($enrollmentIds);
+                    $studSchedMap = $stmtStudSched->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+
+                    foreach ($students as &$stud) {
+                        $stud['schedules_assigned'] = isset($studSchedMap[$stud['id_enrollment']]) ? $studSchedMap[$stud['id_enrollment']] : [];
+                    }
+                }
+            }
+
             // 4. Pending Requests (Now including Pre-inscrito)
             // Fetching schedules via enrollment_schedules table
             $stmtPending = $pdo->prepare("
-                SELECT e.id_enrollment, u.full_name, u.email, e.status,
+                SELECT e.id_enrollment, u.full_name as student_name, u.email, e.status, DATE_FORMAT(e.enrollment_date, '%Y-%m-%d') as request_date,
                        (SELECT GROUP_CONCAT(CONCAT(s.day, ' ', LEFT(s.time_start, 5), '-', LEFT(s.time_end, 5)) SEPARATOR ', ')
                         FROM enrollment_schedules es
                         JOIN schedules s ON es.schedule_id = s.id_schedule
-                        WHERE es.enrollment_id = e.id_enrollment) as schedule_info
+                        WHERE es.enrollment_id = e.id_enrollment) as schedule_info,
+                       (SELECT s.id_schedule FROM enrollment_schedules es JOIN schedules s ON es.schedule_id = s.id_schedule WHERE es.enrollment_id = e.id_enrollment LIMIT 1) as id_schedule,
+                       (SELECT s.day FROM enrollment_schedules es JOIN schedules s ON es.schedule_id = s.id_schedule WHERE es.enrollment_id = e.id_enrollment LIMIT 1) as day,
+                       (SELECT s.time_start FROM enrollment_schedules es JOIN schedules s ON es.schedule_id = s.id_schedule WHERE es.enrollment_id = e.id_enrollment LIMIT 1) as time_start
                 FROM enrollments e
                 JOIN usuario u ON e.student_id = u.id_usuario
                 WHERE e.course_id = ? AND e.status IN ('Pendiente', 'Pre-inscrito')

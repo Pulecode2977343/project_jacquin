@@ -1,23 +1,24 @@
 <?php
+// register.php
 ob_start();
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
-
-// Configuración
-require_once __DIR__ . '/config/cors.php';
-require_once __DIR__ . '/config/connection.php';
-require_once __DIR__ . '/config/env_loader.php';
-
-// Cargar variables de entorno (se ejecuta automáticamente al incluir)
-// loadEnv() se llama internamente en el archivo
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 header('Content-Type: application/json');
 
 // Limpiar cualquier output previo
-if (ob_get_length())
-    ob_clean();
+if (ob_get_length()) ob_clean();
 
 try {
+    // Configuración
+    require_once __DIR__ . '/config/cors.php';
+    require_once __DIR__ . '/config/connection.php';
+    // Load env first if needed
+    if (file_exists(__DIR__ . '/config/env_loader.php')) {
+        require_once __DIR__ . '/config/env_loader.php';
+    }
+
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception('Método no permitido');
     }

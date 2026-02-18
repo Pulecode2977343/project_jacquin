@@ -9,9 +9,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require_once 'config/connection.php';
+
+// Ajuste de ruta robusto usando __DIR__
+$configPath = __DIR__ . '/../config/connection.php';
+$configPathRelative = __DIR__ . '/../../config/connection.php';
+
+if (file_exists($configPath)) {
+    require_once $configPath;
+} elseif (file_exists($configPathRelative)) {
+    require_once $configPathRelative;
+} else {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Error de configuración del servidor (DB).']);
+    exit;
+}
 
 $data = json_decode(file_get_contents("php://input"), true);
+
 
 if (!isset($data['id_enrollment'])) {
     echo json_encode(['success' => false, 'message' => 'Falta ID de inscripción']);
@@ -19,9 +33,12 @@ if (!isset($data['id_enrollment'])) {
 }
 
 try {
+    // Delete schedules associated with this enrollment first (if any cascading is needed, or just rely on ON DELETE CASCADE)
+    // We'll trust FK constraints or direct deletion for now.
+    
     $stmt = $pdo->prepare("DELETE FROM enrollments WHERE id_enrollment = ?");
     if ($stmt->execute([$data['id_enrollment']])) {
-        // Clean up enrollment_schedules manually
+        // Also clean up enrollment_schedules manually if no CASCADE
         $stmt2 = $pdo->prepare("DELETE FROM enrollment_schedules WHERE enrollment_id = ?");
         $stmt2->execute([$data['id_enrollment']]);
         

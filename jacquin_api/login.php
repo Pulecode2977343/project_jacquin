@@ -3,13 +3,15 @@
 
 // Configuración de errores para depuración (desactivar en producción)
 ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 header('Content-Type: application/json');
 
-// Incluir configuraciones esenciales
-require_once __DIR__ . '/config/cors.php';
-require_once __DIR__ . '/config/connection.php';
-
 try {
+    // Incluir configuraciones esenciales dentro del try para capturar errores de conexión
+    require_once __DIR__ . '/config/cors.php';
+    require_once __DIR__ . '/config/connection.php';
+
     // Solo permitir POST
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception('Método no permitido. Use POST.');
@@ -60,9 +62,13 @@ try {
 
     // Iniciar sesión PHP
     if (session_status() === PHP_SESSION_NONE) {
+        // Set cookie params for Zrok/Cross-site if needed, but default usually works for same-origin
+        // session_set_cookie_params(['samesite' => 'None', 'secure' => true]); 
         session_start();
     }
     $_SESSION['user'] = $user;
+    $_SESSION['user_id'] = $user['id_usuario'];
+    $_SESSION['id_rol'] = $user['id_rol'];
 
     echo json_encode([
         'success' => true,

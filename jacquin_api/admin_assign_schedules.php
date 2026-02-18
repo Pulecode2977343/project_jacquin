@@ -6,7 +6,8 @@
  * Body: { "enrollment_id": 15, "schedule_ids": [3, 7, 12] }
  */
 
-header("Access-Control-Allow-Origin: *");
+include_once 'helpers/cors_helper.php';
+handleCors();
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");

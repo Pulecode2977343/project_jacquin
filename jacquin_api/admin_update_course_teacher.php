@@ -1,18 +1,3 @@
-<?php
-require_once __DIR__ . '/config/cors.php';
-require_once __DIR__ . '/config/connection.php';
-require_once __DIR__ . '/helpers/auth_helper.php';
-
-// Protegemos el endpoint: Solo administradores
-validateAdmin();
-
-header('Content-Type: application/json');
-
-$data = json_decode(file_get_contents("php://input"), true);
-
-if (!isset($data['course_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Falta ID del curso']);
-    exit;
 }
 
 $course_id = $data['course_id'];

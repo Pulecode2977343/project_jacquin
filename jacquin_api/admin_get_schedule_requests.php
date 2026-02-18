@@ -1,6 +1,7 @@
 <?php
 // admin_get_schedule_requests.php
-header("Access-Control-Allow-Origin: *");
+include_once 'helpers/cors_helper.php';
+handleCors();
 header("Content-Type: application/json; charset=UTF-8");
 require_once __DIR__ . '/config/connection.php';
 

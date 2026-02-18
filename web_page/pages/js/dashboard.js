@@ -4,6 +4,17 @@
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", async function () {
+    // Helper to resolve paths based on current location (root vs pages/)
+    function resolvePath(path) {
+        if (!path) return '';
+        if (path.startsWith('http') || path.startsWith('/') || path.startsWith('../')) return path;
+        // If we are in /pages/ and path implies root-relative (like assets/...), go up one level
+        if (window.location.pathname.includes('/pages/')) {
+            return '../' + path;
+        }
+        return path;
+    }
+
     let sessionUser = ApiService.getSession();
     if (!sessionUser) {
         window.location.href = "login.html";
@@ -135,8 +146,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 document.getElementById("teacher-user-name").textContent = userName;
                 document.getElementById("teacher-user-role").textContent = "Docente";
                 const teacherAvatar = document.getElementById("teacher-avatar");
-                if (teacherAvatar && sessionUser.avatar_url) {
-                    teacherAvatar.src = sessionUser.avatar_url;
+                if (teacherAvatar) {
+                    teacherAvatar.src = resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg');
                 }
             }
 
@@ -167,8 +178,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 document.getElementById("dashboard-user-name").textContent = userName;
                 document.getElementById("dashboard-user-role").textContent = getRoleName(roleId);
                 const avatarEl = document.getElementById("dashboard-avatar");
-                if (avatarEl && sessionUser.avatar_url) {
-                    avatarEl.src = sessionUser.avatar_url;
+                if (avatarEl) {
+                    avatarEl.src = resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg');
                 }
             }
 
@@ -197,8 +208,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 document.getElementById("collaborator-user-name").textContent = userName;
                 document.getElementById("collaborator-user-role").textContent = getRoleName(roleId);
                 const colAvatar = document.getElementById("collaborator-avatar");
-                if (colAvatar && sessionUser.avatar_url) {
-                    colAvatar.src = sessionUser.avatar_url;
+                if (colAvatar) {
+                    colAvatar.src = resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg');
                 }
             }
 
@@ -253,7 +264,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <div style="font-weight:bold; color:white;">${userName.split(" ")[0]}</div>
                     <div style="font-size:0.75rem; color:var(--color-acento-azul);">${getRoleName(roleId)}</div>
                 </div>
-                <img src="${sessionUser.avatar_url || 'assets/images/default_avatar.svg'}" 
+                <img src="${resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg')}" 
                      id="dashboard-avatar"
                      style="width:40px; height:40px; border-radius:50%; border:2px solid var(--color-acento-azul); object-fit:cover;">
             </div>

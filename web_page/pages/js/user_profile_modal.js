@@ -214,7 +214,7 @@ window.openProfile = async function (userId, initialTab = 'info') {
                 <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--color-acento-azul); filter: blur(80px); opacity: 0.2; pointer-events: none;"></div>
                 <div style="display: flex; align-items: center; gap: 20px; position: relative; z-index: 1;">
                     <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 3px solid rgba(147, 182, 238, 0.3); background: rgba(0,0,0,0.3);" id="modal-avatar-container">
-                        <img src="${user.avatar_url ? (user.avatar_url.startsWith('http') ? user.avatar_url : ApiService.BASE_URL + user.avatar_url) : '../assets/images/default_avatar.svg'}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/default_avatar.svg'">
+                        <img src="${user.avatar_url ? (user.avatar_url.startsWith('http') ? user.avatar_url : user.avatar_url) : '../assets/images/default_avatar.svg'}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='../assets/images/default_avatar.svg'">
                     </div>
                     <div>
                         <h2 style="margin: 0; color: white; font-size: 1.6rem; font-weight: 600;">${user.full_name}</h2>
@@ -341,7 +341,7 @@ window.switchUserTab = async function (tab) {
                         </div>
                         <div class="info-field-group">
                             <label>Correo Electrónico</label>
-                            <input type="email" id="edit-email" value="${user.email || ''}" class="form-control" ${!canEdit ? 'readonly' : ''}>
+                            <input type="email" id="edit-email" value="${user.email || ''}" class="form-control" ${currentUser.id_rol != 1 ? 'readonly' : ''}>
                         </div>
                         <div class="info-field-group">
                             <label>Teléfono</label>
@@ -657,35 +657,66 @@ window.handleModalPasswordChange = async function (e) {
 };
 
 window.updateProfileFromModal = async function () {
-    const user = ApiService.getSession();
+    const sessionUser = ApiService.getSession();
+    const targetUserId = window.currentModalUserId; // The user ID being edited
     const fullName = document.getElementById('edit-full-name').value;
+    const email = document.getElementById('edit-email').value;
     const phone = document.getElementById('edit-phone').value;
+    const roleSelect = document.getElementById('edit-role');
+    const roleId = roleSelect ? roleSelect.value : (sessionUser.id_rol); // Default to current if not present
 
     if (!fullName) return showToast("El nombre es requerido", "warning");
 
     try {
-        // Use ApiService.BASE_URL instead of hardcoded path
-        const response = await fetch(`${ApiService.BASE_URL}update_profile.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id_usuario: user.id_usuario, // Changed from user_id to id_usuario to match api.js/update_profile.php
+        let result;
+
+        // Si soy Admin, uso el endpoint completo que permite cambiar Rol y Email
+        if (sessionUser.id_rol == 1) {
+            result = await ApiService.adminUpdateUserFull({
+                id_usuario: targetUserId,
                 full_name: fullName,
-                n_phone: phone
-            })
-        });
-        const result = await response.json();
+                email: email,
+                n_phone: phone,
+                id_rol: roleId,
+                avatar_action: 'keep' // Por ahora el avatar se maneja separado
+            });
+        } else {
+            // Si soy usuario normal, solo actualizo mis datos básicos
+            // Use ApiService.BASE_URL instead of hardcoded path
+            const response = await fetch(`${ApiService.BASE_URL}update_profile.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_usuario: targetUserId,
+                    full_name: fullName,
+                    n_phone: phone
+                })
+            });
+            result = await response.json();
+        }
 
         if (result.success) {
             showToast("Perfil actualizado correctamente", "success");
-            // Update session
-            user.full_name = fullName;
-            user.n_phone = phone;
-            ApiService.saveSession(user);
+
+            // Only update local session if I am editing MYSELF
+            if (sessionUser && (sessionUser.id_usuario == targetUserId)) {
+                sessionUser.full_name = fullName;
+                sessionUser.n_phone = phone;
+                if (sessionUser.id_rol == 1) {
+                    sessionUser.email = email;
+                    // sessionUser.id_rol = roleId; // Cuidado con quitarse permisos de admin a uno mismo
+                }
+                ApiService.saveSession(sessionUser);
+
+                // Refresh UI if elements exist (e.g. Header Name)
+                const nameEl = document.getElementById('dashboard-user-name') || document.getElementById('teacher-user-name');
+                if (nameEl) nameEl.textContent = fullName;
+            } else {
+                // If Admin edited someone else, try to refresh the table if open
+                if (typeof loadUsers === 'function') loadUsers();
+            }
+
             window.closeProfileModal(); // Auto-close modal on success
-            // Refresh UI if elements exist
-            const nameEl = document.getElementById('dashboard-user-name') || document.getElementById('teacher-user-name');
-            if (nameEl) nameEl.textContent = fullName;
         } else {
             showToast(result.message || "Error al actualizar", "error");
         }

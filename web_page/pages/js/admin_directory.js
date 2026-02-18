@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 window.allUsers = [];
-let allUsers = []; // keep for local compatibility if needed
+// allUsers used to be declared here; removed to avoid SyntaxError with 'let' redeclaration.
 
 window.loadDirectory = async function () {
     const listAdmins = document.getElementById("list-admins");
@@ -30,12 +30,12 @@ window.loadDirectory = async function () {
     const response = await ApiService.getUsers();
     if (response.success && response.data) {
         window.allUsers = response.data;
-        allUsers = response.data;
+        // allUsers = response.data; // Removed redundant/unsafe assignment
 
         // separate
-        const admins = allUsers.filter(u => u.id_rol == 1);
-        const teachers = allUsers.filter(u => u.id_rol == 2);
-        const others = allUsers.filter(u => u.id_rol != 1 && u.id_rol != 2);
+        const admins = window.allUsers.filter(u => u.id_rol == 1);
+        const teachers = window.allUsers.filter(u => u.id_rol == 2);
+        const others = window.allUsers.filter(u => u.id_rol != 1 && u.id_rol != 2);
 
         renderList(listAdmins, admins, "bi-shield-lock");
         renderList(listTeachers, teachers, "bi-person-video3");

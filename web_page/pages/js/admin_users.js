@@ -9,7 +9,8 @@
 
 console.log("Admin Users v4.0 Loaded");
 
-let allUsers = [];
+// Safe global declaration
+window.allUsers = window.allUsers || [];
 let currentRoleFilter = 'all';
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -69,8 +70,7 @@ async function loadUsers() {
     const response = await ApiService.getUsers();
 
     if (response.success && response.data) {
-        allUsers = response.data;
-        window.allUsers = allUsers;
+        window.allUsers = response.data;
         updateStats();
         applyFilters();
     } else {
@@ -86,9 +86,9 @@ async function loadUsers() {
 }
 
 function updateStats() {
-    const total = allUsers.length;
-    const students = allUsers.filter(u => u.id_rol == 3 || u.id_rol == 4).length;
-    const teachers = allUsers.filter(u => u.id_rol == 2).length;
+    const total = window.allUsers.length;
+    const students = window.allUsers.filter(u => u.id_rol == 3 || u.id_rol == 4).length;
+    const teachers = window.allUsers.filter(u => u.id_rol == 2).length;
 
     document.getElementById('stat-total').textContent = total;
     document.getElementById('stat-students').textContent = students;
@@ -98,7 +98,7 @@ function updateStats() {
 function applyFilters() {
     const searchQuery = document.getElementById('user-search')?.value?.toLowerCase() || '';
 
-    let filtered = allUsers;
+    let filtered = window.allUsers;
 
     // Role filter
     if (currentRoleFilter !== 'all') {
@@ -138,8 +138,20 @@ function renderUsers(users) {
         row.onclick = () => openProfile(u.id_usuario);
 
         const initials = getInitials(u.full_name);
-        const avatarHtml = u.avatar_url
-            ? `<img src="${u.avatar_url}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><span style="display:none;">${initials}</span>`
+        let avatarSrc = null;
+        if (u.avatar_url && u.avatar_url.trim() !== '') {
+            if (u.avatar_url.startsWith('http')) {
+                avatarSrc = u.avatar_url;
+            } else if (u.avatar_url.includes('uploads/avatars/')) {
+                avatarSrc = u.avatar_url;
+            } else {
+                // If DB has just filename "avatar_X_Y.png", prepend the known path
+                avatarSrc = 'uploads/avatars/' + u.avatar_url;
+            }
+        }
+
+        const avatarHtml = avatarSrc
+            ? `<img src="${avatarSrc}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><span style="display:none;">${initials}</span>`
             : initials;
 
         row.innerHTML = `

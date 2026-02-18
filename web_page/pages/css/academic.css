@@ -305,9 +305,13 @@
 }
 
 /* Select dropdown options */
-.modal-body select option {
-    background: #1a1a2e;
-    color: #fff;
+.modal-body select option,
+.swal2-select option,
+.swal2-html-container select option,
+#swal-sched-day option {
+    background-color: #1a1a2e !important;
+    color: #fff !important;
+    padding: 10px;
 }
 
 /* Table headers and cells */

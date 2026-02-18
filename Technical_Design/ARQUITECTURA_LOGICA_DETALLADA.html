@@ -281,6 +281,18 @@
             </div>
 
             <div class="logic-card">
+                <span class="endpoint-tag">POST /admin_update_user_full.php</span>
+                <h3>Control Total de Usuarios (Admin)</h3>
+                <p>Permite la modificación de atributos sensibles que están bloqueados para el usuario común:</p>
+                <ul>
+                    <li><strong>Elevación de Privilegios</strong>: Cambio directo de <code>id_rol</code> (ej. de
+                        Estudiante a Docente).</li>
+                    <li><strong>Corrección de Identidad</strong>: Edición de email y teléfono sin restricciones de
+                        validación soft.</li>
+                </ul>
+            </div>
+
+            <div class="logic-card">
                 <span class="endpoint-tag">POST /recover_request.php</span>
                 <h3>Flujo de Recuperación de Contraseña</h3>
                 <div class="diagram-container">
@@ -357,11 +369,16 @@ INSERT INTO attendance (id_student, id_schedule, id_course, status, date) ...
 // 2. Notas/Progreso
 UPDATE enrollment_grades SET grade = ?, feedback = ? WHERE id_enrollment = ? ...
 
-// 3. Consulta de Asignación y Cupos
-// El docente consume esta lógica para ver cuántos cupos restan en su curso:
-SELECT c.nombre_curso, c.max_students, 
-(SELECT COUNT(*) FROM enrollments WHERE id_course = c.id_course AND status = 'accepted') as actuales 
-FROM courses c WHERE c.id_teacher = ?</code></pre>
+// 3. Consulta de Asignación y Cupos (OPTIMIZADA)
+// Se eliminó el problema de N+1 consultas. Ahora se obtienen cursos, horarios 
+// y docentes mediante 3 consultas SQL agrupadas, garantizando estabilidad en zrok.
+SELECT c.id_course, c.course_name as name,
+GROUP_CONCAT(DISTINCT u.full_name SEPARATOR ', ') as teacher_name 
+FROM courses c 
+LEFT JOIN schedules s ON c.id_course = s.id_course
+LEFT JOIN schedule_teachers st ON s.id_schedule = st.id_schedule
+LEFT JOIN usuario u ON st.id_teacher = u.id_usuario
+GROUP BY c.id_course;</code></pre>
             </div>
         </section>
 
@@ -413,6 +430,10 @@ AND ((:new_start < es.end_time) AND (:new_end > es.start_time))</code></pre>
                 </div>
                 <p>Este motor garantiza que un profesor no sea asignado a dos salones o clases diferentes si sus bloques
                     horarios se traslapan, asegurando una logística impecable.</p>
+                <p class="important" style="margin-top: 15px;"><strong>Mejora Reciente:</strong> Se corrigió la lógica
+                    de desvinculación asegurando que la API apunte correctamente a la columna <code>enrollment_id</code>
+                    para evitar fallos de integridad al eliminar registros.</p>
+            </div>
             </div>
         </section>
 
@@ -485,6 +506,10 @@ AND ((:new_start < es.end_time) AND (:new_end > es.start_time))</code></pre>
                     <code>id_schedule</code> a un solo <code>id_enrollment</code> en la tabla puente
                     <code>enrollment_schedules</code>.
                 </p>
+                <p class="important" style="margin-top: 15px;"><strong>Refinado Estético (V7):</strong> Los modales
+                    administrativos han sido actualizados con botones de cierre circulares semi-transparentes con
+                    efectos de cristal y rotación suave, alineándose al Brandbook V2.</p>
+            </div>
             </div>
         </section>
 

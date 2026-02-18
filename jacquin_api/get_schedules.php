@@ -15,11 +15,12 @@ try {
         $stmt = $pdo->prepare("
             SELECT 
                 s.*, 
-                u.full_name as teacher_real_name,
+                (SELECT GROUP_CONCAT(u.full_name SEPARATOR ', ') 
+                 FROM schedule_teachers st 
+                 JOIN usuario u ON st.id_teacher = u.id_usuario 
+                 WHERE st.id_schedule = s.id_schedule) as teacher_name,
                 (SELECT COUNT(*) FROM enrollment_schedules es WHERE es.schedule_id = s.id_schedule) as enrolled_count
             FROM schedules s
-            LEFT JOIN courses c ON s.id_course = c.id_course
-            LEFT JOIN usuario u ON COALESCE(s.teacher_id, c.teacher_id) = u.id_usuario
             WHERE s.id_course = ?
             ORDER BY 
                 CASE s.day
@@ -45,8 +46,8 @@ try {
                 'day' => $s['day'],
                 'time_start' => $s['time_start'],
                 'time_end' => $s['time_end'],
-                'teacher_id' => $s['teacher_id'],
-                'teacher_name' => $s['teacher_real_name'] ? $s['teacher_real_name'] : 'Sin Asignar',
+                'teacher_id' => $s['teacher_id'], // Legacy
+                'teacher_name' => $s['teacher_name'] ? $s['teacher_name'] : 'Sin Asignar',
                 'quota' => $s['quota'],
                 'enrolled_count' => (int) $s['enrolled_count']
             ];

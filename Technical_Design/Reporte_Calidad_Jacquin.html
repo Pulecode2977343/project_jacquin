@@ -248,10 +248,12 @@
             <ul>
                 <li><strong>Usabilidad:</strong> Interfaces intuitivas para estudiantes de todas las edades. Diseño
                     claro y accesible.</li>
-                <li><strong>Eficiencia de Desempeño:</strong> Optimización de recursos multimedia (imágenes de
-                    instrumentos, videos de muestra).</li>
+                <li><strong>Eficiencia de Desempeño:</strong> Optimización de recursos multimedia y **reducción de
+                    latencia en API** (eliminación de N+1 consultas en el motor de cursos).</li>
                 <li><strong>Portabilidad:</strong> Adaptabilidad (Responsive Design) para acceso desde móviles, tablets
                     y escritorios.</li>
+                <li><strong>Mantenibilidad:</strong> Centralización de lógica académica y eliminación de conflictos de
+                    scripts redundantes.</li>
             </ul>
 
             <h2>3. Implementación de Buenas Prácticas</h2>
@@ -314,6 +316,9 @@
             <ul>
                 <li>Uso de atributo <code>loading="lazy"</code> en iframes y galerías.</li>
                 <li>Texto alternativo (<code>alt</code>) descriptivo en todas las imágenes para accesibilidad.</li>
+                <li><strong>Optimización de Consultas SQL:</strong> Reducción de latencia mediante la consolidación de 3
+                    consultas SQL agrupadas en lugar de peticiones iterativas (N+1), garantizando estabilidad en
+                    entornos de red limitada (ej: túneles zrok).</li>
             </ul>
 
             <h2>4. Herramientas de Aseguramiento (QA)</h2>
@@ -323,6 +328,11 @@
                     estándar.</li>
                 <li><strong>Lighthouse (Google):</strong> Auditorías periódicas de rendimiento, accesibilidad y SEO.
                 </li>
+                <li><strong>Refactorización de Código:</strong> Eliminación de variables no declaradas y conflictos de
+                    scripts para asegurar la robustez de la UI (V7).</li>
+                <li><strong>Control de Versiones:</strong> Auditoría de cambios estéticos para cumplir con el Brandbook
+                    V2 (Botones "Dignos").</li>
+            </ul>
         </div>
     </div>
 

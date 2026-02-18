@@ -1,15 +1,3 @@
-<?php
-require_once __DIR__ . '/config/cors.php';
-require_once __DIR__ . '/config/connection.php';
-require_once __DIR__ . '/helpers/conflict_helper.php';
-
-header('Content-Type: application/json');
-
-$data = json_decode(file_get_contents("php://input"), true);
-
-if (!isset($data['student_id']) || !isset($data['course_id']) || (!isset($data['schedule_id']) && !isset($data['schedule_ids']))) {
-    echo json_encode(['success' => false, 'message' => 'Faltan datos (ID, Curso, Horario)']);
-    exit;
 }
 
 // Normalize to array of schedule IDs

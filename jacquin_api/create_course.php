@@ -1,8 +1,12 @@
 <?php
 require_once __DIR__ . '/config/cors.php';
 require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/helpers/auth_helper.php';
 
 header('Content-Type: application/json');
+
+// Protegemos el endpoint
+validateAdmin();
 
 try {
     $data = json_decode(file_get_contents("php://input"));

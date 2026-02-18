@@ -7,6 +7,15 @@
 function validateAdmin() {
     // Iniciamos sesión si no está iniciada
     if (session_status() === PHP_SESSION_NONE) {
+        // Establecer tiempo de vida de la sesión (8 horas = 28800 segundos)
+        ini_set('session.gc_maxlifetime', 28800);
+        session_set_cookie_params([
+            'lifetime' => 28800,
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
         session_start();
     }
 

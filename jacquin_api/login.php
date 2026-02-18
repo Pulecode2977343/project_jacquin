@@ -62,8 +62,15 @@ try {
 
     // Iniciar sesión PHP
     if (session_status() === PHP_SESSION_NONE) {
-        // Set cookie params for Zrok/Cross-site if needed, but default usually works for same-origin
-        // session_set_cookie_params(['samesite' => 'None', 'secure' => true]); 
+        // Establecer tiempo de vida de la sesión (8 horas)
+        ini_set('session.gc_maxlifetime', 28800);
+        session_set_cookie_params([
+            'lifetime' => 28800,
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
         session_start();
     }
     $_SESSION['user'] = $user;

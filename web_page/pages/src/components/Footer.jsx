@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import JamLogo from './JamLogo';
 
 const Footer = () => {
@@ -10,7 +11,9 @@ const Footer = () => {
             <div className="jam-footer-content">
                 <div className="jam-footer-brand">
                     <div className="footer-logo">
-                        <JamLogo width={200} height="auto" color="white" />
+                        <Link to="/" onClick={() => window.scrollTo(0, 0)}>
+                            <JamLogo width={200} height="auto" color="white" />
+                        </Link>
                     </div>
                     <p className="brand-desc">
                         Donde la pasión se encuentra con la excelencia. Formando la próxima generación de artistas integrales en un entorno inspirador y profesional.

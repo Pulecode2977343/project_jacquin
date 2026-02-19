@@ -65,7 +65,7 @@ const JamLogo = ({ width = '100%', height = 'auto', color, className = '' }) => 
         // Sombra gris sutil interna — no desborda los bordes de la tecla
         e.currentTarget.style.background = 'rgba(60, 60, 60, 0.22)';
         e.currentTarget.style.borderRadius = '2px';
-        playNote(PIANO_NOTES[noteKey]);
+        // playNote(PIANO_NOTES[noteKey]);
     };
 
     const handleKeyLeave = (e) => {

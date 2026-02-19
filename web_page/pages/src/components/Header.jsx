@@ -83,9 +83,9 @@ const Header = () => {
 
             <div className="logo-links">
                 <div className="logo" id="logo">
-                    <a href="index.html">
+                    <Link to="/" onClick={() => window.scrollTo(0, 0)}>
                         <JamLogo width={239} height="auto" color="white" />
-                    </a>
+                    </Link>
                 </div>
 
                 <input type="checkbox" className="menuToggle" id="menuToggle" />

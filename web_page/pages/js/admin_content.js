@@ -21,7 +21,7 @@
         const modal = document.createElement('div');
         modal.id = 'content-manager-modal';
         modal.className = 'modal-overlay';
-        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:10001; display:flex; justify-content:center; align-items:flex-start; padding:20px; overflow-y:auto; opacity:0; transition:opacity 0.3s;';
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:10000; display:flex; justify-content:center; align-items:flex-start; padding:20px; overflow-y:auto; opacity:0; transition:opacity 0.3s;';
 
         modal.innerHTML = `
             <div style="background:#1a1a1a; width:95%; max-width:1100px; border-radius:20px; padding:0; border:1px solid #333; box-shadow:0 25px 80px rgba(0,0,0,0.6); position:relative; margin:20px 0; transform:scale(0.95); transition:transform 0.3s;">
@@ -405,6 +405,7 @@
         modal.id = 'about-card-modal';
         modal.className = 'modal-overlay';
         modal.style.display = 'flex';
+        modal.style.zIndex = '10100';
         modal.innerHTML = `
             <div class="modal-card" style="max-width: 600px;">
                 <button onclick="this.closest('.modal-overlay').remove()" style="

@@ -198,6 +198,18 @@
             </div>
         </div>
 
+        <div class="log-entry resolved">
+            <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span> <strong>ERR-004: Avatar 404 in Header.js</strong>
+                </div>
+                <small>Build: 180220261100HEADER</small>
+            </div>
+            <div class="log-content">
+                `Header.js` mantenía referencia hardcodeada a `web_page/pages/uploads`.
+                <strong>Solución:</strong> Se parcheó el componente para usar `API_CONFIG.BASE_URL` dinámico.
+            </div>
+        </div>
+
         <footer>
             Generado por Agente Antigravity | Solo para uso interno de ingeniería
         </footer>

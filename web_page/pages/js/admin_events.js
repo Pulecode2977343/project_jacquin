@@ -79,27 +79,23 @@ window.currentEvents = [];
 
 async function loadAdminEvents() {
     const list = document.getElementById('adminEventsList');
-    const baseUrl = ApiService.BASE_URL;
-
     try {
-        const response = await fetch(`${baseUrl}get_events.php`);
-        const data = await response.json();
-
-        if (data.success && data.data) {
-            window.currentEvents = data.data; // Store events
-            list.innerHTML = data.data.map(event => `
+        const res = await ApiService.getEvents();
+        if (res.success && res.data) {
+            window.currentEvents = res.data;
+            list.innerHTML = res.data.map(event => `
                 <div class="admin-event-item">
                     <div>
                         <strong style="color:white; font-size:1.1rem;">${event.title}</strong>
                         <div style="color:var(--color-humo-gris); font-size:0.8rem;">
-                            ${new Date(event.event_date).toLocaleDateString()} | ${event.location || 'Sin ubicación'}
+                            ${event.event_date ? new Date(event.event_date).toLocaleDateString() : 'Sin fecha'} | ${event.location || 'Sin ubicación'}
                         </div>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button class="btn-action" style="background: rgba(255, 170, 0, 0.2); color: #ffaa00;" onclick="editEvent(${event.id_event || event.id})">
+                        <button class="btn-action" style="background: rgba(255, 170, 0, 0.2); color: #ffaa00;" onclick="editEvent(${event.id_event})">
                              <i class="bi bi-pencil-fill"></i>
                         </button>
-                        <button class="btn-action btn-delete" onclick="deleteEvent(${event.id_event || event.id})">
+                        <button class="btn-action btn-delete" onclick="deleteEvent(${event.id_event})">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
@@ -108,7 +104,6 @@ async function loadAdminEvents() {
         } else {
             list.innerHTML = '<div style="color:white; text-align:center;">No hay eventos.</div>';
         }
-
     } catch (e) {
         console.error(e);
         list.innerHTML = 'Error cargando eventos.';
@@ -158,6 +153,7 @@ window.openModal = (eventData = null) => {
     }
 
     modal.style.display = 'flex';
+    modal.style.zIndex = '10100'; // Layering Level 2
 };
 
 window.closeModal = () => {
@@ -187,30 +183,23 @@ async function saveEvent(formData) {
     document.getElementById('btnText').innerText = "Procesando...";
 
     try {
-        const baseUrl = ApiService.BASE_URL;
         const eventId = document.getElementById('event_id').value;
+        let res;
 
-        // Switch between Create and Update endpoints
-        const endpoint = eventId ? 'admin_update_event.php' : 'admin_create_event.php';
+        if (eventId) {
+            res = await ApiService.updateEvent(eventId, formData);
+        } else {
+            res = await ApiService.createEvent(formData);
+        }
 
-        if (eventId) formData.append('id', eventId);
-
-        const response = await fetch(`${baseUrl}${endpoint}`, {
-            method: 'POST',
-            body: formData
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            closeModal(); // Close first
+        if (res.success) {
+            closeModal();
             const action = eventId ? 'actualizado' : 'creado';
             showToast(`Evento ${action} correctamente`, 'success');
             loadAdminEvents();
         } else {
-            showToast('Error: ' + result.message, 'error');
+            showToast('Error: ' + res.message, 'error');
         }
-
     } catch (error) {
         console.error(error);
         showToast('Error de conexión con el servidor', 'error');
@@ -237,17 +226,12 @@ window.deleteEvent = async (id) => {
     if (!result.isConfirmed) return;
 
     try {
-        const baseUrl = ApiService.BASE_URL;
-        const response = await fetch(`${baseUrl}admin_delete_event.php`, {
-            method: 'POST',
-            body: JSON.stringify({ id: id })
-        });
-        const result = await response.json();
-        if (result.success) {
+        const res = await ApiService.deleteEvent(id);
+        if (res.success) {
             showToast('Evento eliminado correctamente', 'success');
             loadAdminEvents();
         } else {
-            showToast('Error al eliminar', 'error');
+            showToast('Error al eliminar: ' + res.message, 'error');
         }
     } catch (e) {
         showToast('Error de red', 'error');

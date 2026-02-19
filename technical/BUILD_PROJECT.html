@@ -241,6 +241,34 @@
             </div>
         </div>
 
+        <!-- Entry 004: Bug Fix - Header.js Avatar -->
+        <div class="build-entry">
+            <div class="build-header">
+                <span class="build-id">180220261100HEADER</span>
+                <span style="font-size: 0.85rem; color: #64748b;">18 Feb 2026 - 11:00 AM</span>
+            </div>
+
+            <div class="prompt-box">
+                <h3>Instrucción Original</h3>
+                <div class="prompt-text">
+                    "Persiste avatar_4_1767578041.png 404 (Not Found) en Header.js"
+                </div>
+            </div>
+
+            <div class="tech-box">
+                <h3>Traducción Técnica / Plan</h3>
+                <div class="tech-text">
+                    Corrección de rutas residuales en componentes compartidos.
+                    <ul style="margin-top: 10px; font-size: 0.9rem; font-weight: 400;">
+                        <li><strong>Incidente:</strong> El componente `Header.js` sigue apuntando a
+                            `web_page/pages/uploads`.</li>
+                        <li><strong>Acción:</strong> Refactorizar `Header.js` para usar `API_CONFIG.BASE_URL` o ruta
+                            relativa correcta hacia `jacquin_api`.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <footer>
             Generado por Agente Documentador Técnico Pro | Project Jacquin
         </footer>

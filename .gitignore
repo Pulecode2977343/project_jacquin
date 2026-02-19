@@ -17,7 +17,7 @@ config/secrets.php
 Documentation/
 Documentation&BkUp's/
 fonts/
-components/
+# components/
 .agent/
 agent/
 jam_apk/

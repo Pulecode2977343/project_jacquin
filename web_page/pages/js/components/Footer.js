@@ -11,7 +11,7 @@ class Footer extends HTMLElement {
                 <!-- Columna 1: Marca e Identidad -->
                 <div class="jam-footer-brand">
                 <div class="footer-logo">
-                        <img src="../components/src/Vertical_WhiteLogo.svg" alt="Academia Musical JACQUIN" class="footer-logo-img" style="height: 40px; width: auto;">
+                        <jam-logo width="200" height="auto" color="white"></jam-logo>
                     </div>
                     <p class="brand-desc">
                         Donde la pasión se encuentra con la excelencia. Formando la próxima generación de artistas integrales en un entorno inspirador y profesional.

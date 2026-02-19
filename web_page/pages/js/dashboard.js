@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 document.getElementById("teacher-user-role").textContent = "Docente";
                 const teacherAvatar = document.getElementById("teacher-avatar");
                 if (teacherAvatar) {
-                    teacherAvatar.src = resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg');
+                    teacherAvatar.src = window.AvatarHelper ? window.AvatarHelper.getUrl(sessionUser.avatar_url) : resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg');
                 }
             }
 
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 document.getElementById("dashboard-user-role").textContent = getRoleName(roleId);
                 const avatarEl = document.getElementById("dashboard-avatar");
                 if (avatarEl) {
-                    avatarEl.src = resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg');
+                    avatarEl.src = window.AvatarHelper ? window.AvatarHelper.getUrl(sessionUser.avatar_url) : resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg');
                 }
             }
 
@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 document.getElementById("collaborator-user-role").textContent = getRoleName(roleId);
                 const colAvatar = document.getElementById("collaborator-avatar");
                 if (colAvatar) {
-                    colAvatar.src = resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg');
+                    colAvatar.src = window.AvatarHelper ? window.AvatarHelper.getUrl(sessionUser.avatar_url) : resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg');
                 }
             }
 
@@ -264,8 +264,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <div style="font-weight:bold; color:white;">${userName.split(" ")[0]}</div>
                     <div style="font-size:0.75rem; color:var(--color-acento-azul);">${getRoleName(roleId)}</div>
                 </div>
-                <img src="${resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg')}" 
+                <img src="${window.AvatarHelper ? window.AvatarHelper.getUrl(sessionUser.avatar_url) : resolvePath(sessionUser.avatar_url || 'assets/images/default_avatar.svg')}" 
                      id="dashboard-avatar"
+                     onerror="if(window.AvatarHelper) window.AvatarHelper.handleError(this)"
                      style="width:40px; height:40px; border-radius:50%; border:2px solid var(--color-acento-azul); object-fit:cover;">
             </div>
         `;
@@ -322,7 +323,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     // Update Local Session & UI
                     sessionUser.avatar_url = res.data; // URL
                     ApiService.saveSession(sessionUser);
-                    const avatarUrl = res.data.startsWith('http') ? res.data : (ApiService.BASE_URL + res.data);
+                    const avatarUrl = window.AvatarHelper ? window.AvatarHelper.getUrl(res.data) : (res.data.startsWith('http') ? res.data : (ApiService.BASE_URL + res.data));
                     document.getElementById("dashboard-avatar").src = avatarUrl + "?t=" + new Date().getTime();
                 } else {
                     showToast("No pudimos actualizar la foto: " + res.message, "error");
@@ -560,7 +561,7 @@ window.showStudentScheduleClassmates = async function (scheduleId, courseName, t
                             ${students.map((s, i) => `
                                 <div style="display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:10px 15px; border-radius:10px; border:1px solid rgba(255,255,255,0.05);">
                                     <div style="width: 35px; height: 35px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                                        <img src="${s.avatar_url ? (s.avatar_url.startsWith('http') ? s.avatar_url : ApiService.BASE_URL + s.avatar_url) : 'assets/images/default_avatar.svg'}" style="width:100%; height:100%; object-fit:cover;">
+                                        <img src="${window.AvatarHelper ? window.AvatarHelper.getUrl(s.avatar_url) : (s.avatar_url ? (s.avatar_url.startsWith('http') ? s.avatar_url : ApiService.BASE_URL + s.avatar_url) : 'assets/images/default_avatar.svg')}" style="width:100%; height:100%; object-fit:cover;">
                                     </div>
                                     <div style="flex:1;">
                                         <div style="color:white; font-size:0.95rem; font-weight:600;">${s.full_name}</div>
@@ -731,7 +732,7 @@ window.showTeacherScheduleStudents = async function (scheduleId, courseName, tim
                                 <div style="display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:10px 15px; border-radius:10px; border:1px solid rgba(255,255,255,0.05);">
                                     <div style="color:var(--color-acento-azul); font-weight:700; width: 20px;">${i + 1}</div>
                                     <div style="width: 35px; height: 35px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
-                                        <img src="${s.avatar_url ? (s.avatar_url.startsWith('http') ? s.avatar_url : ApiService.BASE_URL + s.avatar_url) : '../assets/images/default_avatar.svg'}" style="width:100%; height:100%; object-fit:cover;">
+                                        <img src="${window.AvatarHelper ? window.AvatarHelper.getUrl(s.avatar_url) : (s.avatar_url ? (s.avatar_url.startsWith('http') ? s.avatar_url : ApiService.BASE_URL + s.avatar_url) : '../assets/images/default_avatar.svg')}" style="width:100%; height:100%; object-fit:cover;">
                                     </div>
                                     <div style="flex:1;">
                                         <div style="color:white; font-size:0.95rem; font-weight:600;">${s.full_name}</div>
@@ -1458,7 +1459,7 @@ window.openEnrollmentModal = async function () {
         modal = document.createElement('div');
         modal.id = 'student-enroll-modal';
         modal.className = 'modal-overlay';
-        modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10001; display:flex; justify-content:center; align-items:center; opacity:0; transition:opacity 0.3s;";
+        modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10100; display:flex; justify-content:center; align-items:center; opacity:0; transition:opacity 0.3s;";
         modal.onclick = (e) => { if (e.target === modal) closeEnrollModal(); };
 
         modal.innerHTML = `

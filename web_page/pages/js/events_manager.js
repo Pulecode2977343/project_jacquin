@@ -189,7 +189,7 @@ window.openEventsManager = async function () {
         formModal.className = "modal-overlay";
         Object.assign(formModal.style, {
             position: 'fixed', top: '0', left: '0', width: '100%', height: '100%',
-            background: 'rgba(0,0,0,0.95)', zIndex: '10001',
+            background: 'rgba(0,0,0,0.95)', zIndex: '10100',
             display: 'flex', justifyContent: 'center', alignItems: 'center'
         });
         formModal.innerHTML = formHtml;
@@ -364,7 +364,7 @@ window.openEventsManager = async function () {
         formModal.className = "modal-overlay";
         Object.assign(formModal.style, {
             position: 'fixed', top: '0', left: '0', width: '100%', height: '100%',
-            background: 'rgba(0,0,0,0.95)', zIndex: '10001',
+            background: 'rgba(0,0,0,0.95)', zIndex: '10100',
             display: 'flex', justifyContent: 'center', alignItems: 'center'
         });
         formModal.innerHTML = formHtml;

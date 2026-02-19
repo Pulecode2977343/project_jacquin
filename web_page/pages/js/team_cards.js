@@ -55,7 +55,7 @@
                 <div class="team-card-premium">
                     <div class="team-card-shine"></div>
                     <div class="team-card-avatar">
-                        <img src="${member.avatar_url ? (member.avatar_url.startsWith('http') ? member.avatar_url : (window.ApiService ? window.ApiService.BASE_URL : '../../jacquin_api/') + member.avatar_url) : 'assets/images/default_avatar.svg'}" 
+                        <img src="${window.AvatarHelper ? window.AvatarHelper.getUrl(member.avatar_url) : 'assets/images/default_avatar.svg'}" 
                              alt="${member.full_name}"
                              onerror="this.src='assets/images/default_avatar.svg'">
                     </div>

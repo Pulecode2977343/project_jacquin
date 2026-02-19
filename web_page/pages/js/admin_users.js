@@ -139,19 +139,22 @@ function renderUsers(users) {
 
         const initials = getInitials(u.full_name);
         let avatarSrc = null;
-        if (u.avatar_url && u.avatar_url.trim() !== '') {
-            if (u.avatar_url.startsWith('http')) {
-                avatarSrc = u.avatar_url;
-            } else {
-                // Always prepend API BASE_URL + public/uploads path
-                // Remove 'uploads/avatars/' if it's already in the DB string to avoid duplication
-                const filename = u.avatar_url.replace('uploads/avatars/', '').replace('public/', '');
-                avatarSrc = API_CONFIG.BASE_URL + 'public/uploads/avatars/' + filename;
+        if (window.AvatarHelper) {
+            avatarSrc = window.AvatarHelper.getUrl(u.avatar_url);
+        } else {
+            // Fallback (Legacy)
+            if (u.avatar_url && u.avatar_url.trim() !== '') {
+                if (u.avatar_url.startsWith('http')) {
+                    avatarSrc = u.avatar_url;
+                } else {
+                    const filename = u.avatar_url.replace('uploads/avatars/', '').replace('public/', '');
+                    avatarSrc = API_CONFIG.BASE_URL + 'public/uploads/avatars/' + filename;
+                }
             }
         }
 
         const avatarHtml = avatarSrc
-            ? `<img src="${avatarSrc}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><span style="display:none;">${initials}</span>`
+            ? `<img src="${avatarSrc}" style="width:100%; height:100%; object-fit:cover;" onerror="if(window.AvatarHelper) window.AvatarHelper.handleError(this); else { this.style.display='none'; this.nextElementSibling.style.display='flex'; }"><span style="display:none; width:100%; height:100%; justify-content:center; align-items:center;">${initials}</span>`
             : initials;
 
         row.innerHTML = `

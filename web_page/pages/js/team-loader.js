@@ -36,9 +36,14 @@ async function loadTeamMembers() {
         // 4. Recorrer la lista y crear tarjetas
         members.forEach(member => {
             // Construir URL de avatar segura
-            const avatarUrl = member.avatar_url
-                ? (member.avatar_url.startsWith('http') ? member.avatar_url : ApiService.BASE_URL + member.avatar_url)
-                : 'assets/images/default_avatar.svg';
+            let avatarUrl = 'assets/images/default_avatar.svg';
+            if (window.AvatarHelper) {
+                avatarUrl = window.AvatarHelper.getUrl(member.avatar_url);
+            } else {
+                avatarUrl = member.avatar_url
+                    ? (member.avatar_url.startsWith('http') ? member.avatar_url : ApiService.BASE_URL + member.avatar_url)
+                    : 'assets/images/default_avatar.svg';
+            }
 
             // Mapeo de roles
             const roleName = member.id_rol == 1 ? 'Directivo / Admin' : 'Docente';

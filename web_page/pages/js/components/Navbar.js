@@ -1,10 +1,12 @@
-class Navbar extends HTMLElement {
-    constructor() {
-        super();
-    }
+(function () {
+    if (customElements.get('jam-navbar')) return;
+    class Navbar extends HTMLElement {
+        constructor() {
+            super();
+        }
 
-    connectedCallback() {
-        this.innerHTML = `
+        connectedCallback() {
+            this.innerHTML = `
             <ul class="navbar-list" id="navbarList">
                 <!-- 1. Inicio -->
                 <li>
@@ -112,13 +114,13 @@ class Navbar extends HTMLElement {
                 ${this.renderAuthLinks()}
             </ul>
         `;
-    }
+        }
 
-    renderAuthLinks() {
-        const isAuthenticated = window.ApiService && window.ApiService.isAuthenticated();
+        renderAuthLinks() {
+            const isAuthenticated = window.ApiService && window.ApiService.isAuthenticated();
 
-        if (isAuthenticated) {
-            return `
+            if (isAuthenticated) {
+                return `
                 <li class="mobile-only">
                     <a class="navbar-link btn-bubble-mobile" href="gestion.html" title="Mi Panel">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-speedometer2" viewBox="0 0 16 16">
@@ -155,8 +157,8 @@ class Navbar extends HTMLElement {
                     </a>
                 </li>
             `;
-        } else {
-            return `
+            } else {
+                return `
                 <li class="mobile-only">
                     <a class="navbar-link btn-bubble-mobile" href="login.html" title="Iniciar Sesión">
                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
@@ -176,8 +178,9 @@ class Navbar extends HTMLElement {
                     </a>
                 </li>
             `;
+            }
         }
     }
-}
 
-customElements.define('jam-navbar', Navbar);
+    customElements.define('jam-navbar', Navbar);
+})();

@@ -607,6 +607,26 @@ const ApiService = {
         }
     },
 
+    async getMissionValues() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}get_mission_values.php`);
+            return await response.json();
+        } catch (error) {
+            console.error("Error fetching mission values:", error);
+            return { success: false, message: error.message };
+        }
+    },
+
+    async getAboutCards() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}get_about_cards.php`);
+            return await response.json();
+        } catch (error) {
+            console.error("Error fetching about cards:", error);
+            return { success: false, message: error.message };
+        }
+    },
+
     async createEvent(formData) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_create_event.php`, {

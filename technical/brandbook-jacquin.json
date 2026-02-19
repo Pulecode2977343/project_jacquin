@@ -1,0 +1,66 @@
+{
+  "marca": "JACQUIN Academia Musical",
+  "objetivo": "Mantener consistencia visual en UI, landings y componentes basada en el brandbook oficial (PDF) de Jacquin.",
+
+  "tipografia": {
+    "cuerpo_principal": {
+      "nombre": "HelveticaNeue",
+      "archivo_local": "fonts/helvetica-neue-5/",
+      "fallback": "'Helvetica Neue', Helvetica, Arial, sans-serif",
+      "variable_css": "--font-principal",
+      "uso": "Navegación, párrafos, labels, botones, body del sistema"
+    },
+    "display_titulares": {
+      "nombre": "Spartan",
+      "equivalente_brandbook": "Futura-Bold",
+      "archivo_local": "fonts/spartan_variable.ttf",
+      "fallback": "'Futura', 'Century Gothic', sans-serif",
+      "variable_css": "--font-display",
+      "uso": "Titulares grandes (h1, h2 de secciones), encabezados de tarjetas"
+    },
+    "serif_clasica": {
+      "nombre": "Marion",
+      "archivo_local": "fonts/marion_regular.otf",
+      "fallback": "Georgia, 'Times New Roman', serif",
+      "variable_css": "--font-serif",
+      "uso": "Subtítulos elegantes, citas, texto de identidad histórica"
+    },
+    "decorativa_script": {
+      "nombre": "Dancing Script",
+      "equivalente_brandbook": "AdageScriptJF",
+      "carga": "Google Fonts CDN",
+      "fallback": "cursive",
+      "variable_css": "--font-decorativa",
+      "uso": "Hero tagline: 'Donde la pasión se convierte en arte', citas especiales"
+    }
+  },
+
+  "paleta": {
+    "azul_principal": "#223F61",
+    "azul_acento": "#93B6EE",
+    "naranja_acento": "#E78C3B",
+    "blanco_neutro": "#dddddd",
+    "fondo_crema": "#F3F2EE",
+    "humo_gris": "#CDCDCD"
+  },
+
+  "variables_css_raiz": {
+    "--font-principal":  "'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    "--font-display":    "'Spartan', 'Futura', 'Century Gothic', sans-serif",
+    "--font-serif":      "'Marion', Georgia, 'Times New Roman', serif",
+    "--font-decorativa": "'Dancing Script', cursive"
+  },
+
+  "fuentes_pdf_brandbook": {
+    "nota": "Fuentes extraídas del PDF oficial BRANDBOOK_JACQUIN ACADEMIA MUSICAL.pdf via analisis /BaseFont",
+    "fuentes_detectadas": [
+      "HelveticaNeue-CondensedBold",
+      "HelveticaNeue-Light",
+      "HelveticaNeue-CondensedBlack",
+      "Marion-Regular",
+      "Futura-Bold",
+      "AdageScriptJF",
+      "Marion-Bold"
+    ]
+  }
+}

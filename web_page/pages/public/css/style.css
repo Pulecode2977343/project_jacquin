@@ -36,7 +36,7 @@
 /* --- Marion Regular (fuente secundaria brandbook) --- */
 @font-face {
     font-family: 'Marion';
-    src: url('../fonts/marion_regular.otf') format('opentype');
+    src: url('/fonts/marion_regular.otf') format('opentype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;

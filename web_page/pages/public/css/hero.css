@@ -142,7 +142,7 @@
     /* Marion Regular — fuente secundaria oficial del brandbook Jacquin */
     font-size: 3.2rem;
     font-weight: 400;
-    font-style: italic;
+    /* font-style: italic; - Removed to ensure Marion loads correctly */
     letter-spacing: 1px;
     margin-bottom: 1.5rem;
     color: var(--color-blanco-neutro);

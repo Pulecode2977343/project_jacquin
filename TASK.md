@@ -3,8 +3,9 @@
 | Acción / Requerimiento | Estado | Nota |
 | :--- | :---: | :--- |
 | **Aplicar Reglas Maestras del Agente** | ✅ | TASK.md y technical/Repositorio.md creados. |
-| **Debugging Mission Logic** | ⏳ | `debug_mission.js` pendiente de revisión. |
-| **Events Component Fixes** | ⏳ | Pendiente revisión de estilos y funcionalidad. |
+| **Debugging Mission Logic** | ✅ | Integrado en `About.jsx` via API `getMissionValues`. |
+| **Events Component Fixes** | ✅ | Estilos corregidos, filtros funcionales y responsive. |
+| **About Component Connection** | ✅ | Componente creado y conectado a API `getAboutCards`. |
 | **Refactorización Hero Component** | ✅ | Solo tagline + botón CTA (sin badge, sin título). |
 | **Header Spacing** | ✅ | Padding inferior en `.logo-links` para separación visual. |
 | **Documentación Técnica** | ✅ | `ARCHITECTURE.md` con flowcharts, ERD y requisitos. |

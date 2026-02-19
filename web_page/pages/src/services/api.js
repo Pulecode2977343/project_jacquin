@@ -169,6 +169,16 @@ const ApiService = {
         }
     },
 
+    async getProgramsJson() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}get_programs_json.php`);
+            return await response.json();
+        } catch (error) {
+            console.error("Error fetching programs:", error);
+            return {};
+        }
+    },
+
     async getCourses() {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}get_courses.php`, {

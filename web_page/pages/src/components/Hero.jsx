@@ -18,7 +18,7 @@ const Hero = () => {
     }, []);
 
     return (
-        <section className={`hero-section ${scrolled ? 'scrolled' : ''}`}>
+        <section id="hero" className={`hero-section ${scrolled ? 'scrolled' : ''}`}>
             {/* Imagen de fondo */}
             <div className="hero-bg-wrapper">
                 <img
@@ -31,31 +31,23 @@ const Hero = () => {
             <div className="hero-overlay"></div>
 
             <div className="hero-content">
-                {/* Content matches approved design: Tagline + Button only */}
-
                 {/* Tagline en cursiva — Brandbook: "Donde la pasión se convierte en arte" */}
                 <p className="hero-tagline">
                     Donde la pasión se convierte en arte
                 </p>
 
                 {/* CTA naranja sólido — exacto al mockup del brandbook */}
-                <div className="hero-btns">
-                    <a href="#programas" className="hero-cta">
-                        Descubre Nuestros Programas
-                        <i className="bi bi-chevron-down"></i>
-                    </a>
-                </div>
+                <a href="#programas" className="hero-cta">
+                    Descubre Nuestros Programas
+                    <i className="bi bi-arrow-down"></i>
+                </a>
             </div>
 
             {/* Indicador de scroll */}
             <div className="hero-scroll-indicator" onClick={() => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })}>
-                <div className="mouse">
-                    <div className="wheel"></div>
-                </div>
-                <div>
-                    <span className="m-scroll-arrows a1"></span>
-                    <span className="m-scroll-arrows a2"></span>
-                    <span className="m-scroll-arrows a3"></span>
+                <i className="bi bi-mouse"></i>
+                <div className="scroll-arrows">
+                    <span className="bi bi-chevron-compact-down"></span>
                 </div>
             </div>
         </section>

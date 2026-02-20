@@ -19,10 +19,8 @@ const Events = () => {
             try {
                 const res = await ApiService.getEvents();
                 if (res.success && Array.isArray(res.data)) {
-                    // Ordenar por fecha o ID descendente
                     const sorted = res.data.sort((a, b) => b.id_event - a.id_event);
                     setEvents(sorted);
-                    // No seteamos filteredEvents aquí, dejamos que el useEffect de filtrado lo haga
                 } else {
                     console.error("Formato de eventos inválido:", res);
                     setError("No se pudieron cargar los eventos.");
@@ -37,7 +35,6 @@ const Events = () => {
         fetchEvents();
     }, []);
 
-    // Efecto para filtrar
     useEffect(() => {
         if (!Array.isArray(events)) return;
 
@@ -71,44 +68,31 @@ const Events = () => {
     const formatDate = (dateStr) => {
         if (!dateStr) return 'Próximamente';
         try {
-            // Fix timezone issue by appending time if needed or handling as string
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+            const date = new Date(dateStr + 'T00:00:00');
+            return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
         } catch (e) {
             return String(dateStr);
         }
     };
 
-    if (loading) return null; // O un spinner
-
-    if (error && events.length === 0) {
-        return (
-            <section id="eventos" className="events-section">
-                <div className="container">
-                    <div className="events-intro">
-                        <h2 className="section-title">Agenda Cultural</h2>
-                        <div className="alert alert-warning">{error}</div>
-                    </div>
-                </div>
-            </section>
-        );
-    }
+    if (loading) return null;
 
     return (
-        <section id="eventos" className="events-section">
+        <section className="events-section" id="eventos">
             <div className="events-intro">
-                <span className="section-badge ripple" style={{ display: 'inline-block', marginBottom: '10px' }}>Agenda Cultural</span>
-                <h2>Próximos <span style={{ color: 'var(--color-acento-azul)' }}>Encuentros</span></h2>
-                <p>Descubre los conciertos, recitales y talleres que tenemos preparados para ti.</p>
+                <h2>Eventos y Presentaciones</h2>
+                <p>
+                    Descubre nuestros próximos conciertos, recitales y actividades
+                    especiales. ¡Únete a la comunidad musical JACQUIN!
+                </p>
             </div>
 
-            {/* Filtros corregidos con clases de events.css */}
             <div className="events-filters-container">
                 <div className="events-search-wrapper">
                     <input
                         type="text"
                         className="events-search-input"
-                        placeholder="Buscar por nombre..."
+                        placeholder="Buscar evento..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -120,33 +104,39 @@ const Events = () => {
                     value={filterType}
                     onChange={(e) => setFilterType(e.target.value)}
                 >
-                    <option value="all">Todos los eventos</option>
+                    <option value="all">Todos los Eventos</option>
                     <option value="concierto">Conciertos</option>
                     <option value="recital">Recitales</option>
                     <option value="taller">Talleres</option>
                     <option value="masterclass">Masterclass</option>
+                    <option value="presentacion">Presentaciones</option>
                 </select>
             </div>
 
-            <div className="events-carousel-container" style={{ position: 'relative', padding: '0 50px' }}>
+            <div className="events-carousel-container" style={{ position: 'relative', maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
                 {filteredEvents.length > 0 ? (
                     <>
                         <Swiper
                             modules={[Navigation, Pagination, Autoplay]}
-                            spaceBetween={25}
+                            effect="slide"
+                            grabCursor={true}
+                            centeredSlides={false}
+                            spaceBetween={20}
                             slidesPerView={1}
                             loop={filteredEvents.length > 3}
-                            autoplay={{ delay: 5000, disableOnInteraction: false }}
+                            speed={600}
+                            autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
                             navigation={{
-                                nextEl: '.events-swiper-button-next',
-                                prevEl: '.events-swiper-button-prev'
+                                nextEl: '.events-next',
+                                prevEl: '.events-prev'
                             }}
                             pagination={{ clickable: true, dynamicBullets: true }}
                             breakpoints={{
-                                640: { slidesPerView: 1 },
-                                768: { slidesPerView: 2 },
-                                1024: { slidesPerView: 3 },
-                                1280: { slidesPerView: 4 }
+                                480: { slidesPerView: 1.2, spaceBetween: 15 },
+                                768: { slidesPerView: 2.2, spaceBetween: 20 },
+                                1024: { slidesPerView: 3.2, spaceBetween: 20 },
+                                1366: { slidesPerView: 4, spaceBetween: 25 },
+                                1600: { slidesPerView: 5, spaceBetween: 30 }
                             }}
                             className="events-swiper"
                             style={{ paddingBottom: '40px' }}
@@ -154,46 +144,30 @@ const Events = () => {
                             {filteredEvents.map(event => (
                                 <SwiperSlide key={event.id_event || Math.random()}>
                                     <div
-                                        className="event-card"
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => window.open(`https://wa.me/573001234567?text=Info sobre evento: ${event.title}`, '_blank')}
+                                        className="about-card-premium"
+                                        style={{
+                                            backgroundImage: `url(${event.image_url || '/images/hero-banner.jpg'})`
+                                        }}
+                                        onClick={() => window.open(`https://wa.me/573042328575?text=Información sobre el evento: ${event.title}`, '_blank')}
                                     >
-                                        <div className="event-date">{formatDate(event.event_date)}</div>
-                                        <h3>{event.title}</h3>
-                                        <p>{event.description ? event.description.substring(0, 80) + '...' : 'Sin descripción'}</p>
-
-                                        <div className="event-details">
-                                            <div className="event-detail-item">
-                                                <i className={`bi ${getEventIcon(event.event_type)}`}></i>
-                                                <span>{event.event_type || 'Evento'}</span>
-                                            </div>
-                                            {event.location && (
-                                                <div className="event-detail-item">
-                                                    <i className="bi bi-geo-alt"></i>
-                                                    <span>{event.location}</span>
-                                                </div>
-                                            )}
+                                        <div className="about-card-overlay"></div>
+                                        <div className="about-card-shine"></div>
+                                        <div className="about-card-content">
+                                            <i className={`bi ${getEventIcon(event.event_type)} about-card-icon`}></i>
+                                            <h3>{event.title}</h3>
+                                            <span className="about-card-subtitle">{formatDate(event.event_date)}</span>
                                         </div>
-
-                                        {Number(event.is_active) === 1 && (
-                                            <div style={{ marginTop: '15px', color: 'var(--verde-neon)', fontSize: '0.8rem', fontWeight: 'bold' }}>
-                                                <i className="bi bi-check-circle-fill"></i> Disponible
-                                            </div>
-                                        )}
                                     </div>
                                 </SwiperSlide>
                             ))}
                         </Swiper>
-
-                        {/* Botones de navegación personalizados y posicionados absolutamente */}
-                        <div className="swiper-button-prev events-swiper-button-prev" style={{ color: 'var(--color-acento-naranja)', left: '0' }}></div>
-                        <div className="swiper-button-next events-swiper-button-next" style={{ color: 'var(--color-acento-naranja)', right: '0' }}></div>
+                        <div className="events-prev"></div>
+                        <div className="events-next"></div>
                     </>
                 ) : (
                     <div className="no-events">
                         <i className="bi bi-calendar-x"></i>
                         <h4>No hay eventos encontrados</h4>
-                        <p>Intenta con otros términos de búsqueda.</p>
                     </div>
                 )}
             </div>

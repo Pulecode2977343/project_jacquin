@@ -23,65 +23,64 @@ const Programs = () => {
 
     const keys = Object.keys(programs);
 
-    if (loading) return (
-        <div id="programas" className="programs-section">
-            <div className="container" style={{ textAlign: 'center', padding: '100px 0' }}>
-                <div className="loader">Cargando Programas...</div>
-            </div>
-        </div>
-    );
+    if (loading) return null;
 
     return (
-        <section id="programas" className="programs-section">
-            <div className="container">
-                <div className="section-header">
-                    <span className="section-badge">Nuestros Programas</span>
-                    <h2 className="section-title">Encuentra tu <span className="text-secondary">Ritmo</span></h2>
-                    <p className="section-desc">Estructuras académicas diseñadas para cada nivel y aspiración artística.</p>
-                </div>
+        <section className="bento-section" id="programas">
+            <div className="section-header">
+                <h2>Nuestros Programas</h2>
+                <p>Explora tu talento con nuestra metodología personalizada</p>
+            </div>
 
-                <div className="programs-carousel">
-                    <Swiper
-                        modules={[Navigation, Pagination, Autoplay]}
-                        spaceBetween={20}
-                        slidesPerView={1}
-                        loop={keys.length > 3}
-                        autoplay={{ delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-                        navigation={{ nextEl: '.programs-next', prevEl: '.programs-prev' }}
-                        pagination={{ clickable: true, dynamicBullets: true }}
-                        breakpoints={{
-                            480: { slidesPerView: 1.2, spaceBetween: 15 },
-                            768: { slidesPerView: 2.2, spaceBetween: 20 },
-                            1024: { slidesPerView: 3.2, spaceBetween: 20 },
-                            1366: { slidesPerView: 4, spaceBetween: 25 },
-                            1600: { slidesPerView: 5, spaceBetween: 30 }
-                        }}
-                        className="programs-swiper"
-                    >
-                        {keys.map(key => {
-                            const p = programs[key];
-                            return (
-                                <SwiperSlide key={key}>
-                                    <div
-                                        className="program-card"
-                                        onClick={() => window.openProgramModal && window.openProgramModal(key)}
-                                        style={{ backgroundImage: `url(${p.image || '/images/hero-banner.jpg'})` }}
-                                    >
-                                        <div className="program-overlay"></div>
-                                        <div className="program-content">
-                                            <div className="program-icon"><i className={`bi ${p.icon}`}></i></div>
-                                            <h3>{p.title}</h3>
-                                            <p>{p.subtitle}</p>
-                                        </div>
+            <div className="programs-carousel" style={{ position: 'relative', maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+                <Swiper
+                    modules={[Navigation, Pagination, Autoplay]}
+                    effect="slide"
+                    grabCursor={true}
+                    centeredSlides={false}
+                    spaceBetween={20}
+                    slidesPerView={1}
+                    loop={keys.length > 3}
+                    speed={600}
+                    autoplay={{ delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+                    navigation={{ nextEl: '.programs-next', prevEl: '.programs-prev' }}
+                    pagination={{ clickable: true, dynamicBullets: true }}
+                    breakpoints={{
+                        480: { slidesPerView: 1.2, spaceBetween: 15 },
+                        768: { slidesPerView: 2.2, spaceBetween: 20 },
+                        1024: { slidesPerView: 3.2, spaceBetween: 20 },
+                        1366: { slidesPerView: 4, spaceBetween: 25 },
+                        1600: { slidesPerView: 5, spaceBetween: 30 }
+                    }}
+                    className="programs-swiper"
+                    style={{ paddingBottom: '40px' }}
+                >
+                    {keys.map(key => {
+                        const p = programs[key];
+                        return (
+                            <SwiperSlide key={key}>
+                                <div
+                                    className="about-card-premium"
+                                    onClick={() => window.openProgramModal && window.openProgramModal(key)}
+                                    style={{
+                                        backgroundImage: `url(${p.image || '/images/hero-banner.jpg'})`
+                                    }}
+                                >
+                                    <div className="about-card-overlay"></div>
+                                    <div className="about-card-shine"></div>
+                                    <div className="about-card-content">
+                                        <i className={`bi ${p.icon} about-card-icon`}></i>
+                                        <h3>{p.title}</h3>
+                                        <span className="about-card-subtitle">{p.subtitle}</span>
                                     </div>
-                                </SwiperSlide>
-                            );
-                        })}
-                    </Swiper>
+                                </div>
+                            </SwiperSlide>
+                        );
+                    })}
+                </Swiper>
 
-                    <div className="swiper-button-prev programs-prev"></div>
-                    <div className="swiper-button-next programs-next"></div>
-                </div>
+                <div className="programs-prev"></div>
+                <div className="programs-next"></div>
             </div>
         </section>
     );

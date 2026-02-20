@@ -1,56 +1,83 @@
 ﻿/* =========================================
-   TIPOGRAFÍA OFICIAL — BRANDBOOK JACQUIN
-   Solo 2 fuentes (manual de identidad pág. Familia Tipográfica):
-   · Helvetica Neue Condensed Bold → titular principal, logo, hero
-   · Helvetica Neue Light          → cuerpo, nav, web, folletos
-   · Marion Regular                → fuente secundaria
+   BRANDBOOK FONTS - Poppins & Lancelot
    ========================================= */
 
-/* --- Helvetica Neue: Condensed Bold (titular, logo, hero) --- */
 @font-face {
-    font-family: 'HelveticaNeue';
-    src: url('../fonts/HelveticaNeueCondensedBold.ttf') format('truetype');
-    font-weight: 700;
-    font-style: condensed;
-    font-display: swap;
-}
-
-/* --- Helvetica Neue: Light (cuerpo, nav, párrafos) --- */
-@font-face {
-    font-family: 'HelveticaNeue';
-    src: url('../fonts/HelveticaNeueLight.ttf') format('truetype');
+    font-family: 'Poppins';
+    src: url('../fonts/poppins_light.ttf') format('truetype');
     font-weight: 300;
     font-style: normal;
     font-display: swap;
 }
 
-/* --- Helvetica Neue: Medium (botones, labels) --- */
 @font-face {
-    font-family: 'HelveticaNeue';
-    src: url('../fonts/HelveticaNeueMedium.ttf') format('truetype');
+    font-family: 'Poppins';
+    src: url('../fonts/poppins_regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins_medium.ttf') format('truetype');
     font-weight: 500;
     font-style: normal;
     font-display: swap;
 }
 
-/* --- Marion Regular (fuente secundaria brandbook) --- */
 @font-face {
-    font-family: 'Marion';
-    src: url('/fonts/marion_regular.otf') format('opentype');
+    font-family: 'Poppins';
+    src: url('../fonts/poppins_semibold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins_bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins_extrabold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins_black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins_italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lancelot';
+    src: url('../fonts/lancelot_regular.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
 
 :root {
-    /* === TIPOGRAFÍA BRANDBOOK — 2 FAMILIAS OFICIALES === */
-    /* Principal: Helvetica Neue (todas variaciones vía font-weight) */
-    --font-principal: 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    /* Secundaria: Marion Regular */
-    --font-secundaria: 'Marion', Georgia, 'Times New Roman', serif;
-    /* Alias de compatibilidad */
-    --font-decorativa: 'Marion', Georgia, 'Times New Roman', serif;
-    --font-display: 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* Fuentes del Brandbook */
+    --font-principal: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-decorativa: 'Lancelot', Georgia, serif;
 
     /* Paleta de Colores */
     --color-principal-azul: #223F61;
@@ -61,9 +88,9 @@
     --color-acento-naranja: #E78C3B;
     --naranja-neon: #f97316;
     --color-blanco-neutro: #dddddd;
-    --color-fondo-crema: #F3F2EE;
     --color-humo-gris: #CDCDCD;
     --verde-neon: #2ecc71;
+    /* Emerald Neon Green */
     --color-neon-purple: #8e44ad;
     --color-neon-azul: #3498db;
 }
@@ -200,39 +227,27 @@ a {
 
 /* The Web Component Container */
 /* The Web Component Container */
-jam-header {
+jam-header,
+.header {
     height: 14vh;
     width: 100%;
     display: block;
     position: fixed;
+    /* Changed from sticky to fixed to overlay hero */
     top: 0;
     z-index: 1000;
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-    /* Allow clicks through the wrapper if needed, but inner header has them */
-}
-
-.header {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+    /* Transparent gradient initially */
     background: linear-gradient(to bottom,
             rgba(34, 63, 97, 0.4) 0%,
             transparent 100%);
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: auto;
 }
 
 /* Scrolled State - Frosted Glass Effect (Vidrio Esmerilado) */
-jam-header.scrolled {
-    height: 11vh;
-}
-
-jam-header.scrolled .header {
+jam-header.scrolled,
+.header.scrolled {
     background: rgba(34, 63, 97, 0.6);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -241,6 +256,7 @@ jam-header.scrolled .header {
         inset 0 1px 0 rgba(255, 255, 255, 0.1),
         0 1px 3px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    height: 11vh;
 }
 
 /* Flex Container for Logo & Menu */
@@ -250,7 +266,7 @@ jam-header.scrolled .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 5% 12px 5%;
+    padding: 0 5%;
     box-sizing: border-box;
 }
 
@@ -325,14 +341,15 @@ jam-header.scrolled .header {
 
     /* 2. Logo Adjustments */
     .logo {
-        height: auto;
-        width: clamp(140px, 40%, 200px);
+        height: 80%;
+        /* Fit within 10vh */
+        max-width: 60%;
         justify-content: flex-start;
     }
 
-    .logo jam-logo {
-        width: 100%;
-        height: auto;
+    .logo svg {
+        height: 100%;
+        max-height: 40px;
     }
 
     /* 2b. Enable menuToggle for mobile - CRITICAL for menu functionality */
@@ -643,243 +660,166 @@ jam-header.scrolled .header {
 .events-swiper {
     width: 100%;
     max-width: 98% !important;
-    /* Maximizar espacio para 7 tarjetas */
     margin: 0 auto !important;
     padding: 20px 0 !important;
     overflow: hidden !important;
-    /* El efecto 'slide' no necesita overflow visible */
 }
 
-.program-card {
-    width: 100%;
-    height: 100%;
-    background-color: rgba(25, 47, 72, 0.9);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    position: relative;
-    overflow: hidden;
+/* =========================================
+   SWIPER NAVIGATION - ESTILO INFINITY
+   ========================================= */
+
+/* Botones de Navegación (Referencia: proyecto jacquin-infinity) */
+.programs-swiper .swiper-button-prev,
+.programs-swiper .swiper-button-next,
+.events-swiper .swiper-button-prev,
+.events-swiper .swiper-button-next,
+.programs-prev,
+.programs-next,
+.events-prev,
+.events-next {
+    color: var(--color-acento-azul) !important;
+    background: rgba(25, 47, 72, 0.85) !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(147, 182, 238, 0.2) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 50 !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    cursor: pointer !important;
 }
 
-/* Efecto de brillo animado */
-.program-card::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -60%;
-    width: 20%;
-    height: 200%;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.1),
-            transparent);
-    transform: rotate(45deg);
-    animation: shine 3s infinite;
-    z-index: 3;
-    pointer-events: none;
+/* Posicionamiento de los botones customizados */
+.programs-prev,
+.events-prev {
+    left: -20px !important;
 }
 
-@keyframes shine {
-    0% {
-        left: -60%;
+.programs-next,
+.events-next {
+    right: -20px !important;
+}
+
+/* Flecha única: una sola chevron */
+.programs-prev::after,
+.events-prev::after {
+    content: '‹' !important;
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+    color: var(--color-acento-azul) !important;
+    line-height: 1 !important;
+}
+
+.programs-next::after,
+.events-next::after {
+    content: '›' !important;
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+    color: var(--color-acento-azul) !important;
+    line-height: 1 !important;
+}
+
+/* Tamaño de la flecha */
+.programs-swiper .swiper-button-prev::after,
+.programs-swiper .swiper-button-next::after,
+.events-swiper .swiper-button-prev::after,
+.events-swiper .swiper-button-next::after {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: var(--color-acento-azul) !important;
+}
+
+/* Hover: fondo azul sólido + glow */
+.programs-swiper .swiper-button-prev:hover,
+.programs-swiper .swiper-button-next:hover,
+.events-swiper .swiper-button-prev:hover,
+.events-swiper .swiper-button-next:hover,
+.programs-prev:hover,
+.programs-next:hover,
+.events-prev:hover,
+.events-next:hover {
+    background: var(--color-acento-azul) !important;
+    border-color: var(--color-acento-azul) !important;
+    transform: translateY(-50%) scale(1.1) !important;
+    box-shadow:
+        0 0 20px rgba(147, 182, 238, 0.5),
+        0 5px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.programs-prev:hover::after,
+.programs-next:hover::after,
+.events-prev:hover::after,
+.events-next:hover::after {
+    color: white !important;
+}
+
+.programs-swiper .swiper-button-prev:hover::after,
+.programs-swiper .swiper-button-next:hover::after,
+.events-swiper .swiper-button-prev:hover::after,
+.events-swiper .swiper-button-next:hover::after {
+    color: white !important;
+}
+
+/* Responsive: ajustar posición en pantallas pequeñas */
+@media (max-width: 1024px) {
+
+    .programs-prev,
+    .events-prev {
+        left: 5px !important;
     }
 
-    50%,
-    100% {
-        left: 160%;
-    }
-}
-
-/* Overlay oscuro con degradado para legibilidad */
-.program-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to top,
-            rgba(0, 0, 0, 0.95) 0%,
-            rgba(0, 0, 0, 0.75) 35%,
-            rgba(0, 0, 0, 0.4) 60%,
-            rgba(0, 0, 0, 0.15) 100%);
-    z-index: 1;
-    pointer-events: none;
-    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.program-card:hover .program-overlay {
-    background: linear-gradient(to top,
-            rgba(0, 0, 0, 0.8) 0%,
-            rgba(0, 0, 0, 0.4) 50%,
-            rgba(0, 0, 0, 0.1) 100%);
-}
-
-/* Contenido del programa */
-.program-content {
-    position: relative;
-    z-index: 2;
-    padding: 1.5rem 1rem 2rem;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.program-card:hover .program-content {
-    padding-bottom: 1.5rem;
-}
-
-.program-card:hover {
-    transform: translateY(-15px) scale(1.03);
-    border-color: rgba(147, 182, 238, 0.5);
-    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6),
-        0 0 60px rgba(147, 182, 238, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.program-card:active {
-    transform: translateY(-12px) scale(1.01);
-    transition: all 0.1s ease;
-}
-
-.program-icon {
-    font-size: 3rem;
-    color: #ffffff;
-    margin-bottom: 0.8rem;
-    filter: drop-shadow(0 0 15px rgba(147, 182, 238, 0.6));
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    animation: pulse-icon 3s infinite;
-}
-
-@keyframes pulse-icon {
-
-    0%,
-    100% {
-        filter: drop-shadow(0 0 15px rgba(147, 182, 238, 0.6));
+    .programs-next,
+    .events-next {
+        right: 5px !important;
     }
 
-    50% {
-        filter: drop-shadow(0 0 25px rgba(147, 182, 238, 0.8));
-    }
-}
-
-.program-card:hover .program-icon {
-    color: var(--color-acento-naranja);
-    filter: drop-shadow(0 0 30px rgba(231, 140, 59, 0.8));
-    transform: scale(1.2) translateY(-5px);
-    animation: none;
-}
-
-.program-card h3 {
-    font-size: 1.4rem;
-    color: #ffffff;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 0, 0, 0.6);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.program-card:hover h3 {
-    transform: translateY(-3px);
-    letter-spacing: 1.5px;
-    color: var(--color-acento-naranja);
-}
-
-.program-card p {
-    color: rgba(255, 255, 255, 0.95);
-    font-size: 0.9rem;
-    font-weight: 400;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-    margin-bottom: 0;
-    transition: all 0.4s ease;
-    max-height: 1.5rem;
-    opacity: 1;
-}
-
-.program-card:hover p {
-    margin-bottom: 0.8rem;
-    transform: translateY(-2px);
-}
-
-/* BotÃ³n "Ver mÃ¡s" que aparece en hover */
-.program-card::before {
-    content: 'Ver mÃ¡s >';
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%) translateY(30px);
-    background: linear-gradient(135deg, var(--color-acento-azul), var(--color-acento-naranja));
-    color: white;
-    padding: 0.6rem 1.5rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    opacity: 0;
-    z-index: 3;
-    pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    letter-spacing: 0.5px;
-}
-
-.program-card:hover::before {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* Efecto de borde brillante en hover */
-@keyframes border-glow {
-
-    0%,
-    100% {
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6),
-            0 0 60px rgba(147, 182, 238, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-    50% {
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6),
-            0 0 80px rgba(147, 182, 238, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    .programs-swiper .swiper-button-prev,
+    .programs-swiper .swiper-button-next,
+    .events-swiper .swiper-button-prev,
+    .events-swiper .swiper-button-next {
+        width: 42px !important;
+        height: 42px !important;
     }
 }
 
-.program-card:hover {
-    animation: border-glow 2s infinite;
+/* =========================================
+   SWIPER PAGINATION - ESTILO INFINITY
+   ========================================= */
+
+.programs-swiper .swiper-pagination-bullet,
+.events-swiper .swiper-pagination-bullet {
+    background: var(--color-humo-gris) !important;
+    opacity: 0.5 !important;
+    width: 8px !important;
+    height: 8px !important;
+    transition: all 0.3s ease !important;
 }
 
-@media (max-width: 768px) {
-    .programs-swiper .swiper-slide {
-        width: 240px;
-        height: 300px;
-    }
-
-    .program-icon {
-        font-size: 2.5rem;
-    }
-
-    .program-card h3 {
-        font-size: 1.1rem;
-    }
-
-    .program-content {
-        padding: 1rem 0.8rem 1.5rem;
-    }
+.programs-swiper .swiper-pagination-bullet-active,
+.events-swiper .swiper-pagination-bullet-active {
+    background: var(--color-acento-naranja) !important;
+    opacity: 1 !important;
+    width: 24px !important;
+    border-radius: 5px !important;
+    box-shadow: 0 0 10px rgba(231, 140, 59, 0.5) !important;
 }
+
+
+
+
+
+
 
 .bento-grid {
     display: grid;

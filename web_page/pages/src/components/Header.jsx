@@ -83,9 +83,14 @@ const Header = () => {
 
             <div className="logo-links">
                 <div className="logo" id="logo">
-                    <Link to="/" onClick={() => window.scrollTo(0, 0)}>
+                    <a href="#hero" onClick={(e) => {
+                        if (window.location.pathname === '/') {
+                            e.preventDefault();
+                            document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }}>
                         <JamLogo width={239} height="auto" color="white" />
-                    </Link>
+                    </a>
                 </div>
 
                 <input type="checkbox" className="menuToggle" id="menuToggle" />

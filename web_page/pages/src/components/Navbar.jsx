@@ -56,10 +56,10 @@ const Navbar = () => {
     return (
         <ul className="navbar-list" id="navbarList">
             <li>
-                <Link className="navbar-link" to="/">
+                <a className="navbar-link" href="#hero">
                     <span className="txt-menu">Inicio</span>
                     <i className="bi bi-house-door"></i>
-                </Link>
+                </a>
             </li>
             <li>
                 <a className="navbar-link" href="#eventos">

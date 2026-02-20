@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manuales de Usuario y Técnico - Academia Musical JACQUIN</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/terms.css" />
+    <style>
+        .manual-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .sel-btn {
+            background: rgba(34, 63, 97, 0.8);
+            border: 1px solid rgba(147, 182, 238, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--font-principal);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sel-btn:hover {
+            background: var(--color-acento-naranja);
+            transform: translateY(-2px);
+        }
+
+        .sel-btn.active {
+            background: var(--color-acento-naranja);
+            box-shadow: 0 0 15px rgba(231, 140, 59, 0.4);
+            border-color: white;
+        }
+
+        .manual-content {
+            display: none;
+        }
+
+        .manual-content.active {
+            display: block;
+        }
+
+        .a4 {
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .a4 h1,
+        .a4 h2,
+        .a4 h3 {
+            border-bottom: 2px solid #0B3A53;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        .a4 ul {
+            padding-left: 20px;
+        }
+
+        .a4 li {
+            margin-bottom: 10px;
+        }
+
+        .a4 strong {
+            color: #0B3A53;
+        }
+
+        .print-btn-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #contenido-imprimir,
+            #contenido-imprimir * {
+                visibility: visible;
+            }
+
+            #contenido-imprimir {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+            }
+
+            #contenido-imprimir h1,
+            #contenido-imprimir h2,
+            #contenido-imprimir h3 {
+                color: black !important;
+                border-bottom-color: black !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <jam-header></jam-header>
+
+    <main>
+        <div class="a4" id="contenido">
+            <div class="search-bar no-print">
+                <input type="text" id="buscar" placeholder="Buscar en el manual..." />
+            </div>
+
+            <div class="manual-selector no-print">
+                <button class="sel-btn active" onclick="showManual('tecnico')"><i class="bi bi-gear-fill"></i>
+                    Técnico</button>
+                <button class="sel-btn" onclick="showManual('usuario')"><i class="bi bi-people-fill"></i>
+                    Usuario</button>
+            </div>
+
+            <div id="contenido-imprimir">
+                <!-- MANUAL TÉCNICO -->
+                <div id="manual-tecnico" class="manual-content active">
+                    <h1>Manual Técnico: Academia Musical JACQUIN 🎶</h1>
+                    <p>Todo lo que necesitas saber para gestionar y entender el sistema.</p>
+
+                    <h2>1. ¿Qué es este proyecto?</h2>
+                    <p>Es la plataforma digital de la <strong>Academia Musical JACQUIN</strong>. No es solo una web; es
+                        un sistema que conecta a estudiantes, profesores y administradores para que la música no pare.
+                    </p>
+
+                    <h2>2. Las piezas del motor (Arquitectura)</h2>
+                    <ul>
+                        <li><strong>La Web (Frontend):</strong> HTML, CSS y JS puro. Rápida y adaptable.</li>
+                        <li><strong>La API (Backend):</strong> PHP. Gestiona datos, correos y seguridad.</li>
+                        <li><strong>Base de Datos:</strong> MySQL para almacenamiento seguro.</li>
+                    </ul>
+
+                    <h2>3. Instalación</h2>
+                    <ol>
+                        <li>Descarga XAMPP con PHP 8+.</li>
+                        <li>Copia el proyecto en <code>htdocs/</code>.</li>
+                        <li>Importa el SQL de <code>jacquin_api/database/</code>.</li>
+                        <li>Configura <code>jacquin_api/config/env.php</code>.</li>
+                        <li>Abre en tu navegador: <code>localhost/project_jacquin/web_page</code>.</li>
+                    </ol>
+
+                    <h2>4. Estructura</h2>
+                    <h3>📂 Web Page</h3>
+                    <ul>
+                        <li><code>/pages</code>: Vistas HTML.</li>
+                        <li><code>/js</code>: Lógica dinámica.</li>
+                        <li><code>/css</code>: Diseño premium.</li>
+                    </ul>
+                    <h3>📂 Jacquin API</h3>
+                    <ul>
+                        <li><code>/config</code>: Llaves del sistema.</li>
+                        <li><code>admin_*.php</code>: Gestión administrativa.</li>
+                    </ul>
+
+                    <h2>5. Flujos Clave</h2>
+                    <p>Gestión de eventos, inscripciones seguras y mantenimiento con túneles <strong>Zrok</strong> para
+                        acceso remoto.</p>
+                </div>
+
+                <!-- MANUAL USUARIO -->
+                <div id="manual-usuario" class="manual-content">
+                    <h1>Guía de Usuario: Academia Musical JACQUIN 🎶</h1>
+
+                    <h2>🎓 Estudiantes</h2>
+                    <ul>
+                        <li><strong>Explora:</strong> Descubre programas de Piano, Guitarra y más.</li>
+                        <li><strong>Eventos:</strong> No te pierdas conciertos y talleres.</li>
+                        <li><strong>Perfil:</strong> Sube tu foto y cambia tu clave.</li>
+                    </ul>
+
+                    <h2>🎸 Profesores</h2>
+                    <ul>
+                        <li><strong>Alumnos:</strong> Revisa tus asignaciones semanales.</li>
+                        <li><strong>Asistencia:</strong> Control rápido de clases.</li>
+                        <li><strong>Progreso:</strong> Deja comentarios a tus estudiantes.</li>
+                    </ul>
+
+                    <h2>⚙️ Administradores</h2>
+                    <ul>
+                        <li><strong>Contenido:</strong> Crea eventos y edita programas.</li>
+                        <li><strong>Usuarios:</strong> Aprueba inscripciones y asigna horarios.</li>
+                        <li><strong>Inventario:</strong> Control de instrumentos y equipos.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="print-btn-container no-print">
+                <button class="sel-btn" id="descargar"
+                    style="margin: 0 auto; background: var(--color-acento-azul); color: #0B3A53; font-weight: bold;">
+                    <i class="bi bi-file-earmark-pdf-fill"></i> Descargar PDF / Imprimir
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <jam-footer></jam-footer>
+
+    <script src="js/components/Navbar.js"></script>
+    <script src="js/components/Header.js"></script>
+    <script src="js/components/Footer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="js/logoSound.js"></script>
+    <script>
+        function showManual(type) {
+            document.querySelectorAll('.manual-content').forEach(m => m.classList.remove('active'));
+            document.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById('manual-' + type).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Buscador
+        const input = document.getElementById('buscar');
+        input.addEventListener('input', () => {
+            const texto = input.value.toLowerCase();
+            const contents = document.querySelectorAll('.manual-content');
+
+            contents.forEach(content => {
+                const inner = content.innerHTML.replace(/<mark>|<\/mark>/g, '');
+                if (texto.trim() === '') {
+                    content.innerHTML = inner;
+                    return;
+                }
+                const regex = new RegExp(`(${texto})`, 'gi');
+                content.innerHTML = inner.replace(regex, '<mark>$1</mark>');
+            });
+        });
+
+        // Descarga
+        document.getElementById('descargar').addEventListener('click', () => {
+            const manualActivo = document.querySelector('.manual-content.active');
+            const titulo = manualActivo.id === 'manual-tecnico' ? 'Manual_Tecnico_Jacquin' : 'Guia_Usuario_Jacquin';
+
+            const element = document.getElementById('contenido-imprimir');
+            const opt = {
+                margin: 15,
+                filename: titulo + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 3, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(manualActivo).save();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,517 @@
+/* =========================================
+   ACADEMIC FEATURES & COMPLIANCE STYLES
+   ALIGNED WITH PROJECT BRANDBOOK
+   ========================================= */
+
+/* Glass Effect for Modals - Using project brandbook colors */
+.glass-effect {
+    background: linear-gradient(135deg,
+            rgba(34, 63, 97, 0.95) 0%,
+            rgba(25, 47, 72, 0.95) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        0 4px 30px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+}
+
+/* Modal Overlay - Aligned with project glassmorphism */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Modal Content */
+.modal-content {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* Compliance Grid */
+.compliance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Buttons - Using brandbook variables */
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-acento-azul), var(--color-acento-naranja));
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: var(--font-principal);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 140, 59, 0.4), 0 0 20px rgba(147, 182, 238, 0.2);
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-danger {
+    background: rgba(255, 82, 82, 0.2);
+    color: #FF5252;
+    border: 1px solid #FF5252;
+}
+
+.btn-danger:hover {
+    background: #FF5252;
+    color: white;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.close-modal-btn:hover {
+    opacity: 1;
+}
+
+/* Badge Styles */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #FF5252;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(255, 82, 82, 0.5);
+    animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 2px 5px rgba(255, 82, 82, 0.5);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 3px 8px rgba(255, 82, 82, 0.7);
+    }
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top: 3px solid var(--color-acento-naranja);
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 40px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Compliance Item Card - Enhanced glassmorphism */
+.compliance-item-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(5px);
+}
+
+.compliance-item-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba(147, 182, 238, 0.3);
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(147, 182, 238, 0.1);
+}
+
+/* Badge Active/Inactive */
+.badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.badge.active {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+.badge.inactive {
+    background: rgba(255, 82, 82, 0.2);
+    color: #FF5252;
+    border: 1px solid #FF5252;
+}
+
+/* Tab System */
+.tab-container {
+    display: flex;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.tab-btn:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.tab-btn.active {
+    color: var(--color-acento-naranja);
+    border-bottom-color: var(--color-acento-naranja);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ===============================
+   TEXT COLOR FIXES FOR VISIBILITY
+   =============================== */
+
+/* All modal headers should be white */
+.modal-header h2,
+.modal-header h3 {
+    color: #fff !important;
+}
+
+/* All labels in modal body */
+.modal-body label,
+.modal-body .form-label {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Input and select elements */
+.modal-body input,
+.modal-body select,
+.modal-body textarea {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.modal-body input::placeholder,
+.modal-body textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Select dropdown options */
+.modal-body select option,
+.swal2-select option,
+.swal2-html-container select option,
+#swal-sched-day option {
+    background-color: #1a1a2e !important;
+    color: #fff !important;
+    padding: 10px;
+}
+
+/* Table headers and cells */
+.modal-body table th {
+    color: #fff !important;
+    background: rgba(74, 144, 226, 0.2) !important;
+}
+
+.modal-body table td {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Compliance item cards */
+.compliance-item-card h3,
+.compliance-item-card h4 {
+    color: #fff !important;
+}
+
+.compliance-item-card p,
+.compliance-item-card span {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* Info bars */
+.modal-body .info-bar,
+.modal-body .alert {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Assignment and task cards */
+.assignment-card,
+.task-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.assignment-card h3,
+.assignment-card h4,
+.task-card h3,
+.task-card h4 {
+    color: #fff !important;
+    margin-top: 0;
+}
+
+.assignment-card p,
+.task-card p {
+    color: rgba(255, 255, 255, 0.75) !important;
+    margin: 8px 0;
+}
+
+/* Notes section */
+.notes-section p,
+.notes-section span,
+.notes-section div {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Empty state messages */
+.empty-message {
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 1.1rem;
+}
+
+/* ===============================
+   SWEETALERT2 CUSTOM STYLES
+   Aligned with project brandbook
+   =============================== */
+
+/* SweetAlert2 Popup */
+.swal2-popup {
+    background: linear-gradient(135deg,
+            rgba(34, 63, 97, 0.98) 0%,
+            rgba(25, 47, 72, 0.98) 100%) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        0 4px 30px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    font-family: var(--font-principal) !important;
+}
+
+/* SweetAlert2 Title */
+.swal2-title {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-family: var(--font-principal) !important;
+}
+
+/* SweetAlert2 Content */
+.swal2-html-container {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* SweetAlert2 Confirm Button - Using brandbook gradient */
+.swal2-confirm {
+    background: linear-gradient(135deg, var(--color-acento-azul), var(--color-acento-naranja)) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px 24px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.2s ease !important;
+}
+
+.swal2-confirm:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(231, 140, 59, 0.4), 0 0 20px rgba(147, 182, 238, 0.2) !important;
+}
+
+/* SweetAlert2 Cancel Button */
+.swal2-cancel {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    padding: 10px 24px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
+.swal2-cancel:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* SweetAlert2 Input Fields */
+.swal2-input,
+.swal2-textarea,
+.swal2-select {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    font-family: var(--font-principal) !important;
+}
+
+.swal2-input::placeholder,
+.swal2-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.swal2-input:focus,
+.swal2-textarea:focus,
+.swal2-select:focus {
+    border-color: var(--color-acento-azul) !important;
+    box-shadow: 0 0 0 3px rgba(147, 182, 238, 0.1) !important;
+    outline: none !important;
+}
+
+/* SweetAlert2 Validation Message */
+.swal2-validation-message {
+    background: rgba(255, 82, 82, 0.2) !important;
+    color: #FF5252 !important;
+    border-left: 3px solid #FF5252 !important;
+}
+
+/* SweetAlert2 Icons */
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: #4CAF50 !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+    border-color: rgba(76, 175, 80, 0.3) !important;
+}
+
+.swal2-icon.swal2-error {
+    border-color: #FF5252 !important;
+}
+
+.swal2-icon.swal2-warning {
+    border-color: var(--color-acento-naranja) !important;
+    color: var(--color-acento-naranja) !important;
+}
+
+.swal2-icon.swal2-info {
+    border-color: var(--color-acento-azul) !important;
+    color: var(--color-acento-azul) !important;
+}
+
+/* SweetAlert2 Progress Steps */
+.swal2-progress-steps .swal2-progress-step {
+    background: var(--color-acento-azul) !important;
+}
+
+.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step {
+    background: var(--color-acento-naranja) !important;
+}
+
+/* SweetAlert2 Close Button */
+.swal2-close {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.swal2-close:hover {
+    color: #ffffff !important;
+}

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>J.A.M - Sobre Nosotros</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .about-section {
+        padding: 3rem 5%;
+        min-height: 70vh;
+      }
+
+      .about-hero {
+        text-align: center;
+        margin-bottom: 4rem;
+        color: var(--color-blanco-neutro);
+      }
+
+      .about-hero h1 {
+        font-weight: 300;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      .about-hero p {
+        max-width: 800px;
+        margin: 0 auto;
+        font-size: 1.2rem;
+        opacity: 0.9;
+        line-height: 1.8;
+      }
+
+      .about-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 3rem;
+      }
+
+      .about-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 2.5rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .about-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .about-card-icon {
+        font-size: 3rem;
+        color: var(--color-acento-naranja);
+        margin-bottom: 1.5rem;
+        display: block;
+      }
+
+      .about-card h3 {
+        color: var(--color-blanco-neutro);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .about-card p {
+        color: var(--color-humo-gris);
+        line-height: 1.8;
+      }
+
+      .mission-vision {
+        margin-top: 4rem;
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .mission-vision h2 {
+        color: var(--color-acento-azul);
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      .mission-vision p {
+        color: var(--color-humo-gris);
+        font-size: 1.1rem;
+        line-height: 1.8;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .values-grid {
+        margin-top: 3rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+
+      .value-item {
+        text-align: center;
+        padding: 1.5rem;
+      }
+
+      .value-item i {
+        font-size: 2.5rem;
+        color: var(--color-acento-azul);
+        margin-bottom: 1rem;
+      }
+
+      .value-item h4 {
+        color: var(--color-blanco-neutro);
+        margin-bottom: 0.5rem;
+      }
+
+      .value-item p {
+        color: var(--color-humo-gris);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .about-hero h1 {
+          font-size: 2rem;
+        }
+
+        .about-content {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <jam-header></jam-header>
+
+    <main>
+      <section class="about-section">
+        <div class="about-hero">
+          <h1>Sobre Nosotros</h1>
+          <p>
+            En JACQUIN, transformamos la pasión por la música en excelencia
+            artística. Somos una institución dedicada a formar músicos
+            integrales a través de una metodología personalizada y profesores
+            altamente calificados.
+          </p>
+        </div>
+
+        <div class="about-content">
+          <div class="about-card">
+            <i class="bi bi-award about-card-icon"></i>
+            <h3>Nuestra Historia</h3>
+            <p>
+              Fundada con la visión de democratizar la educación musical de
+              calidad, JACQUIN ha formado a cientos de estudiantes que hoy
+              brillan en escenarios nacionales e internacionales.
+            </p>
+          </div>
+
+          <div class="about-card">
+            <i class="bi bi-people about-card-icon"></i>
+            <h3>Nuestro Equipo</h3>
+            <p>
+              Contamos con un equipo de profesores profesionales, músicos
+              activos y pedagogos apasionados que guían a cada estudiante en su
+              camino hacia la excelencia musical.
+            </p>
+          </div>
+
+          <div class="about-card">
+            <i class="bi bi-music-note-list about-card-icon"></i>
+            <h3>Metodología</h3>
+            <p>
+              Nuestra metodología combina técnica clásica con enfoques modernos,
+              adaptándose al ritmo y estilo de aprendizaje de cada estudiante
+              para garantizar resultados excepcionales.
+            </p>
+          </div>
+        </div>
+
+        <div class="mission-vision">
+          <h2>Nuestra Misión</h2>
+          <p>
+            Formar músicos integrales con sólidas bases técnicas y artísticas,
+            fomentando la creatividad, la disciplina y el amor por la música.
+            Nos comprometemos a ofrecer educación musical de excelencia
+            accesible para todos.
+          </p>
+
+          <div class="values-grid">
+            <div class="value-item">
+              <i class="bi bi-star"></i>
+              <h4>Excelencia</h4>
+              <p>Compromiso con la calidad en cada clase</p>
+            </div>
+
+            <div class="value-item">
+              <i class="bi bi-heart"></i>
+              <h4>Pasión</h4>
+              <p>Amor genuino por la música y la enseñanza</p>
+            </div>
+
+            <div class="value-item">
+              <i class="bi bi-lightbulb"></i>
+              <h4>Innovación</h4>
+              <p>Métodos actualizados y tecnología educativa</p>
+            </div>
+
+            <div class="value-item">
+              <i class="bi bi-hand-thumbs-up"></i>
+              <h4>Respeto</h4>
+              <p>Ambiente inclusivo y de apoyo mutuo</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <jam-footer></jam-footer>
+
+    <script src="js/components/Navbar.js"></script>
+    <script src="js/components/Header.js"></script>
+    <script src="js/components/Footer.js"></script>
+    <script src="js/logoSound.js"></script>
+  </body>
+</html>

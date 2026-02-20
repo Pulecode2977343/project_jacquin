@@ -1,0 +1,269 @@
+/* =========================================
+   PREMIUM FORMS STYLES (Glassmorphism)
+   ========================================= */
+
+/* Variables inherited from style.css */
+/* Local Glass vars */
+.login-card {
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur: 20px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-principal);
+    /* Cinematic Background matching Hero */
+    background: radial-gradient(circle at 50% 30%, #2a4d70 0%, #192f48 60%, #0d1926 100%);
+    color: var(--color-blanco-neutro);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Fix for header overlap & Centering */
+.main-login-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 14vh;
+    /* Clear the Fixed Header */
+    box-sizing: border-box;
+    padding-bottom: 50px;
+}
+
+/* Glass Card */
+.login-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 3rem;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Card Glow Effect */
+.login-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(147, 182, 238, 0.1) 0%, transparent 60%);
+    pointer-events: none;
+    transform: translate(-30%, -30%);
+}
+
+.login-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+    color: var(--color-blanco-neutro);
+}
+
+/* Inputs */
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-humo-gris);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin-left: 10px;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-input-glass,
+select.form-input-glass,
+textarea.form-input-glass {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 15px 15px 15px 45px;
+    /* Left padding for icon */
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+textarea.form-input-glass {
+    resize: vertical;
+    min-height: 100px;
+    padding-top: 15px;
+    /* Adjust top padding for textarea */
+}
+
+select.form-input-glass {
+    appearance: none;
+    cursor: pointer;
+}
+
+select.form-input-glass option {
+    background: var(--color-principal-azul);
+    color: white;
+}
+
+.form-input-glass:focus,
+select.form-input-glass:focus,
+textarea.form-input-glass:focus {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: var(--color-acento-azul);
+    box-shadow: 0 0 15px rgba(147, 182, 238, 0.1);
+}
+
+.form-input-glass::placeholder,
+textarea.form-input-glass::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: var(--color-acento-azul);
+    font-size: 1.2rem;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* Adjust icon position for textarea if needed */
+textarea~.input-icon {
+    top: 15px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    color: var(--color-humo-gris);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.toggle-password:hover {
+    color: white;
+}
+
+/* Button Premium */
+.btn-premium-submit {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid var(--color-acento-naranja);
+    background: linear-gradient(45deg, rgba(231, 140, 59, 0.1), transparent);
+    color: var(--color-acento-naranja);
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 1.5rem;
+    box-shadow: 0 0 15px rgba(231, 140, 59, 0.2);
+}
+
+.btn-premium-submit:hover {
+    background: var(--color-acento-naranja);
+    color: white;
+    box-shadow: 0 0 30px rgba(231, 140, 59, 0.6);
+    transform: translateY(-2px);
+}
+
+/* Links & Footer Text */
+.form-footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--color-humo-gris);
+}
+
+.form-footer a {
+    color: var(--color-acento-azul);
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.form-footer a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--color-acento-naranja);
+    transition: width 0.3s;
+}
+
+.form-footer a:hover::after {
+    width: 100%;
+}
+
+.form-footer a:hover {
+    color: var(--color-acento-naranja);
+}
+
+.option-login {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Error Message */
+#mensaje-respuesta {
+    text-align: center;
+    color: var(--color-acento-naranja);
+    margin-top: 1rem;
+    min-height: 20px;
+    font-weight: 500;
+    text-shadow: 0 0 10px rgba(231, 140, 59, 0.3);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .login-card {
+        padding: 2rem;
+        max-width: 90%;
+    }
+
+    .login-title {
+        font-size: 2rem;
+    }
+}

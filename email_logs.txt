@@ -1,1 +1,2 @@
 [2026-02-20 15:05:25] TO: test_estudiante@gmail.com | SUBJECT: Actualización de Perfil - JACQUIN | BODY: Hola Estudiante de Prueba,<br><br>Un administrador ha actualizado tu perfil:<br><ul><li>Rol actualizado</li></ul><br>Si no reconoces estos cambios, contacta a soporte.
+[2026-02-21 02:01:08] TO: herreragabrielantonio@gmail.com | SUBJECT: Actualización de Perfil - JACQUIN | BODY: Hola Gabriel Herrera,<br><br>Un administrador ha actualizado tu perfil:<br><ul><li>Teléfono cambiado a </li><li>Rol actualizado</li></ul><br>Si no reconoces estos cambios, contacta a soporte.

@@ -146,7 +146,7 @@ const Events = () => {
                                     <div
                                         className="about-card-premium"
                                         style={{
-                                            backgroundImage: `url(${event.image_url || '/images/hero-banner.jpg'})`
+                                            backgroundImage: `url(${event.image_url ? (event.image_url.startsWith('assets/') || event.image_url.startsWith('http') || event.image_url.startsWith('data:') ? event.image_url : 'assets/' + event.image_url.replace(/^\//, '')) : 'assets/images/hero/hero-banner.jpg'})`
                                         }}
                                         onClick={() => window.open(`https://wa.me/573042328575?text=Información sobre el evento: ${event.title}`, '_blank')}
                                     >

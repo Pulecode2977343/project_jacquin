@@ -126,7 +126,26 @@ graph LR
 | **RNF-04** | **Usabilidad** | Diseño Responsive (Mobile First) adaptable a tablets y desktops. |
 | **RNF-05** | **Escalabilidad** | Arquitectura modular que permite añadir nuevos módulos (ej. Pagos) sin refactorización total. |
 
-## 5. Historial de Cambios (Bitácora Diaria)
-*   **Fecha:** 2026-02-18
-*   **Ajustes UI:** Corrección de espaciado en menú de navegación (Header) y limpieza visual del Hero Section para coincidir con diseño aprobado.
-*   **Infraestructura:** Reparación de scripts de túnel Zrok y diagnóstico de red.
+## 5. Estructura de Archivos y Recursos (Assets)
+A partir de la auditoría de febrero 2026, los recursos se han centralizado para optimización y compatibilidad con hosting compartido:
+
+*   **Ruta Raíz Assets**: `web_page/pages/public/assets/`
+    *   **images/**:
+        *   `avatars/`: Contiene `default_avatar.svg`.
+        *   `hero/`: Imágenes de la sección principal.
+        *   `about/`: Recursos de la sección "Nosotros".
+        *   `programs/`: Miniaturas de cursos.
+        *   `values/`: Iconografía de valores institucionales.
+    *   **fonts/**: Colección de fuentes oficiales del Brandbook (Poppins, HelveticaNeue, Marion).
+
+### Beneficios:
+1.  **Compatibilidad Hosting**: Rutas relativas consistentes en InfinityFree.
+2.  **Rendimiento**: Mejor cacheo de recursos estáticos.
+3.  **Orden**: Eliminación de carpetas duplicadas (`web_page/assets/`, `web_page/pages/images/`).
+
+## 6. Historial de Cambios (Bitácora Diaria)
+*   **Fecha:** 2026-02-21
+*   **Auditoría UI**: Corrección masiva de rutas de avatares en paneles de Docente y Estudiante.
+*   **Consolidación**: Eliminación de archivos huérfanos y legacy (`_LEGACY_ARCHIVE` movido a backups).
+*   **Documentación**: Generación de manuales detallados por roles en la carpeta `technical/manuals/`.
+*   **InfinityFree Prep**: Ajuste de `PathHelper.php` y variables de entorno para despliegue productivo.

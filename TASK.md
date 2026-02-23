@@ -15,3 +15,6 @@
 | **Corrección Fuentes — Brandbook** | ✅ | Fuentes 100% del brandbook oficial: **HelveticaNeue** (Cond. Bold + Light) + **Marion Regular**. Archivos TTF/OTF locales, sin CDN externo. |
 | **Sistema SPA React** | ✅ | Migración a React + Vite (`web_page/pages/src/`). Componentes: Hero, Header, Navbar, Events, Programs, About, Login. |
 | **API Service Centralizado** | ✅ | `services/api.js` con métodos para auth, usuarios, eventos, académico. |
+| **Configuración Header Maestro** | ✅ | Componente centralizado con sincronización automática entre React y estático. |
+| **Limpieza de Proyecto** | ✅ | Eliminación del archivo `index.html` deprecado en la raíz de `web_page`. |
+| **Gestión de Skills de Agente** | ✅ | Registro y vinculación de la habilidad `header-manager` en el sistema global. |

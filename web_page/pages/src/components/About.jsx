@@ -8,7 +8,7 @@ const STATIC_CARDS = [
         title: "Historia",
         subtitle: "Nuestra Trayectoria",
         icon: "bi-hourglass-split",
-        image_url: "images/about/historia.jpg",
+        image_url: "assets/images/about/historia.jpg",
         description: "Desde nuestros inicios, hemos formado a cientos de músicos con pasión y excelencia."
     },
     {
@@ -16,7 +16,7 @@ const STATIC_CARDS = [
         title: "Metodología",
         subtitle: "Enfoque Único",
         icon: "bi-mortarboard",
-        image_url: "images/about/metodologia.jpg",
+        image_url: "assets/images/about/metodologia.jpg",
         description: "Combina técnica clásica con pedagogía moderna para un aprendizaje integral."
     },
     {
@@ -24,7 +24,7 @@ const STATIC_CARDS = [
         title: "Instalaciones",
         subtitle: "Espacios Creativos",
         icon: "bi-building",
-        image_url: "images/about/instalaciones.jpg",
+        image_url: "assets/images/about/instalaciones.jpg",
         description: "Salas equipadas con instrumentos de primera calidad para inspirar tu arte."
     },
     {
@@ -32,7 +32,7 @@ const STATIC_CARDS = [
         title: "Equipo",
         subtitle: "Maestros Expertos",
         icon: "bi-people",
-        image_url: "images/about/equipo.jpg",
+        image_url: "assets/images/about/equipo.jpg",
         description: "Músicos profesionales dedicados a guiar tu desarrollo artístico."
     }
 ];
@@ -98,11 +98,22 @@ const About = () => {
 
     // Helper para manejar URLs de imágenes (API vs Local)
     const getImageUrl = (url) => {
-        if (!url) return 'images/hero-banner.jpg'; // Fallback
-        if (url.startsWith('http') || url.startsWith('images/')) return url;
+        if (!url) return 'assets/images/hero/hero-banner.jpg'; // Fallback centralizado
+
+        // Si ya es una URL absoluta o ya usa la nueva ruta de assets, dejarla igual
+        if (url.startsWith('http') || url.startsWith('assets/')) return url;
+
+        // Si usa la ruta antigua "images/", redirigir a "assets/images/"
+        if (url.startsWith('images/')) return 'assets/' + url;
+
         // Si viene del backend (uploads), construir ruta relativa o absoluta según config
-        // Asumiendo que jacquin_api sirve estáticos o usamos ruta relativa desde public
-        return `jacquin_api/${url}`;
+        if (url.includes('uploads/') || !url.includes('/')) {
+            // Si no tiene barras, asumimos que es el nombre de archivo en uploads
+            // o si explícitamente dice uploads
+            return `jacquin_api/${url}`;
+        }
+
+        return url;
     };
 
     return (

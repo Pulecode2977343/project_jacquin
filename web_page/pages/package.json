@@ -8,8 +8,8 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "lucide-react": "^0.574.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.0",
     "react-scripts": "5.0.1",
     "sweetalert2": "^11.26.18",
@@ -20,7 +20,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:header": "esbuild src/header-mount.jsx --bundle --outfile=public/js/react-header.bundle.js --jsx=automatic --format=iife --loader:.svg=dataurl --define:process.env.PUBLIC_URL='\"\"' --define:process.env.NODE_ENV='\"production\"'"
   },
   "eslintConfig": {
     "extends": [
@@ -40,8 +41,9 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost/project_jacquin/",
+  "proxy": "http://localhost:8080",
   "devDependencies": {
+    "esbuild": "^0.27.3",
     "http-proxy-middleware": "^3.0.5"
   }
 }

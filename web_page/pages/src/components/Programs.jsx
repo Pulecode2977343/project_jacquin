@@ -63,7 +63,7 @@ const Programs = () => {
                                     className="about-card-premium"
                                     onClick={() => window.openProgramModal && window.openProgramModal(key)}
                                     style={{
-                                        backgroundImage: `url(${p.image || '/images/hero-banner.jpg'})`
+                                        backgroundImage: `url(${p.image ? (p.image.startsWith('assets/') || p.image.startsWith('http') || p.image.startsWith('data:') ? p.image : 'assets/' + p.image.replace(/^\//, '')) : 'assets/images/hero/hero-banner.jpg'})`
                                     }}
                                 >
                                     <div className="about-card-overlay"></div>

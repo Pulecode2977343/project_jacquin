@@ -1,0 +1,58 @@
+<?php
+// teacher_attendance.php
+// guardar asistencia
+
+require_once __DIR__ . '/config/cors.php';
+require_once __DIR__ . '/config/connection.php';
+
+header('Content-Type: application/json');
+
+try {
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (empty($input['schedule_id']) || empty($input['date']) || empty($input['students'])) {
+            throw new Exception("Datos incompletos");
+        }
+
+        $scheduleId = $input['schedule_id'];
+        $date = $input['date'];
+        $students = $input['students']; // Array de {student_id, status}
+
+        $pdo->beginTransaction();
+
+        $stmt = $pdo->prepare("INSERT INTO attendance (schedule_id, student_id, date, status) 
+                               VALUES (?, ?, ?, ?)
+                               ON DUPLICATE KEY UPDATE status = VALUES(status)");
+
+        foreach ($students as $student) {
+            $stmt->execute([
+                $scheduleId,
+                $student['student_id'],
+                $date,
+                $student['status']
+            ]);
+        }
+
+        $pdo->commit();
+        echo json_encode(['success' => true, 'message' => 'Asistencia guardada']);
+    } else {
+        // GET Attendance for specific date/schedule
+        if (empty($_GET['schedule_id']) || empty($_GET['date']))
+            throw new Exception("Params requeridos");
+
+        $sql = "SELECT student_id, status FROM attendance WHERE schedule_id = ? AND date = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$_GET['schedule_id'], $_GET['date']]);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode(['success' => true, 'data' => $data]);
+    }
+
+} catch (Exception $e) {
+    if ($pdo->inTransaction())
+        $pdo->rollBack();
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+}
+?>

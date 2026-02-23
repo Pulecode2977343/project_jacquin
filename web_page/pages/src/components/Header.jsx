@@ -1,18 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import JamLogo from './JamLogo';
 import Navbar from './Navbar';
 import ApiService from '../services/api';
 import AvatarHelper from '../helpers/AvatarHelper';
 
-const Header = () => {
-    const [isScrolled, setIsScrolled] = useState(false);
+const Header = ({ staticPage = false }) => {
+    const [isScrolled, setIsScrolled] = useState(staticPage);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleLogoClick = (e) => {
+        e.preventDefault();
+        const isHome = location.pathname === '/' || location.pathname === '/index.html' || location.pathname === '';
+
+        if (isHome) {
+            console.log("%c🎹 JACQUIN Academia Musical - Modo Maestro Activado", "color: #93B6EE; font-weight: bold; font-size: 14px;");
+            document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' });
+        } else if (staticPage) {
+            window.location.href = '/';
+        } else {
+            navigate('/');
+        }
+    };
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+            setIsScrolled(staticPage || window.scrollY > 50);
         };
         window.addEventListener('scroll', handleScroll);
 
@@ -35,7 +51,7 @@ const Header = () => {
     const renderAuthButtons = () => {
         if (isAuthenticated && user) {
             const roleName = user.id_rol === 1 ? 'Admin' : (user.id_rol === 2 ? 'Profesor' : 'Estudiante');
-            const avatarUrl = AvatarHelper.getUrl(user.avatar_url) || 'assets/images/default_avatar.svg';
+            const avatarUrl = AvatarHelper.getUrl(user.avatar_url) || 'assets/images/avatars/default_avatar.svg';
             const cleanName = user.full_name.split(' ')[0];
             const initials = AvatarHelper.getInitials(user.full_name);
 
@@ -66,10 +82,16 @@ const Header = () => {
         return (
             <>
                 <button className="btn btn-register">
-                    <Link to="/login" className="link link-login">Iniciar Sesión</Link>
+                    {staticPage
+                        ? <a href="/login" className="link link-login">Ingresa</a>
+                        : <Link to="/login" className="link link-login">Ingresa</Link>
+                    }
                 </button>
                 <button className="btn btn-login">
-                    <Link to="/registro" className="link link-register">Inscríbete</Link>
+                    {staticPage
+                        ? <a href="/registro" className="link link-register">Inscríbete</a>
+                        : <Link to="/registro" className="link link-register">Inscríbete</Link>
+                    }
                 </button>
             </>
         );
@@ -83,13 +105,8 @@ const Header = () => {
 
             <div className="logo-links">
                 <div className="logo" id="logo">
-                    <a href="#hero" onClick={(e) => {
-                        if (window.location.pathname === '/') {
-                            e.preventDefault();
-                            document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }}>
-                        <JamLogo width={239} height="auto" color="white" />
+                    <a href="/" onClick={handleLogoClick}>
+                        <JamLogo width={239} height="auto" color="white" staticPage={staticPage} />
                     </a>
                 </div>
 
@@ -99,7 +116,7 @@ const Header = () => {
                 </label>
 
                 <nav className="navbar" id="navBar">
-                    <Navbar />
+                    <Navbar staticPage={staticPage} />
                 </nav>
             </div>
         </header>

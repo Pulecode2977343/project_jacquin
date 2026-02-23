@@ -20,7 +20,7 @@ const Login = () => {
             setMessage('Tu sesión ha expirado por inactividad. Por favor ingresa de nuevo.');
             setIsError(true);
         } else if (ApiService.isAuthenticated()) {
-            navigate('/gestion');
+            window.location.href = 'gestion.html';
         }
     }, [navigate, location.search]);
 
@@ -42,7 +42,7 @@ const Login = () => {
                         setMessage('¡Bienvenido! Retomando tu inscripción...');
                         navigate('/#programas');
                     } else {
-                        navigate('/gestion');
+                        window.location.href = 'gestion.html';
                     }
                 }, 1000);
             } else {

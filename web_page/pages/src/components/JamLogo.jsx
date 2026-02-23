@@ -1,4 +1,6 @@
 import React, { useRef, useCallback } from 'react';
+import logoSrc from '../assets/logo_hr_jam.svg';
+
 
 /**
  * JamLogo - Jacquin Academia Musical
@@ -28,7 +30,7 @@ const KEY_AREAS = [
     { key: 'key4', left: '93.3%', width: '6.7%' }, // x=223-239 / 239
 ];
 
-const JamLogo = ({ width = '100%', height = 'auto', color, className = '' }) => {
+const JamLogo = ({ width = '100%', height = 'auto', color, className = '', staticPage = false }) => {
     const audioCtxRef = useRef(null);
 
     const getAudioCtx = useCallback(() => {
@@ -65,7 +67,7 @@ const JamLogo = ({ width = '100%', height = 'auto', color, className = '' }) => 
         // Sombra gris sutil interna — no desborda los bordes de la tecla
         e.currentTarget.style.background = 'rgba(60, 60, 60, 0.22)';
         e.currentTarget.style.borderRadius = '2px';
-        // playNote(PIANO_NOTES[noteKey]);
+        playNote(PIANO_NOTES[noteKey]);
     };
 
     const handleKeyLeave = (e) => {
@@ -85,7 +87,7 @@ const JamLogo = ({ width = '100%', height = 'auto', color, className = '' }) => 
         >
             {/* Logo SVG oficial — fidelidad total */}
             <img
-                src={`${process.env.PUBLIC_URL}/logo_hr_jam.svg`}
+                src={logoSrc}
                 alt="Jacquin Academia Musical"
                 style={{ width: '100%', height: 'auto', display: 'block' }}
                 draggable={false}

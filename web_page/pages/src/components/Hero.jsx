@@ -22,7 +22,7 @@ const Hero = () => {
             {/* Imagen de fondo */}
             <div className="hero-bg-wrapper">
                 <img
-                    src="/images/hero-banner.jpg"
+                    src="/assets/images/hero/hero-banner.jpg"
                     alt="Piano de cola — Jacquin Academia Musical"
                     className="hero-bg-img"
                 />

@@ -5,10 +5,19 @@
  */
 
 export const API_CONFIG = {
-    // Usar ruta relativa permite proxying
-    BASE_URL: "/project_jacquin/jacquin_api/",
+    get BASE_URL() {
+        const path = window.location.pathname;
+        const host = window.location.hostname;
+        const url = host === 'localhost' || host === '127.0.0.1' || host.includes('share.zrok.io')
+            ? "/jacquin_api/"
+            : (path.includes('/pages/') ? "../../jacquin_api/" : "../jacquin_api/");
+
+        console.log(`[ApiService-React] Host: ${host} | Base URL: ${url}`);
+        return url;
+    },
     HEADERS: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Accept": "application/json"
     }
 };
 
@@ -21,24 +30,68 @@ const ApiService = {
      * and redirect to login automatically.
      */
     async handleResponse(response) {
+        let text = "";
+        try {
+            text = await response.text();
+        } catch (e) {
+            return { success: false, message: "No se pudo leer la respuesta del servidor." };
+        }
+
         if (response.status === 401) {
             console.warn("[ApiService] Sesión expirada o no autorizada (401).");
             localStorage.removeItem("jam_user_session");
-            // Only redirect if we are not already in login/index
             const path = window.location.pathname;
-            if (!path.includes('login.html') && !path.includes('index.html')) {
+            if (!path.includes('login.html') && path !== '/' && path !== '') {
                 window.location.href = "login.html?error=session_expired";
             }
-            const err = await response.json().catch(() => ({ message: "Sesión expirada" }));
-            return { success: false, message: err.message || "Sesión expirada", unauthorized: true };
+            try {
+                const err = JSON.parse(text);
+                return { success: false, message: err.message || "Sesión expirada", unauthorized: true };
+            } catch (e) {
+                return { success: false, message: "Sesión expirada", unauthorized: true };
+            }
         }
 
         try {
-            return await response.json();
+            return JSON.parse(text);
         } catch (e) {
-            const text = await response.text();
-            return { success: false, message: "Error parseando JSON del servidor: " + text.substring(0, 50) };
+            return {
+                success: false,
+                message: `Respuesta no válida del servidor (Status ${response.status}): ` + text.substring(0, 100)
+            };
         }
+    },
+
+    /**
+     * Standardizes avatar URL generation across the legacy application.
+     */
+    getAvatarUrl(avatarPath) {
+        if (!avatarPath || avatarPath.trim() === '') {
+            return 'assets/images/avatars/default_avatar.svg';
+        }
+
+        if (avatarPath.startsWith('http')) {
+            return avatarPath;
+        }
+
+        // Clean filename from typical prefixes
+        let filename = avatarPath;
+        const prefixesToRemove = [
+            'web_page/pages/uploads/avatars/',
+            'web_page/pages/uploads/',
+            'public/uploads/avatars/',
+            'uploads/avatars/',
+            'public/'
+        ];
+
+        prefixesToRemove.forEach(prefix => {
+            if (filename.includes(prefix)) filename = filename.replace(prefix, '');
+        });
+
+        if (filename.startsWith('/')) filename = filename.substring(1);
+
+        // Standard static structure for the backend
+        return `${this.BASE_URL}public/uploads/avatars/${filename}`;
     },
 
     /**
@@ -135,7 +188,7 @@ const ApiService = {
 
     async logout() {
         localStorage.removeItem("jam_user_session");
-        window.location.href = "index.html";
+        window.location.href = "/";
     },
 
     /**
@@ -169,15 +222,6 @@ const ApiService = {
         }
     },
 
-    async getProgramsJson() {
-        try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}get_programs_json.php`);
-            return await response.json();
-        } catch (error) {
-            console.error("Error fetching programs:", error);
-            return {};
-        }
-    },
 
     async getCourses() {
         try {
@@ -691,19 +735,6 @@ const ApiService = {
         }
     },
 
-    async sendContactMessage(formData) {
-        try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}contact.php`, {
-                method: "POST",
-                headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(formData)
-            });
-            return await response.json();
-        } catch (error) {
-            console.error("Error sending message:", error);
-            return { success: false, message: "Error de conexión." };
-        }
-    },
 
     // ==========================================
     // MULTI-DAY SCHEDULING METHODS
@@ -1166,13 +1197,6 @@ const ApiService = {
     },
 
     // MISSION & VALUES
-    async getMissionValues() {
-        try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}get_mission_values.php`);
-            return await response.json();
-        } catch (error) { return { success: false, message: "Error obteniendo misión y valores." }; }
-    },
-
     async updateMissionValues(data) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}update_mission_values.php`, {
@@ -1195,7 +1219,20 @@ const ApiService = {
         } catch (error) {
             return { success: false, message: "Error validando conflictos de horario." };
         }
-    }
+    },
+    async sendContactMessage(contactData) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}contact.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify(contactData)
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            console.error("[ApiService] Error en sendContactMessage:", error);
+            return { success: false, message: "Error de conexión al enviar el mensaje." };
+        }
+    },
 };
 
 export default ApiService;

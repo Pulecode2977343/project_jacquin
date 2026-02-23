@@ -284,9 +284,10 @@
                 <li><a href="#requerimientos">2. Ingeniería de Requerimientos</a></li>
                 <li><a href="#arquitectura">3. Arquitectura del Sistema</a></li>
                 <li><a href="#datos">4. Modelo de Datos (ERD)</a></li>
-                <li><a href="#logica">5. Lógica de Negocio Crítica</a></li>
+                <li><a href="#assets">5. Centralización de Activos</a></li>
                 <li><a href="#seguridad">6. Seguridad y Roles</a></li>
-                <li><a href="#didactico">7. Anexo: Explicación Didáctica</a></li>
+                <li><a href="#manuales">7. Manuales de Usuario (NUEVO)</a></li>
+                <li><a href="#hosting">8. Guía de Despliegue (InfinityFree)</a></li>
             </ul>
         </div>
 
@@ -516,8 +517,67 @@ if (!isset($_SESSION['user']) || $_SESSION['id_rol'] != 1) {
             </ol>
         </section>
 
+        <!-- 5. ASSETS -->
+        <section id="assets">
+            <h2><i class="bi bi-folder2-open"></i> 5. Centralización de Activos</h2>
+            <p>Para asegurar que las imágenes y fuentes siempre se carguen correctamente, se ha implementado una
+                estructura unificada:</p>
+            <div class="section-box">
+                <pre><code>web_page/pages/public/assets/
+├── images/
+│   ├── avatars/
+│   ├── hero/
+│   ├── about/
+│   ├── programs/
+│   └── values/
+└── fonts/</code></pre>
+                <p><strong>Actualización:</strong> Se eliminó el retroceso de carpetas (<code>../</code>) en la lógica
+                    de resolución de rutas para activos internos, garantizando visibilidad en subcarpetas de hosting.
+                </p>
+            </div>
+        </section>
+
+        <!-- 7. MANUALES -->
+        <section id="manuales">
+            <h2><i class="bi bi-journal-check"></i> 7. Manuales de Usuario</h2>
+            <div class="grid-2">
+                <div class="section-box">
+                    <span class="badge functional">Roles</span>
+                    <h3>Manual del Administrador</h3>
+                    <p>Documento detallado sobre el control de inscripciones, creación de cursos y gestión de
+                        inventario. <br>
+                        <small>Fichero: <code>technical/manuals/admin.md</code></small>
+                    </p>
+                </div>
+                <div class="section-box">
+                    <span class="badge functional">Roles</span>
+                    <h3>Guía General de Usuario</h3>
+                    <p>Instrucciones para visitantes, estudiantes y docentes sobre cómo interactuar con el Dashboard.
+                        <br>
+                        <small>Fichero: <code>technical/manuals/user_guide.md</code></small>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. HOSTING -->
+        <section id="hosting">
+            <h2><i class="bi bi-cloud-upload"></i> 8. Guía de Despliegue (InfinityFree)</h2>
+            <div class="section-box">
+                <ol>
+                    <li>Subir el contenido de <code>web_page/pages/public/</code> a la raíz de <code>/htdocs/</code>.
+                    </li>
+                    <li>Subir la carpeta <code>jacquin_api/</code> como una subcarpeta en <code>/htdocs/api/</code>.
+                    </li>
+                    <li>Subir la carpeta <code>uploads/</code> a la raíz para que el sistema de gestión de archivos
+                        funcione.</li>
+                    <li>Configurar <code>PathHelper.php</code> para que apunte a la ruta raíz del hosting.</li>
+                </ol>
+            </div>
+        </section>
+
         <footer>
-            Documento generado por Agente Documentador Técnico Pro | Project Jacquin © 2026
+            Documento generado por Antigravity AI | Project Jacquin © 2026
         </footer>
     </div>
 

@@ -1,0 +1,7 @@
+{
+    "require": {
+        "sendinblue/api-v3-sdk": "^8.4",
+        "vlucas/phpdotenv": "^5.6",
+        "getbrevo/brevo-php": "^2.0"
+    }
+}

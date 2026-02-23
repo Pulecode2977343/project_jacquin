@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Ôªø<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Admin Programas - JACQUIN</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="css/footer.css" />
   <link rel="stylesheet" href="css/style.css?v=25" />
   ...
   <style>
@@ -200,9 +201,9 @@
     <!-- Breadcrumb / Header -->
     <div class="admin-header">
       <div>
-        <h1 style="color: white; margin-top: 0.5rem">GestiÛn de Programas</h1>
+        <h1 style="color: white; margin-top: 0.5rem">Gesti√≥n de Programas</h1>
         <p style="color: var(--color-humo-gris)">
-          Edita la informaciÛn de las tarjetas de programas.
+          Edita la informaci√≥n de las tarjetas de programas.
         </p>
       </div>
       <div style="display:flex; gap:10px;">
@@ -242,17 +243,17 @@
 
           <div class="form-grid">
             <div class="form-group">
-              <label>TÌtulo</label>
+              <label>T√≠tulo</label>
               <input type="text" class="form-control" name="title" required />
             </div>
 
             <div class="form-group">
-              <label>SubtÌtulo</label>
+              <label>Subt√≠tulo</label>
               <input type="text" class="form-control" name="subtitle" required />
             </div>
 
             <div class="form-group full-width">
-              <label>DescripciÛn</label>
+              <label>Descripci√≥n</label>
               <textarea class="form-control" name="description" rows="4" required></textarea>
             </div>
 
@@ -260,13 +261,13 @@
               <label>Icono (Bootstrap Icons)</label>
               <input type="text" class="form-control" name="icon" placeholder="Ej: bi-music-note" />
               <a href="https://icons.getbootstrap.com/" target="_blank"
-                style="font-size: 0.8rem; color: var(--color-acento-azul);">Ver cat·logo de iconos</a>
+                style="font-size: 0.8rem; color: var(--color-acento-azul);">Ver cat√°logo de iconos</a>
             </div>
 
             <div class="form-group">
-              <label>CaracterÌsticas (Separar por comas)</label>
+              <label>Caracter√≠sticas (Separar por comas)</label>
               <textarea class="form-control" name="features" rows="2"
-                placeholder="Ej: TÈcnica, Lectura, Ritmo"></textarea>
+                placeholder="Ej: T√©cnica, Lectura, Ritmo"></textarea>
             </div>
 
             <div class="form-group full-width">
@@ -295,11 +296,11 @@
     </div>
   </main>
 
-  <jam-footer></jam-footer>
+  <div id="react-footer-root"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="js/services/api.js"></script>
-  <script src="js/components/Footer.js"></script>
+  <script src="js/react-footer.bundle.js"></script>
   <script src="js/toast_overlay.js"></script>
 
   <!-- Admin Logic -->

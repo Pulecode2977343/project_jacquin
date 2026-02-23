@@ -1,4 +1,4 @@
-
+﻿
 // --- BUSCADOR INTERNO ---
 const input = document.getElementById('buscar');
 const contenido = document.getElementById('contenido');
@@ -17,7 +17,7 @@ input.addEventListener('input', () => {
 // --- DESCARGA PDF ---
 document.getElementById('descargar').addEventListener('click', () => {
   if (!document.getElementById('aceptar').checked) {
-    showToast('Debes aceptar los términos antes de descargar.', 'warning');
+    showToast('Debes aceptar los tÃ©rminos antes de descargar.', 'warning');
     return;
   }
   const element = document.getElementById('contenido');

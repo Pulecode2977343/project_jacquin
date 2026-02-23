@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
     if (customElements.get('jam-header')) return;
     class Header extends HTMLElement {
         constructor() {
@@ -136,10 +136,10 @@
             } else {
                 return `
                 <button class="btn btn-register">
-                    <a href="login.html" class="link link-login">Iniciar Sesión</a>
+                    <a href="login.html" class="link link-login">Iniciar SesiÃ³n</a>
                 </button>
                 <button class="btn btn-login">
-                    <a href="registro.html" class="link link-register">Inscríbete</a>
+                    <a href="registro.html" class="link link-register">InscrÃ­bete</a>
                 </button>
             `;
             }

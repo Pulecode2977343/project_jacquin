@@ -1802,4 +1802,3 @@ window.submitMultipleEnrollments = async function () {
         showToast(`${errors.length} error(es): ${errors[0]}`, "error");
     }
 };
-

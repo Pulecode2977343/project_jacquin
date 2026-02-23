@@ -16475,6 +16475,32 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         console.error("[ApiService] Error en sendContactMessage:", error);
         return { success: false, message: "Error de conexi\xF3n al enviar el mensaje." };
       }
+    },
+    // --- Configuración del sitio ---
+    async getEnrollmentStatus() {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}site_config.php`, {
+          method: "GET",
+          headers: API_CONFIG.HEADERS
+        });
+        return await response.json();
+      } catch (error) {
+        return { success: false, enrollment_open: true, enrollment_year: (/* @__PURE__ */ new Date()).getFullYear() };
+      }
+    },
+    async updateEnrollmentStatus(isOpen, year) {
+      try {
+        const session = this.getSession();
+        const token = session?.token || "";
+        const response = await fetch(`${API_CONFIG.BASE_URL}admin_site_config.php`, {
+          method: "POST",
+          headers: { ...API_CONFIG.HEADERS, Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ enrollment_open: isOpen, enrollment_year: year })
+        });
+        return await response.json();
+      } catch (error) {
+        return { success: false, message: "Error actualizando estado de matr\xEDculas." };
+      }
     }
   };
   var api_default = ApiService;

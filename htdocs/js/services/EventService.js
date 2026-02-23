@@ -1,4 +1,4 @@
-
+﻿
 class EventService {
     constructor() {
         // Use the global API_CONFIG if available

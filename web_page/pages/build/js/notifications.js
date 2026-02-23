@@ -1,4 +1,4 @@
-/**
+﻿/**
  * notifications.js
  * Sistema de Notificaciones y Alertas para Dashboard
  */
@@ -154,7 +154,7 @@ window.NotificationSystem = {
                 toast.innerHTML = `
                     <div class="jam-toast-icon"><i class="bi ${icon}"></i></div>
                     <div class="jam-toast-content">
-                        <div class="jam-toast-title">${alert.title || 'Notificación'}</div>
+                        <div class="jam-toast-title">${alert.title || 'NotificaciÃ³n'}</div>
                         <div class="jam-toast-msg">${alert.message}</div>
                     </div>
                     <button class="jam-toast-close" onclick="event.stopPropagation(); this.parentElement.classList.remove('show'); setTimeout(()=>this.parentElement.remove(), 600)">&times;</button>
@@ -196,7 +196,7 @@ window.NotificationSystem = {
     }
 };
 
-// Auto-init cuando el DOM esté listo y después de que el dashboard cargue
+// Auto-init cuando el DOM estÃ© listo y despuÃ©s de que el dashboard cargue
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => NotificationSystem.init(), 2000);

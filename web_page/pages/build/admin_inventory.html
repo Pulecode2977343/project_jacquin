@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Ôªø<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -98,10 +98,10 @@
         <div class="admin-header">
             <div>
                 <h1>Control de Inventario</h1>
-                <p style="color: #ccc; font-size: 0.9em;">GestiÛn de instrumentos y equipos</p>
+                <p style="color: #ccc; font-size: 0.9em;">Gesti√≥n de instrumentos y equipos</p>
             </div>
             <div style="display: flex; gap: 15px;">
-                <button class="btn-add" onclick="openModal()"><i class="bi bi-plus-lg"></i> Nuevo Õtem</button>
+                <button class="btn-add" onclick="openModal()"><i class="bi bi-plus-lg"></i> Nuevo √çtem</button>
                 <a href="gestion.html" class="btn btn-module" style="background: rgba(255,255,255,0.1);">Volver</a>
             </div>
         </div>
@@ -112,7 +112,7 @@
               <tr>
                 <th>Nombre</th>
                 <th>Tipo</th>
-                <th>Serial / CÛdigo</th>
+                <th>Serial / C√≥digo</th>
                 <th>Estado</th>
                 <th>Acciones</th>
               </tr>
@@ -128,10 +128,10 @@
     <!-- Add Item Modal -->
     <div id="addModal" class="modal">
         <div class="modal-content">
-            <h2 style="color: white; margin-bottom: 20px;">Agregar Õtem</h2>
+            <h2 style="color: white; margin-bottom: 20px;">Agregar √çtem</h2>
             <form id="addForm">
                 <div class="input-group">
-                    <label>Nombre del Õtem</label>
+                    <label>Nombre del √çtem</label>
                     <input type="text" id="nombre" required placeholder="Ej: Guitarra Yamaha">
                 </div>
                 <div class="input-group">
@@ -144,7 +144,7 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Serial / CÛdigo</label>
+                    <label>Serial / C√≥digo</label>
                     <input type="text" id="serial" placeholder="Opcional">
                 </div>
                 <div class="input-group">
@@ -164,9 +164,9 @@
         </div>
     </div>
 
-    <jam-footer></jam-footer>
+    <div id="react-footer-root"></div>
 
-    <script src="js/components/Footer.js"></script>
+    <script src="js/react-footer.bundle.js"></script>
     <script src="js/services/api.js"></script>
     <script src="js/admin_inventory.js"></script>
   <script src="/js/react-header.bundle.js"></script>

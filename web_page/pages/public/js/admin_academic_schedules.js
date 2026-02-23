@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Academic Management Module
  * Consolidated logic for Courses, Schedules, and Enrollments.
  */
@@ -458,13 +458,13 @@ const AcademicManager = {
     },
 
     editSchedule(scheduleId, courseId, courseName, currentDay = '', currentStart = '', currentEnd = '') {
-        const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        const days = ['Lunes', 'Martes', 'MiÃ©rcoles', 'Jueves', 'Viernes', 'SÃ¡bado', 'Domingo'];
         const title = scheduleId ? 'Editar Horario' : 'Nuevo Horario';
 
         // Helper to create valid HTML for Swal
         const html = `
             <div style="text-align:left;">
-                <label style="display:block; margin-bottom:5px; color:#aaa;">Día</label>
+                <label style="display:block; margin-bottom:5px; color:#aaa;">DÃ­a</label>
                 <select id="swal-sched-day" class="swal2-select" style="width:100%; margin:0 0 15px 0; box-sizing:border-box;">
                     ${days.map(d => `<option value="${d}" ${d === currentDay ? 'selected' : ''}>${d}</option>`).join('')}
                 </select>
@@ -545,12 +545,12 @@ const AcademicManager = {
 
     async unassignTeacherSchedule(scheduleId, courseId, courseName) {
         if ((await Swal.fire({
-            title: '¿Desasignar Docente?',
-            text: "El horario volverá a estado PENDIENTE.",
+            title: 'Â¿Desasignar Docente?',
+            text: "El horario volverÃ¡ a estado PENDIENTE.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            confirmButtonText: 'Sí, desasignar'
+            confirmButtonText: 'SÃ­, desasignar'
         })).isConfirmed) {
             const res = await ApiService.assignTeacher('remove', scheduleId);
             if (res.success) {
@@ -610,7 +610,7 @@ const AcademicManager = {
     },
 
     async unenrollStudentAdmin(enrollmentId, courseId, courseName) {
-        if ((await Swal.fire({ title: '¿Desinscribir?', text: 'Esta acción es irreversible.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })).isConfirmed) {
+        if ((await Swal.fire({ title: 'Â¿Desinscribir?', text: 'Esta acciÃ³n es irreversible.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })).isConfirmed) {
             const res = await ApiService.unenrollStudent(enrollmentId);
             if (res.success) {
                 Swal.fire('Desinscrito', '', 'success');
@@ -622,7 +622,7 @@ const AcademicManager = {
     toggleStudentAccordion(enrollmentId) {
         // Implementation for the accordion inside the modal
         // This requires the DOM elements to exist, which are rendered in `renderDetailsModal`
-        alert("Esta función está siendo optimizada. Por favor use 'Horarios' para ver disponibilidad general.");
+        alert("Esta funciÃ³n estÃ¡ siendo optimizada. Por favor use 'Horarios' para ver disponibilidad general.");
     },
 
     async editCourseBasicInfo(id, name, desc, price) {
@@ -630,7 +630,7 @@ const AcademicManager = {
             title: 'Editar Curso',
             html: `
                 <input id="swal-input1" class="swal2-input" placeholder="Nombre" value="${name}">
-                <textarea id="swal-input2" class="swal2-textarea" placeholder="Descripción">${desc}</textarea>
+                <textarea id="swal-input2" class="swal2-textarea" placeholder="DescripciÃ³n">${desc}</textarea>
                 <input id="swal-input3" class="swal2-input" type="number" placeholder="Precio" value="${price}">
             `,
             focusConfirm: false,
@@ -679,8 +679,8 @@ const AcademicManager = {
 
     async unassignSingleTeacher(scheduleId, teacherId, courseId, courseName) {
         if ((await Swal.fire({
-            title: '¿Remover docente?',
-            text: "Se desasignará solo a este docente del horario.",
+            title: 'Â¿Remover docente?',
+            text: "Se desasignarÃ¡ solo a este docente del horario.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#e74c3c'
@@ -697,7 +697,7 @@ const AcademicManager = {
 
     // --- Helpers ---
     generateStudentsList(students, courseId, courseName) {
-        if (!students || students.length === 0) return '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.3); font-style:italic;">No hay estudiantes inscritos aún.</div>';
+        if (!students || students.length === 0) return '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.3); font-style:italic;">No hay estudiantes inscritos aÃºn.</div>';
 
         return students.map(s => `
             <div class="admin-course-card" style="border-left: 4px solid ${s.status === 'Activo' ? '#2ecc71' : '#e74c3c'}; background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%); margin-bottom: 12px; padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">

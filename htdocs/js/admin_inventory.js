@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', async () => {
+﻿document.addEventListener('DOMContentLoaded', async () => {
 
     // Check Auth and Admin Role (Rol 1)
     if (!ApiService.isAuthenticated()) {
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (user.id_rol != 1) {
         Swal.fire({
             title: "Acceso denegado",
-            text: "Solo administradores pueden acceder a esta sección.",
+            text: "Solo administradores pueden acceder a esta secciÃ³n.",
             icon: "error",
             background: '#1a1a1a',
             color: '#fff'
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         tableBody.innerHTML = ''; // Clear loading
 
         if (items.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">No hay ítems registrados.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center">No hay Ã­tems registrados.</td></tr>';
             return;
         }
 
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         Swal.fire({
-            title: "¿Guardar este ítem?",
+            title: "Â¿Guardar este Ã­tem?",
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: 'var(--color-acento-azul)',
@@ -79,8 +79,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const resultApi = await ApiService.addInventoryItem(newItem);
                 if (resultApi.success) {
                     Swal.fire({
-                        title: "¡Éxito!",
-                        text: "Ítem agregado correctamente.",
+                        title: "Â¡Ã‰xito!",
+                        text: "Ãtem agregado correctamente.",
                         icon: "success",
                         background: '#1a1a1a',
                         color: '#fff'
@@ -104,13 +104,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Delete Item
     window.deleteItem = async (id) => {
         Swal.fire({
-            title: "¿Estás seguro de ELIMINAR este ítem?",
-            text: "Esta acción no se puede deshacer.",
+            title: "Â¿EstÃ¡s seguro de ELIMINAR este Ã­tem?",
+            text: "Esta acciÃ³n no se puede deshacer.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#e74c3c',
             cancelButtonColor: '#444',
-            confirmButtonText: 'Sí, eliminar',
+            confirmButtonText: 'SÃ­, eliminar',
             cancelButtonText: 'Cancelar',
             background: '#1a1a1a',
             color: '#fff'
@@ -119,8 +119,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const resultApi = await ApiService.deleteInventoryItem(id);
                 if (resultApi.success) {
                     Swal.fire({
-                        title: "¡Eliminado!",
-                        text: "El ítem ha sido borrado del inventario.",
+                        title: "Â¡Eliminado!",
+                        text: "El Ã­tem ha sido borrado del inventario.",
                         icon: "success",
                         background: '#1a1a1a',
                         color: '#fff'

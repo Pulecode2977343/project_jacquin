@@ -1,4 +1,4 @@
-const notes = {
+﻿const notes = {
 			'F': 349.23,
 			'G': 392.00,
 			'A': 440.00,

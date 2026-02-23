@@ -1,4 +1,4 @@
-/* =========================================
+Ôªø/* =========================================
    BRANDBOOK FONTS - Poppins & Lancelot
    ========================================= */
 
@@ -223,15 +223,15 @@ a {
 
 /* =========================================
    REACT HEADER MOUNT POINT
-   El <header class="header"> interno es position:fixed ó
+   El <header class="header"> interno es position:fixed ‚Äî
    no ocupa espacio en el flujo. body > main recibe
    padding-top para que el contenido no quede oculto.
    ========================================= */
 
-/* #react-header-root no necesita CSS especial ó el <header> interno
+/* #react-header-root no necesita CSS especial ‚Äî el <header> interno
    es position:fixed y no ocupa espacio en el flujo del documento */
 
-/* P·ginas est·ticas: empuja contenido debajo del header fijo */
+/* P√°ginas est√°ticas: empuja contenido debajo del header fijo */
 body > main {
     padding-top: 17vh;
 }
@@ -440,7 +440,7 @@ jam-header.scrolled,
         /* Override flex */
     }
 
-    /* 5. Drawer (The sliding part) - Mejorado para simetrÌa */
+    /* 5. Drawer (The sliding part) - Mejorado para simetr√≠a */
     jam-navbar {
         display: block;
         position: absolute;
@@ -454,7 +454,7 @@ jam-header.scrolled,
         transform: translateX(100%);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         padding: 2rem 0;
-        /* Padding simÈtrico arriba y abajo */
+        /* Padding sim√©trico arriba y abajo */
         overflow-y: auto;
     }
 
@@ -478,12 +478,12 @@ jam-header.scrolled,
         padding: 0;
     }
 
-    /* BUBBLE GLASS STYLE FOR MOBILE MENU ITEMS - Mejorado para simetrÌa */
+    /* BUBBLE GLASS STYLE FOR MOBILE MENU ITEMS - Mejorado para simetr√≠a */
     .navbar-link {
         justify-content: flex-start !important;
         flex-direction: row !important;
         align-items: center !important;
-        /* AlineaciÛn vertical centrada */
+        /* Alineaci√≥n vertical centrada */
         gap: 15px !important;
         width: 85% !important;
         /* Uniform width */
@@ -571,7 +571,7 @@ jam-header.scrolled,
         top: 0;
     }
 
-    /* 7. Show Mobile-Only Buttons inside Menu - SimetrÌa mejorada */
+    /* 7. Show Mobile-Only Buttons inside Menu - Simetr√≠a mejorada */
     .mobile-only {
         display: flex !important;
         flex-direction: column;
@@ -580,7 +580,7 @@ jam-header.scrolled,
         /* Consistente con navbar-list */
         margin-top: 20px;
         padding: 0 0 20px 0;
-        /* Padding simÈtrico */
+        /* Padding sim√©trico */
     }
 }
 
@@ -588,24 +588,24 @@ jam-header.scrolled,
    RESPONSIVE FINE-TUNING
    ========================================= */
 
-/* Tablet especÌfico (768px - 1024px) */
+/* Tablet espec√≠fico (768px - 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
     jam-navbar {
         width: 70% !important;
-        /* Drawer m·s estrecho en tablets */
+        /* Drawer m√°s estrecho en tablets */
     }
 
     .navbar-link {
         max-width: 320px !important;
-        /* Botones m·s anchos en tablet */
+        /* Botones m√°s anchos en tablet */
     }
 }
 
-/* MÛvil grande (480px - 767px) */
+/* M√≥vil grande (480px - 767px) */
 @media (max-width: 767px) {
     jam-navbar {
         width: 80% !important;
-        /* Drawer m·s ancho en mÛviles */
+        /* Drawer m√°s ancho en m√≥viles */
     }
 
     .navbar-link {
@@ -614,7 +614,7 @@ jam-header.scrolled,
     }
 }
 
-/* MÛvil pequeÒo (< 480px) */
+/* M√≥vil peque√±o (< 480px) */
 @media (max-width: 480px) {
     .logo-links {
         padding: 0 15px !important;
@@ -622,7 +622,7 @@ jam-header.scrolled,
 
     jam-navbar {
         width: 85% !important;
-        /* Casi pantalla completa en mÛviles pequeÒos */
+        /* Casi pantalla completa en m√≥viles peque√±os */
     }
 
     .navbar-link {
@@ -636,7 +636,7 @@ jam-header.scrolled,
         font-size: 0.85rem !important;
     }
 
-    /* Reducir altura del header en mÛviles muy pequeÒos */
+    /* Reducir altura del header en m√≥viles muy peque√±os */
     jam-header,
     .header {
         height: 8vh !important;
@@ -698,7 +698,7 @@ jam-header.scrolled,
    SWIPER NAVIGATION - ESTILO INFINITY
    ========================================= */
 
-/* Botones de NavegaciÛn (Referencia: proyecto jacquin-infinity) */
+/* Botones de Navegaci√≥n (Referencia: proyecto jacquin-infinity) */
 .programs-swiper .swiper-button-prev,
 .programs-swiper .swiper-button-next,
 .events-swiper .swiper-button-prev,
@@ -740,10 +740,10 @@ jam-header.scrolled,
     right: -20px !important;
 }
 
-/* Flecha ˙nica: una sola chevron */
+/* Flecha √∫nica: una sola chevron */
 .programs-prev::after,
 .events-prev::after {
-    content: 'ã' !important;
+    content: '‚Äπ' !important;
     font-size: 1.6rem !important;
     font-weight: 700 !important;
     color: var(--color-acento-azul) !important;
@@ -752,14 +752,14 @@ jam-header.scrolled,
 
 .programs-next::after,
 .events-next::after {
-    content: 'õ' !important;
+    content: '‚Ä∫' !important;
     font-size: 1.6rem !important;
     font-weight: 700 !important;
     color: var(--color-acento-azul) !important;
     line-height: 1 !important;
 }
 
-/* TamaÒo de la flecha */
+/* Tama√±o de la flecha */
 .programs-swiper .swiper-button-prev::after,
 .programs-swiper .swiper-button-next::after,
 .events-swiper .swiper-button-prev::after,
@@ -769,7 +769,7 @@ jam-header.scrolled,
     color: var(--color-acento-azul) !important;
 }
 
-/* Hover: fondo azul sÛlido + glow */
+/* Hover: fondo azul s√≥lido + glow */
 .programs-swiper .swiper-button-prev:hover,
 .programs-swiper .swiper-button-next:hover,
 .events-swiper .swiper-button-prev:hover,
@@ -800,7 +800,7 @@ jam-header.scrolled,
     color: white !important;
 }
 
-/* Responsive: ajustar posiciÛn en pantallas pequeÒas */
+/* Responsive: ajustar posici√≥n en pantallas peque√±as */
 @media (max-width: 1024px) {
 
     .programs-prev,
@@ -963,7 +963,7 @@ jam-header.scrolled,
 @media (max-width: 1024px) {
     .bento-section {
         padding: 4rem 20px;
-        /* Reducir padding lateral dr√°sticamente */
+        /* Reducir padding lateral dr√É¬°sticamente */
         width: 100%;
     }
 
@@ -1442,7 +1442,7 @@ textarea:-webkit-autofill:active {
 }
 
 /* ==========================================================================
-   üö® EMERGENCY FIX PATCH - DO NOT REMOVE üö®
+   √∞≈∏≈°¬® EMERGENCY FIX PATCH - DO NOT REMOVE √∞≈∏≈°¬®
    Fixes: Checkbox Visibility, Navbar Alignment, Button Styles
    ========================================================================== */
 
@@ -1452,7 +1452,7 @@ textarea:-webkit-autofill:active {
    so the :checked selector can toggle the navbar visibility. */
 
 /* ==========================================================================
-   ‚ú® PREMIUM & ELEGANT HEADER REDESIGN ‚ú®
+   √¢≈ì¬® PREMIUM & ELEGANT HEADER REDESIGN √¢≈ì¬®
    ========================================================================== */
 
 /* --- 2. FORCE NAVBAR HORIZONTAL (DESKTOP) & PREMIUM LAYOUT --- */
@@ -1488,7 +1488,7 @@ textarea:-webkit-autofill:active {
         /* Add gap between buttons */
     }
 
-    /* Target the 'InscrÌbete' button (which has class .btn-login) */
+    /* Target the 'Inscr√≠bete' button (which has class .btn-login) */
     .btn-login {
         border: 1px solid var(--color-acento-naranja) !important;
         box-shadow: 0 0 10px rgba(231, 140, 59, 0.4);
@@ -1971,33 +1971,7 @@ textarea:-webkit-autofill:active {
     max-width: 300px;
 }
 
-.jam-status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(46, 204, 113, 0.1);
-    color: #2ecc71;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    border: 1px solid rgba(46, 204, 113, 0.2);
-}
-
-.jam-status-dot {
-    width: 8px;
-    height: 8px;
-    background: #2ecc71;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #2ecc71;
-    animation: blink 2s infinite;
-}
-
-@keyframes blink {
-    50% {
-        opacity: 0.5;
-    }
-}
+/* Badge styles moved to footer.css */
 
 /* Columnas: Links */
 .jam-footer-col h3 {

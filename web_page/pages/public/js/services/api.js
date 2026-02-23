@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Service Client
  * Centralizes all communication with the backend API.
  * Handles Authentication, Token Management, and Error Parsing.
@@ -40,7 +40,7 @@ var ApiService = {
         }
 
         if (response.status === 401) {
-            console.warn("[ApiService] Sesión expirada o no autorizada (401).");
+            console.warn("[ApiService] SesiÃ³n expirada o no autorizada (401).");
             localStorage.removeItem("jam_user_session");
             const path = window.location.pathname;
             if (!path.includes('login.html') && !path.includes('index.html')) {
@@ -48,9 +48,9 @@ var ApiService = {
             }
             try {
                 const err = JSON.parse(text);
-                return { success: false, message: err.message || "Sesión expirada", unauthorized: true };
+                return { success: false, message: err.message || "SesiÃ³n expirada", unauthorized: true };
             } catch (e) {
-                return { success: false, message: "Sesión expirada", unauthorized: true };
+                return { success: false, message: "SesiÃ³n expirada", unauthorized: true };
             }
         }
 
@@ -60,7 +60,7 @@ var ApiService = {
             // Si no es JSON, devolvemos el texto para debugging (truncado)
             return {
                 success: false,
-                message: `Respuesta no válida del servidor (Status ${response.status}): ` + text.substring(0, 100)
+                message: `Respuesta no vÃ¡lida del servidor (Status ${response.status}): ` + text.substring(0, 100)
             };
         }
     },
@@ -124,7 +124,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error de conexión en Login." };
+            return { success: false, message: "Error de conexiÃ³n en Login." };
         }
     },
 
@@ -137,7 +137,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error de conexión en Registro." };
+            return { success: false, message: "Error de conexiÃ³n en Registro." };
         }
     },
 
@@ -295,7 +295,7 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             console.error("Error enrolling student:", error);
-            return { success: false, message: "Error de conexión" };
+            return { success: false, message: "Error de conexiÃ³n" };
         }
     },
 
@@ -334,7 +334,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error solicitando inscripción." };
+            return { success: false, message: "Error solicitando inscripciÃ³n." };
         }
     },
 
@@ -348,7 +348,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error al eliminar inscripción." };
+            return { success: false, message: "Error al eliminar inscripciÃ³n." };
         }
     },
 
@@ -448,7 +448,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error actualizando contraseña." };
+            return { success: false, message: "Error actualizando contraseÃ±a." };
         }
     },
 
@@ -472,7 +472,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error de conexión." };
+            return { success: false, message: "Error de conexiÃ³n." };
         }
     },
 
@@ -485,7 +485,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error eliminando ítem." };
+            return { success: false, message: "Error eliminando Ã­tem." };
         }
     },
 
@@ -523,7 +523,7 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             console.error("Error updating course teacher:", error);
-            return { success: false, message: "Error de conexión" };
+            return { success: false, message: "Error de conexiÃ³n" };
         }
     },
 
@@ -537,7 +537,7 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             console.error("Error updating user:", error);
-            return { success: false, message: "Error de conexión" };
+            return { success: false, message: "Error de conexiÃ³n" };
         }
     },
 
@@ -552,7 +552,7 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             console.error("Error deleting course:", error);
-            return { success: false, message: "Error de conexión" };
+            return { success: false, message: "Error de conexiÃ³n" };
         }
     },
 
@@ -592,7 +592,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error de conexión." };
+            return { success: false, message: "Error de conexiÃ³n." };
         }
     },
 
@@ -698,7 +698,7 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             console.error("Error sending message:", error);
-            return { success: false, message: "Error de conexión." };
+            return { success: false, message: "Error de conexiÃ³n." };
         }
     },
 
@@ -709,7 +709,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error obteniendo horarios de inscripción." };
+            return { success: false, message: "Error obteniendo horarios de inscripciÃ³n." };
         }
     },
 

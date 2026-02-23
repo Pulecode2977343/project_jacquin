@@ -1,12 +1,13 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manuales de Usuario y Técnico - Academia Musical JACQUIN</title>
+    <title>Manuales de Usuario y TÃ©cnico - Academia Musical JACQUIN</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/footer.css" />
+  <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/terms.css" />
     <style>
         .manual-selector {
@@ -125,30 +126,30 @@
 
             <div class="manual-selector no-print">
                 <button class="sel-btn active" onclick="showManual('tecnico')"><i class="bi bi-gear-fill"></i>
-                    Técnico</button>
+                    TÃ©cnico</button>
                 <button class="sel-btn" onclick="showManual('usuario')"><i class="bi bi-people-fill"></i>
                     Usuario</button>
             </div>
 
             <div id="contenido-imprimir">
-                <!-- MANUAL TÉCNICO -->
+                <!-- MANUAL TÃ‰CNICO -->
                 <div id="manual-tecnico" class="manual-content active">
-                    <h1>Manual Técnico: Academia Musical JACQUIN ??</h1>
+                    <h1>Manual TÃ©cnico: Academia Musical JACQUIN ??</h1>
                     <p>Todo lo que necesitas saber para gestionar y entender el sistema.</p>
 
-                    <h2>1. ¿Qué es este proyecto?</h2>
+                    <h2>1. Â¿QuÃ© es este proyecto?</h2>
                     <p>Es la plataforma digital de la <strong>Academia Musical JACQUIN</strong>. No es solo una web; es
-                        un sistema que conecta a estudiantes, profesores y administradores para que la música no pare.
+                        un sistema que conecta a estudiantes, profesores y administradores para que la mÃºsica no pare.
                     </p>
 
                     <h2>2. Las piezas del motor (Arquitectura)</h2>
                     <ul>
-                        <li><strong>La Web (Frontend):</strong> HTML, CSS y JS puro. Rápida y adaptable.</li>
+                        <li><strong>La Web (Frontend):</strong> HTML, CSS y JS puro. RÃ¡pida y adaptable.</li>
                         <li><strong>La API (Backend):</strong> PHP. Gestiona datos, correos y seguridad.</li>
                         <li><strong>Base de Datos:</strong> MySQL para almacenamiento seguro.</li>
                     </ul>
 
-                    <h2>3. Instalación</h2>
+                    <h2>3. InstalaciÃ³n</h2>
                     <ol>
                         <li>Descarga XAMPP con PHP 8+.</li>
                         <li>Copia el proyecto en <code>htdocs/</code>.</li>
@@ -161,27 +162,27 @@
                     <h3>?? Web Page</h3>
                     <ul>
                         <li><code>/pages</code>: Vistas HTML.</li>
-                        <li><code>/js</code>: Lógica dinámica.</li>
-                        <li><code>/css</code>: Diseño premium.</li>
+                        <li><code>/js</code>: LÃ³gica dinÃ¡mica.</li>
+                        <li><code>/css</code>: DiseÃ±o premium.</li>
                     </ul>
                     <h3>?? Jacquin API</h3>
                     <ul>
                         <li><code>/config</code>: Llaves del sistema.</li>
-                        <li><code>admin_*.php</code>: Gestión administrativa.</li>
+                        <li><code>admin_*.php</code>: GestiÃ³n administrativa.</li>
                     </ul>
 
                     <h2>5. Flujos Clave</h2>
-                    <p>Gestión de eventos, inscripciones seguras y mantenimiento con túneles <strong>Zrok</strong> para
+                    <p>GestiÃ³n de eventos, inscripciones seguras y mantenimiento con tÃºneles <strong>Zrok</strong> para
                         acceso remoto.</p>
                 </div>
 
                 <!-- MANUAL USUARIO -->
                 <div id="manual-usuario" class="manual-content">
-                    <h1>Guía de Usuario: Academia Musical JACQUIN ??</h1>
+                    <h1>GuÃ­a de Usuario: Academia Musical JACQUIN ??</h1>
 
                     <h2>?? Estudiantes</h2>
                     <ul>
-                        <li><strong>Explora:</strong> Descubre programas de Piano, Guitarra y más.</li>
+                        <li><strong>Explora:</strong> Descubre programas de Piano, Guitarra y mÃ¡s.</li>
                         <li><strong>Eventos:</strong> No te pierdas conciertos y talleres.</li>
                         <li><strong>Perfil:</strong> Sube tu foto y cambia tu clave.</li>
                     </ul>
@@ -189,7 +190,7 @@
                     <h2>?? Profesores</h2>
                     <ul>
                         <li><strong>Alumnos:</strong> Revisa tus asignaciones semanales.</li>
-                        <li><strong>Asistencia:</strong> Control rápido de clases.</li>
+                        <li><strong>Asistencia:</strong> Control rÃ¡pido de clases.</li>
                         <li><strong>Progreso:</strong> Deja comentarios a tus estudiantes.</li>
                     </ul>
 
@@ -211,9 +212,9 @@
         </div>
     </main>
 
-    <jam-footer></jam-footer>
+    <div id="react-footer-root"></div>
 
-    <script src="js/components/Footer.js"></script>
+    <script src="js/react-footer.bundle.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="js/logoSound.js"></script>
     <script>

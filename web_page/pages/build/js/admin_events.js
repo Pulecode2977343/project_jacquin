@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
     // 1. Check Auth (Admin Only)
     if (!window.ApiService || !window.ApiService.isAuthenticated()) {
         window.location.href = 'login.html';
@@ -92,7 +92,7 @@ async function loadAdminEvents() {
                     <div>
                         <strong style="color:white; font-size:1.1rem;">${event.title}</strong>
                         <div style="color:var(--color-humo-gris); font-size:0.8rem;">
-                            ${new Date(event.event_date).toLocaleDateString()} | ${event.location || 'Sin ubicación'}
+                            ${new Date(event.event_date).toLocaleDateString()} | ${event.location || 'Sin ubicaciÃ³n'}
                         </div>
                     </div>
                     <div style="display:flex; gap:10px;">
@@ -169,7 +169,7 @@ window.editEvent = (id) => {
     if (event) {
         openModal(event);
     } else {
-        showToast("Error: No se encontró la info del evento", "error");
+        showToast("Error: No se encontrÃ³ la info del evento", "error");
     }
 }
 
@@ -213,7 +213,7 @@ async function saveEvent(formData) {
 
     } catch (error) {
         console.error(error);
-        showToast('Error de conexión con el servidor', 'error');
+        showToast('Error de conexiÃ³n con el servidor', 'error');
     } finally {
         btn.disabled = false;
         document.getElementById('btnText').innerText = originalText;
@@ -222,13 +222,13 @@ async function saveEvent(formData) {
 
 window.deleteEvent = async (id) => {
     const result = await Swal.fire({
-        title: '¿Estás seguro?',
-        text: "Eliminarás este evento permanentemente.",
+        title: 'Â¿EstÃ¡s seguro?',
+        text: "EliminarÃ¡s este evento permanentemente.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ff3b30',
         cancelButtonColor: '#444',
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonText: 'SÃ­, eliminar',
         cancelButtonText: 'Cancelar',
         background: '#1a1a1a',
         color: '#ffffff'

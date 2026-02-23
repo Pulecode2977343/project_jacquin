@@ -1233,6 +1233,34 @@ const ApiService = {
             return { success: false, message: "Error de conexión al enviar el mensaje." };
         }
     },
+
+    // --- Configuración del sitio ---
+
+    async getEnrollmentStatus() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}site_config.php`, {
+                method: "GET",
+                headers: API_CONFIG.HEADERS
+            });
+            return await response.json();
+        } catch (error) {
+            return { success: false, enrollment_open: true, enrollment_year: new Date().getFullYear() };
+        }
+    },
+
+    async updateEnrollmentStatus(isOpen, year) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_site_config.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify({ enrollment_open: isOpen, enrollment_year: year }),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error actualizando estado de matrículas." };
+        }
+    },
 };
 
 export default ApiService;

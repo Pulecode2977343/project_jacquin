@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -237,7 +237,7 @@
         <a href="gestion.html" class="link" style="font-size: 0.9rem; opacity: 0.7">
           <i class="bi bi-arrow-left"></i> Volver a Mi Panel
         </a>
-        <h1 style="color: white; margin-top: 0.5rem">Gestión de Eventos</h1>
+        <h1 style="color: white; margin-top: 0.5rem">GestiÃ³n de Eventos</h1>
         <p style="color: var(--color-humo-gris)">
           Crea, edita y administra el contenido multimedia.
         </p>
@@ -290,12 +290,12 @@
 
           <div class="form-grid">
             <div class="form-group full-width">
-              <label>Título del Evento</label>
-              <input type="text" class="form-control" name="title" required placeholder="Ej: Concierto de Fin de Año" />
+              <label>TÃ­tulo del Evento</label>
+              <input type="text" class="form-control" name="title" required placeholder="Ej: Concierto de Fin de AÃ±o" />
             </div>
 
             <div class="form-group full-width">
-              <label>Descripción</label>
+              <label>DescripciÃ³n</label>
               <textarea class="form-control" name="description" rows="3"
                 placeholder="Detalles del evento..."></textarea>
             </div>
@@ -306,7 +306,7 @@
             </div>
 
             <div class="form-group">
-              <label>Ubicación</label>
+              <label>UbicaciÃ³n</label>
               <input type="text" class="form-control" name="location" placeholder="Ej: Auditorio Principal" />
             </div>
 
@@ -331,7 +331,7 @@
             </div>
 
             <div class="form-group full-width dynamic-field" id="field-stream">
-              <label>Enlace de Transmisión en Vivo</label>
+              <label>Enlace de TransmisiÃ³n en Vivo</label>
               <input type="url" class="form-control" name="stream_url" placeholder="https://youtube.com/live/..." />
               <div style="margin-top: 1rem; display: flex; align-items: center; gap: 10px;">
                 <input type="checkbox" id="is_live" name="is_live" style="width: auto; height: auto" />
@@ -355,11 +355,11 @@
     </div>
   </main>
 
-  <jam-footer></jam-footer>
+  <div id="react-footer-root"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="js/services/api.js"></script>
-  <script src="js/components/Footer.js"></script>
+  <script src="js/react-footer.bundle.js"></script>
   <script src="js/toast_overlay.js"></script>
   <script src="js/admin_events.js?v=3.0"></script>
   <script src="js/react-header.bundle.js?v=1.5"></script>

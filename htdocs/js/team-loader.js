@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
     loadTeamMembers();
 });
 
@@ -8,12 +8,12 @@ async function loadTeamMembers() {
 
     try {
         if (typeof ApiService === 'undefined') {
-            console.error("ApiService no está cargado. Asegúrate de incluir api.js");
-            gridContainer.innerHTML = '<p style="color:red; text-align:center;">Error de configuración: ApiService no encontrado.</p>';
+            console.error("ApiService no estÃ¡ cargado. AsegÃºrate de incluir api.js");
+            gridContainer.innerHTML = '<p style="color:red; text-align:center;">Error de configuraciÃ³n: ApiService no encontrado.</p>';
             return;
         }
 
-        // 1. Petición a la API real (Backend PHP)
+        // 1. PeticiÃ³n a la API real (Backend PHP)
         // Usamos getUsers que ya trae todos los usuarios, luego filtramos por rol docente/admin
         const response = await ApiService.getUsers();
 
@@ -63,7 +63,7 @@ async function loadTeamMembers() {
         console.error(error);
         gridContainer.innerHTML = `
             <p style="color: var(--naranja-neon); text-align: center; grid-column: 1/-1;">
-                No se pudo cargar la información del equipo. ${error.message}
+                No se pudo cargar la informaciÃ³n del equipo. ${error.message}
             </p>
         `;
     }

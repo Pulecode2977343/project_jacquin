@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
     // Auth Check
     if (window.ApiService && !window.ApiService.isAuthenticated()) {
         window.location.href = 'login.html';
@@ -14,67 +14,67 @@ document.addEventListener('DOMContentLoaded', () => {
 // Original Default Data (Backup)
 const DEFAULT_PROGRAMS = {
     'percussion': {
-        title: 'Percusión',
-        subtitle: 'Ritmo y Energía',
+        title: 'PercusiÃ³n',
+        subtitle: 'Ritmo y EnergÃ­a',
         icon: 'bi-music-note-beamed',
-        description: 'Siente el ritmo en tu cuerpo. Aprende batería, percusión latina y sinfónica. Desarrolla tu coordinación, tempo y musicalidad en un ambiente dinámico.',
-        features: ['Batería acústica y electrónica', 'Percusión latina (Congas, Bongos)', 'Lectura rítmica avanzada', 'Independencia de extremidades'],
+        description: 'Siente el ritmo en tu cuerpo. Aprende baterÃ­a, percusiÃ³n latina y sinfÃ³nica. Desarrolla tu coordinaciÃ³n, tempo y musicalidad en un ambiente dinÃ¡mico.',
+        features: ['BaterÃ­a acÃºstica y electrÃ³nica', 'PercusiÃ³n latina (Congas, Bongos)', 'Lectura rÃ­tmica avanzada', 'Independencia de extremidades'],
         image: 'images/programs/percussion.png'
     },
     'guitarra': {
         title: 'Guitarra',
-        subtitle: 'Acústica y Eléctrica',
+        subtitle: 'AcÃºstica y ElÃ©ctrica',
         icon: 'bi-guitar',
-        description: 'Domina las cuerdas con nuestra metodología integral. Desde acordes básicos hasta solos complejos de rock, jazz y blues. Aprenderás técnica, lectura musical e improvisación.',
-        features: ['Lectura de partituras y tablaturas', 'Técnica de púa y dedos (Fingerstyle)', 'Improvisación y teoría aplicada', 'Ensambles y presentaciones en vivo'],
+        description: 'Domina las cuerdas con nuestra metodologÃ­a integral. Desde acordes bÃ¡sicos hasta solos complejos de rock, jazz y blues. AprenderÃ¡s tÃ©cnica, lectura musical e improvisaciÃ³n.',
+        features: ['Lectura de partituras y tablaturas', 'TÃ©cnica de pÃºa y dedos (Fingerstyle)', 'ImprovisaciÃ³n y teorÃ­a aplicada', 'Ensambles y presentaciones en vivo'],
         image: 'images/programs/guitar.png'
     },
     'piano': {
         title: 'Piano',
-        subtitle: 'Clásico y Moderno',
+        subtitle: 'ClÃ¡sico y Moderno',
         icon: 'bi-grid-3x3-gap',
-        description: 'Descubre el poder del piano. Nuestro programa abarca desde la elegancia de la música clásica hasta la versatilidad del pop y jazz moderno. Desarrolla tu oído y técnica.',
-        features: ['Técnica pianística avanzada', 'Repertorio clásico y contemporáneo', 'Acompañamiento y armonía', 'Lectura a primera vista'],
+        description: 'Descubre el poder del piano. Nuestro programa abarca desde la elegancia de la mÃºsica clÃ¡sica hasta la versatilidad del pop y jazz moderno. Desarrolla tu oÃ­do y tÃ©cnica.',
+        features: ['TÃ©cnica pianÃ­stica avanzada', 'Repertorio clÃ¡sico y contemporÃ¡neo', 'AcompaÃ±amiento y armonÃ­a', 'Lectura a primera vista'],
         image: 'images/programs/piano.png'
     },
     'voz': {
         title: 'Voz',
-        subtitle: 'Técnica Vocal',
+        subtitle: 'TÃ©cnica Vocal',
         icon: 'bi-mic',
-        description: 'Tu voz es tu instrumento más poderoso. Aprende a controlarla, proyectarla y cuidarla. Trabajamos respiración, afinación, rango vocal y expresión escénica.',
-        features: ['Respiración y apoyo diafragmático', 'Vocalización y afinación', 'Interpretación y estilo', 'Salud vocal y cuidado'],
+        description: 'Tu voz es tu instrumento mÃ¡s poderoso. Aprende a controlarla, proyectarla y cuidarla. Trabajamos respiraciÃ³n, afinaciÃ³n, rango vocal y expresiÃ³n escÃ©nica.',
+        features: ['RespiraciÃ³n y apoyo diafragmÃ¡tico', 'VocalizaciÃ³n y afinaciÃ³n', 'InterpretaciÃ³n y estilo', 'Salud vocal y cuidado'],
         image: 'images/programs/voice.png'
     },
     'seniors': {
         title: 'Senior\'s',
         subtitle: 'Adulto Mayor',
         icon: 'bi-person-hearts',
-        description: 'Nunca es tarde para aprender música. Un programa diseñado especialmente para adultos mayores, enfocado en el disfrute, la memoria y la socialización a través del arte.',
-        features: ['Repertorio de música de antaño', 'Estimulación cognitiva y memoria', 'Clases grupales e individuales', 'Ambiente relajado y social'],
+        description: 'Nunca es tarde para aprender mÃºsica. Un programa diseÃ±ado especialmente para adultos mayores, enfocado en el disfrute, la memoria y la socializaciÃ³n a travÃ©s del arte.',
+        features: ['Repertorio de mÃºsica de antaÃ±o', 'EstimulaciÃ³n cognitiva y memoria', 'Clases grupales e individuales', 'Ambiente relajado y social'],
         image: 'images/programs/seniors.png'
     },
     'shows': {
         title: 'Shows',
         subtitle: 'Presentaciones',
         icon: 'bi-ticket-perforated',
-        description: 'La música cobra vida en el escenario. Preparamos a nuestros estudiantes para brillar en conciertos reales, perdiendo el miedo escénico y ganando confianza profesional.',
-        features: ['Montaje de repertorio en vivo', 'Expresión corporal y escénica', 'Manejo de equipo de sonido', 'Conciertos semestrales'],
+        description: 'La mÃºsica cobra vida en el escenario. Preparamos a nuestros estudiantes para brillar en conciertos reales, perdiendo el miedo escÃ©nico y ganando confianza profesional.',
+        features: ['Montaje de repertorio en vivo', 'ExpresiÃ³n corporal y escÃ©nica', 'Manejo de equipo de sonido', 'Conciertos semestrales'],
         image: 'images/programs/shows.png'
     },
     'exploration': {
-        title: 'Exploración',
-        subtitle: 'Iniciación Musical',
+        title: 'ExploraciÃ³n',
+        subtitle: 'IniciaciÃ³n Musical',
         icon: 'bi-balloon',
-        description: 'El primer paso para los más pequeños. Un acercamiento lúdico a la música donde los niños descubren ritmos, melodías e instrumentos mientras juegan y se divierten.',
-        features: ['Rítmica dalcroze y juegos musicales', 'Exploración de instrumentos Orff', 'Canto y movimiento', 'Desarrollo auditivo temprano'],
+        description: 'El primer paso para los mÃ¡s pequeÃ±os. Un acercamiento lÃºdico a la mÃºsica donde los niÃ±os descubren ritmos, melodÃ­as e instrumentos mientras juegan y se divierten.',
+        features: ['RÃ­tmica dalcroze y juegos musicales', 'ExploraciÃ³n de instrumentos Orff', 'Canto y movimiento', 'Desarrollo auditivo temprano'],
         image: 'images/programs/exploration.png'
     },
     'psychomusic': {
-        title: 'Psicomúsica',
+        title: 'PsicomÃºsica',
         subtitle: 'Bienestar y Terapia',
         icon: 'bi-heart-pulse',
-        description: 'La música como herramienta de sanación y crecimiento personal. Sesiones enfocadas en el bienestar emocional, relajación y desarrollo de habilidades a través del sonido.',
-        features: ['Musicoterapia activa y receptiva', 'Relajación y mindfulness sonoro', 'Expresión emocional', 'Desarrollo de habilidades sociales'],
+        description: 'La mÃºsica como herramienta de sanaciÃ³n y crecimiento personal. Sesiones enfocadas en el bienestar emocional, relajaciÃ³n y desarrollo de habilidades a travÃ©s del sonido.',
+        features: ['Musicoterapia activa y receptiva', 'RelajaciÃ³n y mindfulness sonoro', 'ExpresiÃ³n emocional', 'Desarrollo de habilidades sociales'],
         image: 'images/programs/psychomusic.png'
     }
 };
@@ -181,7 +181,7 @@ window.previewImage = (input) => {
         const file = input.files[0];
         // Allow slightly larger for base64
         if (file.size > 3 * 1024 * 1024) {
-            Swal.fire('Error', 'La imagen es demasiado grande. Máximo 3MB.', 'error');
+            Swal.fire('Error', 'La imagen es demasiado grande. MÃ¡ximo 3MB.', 'error');
             input.value = '';
             return;
         }
@@ -229,7 +229,7 @@ async function handleProgramSave(e) {
         const res = await ApiService.saveProgramsJson(currentPrograms);
         if (res.success) {
             Swal.fire({
-                title: '¡Guardado!',
+                title: 'Â¡Guardado!',
                 text: 'Cambios aplicados en todos los dispositivos.',
                 icon: 'success',
                 timer: 1500,
@@ -249,13 +249,13 @@ async function handleProgramSave(e) {
 
 window.deleteProgram = (key) => {
     Swal.fire({
-        title: '¿Eliminar Programa?',
-        text: "Esta acción lo borrará de todos los dispositivos.",
+        title: 'Â¿Eliminar Programa?',
+        text: "Esta acciÃ³n lo borrarÃ¡ de todos los dispositivos.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonText: 'SÃ­, eliminar',
         background: '#1a1a1a',
         color: '#fff'
     }).then(async (result) => {
@@ -289,8 +289,8 @@ window.deleteProgram = (key) => {
 
 window.resetData = () => {
     Swal.fire({
-        title: '¿Restaurar de Fábrica?',
-        text: "Se borrarán todos los programas personalizados y volverán los originales.",
+        title: 'Â¿Restaurar de FÃ¡brica?',
+        text: "Se borrarÃ¡n todos los programas personalizados y volverÃ¡n los originales.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ff3b30',

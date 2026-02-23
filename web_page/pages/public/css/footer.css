@@ -91,6 +91,36 @@
     }
 }
 
+/* Estado: Matrículas Cerradas */
+.jam-status-badge--closed {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    color: #e74c3c;
+}
+
+.jam-status-badge--closed .pulse-dot {
+    background: #e74c3c;
+    box-shadow: 0 0 8px #e74c3c;
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(231, 76, 60, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+    }
+}
+
 /* Footer Columns */
 .jam-footer-col h3 {
     font-size: 1.2rem;

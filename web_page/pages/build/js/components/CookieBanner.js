@@ -1,4 +1,4 @@
-class CookieBanner extends HTMLElement {
+﻿class CookieBanner extends HTMLElement {
     constructor() {
         super();
     }
@@ -23,12 +23,12 @@ class CookieBanner extends HTMLElement {
                 display: flex; flex-direction: column; gap: 15px;
             ">
                 <div style="display: flex; align-items: start; gap: 15px;">
-                    <div style="font-size: 2rem;">🍪</div>
+                    <div style="font-size: 2rem;">ðŸª</div>
                     <div>
                         <h4 style="color: white; margin: 0 0 5px 0; font-size: 1rem;">Usamos Cookies</h4>
                         <p style="color: #aaa; font-size: 0.85rem; margin: 0; line-height: 1.4;">
-                            Utilizamos cookies para mejorar tu experiencia y analizar el tráfico. 
-                            <a href="cookies.html" style="color: var(--color-acento-azul, #3498db); text-decoration: underline;">Leer Política</a>.
+                            Utilizamos cookies para mejorar tu experiencia y analizar el trÃ¡fico. 
+                            <a href="cookies.html" style="color: var(--color-acento-azul, #3498db); text-decoration: underline;">Leer PolÃ­tica</a>.
                         </p>
                     </div>
                 </div>

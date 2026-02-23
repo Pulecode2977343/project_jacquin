@@ -1,4 +1,4 @@
-// Login Logic
+﻿// Login Logic
 document.addEventListener('DOMContentLoaded', () => {
 
     const loginForm = document.getElementById('login-form');
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check for session expired error in URL
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('error') === 'session_expired' && mensajeRespuesta) {
-        mensajeRespuesta.textContent = 'Tu sesión ha expirado por inactividad. Por favor ingresa de nuevo.';
+        mensajeRespuesta.textContent = 'Tu sesiÃ³n ha expirado por inactividad. Por favor ingresa de nuevo.';
         mensajeRespuesta.style.color = 'var(--color-acento-naranja)';
     } else if (ApiService.isAuthenticated() && !urlParams.get('error')) {
         // If already logged in and no error, go to dashboard
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await ApiService.login(email, password);
 
             if (result.success) {
-                mensajeRespuesta.textContent = "¡Bienvenido!";
+                mensajeRespuesta.textContent = "Â¡Bienvenido!";
                 mensajeRespuesta.style.color = '#2ecc71'; // Green
 
                 // Save Session
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     const pendingId = sessionStorage.getItem('pending_enrollment');
                     if (pendingId) {
-                        mensajeRespuesta.textContent = "¡Bienvenido! Retomando tu inscripción...";
+                        mensajeRespuesta.textContent = "Â¡Bienvenido! Retomando tu inscripciÃ³n...";
                         mensajeRespuesta.style.color = 'var(--color-acento-azul)';
                         setTimeout(() => {
                             window.location.href = 'index.html#programas';
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error("Login Error:", error);
-            mensajeRespuesta.textContent = "Error de conexión";
+            mensajeRespuesta.textContent = "Error de conexiÃ³n";
         }
     });
 });

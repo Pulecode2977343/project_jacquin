@@ -18,3 +18,5 @@
 | **Configuración Header Maestro** | ✅ | Componente centralizado con sincronización automática entre React y estático. |
 | **Limpieza de Proyecto** | ✅ | Eliminación del archivo `index.html` deprecado en la raíz de `web_page`. |
 | **Gestión de Skills de Agente** | ✅ | Registro y vinculación de la habilidad `header-manager` en el sistema global. |
+| **Migración Footer Micro-Frontend** | ✅ | Footer unificado en React + Inyección en Dashboards. Reemplazo de Vanilla CSS. |
+| **Update Enrollment Logic** | ✅ | Sincronización en tiempo real vía Custom Events + Lógica de vigencia inteligente. |

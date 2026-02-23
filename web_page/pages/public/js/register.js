@@ -1,4 +1,4 @@
-// Register Logic
+﻿// Register Logic
 document.addEventListener('DOMContentLoaded', () => {
     // Password Toggle Logic (Added)
     const togglePassword = document.querySelector('.toggle-password');
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Priorize title match for dynamic/future courses
         const searchTerm = (pendingTitle || "").toLowerCase();
-        console.log("Iniciando búsqueda universal para:", searchTerm || pendingId);
+        console.log("Iniciando bÃºsqueda universal para:", searchTerm || pendingId);
 
         const options = Array.from(courseSelect.options);
 
@@ -62,10 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Fallback to technical ID mapping (Legacy support)
         if (!found && pendingId) {
             const idMap = {
-                'program_d1': 'percusión', 'program_d2': 'guitarra',
+                'program_d1': 'percusiÃ³n', 'program_d2': 'guitarra',
                 'program_d3': 'piano', 'program_d4': 'voz',
                 'program_d5': 'seniors', 'program_d6': 'shows',
-                'program_d7': 'exploración', 'program_d8': 'psicomúsica'
+                'program_d7': 'exploraciÃ³n', 'program_d8': 'psicomÃºsica'
             };
             const mappedName = idMap[pendingId.toLowerCase()];
             if (mappedName) {
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (found) {
             courseSelect.value = found.value;
-            console.log("Pre-selección exitosa:", found.text);
+            console.log("Pre-selecciÃ³n exitosa:", found.text);
             courseSelect.style.border = "2px solid var(--color-acento-azul)";
             setTimeout(() => courseSelect.style.border = "", 2000);
         }
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         courseSelect.addEventListener('change', () => {
             const selectedText = courseSelect.options[courseSelect.selectedIndex].text;
             if (selectedText && courseSelect.value !== "") {
-                console.log("Actualizando intención de inscripción a:", selectedText);
+                console.log("Actualizando intenciÃ³n de inscripciÃ³n a:", selectedText);
                 sessionStorage.setItem('pending_enrollment_title', selectedText);
 
                 // Also update the ID if we can find it in the programs
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Ejecutar inicialización dinámica y pre-selección
+    // Ejecutar inicializaciÃ³n dinÃ¡mica y pre-selecciÃ³n
     populateCourseList();
     setTimeout(applyPreSelection, 200);
 
@@ -131,11 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             if (!Object.values(passwordRegex).every(Boolean)) {
-                let errorMsg = "La contraseña debe ser más segura: ";
-                if (!passwordRegex.length) errorMsg += "mínimo 8 caracteres, ";
-                if (!passwordRegex.upper) errorMsg += "una mayúscula, ";
-                if (!passwordRegex.number) errorMsg += "un número, ";
-                if (!passwordRegex.special) errorMsg += "un carácter especial (!@#$...), ";
+                let errorMsg = "La contraseÃ±a debe ser mÃ¡s segura: ";
+                if (!passwordRegex.length) errorMsg += "mÃ­nimo 8 caracteres, ";
+                if (!passwordRegex.upper) errorMsg += "una mayÃºscula, ";
+                if (!passwordRegex.number) errorMsg += "un nÃºmero, ";
+                if (!passwordRegex.special) errorMsg += "un carÃ¡cter especial (!@#$...), ";
 
                 mensajeRespuesta.textContent = errorMsg.slice(0, -2) + ".";
                 mensajeRespuesta.style.color = 'var(--color-acento-naranja)';
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await ApiService.register(userData);
 
                 if (result.success) {
-                    mensajeRespuesta.textContent = '¡Registro Exitoso! Redirigiendo...';
+                    mensajeRespuesta.textContent = 'Â¡Registro Exitoso! Redirigiendo...';
                     mensajeRespuesta.style.color = '#2ecc71';
                     registerForm.reset();
 
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (error) {
                 console.error('Register Error:', error);
-                mensajeRespuesta.textContent = 'Error de conexión.';
+                mensajeRespuesta.textContent = 'Error de conexiÃ³n.';
                 mensajeRespuesta.style.color = 'red';
             }
         });

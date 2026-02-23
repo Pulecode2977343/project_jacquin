@@ -1,4 +1,4 @@
-/* =========================================
+Ôªø/* =========================================
    BRANDBOOK FONTS - Poppins & Lancelot
    ========================================= */
 
@@ -223,16 +223,16 @@ a {
 
 /* =========================================
    REACT HEADER MOUNT POINT
-   El <header class="header"> interno es position:fixed ó
+   El <header class="header"> interno es position:fixed ‚Äî
    no ocupa espacio en el flujo. body > main recibe
    padding-top para que el contenido no quede oculto.
    ========================================= */
 
-/* #react-header-root no necesita CSS especial ó el <header> interno
+/* #react-header-root no necesita CSS especial ‚Äî el <header> interno
    es position:fixed y no ocupa espacio en el flujo del documento */
 
-/* P·ginas est·ticas: empuja contenido debajo del header fijo */
-body > main {
+/* P√°ginas est√°ticas: empuja contenido debajo del header fijo */
+body>main {
     padding-top: 17vh;
 }
 
@@ -440,7 +440,7 @@ jam-header.scrolled,
         /* Override flex */
     }
 
-    /* 5. Drawer (The sliding part) - Mejorado para simetrÌa */
+    /* 5. Drawer (The sliding part) - Mejorado para simetr√≠a */
     jam-navbar {
         display: block;
         position: absolute;
@@ -454,7 +454,7 @@ jam-header.scrolled,
         transform: translateX(100%);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         padding: 2rem 0;
-        /* Padding simÈtrico arriba y abajo */
+        /* Padding sim√©trico arriba y abajo */
         overflow-y: auto;
     }
 
@@ -478,12 +478,12 @@ jam-header.scrolled,
         padding: 0;
     }
 
-    /* BUBBLE GLASS STYLE FOR MOBILE MENU ITEMS - Mejorado para simetrÌa */
+    /* BUBBLE GLASS STYLE FOR MOBILE MENU ITEMS - Mejorado para simetr√≠a */
     .navbar-link {
         justify-content: flex-start !important;
         flex-direction: row !important;
         align-items: center !important;
-        /* AlineaciÛn vertical centrada */
+        /* Alineaci√≥n vertical centrada */
         gap: 15px !important;
         width: 85% !important;
         /* Uniform width */
@@ -571,7 +571,7 @@ jam-header.scrolled,
         top: 0;
     }
 
-    /* 7. Show Mobile-Only Buttons inside Menu - SimetrÌa mejorada */
+    /* 7. Show Mobile-Only Buttons inside Menu - Simetr√≠a mejorada */
     .mobile-only {
         display: flex !important;
         flex-direction: column;
@@ -580,7 +580,7 @@ jam-header.scrolled,
         /* Consistente con navbar-list */
         margin-top: 20px;
         padding: 0 0 20px 0;
-        /* Padding simÈtrico */
+        /* Padding sim√©trico */
     }
 }
 
@@ -588,24 +588,24 @@ jam-header.scrolled,
    RESPONSIVE FINE-TUNING
    ========================================= */
 
-/* Tablet especÌfico (768px - 1024px) */
+/* Tablet espec√≠fico (768px - 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
     jam-navbar {
         width: 70% !important;
-        /* Drawer m·s estrecho en tablets */
+        /* Drawer m√°s estrecho en tablets */
     }
 
     .navbar-link {
         max-width: 320px !important;
-        /* Botones m·s anchos en tablet */
+        /* Botones m√°s anchos en tablet */
     }
 }
 
-/* MÛvil grande (480px - 767px) */
+/* M√≥vil grande (480px - 767px) */
 @media (max-width: 767px) {
     jam-navbar {
         width: 80% !important;
-        /* Drawer m·s ancho en mÛviles */
+        /* Drawer m√°s ancho en m√≥viles */
     }
 
     .navbar-link {
@@ -614,7 +614,7 @@ jam-header.scrolled,
     }
 }
 
-/* MÛvil pequeÒo (< 480px) */
+/* M√≥vil peque√±o (< 480px) */
 @media (max-width: 480px) {
     .logo-links {
         padding: 0 15px !important;
@@ -622,7 +622,7 @@ jam-header.scrolled,
 
     jam-navbar {
         width: 85% !important;
-        /* Casi pantalla completa en mÛviles pequeÒos */
+        /* Casi pantalla completa en m√≥viles peque√±os */
     }
 
     .navbar-link {
@@ -636,7 +636,7 @@ jam-header.scrolled,
         font-size: 0.85rem !important;
     }
 
-    /* Reducir altura del header en mÛviles muy pequeÒos */
+    /* Reducir altura del header en m√≥viles muy peque√±os */
     jam-header,
     .header {
         height: 8vh !important;
@@ -698,7 +698,7 @@ jam-header.scrolled,
    SWIPER NAVIGATION - ESTILO INFINITY
    ========================================= */
 
-/* Botones de NavegaciÛn (Referencia: proyecto jacquin-infinity) */
+/* Botones de Navegaci√≥n (Referencia: proyecto jacquin-infinity) */
 .programs-swiper .swiper-button-prev,
 .programs-swiper .swiper-button-next,
 .events-swiper .swiper-button-prev,
@@ -740,10 +740,10 @@ jam-header.scrolled,
     right: -20px !important;
 }
 
-/* Flecha ˙nica: una sola chevron */
+/* Flecha √∫nica: una sola chevron */
 .programs-prev::after,
 .events-prev::after {
-    content: 'ã' !important;
+    content: '‚Äπ' !important;
     font-size: 1.6rem !important;
     font-weight: 700 !important;
     color: var(--color-acento-azul) !important;
@@ -752,14 +752,14 @@ jam-header.scrolled,
 
 .programs-next::after,
 .events-next::after {
-    content: 'õ' !important;
+    content: '‚Ä∫' !important;
     font-size: 1.6rem !important;
     font-weight: 700 !important;
     color: var(--color-acento-azul) !important;
     line-height: 1 !important;
 }
 
-/* TamaÒo de la flecha */
+/* Tama√±o de la flecha */
 .programs-swiper .swiper-button-prev::after,
 .programs-swiper .swiper-button-next::after,
 .events-swiper .swiper-button-prev::after,
@@ -769,7 +769,7 @@ jam-header.scrolled,
     color: var(--color-acento-azul) !important;
 }
 
-/* Hover: fondo azul sÛlido + glow */
+/* Hover: fondo azul s√≥lido + glow */
 .programs-swiper .swiper-button-prev:hover,
 .programs-swiper .swiper-button-next:hover,
 .events-swiper .swiper-button-prev:hover,
@@ -800,7 +800,7 @@ jam-header.scrolled,
     color: white !important;
 }
 
-/* Responsive: ajustar posiciÛn en pantallas pequeÒas */
+/* Responsive: ajustar posici√≥n en pantallas peque√±as */
 @media (max-width: 1024px) {
 
     .programs-prev,
@@ -963,7 +963,7 @@ jam-header.scrolled,
 @media (max-width: 1024px) {
     .bento-section {
         padding: 4rem 20px;
-        /* Reducir padding lateral dr√°sticamente */
+        /* Reducir padding lateral dr√É¬°sticamente */
         width: 100%;
     }
 
@@ -1442,7 +1442,7 @@ textarea:-webkit-autofill:active {
 }
 
 /* ==========================================================================
-   üö® EMERGENCY FIX PATCH - DO NOT REMOVE üö®
+   √∞≈∏≈°¬® EMERGENCY FIX PATCH - DO NOT REMOVE √∞≈∏≈°¬®
    Fixes: Checkbox Visibility, Navbar Alignment, Button Styles
    ========================================================================== */
 
@@ -1452,7 +1452,7 @@ textarea:-webkit-autofill:active {
    so the :checked selector can toggle the navbar visibility. */
 
 /* ==========================================================================
-   ‚ú® PREMIUM & ELEGANT HEADER REDESIGN ‚ú®
+   √¢≈ì¬® PREMIUM & ELEGANT HEADER REDESIGN √¢≈ì¬®
    ========================================================================== */
 
 /* --- 2. FORCE NAVBAR HORIZONTAL (DESKTOP) & PREMIUM LAYOUT --- */
@@ -1488,7 +1488,7 @@ textarea:-webkit-autofill:active {
         /* Add gap between buttons */
     }
 
-    /* Target the 'InscrÌbete' button (which has class .btn-login) */
+    /* Target the 'Inscr√≠bete' button (which has class .btn-login) */
     .btn-login {
         border: 1px solid var(--color-acento-naranja) !important;
         box-shadow: 0 0 10px rgba(231, 140, 59, 0.4);
@@ -1971,33 +1971,7 @@ textarea:-webkit-autofill:active {
     max-width: 300px;
 }
 
-.jam-status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(46, 204, 113, 0.1);
-    color: #2ecc71;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    border: 1px solid rgba(46, 204, 113, 0.2);
-}
-
-.jam-status-dot {
-    width: 8px;
-    height: 8px;
-    background: #2ecc71;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #2ecc71;
-    animation: blink 2s infinite;
-}
-
-@keyframes blink {
-    50% {
-        opacity: 0.5;
-    }
-}
+/* Badge styles moved to footer.css */
 
 /* Columnas: Links */
 .jam-footer-col h3 {
@@ -2255,274 +2229,7 @@ textarea:-webkit-autofill:active {
     color: white;
 }
 
-.brand-desc {
-    color: #94a3b8;
-    line-height: 1.7;
-    font-size: 0.95rem;
-    margin-bottom: 2rem;
-    max-width: 90%;
-}
-
-.jam-status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(46, 204, 113, 0.15);
-    color: #2ecc71;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border: 1px solid rgba(46, 204, 113, 0.3);
-}
-
-.pulse-dot {
-    width: 8px;
-    height: 8px;
-    background: #2ecc71;
-    border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
-    animation: pulse-green 2s infinite;
-}
-
-@keyframes pulse-green {
-    0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
-    }
-
-    70% {
-        transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
-    }
-
-    100% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
-    }
-}
-
-/* --- Columnas Links --- */
-.jam-footer-col h3 {
-    color: white;
-    font-size: 1.1rem;
-    margin-bottom: 1.8rem;
-    position: relative;
-    display: inline-block;
-    letter-spacing: 0.5px;
-}
-
-.jam-footer-col h3::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 30px;
-    height: 2px;
-    background: var(--color-acento-naranja);
-    border-radius: 2px;
-}
-
-.jam-footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.jam-footer-links li {
-    margin-bottom: 12px;
-}
-
-.hover-link {
-    color: #94a3b8;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    position: relative;
-    width: fit-content;
-}
-
-.hover-link i {
-    font-size: 1.1rem;
-    color: #64748b;
-    transition: color 0.3s ease;
-}
-
-/* Efecto hover deslizante */
-.hover-link::before {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--color-acento-azul);
-    transition: width 0.3s ease;
-}
-
-.hover-link:hover {
-    color: white;
-    transform: translateX(5px);
-}
-
-.hover-link:hover i {
-    color: var(--color-acento-azul);
-}
-
-.hover-link:hover::before {
-    width: 100%;
-}
-
-/* --- Columna Contacto --- */
-.contact-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.icon-box {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-acento-naranja);
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.contact-item:hover .icon-box {
-    background: rgba(231, 140, 59, 0.1);
-    transform: rotate(10deg);
-    border-color: rgba(231, 140, 59, 0.3);
-}
-
-.label {
-    display: block;
-    font-size: 0.75rem;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 2px;
-}
-
-.value {
-    color: white;
-    font-size: 0.95rem;
-    font-weight: 500;
-}
-
-/* Social Premium */
-.social-links-premium {
-    display: flex;
-    gap: 12px;
-}
-
-.social-links-premium a {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.2rem;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.social-links-premium a:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* Brand Colors for Socials on Hover */
-.social-links-premium a[aria-label="Facebook"]:hover {
-    background: #1877f2;
-    border-color: #1877f2;
-}
-
-.social-links-premium a[aria-label="Instagram"]:hover {
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    border: none;
-}
-
-.social-links-premium a[aria-label="TikTok"]:hover {
-    background: black;
-    border-color: #333;
-}
-
-.social-links-premium a[aria-label="WhatsApp"]:hover {
-    background: #25d366;
-    border-color: #25d366;
-}
-
-/* --- Footer Bottom --- */
-.jam-footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 25px 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.2);
-    position: relative;
-    z-index: 2;
-    max-width: 1300px;
-    margin: 0 auto;
-}
-
-.copyright {
-    color: #64748b;
-    font-size: 0.9rem;
-}
-
-.copyright strong {
-    color: #94a3b8;
-}
-
-.footer-bottom-links {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.footer-bottom-links a {
-    color: #64748b;
-    font-size: 0.85rem;
-    transition: color 0.2s;
-}
-
-.footer-bottom-links a:hover {
-    color: var(--color-acento-azul);
-}
-
-.separator {
-    color: #334155;
-}
-
-/* --- Responsive Footer --- */
-@media (max-width: 1024px) {
-    .jam-footer-content {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 3rem;
-        padding: 4rem 2rem;
-    }
-}
-
+/* --- Link Columns and Socials (Handled by footer.css / React) --- */
 @media (max-width: 600px) {
     .jam-footer-content {
         grid-template-columns: 1fr;
@@ -2530,10 +2237,7 @@ textarea:-webkit-autofill:active {
         text-align: center;
     }
 
-    .jam-footer-brand .footer-logo,
-    .jam-footer-brand .jam-status-badge {
-        justify-content: center;
-        /* Center flex items */
+    .jam-footer-brand .footer-logo {
         margin-left: auto;
         margin-right: auto;
     }
@@ -2547,29 +2251,15 @@ textarea:-webkit-autofill:active {
         transform: translateX(-50%);
     }
 
-    .hover-link {
-        margin: 0 auto;
-    }
-
+    .hover-link,
     .contact-item {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
-
-    .social-links-premium {
         justify-content: center;
     }
 
     .jam-footer-bottom {
         flex-direction: column;
-        gap: 15px;
+        gap: 1.5rem;
         text-align: center;
-    }
-
-    .rights {
-        display: block;
-        margin-top: 5px;
     }
 }
 

@@ -1,4 +1,4 @@
-// Smooth scroll and hero fade-out effect
+﻿// Smooth scroll and hero fade-out effect
 document.addEventListener('DOMContentLoaded', function() {
     const heroSection = document.querySelector('.hero-section');
     

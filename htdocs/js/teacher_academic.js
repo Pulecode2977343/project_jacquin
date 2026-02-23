@@ -1,6 +1,6 @@
-/**
+﻿/**
  * teacher_academic.js
- * Panel de Gestión Académica para Docentes
+ * Panel de GestiÃ³n AcadÃ©mica para Docentes
  */
 
 window.TeacherAcademic = {
@@ -12,7 +12,7 @@ window.TeacherAcademic = {
         this.session = ApiService.getSession();
         if (!this.session || parseInt(this.session.id_rol) !== 2) return; // Solo docentes
 
-        // Usar botón existente del HTML
+        // Usar botÃ³n existente del HTML
         const button = document.getElementById('btn-teacher-academic-access');
         if (button) {
             button.onclick = () => this.openModal();
@@ -103,7 +103,7 @@ window.TeacherAcademic = {
             </style>
             <div class="modal-content glass-effect" style="max-width: 1100px; width: 95%; height: 90vh; display:flex; flex-direction:column; padding:0; background: rgba(10, 25, 41, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; box-shadow: 0 50px 100px rgba(0,0,0,0.5);">
                 <div class="modal-header" style="padding: 25px 30px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
-                    <h2 style="margin:0; color: white; font-weight: 300; font-size: 1.8rem;"><i class="fas fa-graduation-cap" style="color: var(--color-acento-azul); margin-right: 15px;"></i> Gestión Académica</h2>
+                    <h2 style="margin:0; color: white; font-weight: 300; font-size: 1.8rem;"><i class="fas fa-graduation-cap" style="color: var(--color-acento-azul); margin-right: 15px;"></i> GestiÃ³n AcadÃ©mica</h2>
                     <button class="close-modal-btn" onclick="TeacherAcademic.closeModal()" style="background: rgba(255,255,255,0.05); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">&times;</button>
                 </div>
                 
@@ -261,7 +261,7 @@ window.TeacherAcademic = {
                 });
 
                 // Show info message
-                const msg = `<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.2);"><i class="fas fa-clock" style="font-size: 2.5rem; margin-bottom: 20px; display: block;"></i> Seleccione un horario para ver la información.</div>`;
+                const msg = `<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.2);"><i class="fas fa-clock" style="font-size: 2.5rem; margin-bottom: 20px; display: block;"></i> Seleccione un horario para ver la informaciÃ³n.</div>`;
                 document.getElementById('attendance-content').innerHTML = msg;
                 document.getElementById('assignments-list').innerHTML = msg;
                 document.getElementById('notes-content').innerHTML = msg;
@@ -377,7 +377,7 @@ window.TeacherAcademic = {
         });
 
         if (res.success) {
-            Swal.fire({ title: '¡Guardado!', text: 'Asistencia registrada con éxito', icon: 'success', background: '#1a1a2e', color: '#fff' });
+            Swal.fire({ title: 'Â¡Guardado!', text: 'Asistencia registrada con Ã©xito', icon: 'success', background: '#1a1a2e', color: '#fff' });
         } else {
             Swal.fire({ title: 'Error', text: res.message, icon: 'error', background: '#1a1a2e', color: '#fff' });
         }
@@ -392,10 +392,10 @@ window.TeacherAcademic = {
             container.innerHTML = res.data.map(a => `
                 <div style="background:rgba(255,255,255,0.03); padding:20px; border-radius:16px; margin-bottom:15px; border-left:5px solid var(--color-acento-naranja); border: 1px solid rgba(255,255,255,0.05); position: relative; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">
                     <div style="font-weight:700; font-size:1.2rem; color:white; margin-bottom: 8px;">${a.title}</div>
-                    <div style="color:rgba(255,255,255,0.6); font-size:0.95rem; line-height: 1.5;">${a.description || 'Sin descripción detallada.'}</div>
+                    <div style="color:rgba(255,255,255,0.6); font-size:0.95rem; line-height: 1.5;">${a.description || 'Sin descripciÃ³n detallada.'}</div>
                     <div style="display: flex; align-items: center; gap: 10px; margin-top:15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
                         <i class="far fa-calendar-alt" style="color: var(--color-acento-azul);"></i>
-                        <span style="font-size:0.85rem; color:rgba(255,255,255,0.4);">Fecha Límite:</span>
+                        <span style="font-size:0.85rem; color:rgba(255,255,255,0.4);">Fecha LÃ­mite:</span>
                         <span style="font-size:0.85rem; color:var(--color-acento-azul); font-weight: 600;">${a.due_date || 'Abierta'}</span>
                     </div>
                 </div>
@@ -405,11 +405,11 @@ window.TeacherAcademic = {
 
     showCreateAssignmentForm() {
         Swal.fire({
-            title: 'Nueva Tarea Académica',
+            title: 'Nueva Tarea AcadÃ©mica',
             html: `
                 <div style="text-align: left;">
-                    <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Título de la Tarea</label>
-                    <input id="ta-title" class="swal2-input" placeholder="Ej: Proyecto Final Armonía" style="margin: 0 0 15px 0; width: 100%;">
+                    <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">TÃ­tulo de la Tarea</label>
+                    <input id="ta-title" class="swal2-input" placeholder="Ej: Proyecto Final ArmonÃ­a" style="margin: 0 0 15px 0; width: 100%;">
                     <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Instrucciones</label>
                     <textarea id="ta-desc" class="swal2-textarea" placeholder="Describe los requisitos..." style="margin: 0 0 15px 0; width: 100%; height: 100px;"></textarea>
                     <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Fecha de Entrega</label>
@@ -433,7 +433,7 @@ window.TeacherAcademic = {
             if (result.isConfirmed) {
                 const res = await ApiService.teacherCreateAssignment(result.value);
                 if (res.success) {
-                    Swal.fire({ title: '¡Creada!', text: 'La tarea ha sido publicada', icon: 'success', background: '#1a1a2e', color: '#fff' });
+                    Swal.fire({ title: 'Â¡Creada!', text: 'La tarea ha sido publicada', icon: 'success', background: '#1a1a2e', color: '#fff' });
                     this.loadAssignmentsTab();
                 } else {
                     Swal.fire({ title: 'Error', text: res.message, icon: 'error', background: '#1a1a2e', color: '#fff' });
@@ -503,16 +503,16 @@ window.TeacherAcademic = {
         ApiService.getAcademicData('get_schedule_students', { schedule_id: this.selectedSchedule.id_schedule || this.selectedSchedule.id }).then(res => {
             if (!res.success) return;
             Swal.fire({
-                title: 'Nueva Calificación',
+                title: 'Nueva CalificaciÃ³n',
                 html: `
                     <div style="text-align: left;">
                         <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Seleccionar Estudiante</label>
                         <select id="n-st" class="swal2-select" style="width: 100%; margin: 0 0 15px 0;">
                             ${res.data.map(s => `<option value="${s.id_usuario}">${s.full_name}</option>`).join('')}
                         </select>
-                        <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Calificación (0-10)</label>
+                        <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">CalificaciÃ³n (0-10)</label>
                         <input id="n-sc" type="number" step="0.1" class="swal2-input" placeholder="Ej: 9.5" style="width: 100%; margin: 0 0 15px 0;">
-                        <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Tipo de Evaluación</label>
+                        <label style="color: #aaa; font-size: 0.8rem; display: block; margin-bottom: 5px;">Tipo de EvaluaciÃ³n</label>
                         <input id="n-tp" class="swal2-input" placeholder="Ej: Examen Final" style="width: 100%; margin: 0;">
                     </div>
                 `,
@@ -533,7 +533,7 @@ window.TeacherAcademic = {
                 if (r.isConfirmed) {
                     const resp = await ApiService.teacherAddNote(r.value);
                     if (resp.success) {
-                        Swal.fire({ title: '¡Guardado!', text: 'Calificación registrada', icon: 'success', background: '#1a1a2e', color: '#fff' });
+                        Swal.fire({ title: 'Â¡Guardado!', text: 'CalificaciÃ³n registrada', icon: 'success', background: '#1a1a2e', color: '#fff' });
                         this.loadNotesTab();
                     }
                 }

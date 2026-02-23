@@ -1,6 +1,6 @@
-/**
+﻿/**
  * admin_compliance.js
- * Gestión de Cumplimientos y Recordatorios
+ * GestiÃ³n de Cumplimientos y Recordatorios
  */
 
 window.AdminCompliance = {
@@ -33,7 +33,7 @@ window.AdminCompliance = {
             <p>Gestionar documentos y videos requeridos</p>
         `;
 
-        // Insertar después de la tarjeta de contenido web (o al final)
+        // Insertar despuÃ©s de la tarjeta de contenido web (o al final)
         grid.appendChild(card);
     },
 
@@ -47,7 +47,7 @@ window.AdminCompliance = {
         modal.innerHTML = `
             <div class="modal-content glass-effect" style="max-width: 900px; width: 95%; height: 85vh; display:flex; flex-direction:column; padding:0;">
                 <div class="modal-header" style="padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
-                    <h2 style="margin:0; font-size:1.5rem;"><i class="fas fa-clipboard-check" style="color:#DD2476; margin-right:10px;"></i> Gestión de Cumplimientos</h2>
+                    <h2 style="margin:0; font-size:1.5rem;"><i class="fas fa-clipboard-check" style="color:#DD2476; margin-right:10px;"></i> GestiÃ³n de Cumplimientos</h2>
                     <button class="close-modal-btn" onclick="AdminCompliance.closeModal()"><i class="fas fa-times"></i></button>
                 </div>
                 
@@ -92,7 +92,7 @@ window.AdminCompliance = {
     renderList(items) {
         const container = document.getElementById('compliance-list');
         if (items.length === 0) {
-            container.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:rgba(255,255,255,0.5); padding: 40px;">No hay cumplimientos creados aún.</p>';
+            container.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:rgba(255,255,255,0.5); padding: 40px;">No hay cumplimientos creados aÃºn.</p>';
             return;
         }
 
@@ -103,7 +103,7 @@ window.AdminCompliance = {
                 </div>
                 <h4 style="margin: 0 0 5px 0; padding-right: 60px;">${item.title}</h4>
                 <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                    ${item.description || 'Sin descripción'}
+                    ${item.description || 'Sin descripciÃ³n'}
                 </p>
                 <div style="font-size: 0.8rem; margin-bottom: 15px;">
                     <span style="background:rgba(255,255,255,0.1); padding: 2px 6px; border-radius:4px;"><i class="fas fa-users"></i> ${item.target_role.toUpperCase()}</span>
@@ -129,10 +129,10 @@ window.AdminCompliance = {
 
         const formHtml = `
             <div style="text-align:left;">
-                <label>Título</label>
-                <input type="text" id="swal-comp-title" class="swal2-input" placeholder="Ej: Política de Datos">
+                <label>TÃ­tulo</label>
+                <input type="text" id="swal-comp-title" class="swal2-input" placeholder="Ej: PolÃ­tica de Datos">
                 
-                <label>Descripción</label>
+                <label>DescripciÃ³n</label>
                 <textarea id="swal-comp-desc" class="swal2-textarea" placeholder="Detalles..."></textarea>
                 
                 <label>Tipo</label>
@@ -153,7 +153,7 @@ window.AdminCompliance = {
                     <option value="student">Estudiantes</option>
                 </select>
 
-                <label>Fecha Límite (Opcional)</label>
+                <label>Fecha LÃ­mite (Opcional)</label>
                 <input type="date" id="swal-comp-date" class="swal2-input">
             </div>
         `;
@@ -188,11 +188,11 @@ window.AdminCompliance = {
 
     async deleteItem(id) {
         const confirm = await Swal.fire({
-            title: '¿Estás seguro?',
-            text: "No podrás revertir esto",
+            title: 'Â¿EstÃ¡s seguro?',
+            text: "No podrÃ¡s revertir esto",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Sí, borrar'
+            confirmButtonText: 'SÃ­, borrar'
         });
 
         if (confirm.isConfirmed) {
@@ -203,14 +203,14 @@ window.AdminCompliance = {
     },
 
     async editItem(id) {
-        // Primero obtener los datos del ítem actual
+        // Primero obtener los datos del Ã­tem actual
         const result = await ApiService.adminGetComplianceItems();
         if (!result.success || !result.data) {
             Swal.fire('Error', 'No se pudieron cargar los datos del cumplimiento', 'error');
             return;
         }
 
-        // Buscar el ítem específico
+        // Buscar el Ã­tem especÃ­fico
         const item = result.data.find(i => i.id == id);
         if (!item) {
             Swal.fire('Error', 'Cumplimiento no encontrado', 'error');
@@ -220,10 +220,10 @@ window.AdminCompliance = {
         // Construir formulario pre-poblado
         const formHtml = `
             <div style="text-align:left;">
-                <label>Título</label>
-                <input type="text" id="swal-comp-title" class="swal2-input" value="${item.title}" placeholder="Ej: Política de Datos">
+                <label>TÃ­tulo</label>
+                <input type="text" id="swal-comp-title" class="swal2-input" value="${item.title}" placeholder="Ej: PolÃ­tica de Datos">
                 
-                <label>Descripción</label>
+                <label>DescripciÃ³n</label>
                 <textarea id="swal-comp-desc" class="swal2-textarea" placeholder="Detalles...">${item.description || ''}</textarea>
                 
                 <label>Tipo</label>
@@ -250,7 +250,7 @@ window.AdminCompliance = {
                     <option value="0" ${item.is_active == 0 ? 'selected' : ''}>Inactivo</option>
                 </select>
 
-                <label>Fecha Límite (Opcional)</label>
+                <label>Fecha LÃ­mite (Opcional)</label>
                 <input type="date" id="swal-comp-date" class="swal2-input" value="${item.due_date || ''}">
             </div>
         `;
@@ -264,7 +264,7 @@ window.AdminCompliance = {
             preConfirm: () => {
                 const title = document.getElementById('swal-comp-title').value.trim();
                 if (!title) {
-                    Swal.showValidationMessage('El título es requerido');
+                    Swal.showValidationMessage('El tÃ­tulo es requerido');
                     return false;
                 }
                 return {

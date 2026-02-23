@@ -1,6 +1,6 @@
-/**
+﻿/**
  * team_cards.js
- * Carga dinámicamente las tarjetas del equipo (Profesores y Administradores)
+ * Carga dinÃ¡micamente las tarjetas del equipo (Profesores y Administradores)
  * Estilo premium consistente con el resto del proyecto
  */
 
@@ -22,7 +22,7 @@
                 container.innerHTML = `
                     <div style="text-align: center; color: #888; grid-column: 1/-1; padding: 40px;">
                         <i class="bi bi-people" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
-                        Próximamente conocerás a nuestro equipo
+                        PrÃ³ximamente conocerÃ¡s a nuestro equipo
                     </div>
                 `;
             }
@@ -39,7 +39,7 @@
 
     function renderTeamCards(container, members) {
         container.innerHTML = members.map(member => {
-            // Color del badge según rol
+            // Color del badge segÃºn rol
             let badgeColor = 'var(--color-acento-azul)';
             let badgeIcon = 'bi-person-badge';
 

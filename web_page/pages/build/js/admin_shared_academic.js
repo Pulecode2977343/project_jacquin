@@ -1,4 +1,4 @@
-/**
+﻿/**
  * DEPRECATED: This file has been superseded by admin_academic_schedules.js which now contains the unified AcademicManager.
  * 
  * Please do not use functions from this file. 

@@ -143,9 +143,17 @@ A partir de la auditoría de febrero 2026, los recursos se han centralizado para
 2.  **Rendimiento**: Mejor cacheo de recursos estáticos.
 3.  **Orden**: Eliminación de carpetas duplicadas (`web_page/assets/`, `web_page/pages/images/`).
 
-## 6. Historial de Cambios (Bitácora Diaria)
-*   **Fecha:** 2026-02-21
-*   **Auditoría UI**: Corrección masiva de rutas de avatares en paneles de Docente y Estudiante.
-*   **Consolidación**: Eliminación de archivos huérfanos y legacy (`_LEGACY_ARCHIVE` movido a backups).
-*   **Documentación**: Generación de manuales detallados por roles en la carpeta `technical/manuals/`.
-*   **InfinityFree Prep**: Ajuste de `PathHelper.php` y variables de entorno para despliegue productivo.
+## 6. Arquitectura Micro-Frontend (MFE)
+El sistema utiliza una estrategia de **Micro-Frontends** para componentes transversales como el **Header** y el **Footer**:
+
+*   **Implementación**: Los componentes se desarrollan en React y se compilan mediante **esbuild** en bundles independientes (`react-footer.bundle.js`).
+*   **Inyección**: Se montan en contenedores con IDs específicos (`react-footer-root`) en páginas HTML puras.
+*   **Comunicación**: El intercambio de datos entre el código Vanilla (Dashboards) y los componentes React se realiza mediante **Custom Events** (`enrollment-status-updated`).
+*   **Sincronización**: Al guardar cambios en el panel de administración, se dispara un evento global que el componente React escucha para actualizar su estado interno sin necesidad de recargar la página.
+
+## 7. Historial de Cambios (Bitácora Diaria)
+*   **Fecha:** 2026-02-23
+    *   **Footer**: Migración total de estilos vanilla a React. Eliminación de redundancia CSS en `style.css`.
+    *   **Reactividad**: Implementación de sistema de eventos para actualización en tiempo real de estados de matrícula.
+    *   **Dashboards**: Unificación de la experiencia visual en todas las vistas administrativas y de estudiantes.
+    *   **Lógica de Negocio**: Optimización del flujo de matrículas (Año de vigencia obligatorio en "Abierto", oculto y opcional en "Cerrado").

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Shared User Profile Modal Logic
  * Centralizes the unified tabbed modal for user management across different pages.
  */
@@ -159,7 +159,7 @@ window.openProfile = async function (userId, initialTab = 'info') {
     }
 
     if (!user) {
-        if (window.showToast) showToast("No se pudo cargar la información del usuario", "error");
+        if (window.showToast) showToast("No se pudo cargar la informaciÃ³n del usuario", "error");
         return;
     }
 
@@ -229,7 +229,7 @@ window.openProfile = async function (userId, initialTab = 'info') {
 
             <div style="background: rgba(0,0,0,0.2); display: flex; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 20px;">
                 ${(currentUser.id_rol == 1 || (user.id_usuario || user.id) == currentUser.id_usuario) ? `
-                    <button onclick="switchUserTab('info')" id="tab-btn-info" class="modal-tab-btn">Información</button>
+                    <button onclick="switchUserTab('info')" id="tab-btn-info" class="modal-tab-btn">InformaciÃ³n</button>
                     <button onclick="switchUserTab('security')" id="tab-btn-security" class="modal-tab-btn">Seguridad</button>
                 ` : ''}
                 
@@ -242,7 +242,7 @@ window.openProfile = async function (userId, initialTab = 'info') {
                 ` : ''}
                 
                 ${(currentUser.id_rol == 1 || (currentUser.id_rol == 2 && user.id_rol == 3)) ? `
-                    <button onclick="switchUserTab('academic')" id="tab-btn-academic" class="modal-tab-btn">${currentUser.id_rol == 2 ? 'Progreso Estudiante' : 'Gestión Académica'}</button>
+                    <button onclick="switchUserTab('academic')" id="tab-btn-academic" class="modal-tab-btn">${currentUser.id_rol == 2 ? 'Progreso Estudiante' : 'GestiÃ³n AcadÃ©mica'}</button>
                 ` : ''}
             </div>
 
@@ -251,7 +251,7 @@ window.openProfile = async function (userId, initialTab = 'info') {
             </div>
 
             <div style="padding: 20px 35px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
-                <div style="margin-right: auto; font-size: 0.8rem; color: rgba(255,255,255,0.15);">Módulo de Gestión Académica</div>
+                <div style="margin-right: auto; font-size: 0.8rem; color: rgba(255,255,255,0.15);">MÃ³dulo de GestiÃ³n AcadÃ©mica</div>
                 ${currentUser.id_rol == 1 && (user.id_usuario || user.id) != currentUser.id_usuario ? `
                     <button onclick="deleteUserDirectlyModal(${user.id_usuario || user.id}, '${user.full_name.replace(/'/g, "\\'")}')" style="background: rgba(231, 76, 60, 0.1); color: #ff7675; border: 1px solid rgba(231, 76, 60, 0.3); padding: 10px 20px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Eliminar Usuario</button>
                 ` : ''}
@@ -340,11 +340,11 @@ window.switchUserTab = async function (tab) {
                             <input type="text" id="edit-full-name" value="${user.full_name}" class="form-control" ${!canEdit ? 'readonly' : ''}>
                         </div>
                         <div class="info-field-group">
-                            <label>Correo Electrónico</label>
+                            <label>Correo ElectrÃ³nico</label>
                             <input type="email" id="edit-email" value="${user.email || ''}" class="form-control" ${currentUser.id_rol != 1 ? 'readonly' : ''}>
                         </div>
                         <div class="info-field-group">
-                            <label>Teléfono</label>
+                            <label>TelÃ©fono</label>
                             <input type="text" id="edit-phone" value="${user.n_phone || ''}" class="form-control" ${!canEdit ? 'readonly' : ''}>
                         </div>
                     </div>
@@ -360,7 +360,7 @@ window.switchUserTab = async function (tab) {
                             </select>
                         </div>
                         <div class="info-field-group" style="margin-top:20px;">
-                            <label>Configuración</label>
+                            <label>ConfiguraciÃ³n</label>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 ${canEdit ? `
                                     <div onclick="triggerAvatarUploadInModal()" style="padding: 12px 15px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s;" onmouseover="this.style.borderColor='var(--color-acento-azul)'; this.style.background='rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.background='rgba(0,0,0,0.2)'">
@@ -394,7 +394,7 @@ window.switchUserTab = async function (tab) {
                             ${courses.map(c => {
                         const idToUse = isTeacher ? c.id_course : c.id_enrollment;
                         const actionFn = isTeacher ? 'unassignTeacherFromCourse' : 'unenrollUserFromCourse';
-                        const btnTitle = isTeacher ? 'Remover asignación de docente' : 'Desvincular del curso';
+                        const btnTitle = isTeacher ? 'Remover asignaciÃ³n de docente' : 'Desvincular del curso';
 
                         return `
                                     <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
@@ -500,7 +500,7 @@ window.switchUserTab = async function (tab) {
                                                     ` : ''}
                                                     ${t.submission_text ? `<p style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin: 0; line-height: 1.4;">"${t.submission_text}"</p>` : ''}
                                                 </div>
-                                            ` : '<div style="color: rgba(255,255,255,0.2); font-size: 0.8rem; font-style: italic; margin-top: 10px;">El estudiante aún no ha realizado esta entrega.</div>'}
+                                            ` : '<div style="color: rgba(255,255,255,0.2); font-size: 0.8rem; font-style: italic; margin-top: 10px;">El estudiante aÃºn no ha realizado esta entrega.</div>'}
 
                                             ${status === 'graded' ? `
                                                 <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
@@ -538,7 +538,7 @@ window.switchUserTab = async function (tab) {
                                 <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;" onmouseover="this.style.borderColor='var(--color-acento-azul)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
                                     <div style="display: flex; align-items: center; gap: 20px;">
                                         <div style="width: 50px; height: 50px; background: rgba(147, 182, 238, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                                            ${a.icon || '👤'}
+                                            ${a.icon || 'ðŸ‘¤'}
                                         </div>
                                         <div>
                                             <div style="color: white; font-weight: 700; font-size: 1.05rem;">${a.position_name}</div>
@@ -552,7 +552,7 @@ window.switchUserTab = async function (tab) {
                             `).join('') : `
                                 <div style="text-align: center; padding: 40px; background: rgba(0,0,0,0.1); border-radius: 15px; border: 1px dashed rgba(255,255,255,0.1);">
                                     <i class="bi bi-info-circle" style="font-size: 2rem; color: rgba(255,255,255,0.1); display: block; margin-bottom: 10px;"></i>
-                                    <div style="color: rgba(255,255,255,0.2); font-size: 0.9rem;">No hay cargos específicos asignados a este perfil.</div>
+                                    <div style="color: rgba(255,255,255,0.2); font-size: 0.9rem;">No hay cargos especÃ­ficos asignados a este perfil.</div>
                                 </div>
                             `}
                         </div>
@@ -564,22 +564,22 @@ window.switchUserTab = async function (tab) {
                 <div style="animation: fadeInModal 0.3s ease-out; max-width: 500px; margin: 0 auto;">
                     <div style="background: rgba(231, 76, 60, 0.05); border-left: 4px solid #e74c3c; padding: 15px 20px; border-radius: 10px; margin-bottom: 25px;">
                         <div style="color: white; font-weight: 700; font-size: 0.95rem; margin-bottom: 5px;">Seguridad de la Cuenta</div>
-                        <div style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Te recomendamos cambiar tu contraseña periódicamente para proteger tu información académica.</div>
+                        <div style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Te recomendamos cambiar tu contraseÃ±a periÃ³dicamente para proteger tu informaciÃ³n acadÃ©mica.</div>
                     </div>
 
                     <form onsubmit="handleModalPasswordChange(event)" id="modal-password-form">
                         <div class="info-field-group">
-                            <label>Contraseña Actual</label>
-                            <input type="password" name="currentPassword" required placeholder="••••••••">
+                            <label>ContraseÃ±a Actual</label>
+                            <input type="password" name="currentPassword" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
                         </div>
                         <div class="info-field-group">
-                            <label>Nueva Contraseña</label>
-                            <input type="password" name="newPassword" required placeholder="Mínimo 8 caracteres">
-                            <small style="color: rgba(255,255,255,0.2); font-size: 0.7rem; margin-top: 5px; display: block;">Usa mayúsculas, números y símbolos para mayor seguridad.</small>
+                            <label>Nueva ContraseÃ±a</label>
+                            <input type="password" name="newPassword" required placeholder="MÃ­nimo 8 caracteres">
+                            <small style="color: rgba(255,255,255,0.2); font-size: 0.7rem; margin-top: 5px; display: block;">Usa mayÃºsculas, nÃºmeros y sÃ­mbolos para mayor seguridad.</small>
                         </div>
                         <div class="info-field-group">
-                            <label>Confirmar Nueva Contraseña</label>
-                            <input type="password" name="confirmPassword" required placeholder="Repite la nueva contraseña">
+                            <label>Confirmar Nueva ContraseÃ±a</label>
+                            <input type="password" name="confirmPassword" required placeholder="Repite la nueva contraseÃ±a">
                         </div>
                         
                         <button type="submit" style="width: 100%; background: linear-gradient(135deg, #e74c3c, #c0392b); border: none; padding: 12px; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;">
@@ -591,7 +591,7 @@ window.switchUserTab = async function (tab) {
         }
     } catch (e) {
         console.error("switchUserTab Error:", e);
-        content.innerHTML = '<div style="color:red; padding:20px;">Error al cargar datos de la pestaña.</div>';
+        content.innerHTML = '<div style="color:red; padding:20px;">Error al cargar datos de la pestaÃ±a.</div>';
     }
 };
 
@@ -636,23 +636,23 @@ window.handleModalPasswordChange = async function (e) {
     const user = ApiService.getSession();
 
     if (data.newPassword !== data.confirmPassword) {
-        return showToast("Las contraseñas no coinciden", "error");
+        return showToast("Las contraseÃ±as no coinciden", "error");
     }
 
     if (data.newPassword.length < 8) {
-        return showToast("La nueva contraseña debe tener al menos 8 caracteres", "warning");
+        return showToast("La nueva contraseÃ±a debe tener al menos 8 caracteres", "warning");
     }
 
     try {
         const res = await ApiService.changePassword(user.id_usuario, data.currentPassword, data.newPassword);
         if (res.success) {
-            showToast("Contraseña actualizada con éxito", "success");
+            showToast("ContraseÃ±a actualizada con Ã©xito", "success");
             e.target.reset();
         } else {
-            showToast(res.message || "Error al cambiar contraseña", "error");
+            showToast(res.message || "Error al cambiar contraseÃ±a", "error");
         }
     } catch (err) {
-        showToast("Error de conexión", "error");
+        showToast("Error de conexiÃ³n", "error");
     }
 };
 
@@ -681,7 +681,7 @@ window.updateProfileFromModal = async function () {
                 avatar_action: 'keep' // Por ahora el avatar se maneja separado
             });
         } else {
-            // Si soy usuario normal, solo actualizo mis datos básicos
+            // Si soy usuario normal, solo actualizo mis datos bÃ¡sicos
             // Use ApiService.BASE_URL instead of hardcoded path
             const response = await fetch(`${ApiService.BASE_URL}update_profile.php`, {
                 method: 'POST',
@@ -722,6 +722,6 @@ window.updateProfileFromModal = async function () {
         }
     } catch (e) {
         console.error("Error updating profile:", e);
-        showToast("Error de conexión al actualizar perfil", "error");
+        showToast("Error de conexiÃ³n al actualizar perfil", "error");
     }
 };

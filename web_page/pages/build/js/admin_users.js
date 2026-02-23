@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Admin Users Logic - Phase 1 Redesign
  * Features:
  * - Modern table render with avatars
@@ -214,13 +214,13 @@ function getRoleIcon(id) {
 
 window.deleteUser = async function (userId, userName) {
     const result = await Swal.fire({
-        title: '¿Eliminar usuario?',
-        html: `<p style="color:#aaa;">Se eliminará permanentemente a <strong style="color:white;">${userName}</strong></p>`,
+        title: 'Â¿Eliminar usuario?',
+        html: `<p style="color:#aaa;">Se eliminarÃ¡ permanentemente a <strong style="color:white;">${userName}</strong></p>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#e74c3c',
         cancelButtonColor: '#555',
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonText: 'SÃ­, eliminar',
         cancelButtonText: 'Cancelar',
         background: '#1a1a2e',
         color: '#fff'

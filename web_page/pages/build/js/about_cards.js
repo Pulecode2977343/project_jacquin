@@ -1,4 +1,4 @@
-/**
+﻿/**
  * About Cards Dynamic Loader
  * Loads cards from API and renders them with premium visual styles
  * Includes modal overlay with image gallery functionality
@@ -26,7 +26,7 @@
             if (result.success && result.data.length > 0) {
                 renderAboutCards(container, result.data);
             } else {
-                container.innerHTML = '<p style="color:#888; text-align:center;">Cargando información...</p>';
+                container.innerHTML = '<p style="color:#888; text-align:center;">Cargando informaciÃ³n...</p>';
             }
         } catch (error) {
             console.error('Error loading about cards:', error);
@@ -171,7 +171,7 @@
                         `;
                     }).join('');
                 } else {
-                    grid.innerHTML = '<div style="text-align: center; color: #888; grid-column: 1/-1; padding: 30px;">Próximamente conocerás a nuestro equipo</div>';
+                    grid.innerHTML = '<div style="text-align: center; color: #888; grid-column: 1/-1; padding: 30px;">PrÃ³ximamente conocerÃ¡s a nuestro equipo</div>';
                 }
             } catch (error) {
                 console.error('Error loading team:', error);

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Componente Logo Membrete - Jacquin Academia Musical
  * Logo institucional oficial horizontal para documentos
  * Basado en: Vertical_WhiteLogo.svg

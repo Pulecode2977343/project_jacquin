@@ -1,4 +1,4 @@
-// ==========================================
+﻿// ==========================================
 // HOME EVENTS CAROUSEL & DETAIL OVERLAY
 // ==========================================
 
@@ -65,7 +65,7 @@ function renderEventCards(eventsList) {
                 </div>
                 <h4 style="color:white; margin-bottom:10px; font-weight:600;">No se encontraron eventos</h4>
                 <p style="color:#888; text-align:center; max-width:300px;">
-                    Intenta ajustar tus filtros de búsqueda.
+                    Intenta ajustar tus filtros de bÃºsqueda.
                 </p>
             </div>
         `;
@@ -90,7 +90,7 @@ function renderEventCards(eventsList) {
                 <div class="program-content">
                     <div class="program-icon"><i class="bi ${getEventIcon(event.event_type)}"></i></div>
                     <h3>${event.title}</h3>
-                    <p>${event.event_date ? formatDate(event.event_date) : 'Próximamente'}</p>
+                    <p>${event.event_date ? formatDate(event.event_date) : 'PrÃ³ximamente'}</p>
                     
                     ${event.is_featured == 1 ? `
                     <div style="position:absolute; top:15px; right:15px; background:var(--naranja-neon, #e67e22); color:white; padding:4px 10px; border-radius:15px; font-size:0.7rem; font-weight:bold; box-shadow:0 0 10px rgba(230,126,34,0.5);">
@@ -230,7 +230,7 @@ window.showEventDetail = async function (eventId) {
                 </iframe>
                 <p style="text-align:center; margin-top:10px;">
                     <a href="${event.media_url}" target="_blank" style="color:var(--color-acento-azul);">
-                        <i class="bi bi-download"></i> Descargar Presentación
+                        <i class="bi bi-download"></i> Descargar PresentaciÃ³n
                     </a>
                 </p>
             </div>
@@ -277,7 +277,7 @@ window.showEventDetail = async function (eventId) {
                         <div style="display:flex; align-items:center; gap:10px; color:#aaa;">
                             <i class="bi bi-geo-alt" style="font-size:1.2rem; color:var(--color-acento-azul);"></i>
                             <div>
-                                <div style="font-size:0.75rem; color:#666;">Ubicación</div>
+                                <div style="font-size:0.75rem; color:#666;">UbicaciÃ³n</div>
                                 <div style="color:white;">${event.location}</div>
                             </div>
                         </div>
@@ -294,7 +294,7 @@ window.showEventDetail = async function (eventId) {
                 
                 ${event.description ? `
                     <div style="margin-top:25px; padding-top:20px; border-top:1px solid #333;">
-                        <h4 style="color:var(--color-acento-azul); margin-bottom:10px;">Descripción</h4>
+                        <h4 style="color:var(--color-acento-azul); margin-bottom:10px;">DescripciÃ³n</h4>
                         <p style="color:#ccc; line-height:1.6;">${event.description}</p>
                     </div>
                 ` : ''}
@@ -305,7 +305,7 @@ window.showEventDetail = async function (eventId) {
                         onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                         <i class="bi bi-ticket-perforated-fill"></i> Solicitar Entradas / Info
                     </button>
-                    <p style="color:#666; font-size:0.8rem; margin-top:10px;">*Serás redirigido a contacto para verificar cupos.</p>
+                    <p style="color:#666; font-size:0.8rem; margin-top:10px;">*SerÃ¡s redirigido a contacto para verificar cupos.</p>
                 </div>
                 
                 ${mediaHtml}
@@ -372,9 +372,9 @@ window.handleTicketRequest = async function (id_event, title) {
                 <div style="width:70px; height:70px; background:rgba(46, 204, 113, 0.1); color:#2ecc71; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:2.5rem;">
                     <i class="bi bi-person-check"></i>
                 </div>
-                <h3 style="color:white; margin:0 0 10px;">¡Hola, ${user.full_name.split(' ')[0]}!</h3>
+                <h3 style="color:white; margin:0 0 10px;">Â¡Hola, ${user.full_name.split(' ')[0]}!</h3>
                 <p style="color:#ccc; margin-bottom:20px; line-height:1.6; font-size:0.95rem;">
-                    ¿Deseas solicitar entradas para <strong>"${title}"</strong>?<br>
+                    Â¿Deseas solicitar entradas para <strong>"${title}"</strong>?<br>
                     <span style="font-size:0.9rem; color:#888;">Usaremos tus datos registrados para agilizar el proceso.</span>
                 </p>
                 <button id="btn-confirm-express" style="width:100%; padding:14px; background:linear-gradient(135deg, #2ecc71, #27ae60); color:white; border:none; border-radius:12px; font-weight:bold; cursor:pointer; font-size:1rem; box-shadow:0 5px 15px rgba(46,204,113,0.3); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
@@ -400,11 +400,11 @@ window.handleTicketRequest = async function (id_event, title) {
 
             close();
 
-            // Mensaje de éxito/error usando el mismo sistema de overlay
+            // Mensaje de Ã©xito/error usando el mismo sistema de overlay
             createTicketOverlay(`
                 <div style="text-align:center;">
                     <i class="bi ${res.success ? 'bi-check-circle-fill' : 'bi-exclamation-triangle'}" style="font-size:3.5rem; color:${res.success ? '#2ecc71' : '#e74c3c'}; margin-bottom:20px; display:block;"></i>
-                    <h3 style="color:white; margin-bottom:10px;">${res.success ? '¡Reserva Exitosa!' : 'Atención'}</h3>
+                    <h3 style="color:white; margin-bottom:10px;">${res.success ? 'Â¡Reserva Exitosa!' : 'AtenciÃ³n'}</h3>
                     <p style="color:#ccc; line-height:1.5;">${res.message}</p>
                     <button id="btn-close-final" style="margin-top:25px; padding:12px 40px; background:white; color:#111; border:none; border-radius:30px; font-weight:bold; cursor:pointer;">Entendido</button>
                 </div>
@@ -428,12 +428,12 @@ window.handleTicketRequest = async function (id_event, title) {
                 <div style="width:70px; height:70px; background:rgba(52, 152, 219, 0.1); color:var(--color-acento-azul); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:2.5rem;">
                     <i class="bi bi-info-circle"></i>
                 </div>
-                <h3 style="color:white; margin:0 0 15px;">Información de Reserva</h3>
+                <h3 style="color:white; margin:0 0 15px;">InformaciÃ³n de Reserva</h3>
                 <p style="color:#ccc; margin-bottom:20px; line-height:1.6; font-size: 0.95rem;">
                     Para adquirir entradas o inscribirte a <strong>"${title}"</strong>, necesitamos coordinar contigo directamente debido a la disponibilidad de cupos.
                 </p>
                 <p style="color:#888; font-size:0.9rem; margin-bottom:25px;">
-                    A continuación te redirigiremos a nuestro formulario de contacto con tu solicitud ya preparada.
+                    A continuaciÃ³n te redirigiremos a nuestro formulario de contacto con tu solicitud ya preparada.
                 </p>
                 <button id="btn-redirect-contact" style="width:100%; padding:14px; background:linear-gradient(135deg, #3498db, #2980b9); color:white; border:none; border-radius:12px; font-weight:bold; cursor:pointer; font-size:1rem; box-shadow:0 5px 15px rgba(52,152,219,0.3); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     Continuar a Contacto <i class="bi bi-arrow-right"></i>
@@ -460,7 +460,7 @@ function formatEventType(type) {
         'recital': 'Recital',
         'taller': 'Taller',
         'masterclass': 'Masterclass',
-        'presentacion': 'Presentación',
+        'presentacion': 'PresentaciÃ³n',
         'otro': 'Evento'
     };
     return types[type] || 'Evento';

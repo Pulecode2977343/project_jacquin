@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Academic Management Module
  * Consolidated logic for Courses, Schedules, and Enrollments.
  */
@@ -71,7 +71,7 @@ const AcademicManager = {
         }
 
         Swal.fire({
-            title: 'Cargando gestión académica...',
+            title: 'Cargando gestiÃ³n acadÃ©mica...',
             allowOutsideClick: false,
             didOpen: () => Swal.showLoading(),
             background: '#1a1a1a',
@@ -149,7 +149,7 @@ const AcademicManager = {
             <div class="modal-card-container custom-scroll">
                 <div class="modal-header-row">
                     <div>
-                        <h2 style="color:white; margin:0; font-size:1.8rem; font-weight:300;">Gestión Académica</h2>
+                        <h2 style="color:white; margin:0; font-size:1.8rem; font-weight:300;">GestiÃ³n AcadÃ©mica</h2>
                         <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">Selecciona una materia para gestionar inscritos y horarios.</p>
                     </div>
                     <button class="btn-close-modal" onclick="document.getElementById('${this.modalId}').style.display='none'"><i class="bi bi-x-lg"></i></button>
@@ -328,7 +328,7 @@ const AcademicManager = {
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
                     <div>
                         <h2 style="color:white; margin:0; font-size:1.8rem;">${courseName}</h2>
-                        <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">Gestión de alumnos y programación.</p>
+                        <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">GestiÃ³n de alumnos y programaciÃ³n.</p>
                     </div>
                      <div style="display:flex; gap:10px;">
                         <button onclick="editCourseBasicInfo(${courseId}, '${courseName.replace(/'/g, "\\'")}', '${(info.description || '').replace(/'/g, "\\'")}', ${info.price || 0})" class="btn-back-top">
@@ -371,14 +371,14 @@ const AcademicManager = {
         try {
             const result = await ApiService.createCourse(data);
             if (result.success) {
-                Swal.fire('Éxito', 'Curso creado', 'success');
+                Swal.fire('Ã‰xito', 'Curso creado', 'success');
                 e.target.reset();
                 this.loadCourses(); // Refresh list if exists
             } else {
                 Swal.fire('Error', result.message, 'error');
             }
         } catch (err) {
-            Swal.fire('Error', 'Error de conexión', 'error');
+            Swal.fire('Error', 'Error de conexiÃ³n', 'error');
         }
     },
 
@@ -402,7 +402,7 @@ const AcademicManager = {
     },
 
     async deleteCourse(id, name) {
-        if ((await Swal.fire({ title: `¿Eliminar ${name}?`, text: "Se borrarán los horarios asociados. Esta acción es irreversible.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#e74c3c' })).isConfirmed) {
+        if ((await Swal.fire({ title: `Â¿Eliminar ${name}?`, text: "Se borrarÃ¡n los horarios asociados. Esta acciÃ³n es irreversible.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#e74c3c' })).isConfirmed) {
             const res = await ApiService.deleteCourse(id);
             if (res.success) { Swal.fire('Eliminado', '', 'success'); this.loadCourses(); this.openOverview(); }
             else Swal.fire('Error', res.message, 'error');
@@ -431,18 +431,18 @@ const AcademicManager = {
     async handleRequest(id, action, courseId, courseName, schedId, teacherId) {
         const actionText = action === 'approve' ? 'Aprobar' : 'Rechazar';
         let htmlContent = action === 'approve'
-            ? `<p>¿Seguro que deseas aprobar esta solicitud?</p>`
-            : `<p>¿Por qué rechazas esta solicitud?</p><textarea id="reject-reason" class="swal2-textarea" placeholder="Razón..."></textarea>`;
+            ? `<p>Â¿Seguro que deseas aprobar esta solicitud?</p>`
+            : `<p>Â¿Por quÃ© rechazas esta solicitud?</p><textarea id="reject-reason" class="swal2-textarea" placeholder="RazÃ³n..."></textarea>`;
 
         const result = await Swal.fire({
             title: `${actionText} Solicitud`,
             html: htmlContent,
             icon: action === 'approve' ? 'question' : 'warning',
             showCancelButton: true,
-            confirmButtonText: `Sí, ${actionText} `,
+            confirmButtonText: `SÃ­, ${actionText} `,
             confirmButtonColor: action === 'approve' ? '#2ecc71' : '#e74c3c',
             preConfirm: () => {
-                if (action === 'reject') return document.getElementById('reject-reason').value || "Sin razón.";
+                if (action === 'reject') return document.getElementById('reject-reason').value || "Sin razÃ³n.";
                 return "Aprobada";
             }
         });
@@ -458,13 +458,13 @@ const AcademicManager = {
     },
 
     editSchedule(scheduleId, courseId, courseName, currentDay = '', currentStart = '', currentEnd = '') {
-        const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        const days = ['Lunes', 'Martes', 'MiÃ©rcoles', 'Jueves', 'Viernes', 'SÃ¡bado', 'Domingo'];
         const title = scheduleId ? 'Editar Horario' : 'Nuevo Horario';
 
         // Helper to create valid HTML for Swal
         const html = `
             <div style="text-align:left;">
-                <label style="display:block; margin-bottom:5px; color:#aaa;">Día</label>
+                <label style="display:block; margin-bottom:5px; color:#aaa;">DÃ­a</label>
                 <select id="swal-sched-day" class="swal2-select" style="width:100%; margin:0 0 15px 0; box-sizing:border-box;">
                     ${days.map(d => `<option value="${d}" ${d === currentDay ? 'selected' : ''}>${d}</option>`).join('')}
                 </select>
@@ -545,12 +545,12 @@ const AcademicManager = {
 
     async unassignTeacherSchedule(scheduleId, courseId, courseName) {
         if ((await Swal.fire({
-            title: '¿Desasignar Docente?',
-            text: "El horario volverá a estado PENDIENTE.",
+            title: 'Â¿Desasignar Docente?',
+            text: "El horario volverÃ¡ a estado PENDIENTE.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            confirmButtonText: 'Sí, desasignar'
+            confirmButtonText: 'SÃ­, desasignar'
         })).isConfirmed) {
             const res = await ApiService.assignTeacher('remove', scheduleId);
             if (res.success) {
@@ -610,7 +610,7 @@ const AcademicManager = {
     },
 
     async unenrollStudentAdmin(enrollmentId, courseId, courseName) {
-        if ((await Swal.fire({ title: '¿Desinscribir?', text: 'Esta acción es irreversible.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })).isConfirmed) {
+        if ((await Swal.fire({ title: 'Â¿Desinscribir?', text: 'Esta acciÃ³n es irreversible.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })).isConfirmed) {
             const res = await ApiService.unenrollStudent(enrollmentId);
             if (res.success) {
                 Swal.fire('Desinscrito', '', 'success');
@@ -622,7 +622,7 @@ const AcademicManager = {
     toggleStudentAccordion(enrollmentId) {
         // Implementation for the accordion inside the modal
         // This requires the DOM elements to exist, which are rendered in `renderDetailsModal`
-        alert("Esta función está siendo optimizada. Por favor use 'Horarios' para ver disponibilidad general.");
+        alert("Esta funciÃ³n estÃ¡ siendo optimizada. Por favor use 'Horarios' para ver disponibilidad general.");
     },
 
     async editCourseBasicInfo(id, name, desc, price) {
@@ -630,7 +630,7 @@ const AcademicManager = {
             title: 'Editar Curso',
             html: `
                 <input id="swal-input1" class="swal2-input" placeholder="Nombre" value="${name}">
-                <textarea id="swal-input2" class="swal2-textarea" placeholder="Descripción">${desc}</textarea>
+                <textarea id="swal-input2" class="swal2-textarea" placeholder="DescripciÃ³n">${desc}</textarea>
                 <input id="swal-input3" class="swal2-input" type="number" placeholder="Precio" value="${price}">
             `,
             focusConfirm: false,
@@ -679,8 +679,8 @@ const AcademicManager = {
 
     async unassignSingleTeacher(scheduleId, teacherId, courseId, courseName) {
         if ((await Swal.fire({
-            title: '¿Remover docente?',
-            text: "Se desasignará solo a este docente del horario.",
+            title: 'Â¿Remover docente?',
+            text: "Se desasignarÃ¡ solo a este docente del horario.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#e74c3c'
@@ -697,7 +697,7 @@ const AcademicManager = {
 
     // --- Helpers ---
     generateStudentsList(students, courseId, courseName) {
-        if (!students || students.length === 0) return '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.3); font-style:italic;">No hay estudiantes inscritos aún.</div>';
+        if (!students || students.length === 0) return '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.3); font-style:italic;">No hay estudiantes inscritos aÃºn.</div>';
 
         return students.map(s => `
             <div class="admin-course-card" style="border-left: 4px solid ${s.status === 'Activo' ? '#2ecc71' : '#e74c3c'}; background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%); margin-bottom: 12px; padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">

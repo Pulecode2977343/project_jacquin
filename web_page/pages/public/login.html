@@ -1,11 +1,12 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="es">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>J.A.M Inicia Sesión</title>
+  <title>J.A.M Inicia SesiÃ³n</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="css/footer.css" />
   <link rel="stylesheet" href="css/style.css?v=7" />
   <link rel="stylesheet" href="css/premium-forms.css?v=2" />
 </head>
@@ -20,7 +21,7 @@
         <h1 class="login-title">Ingresar</h1>
 
         <div class="form-group">
-          <label for="email">Correo Electrónico</label>
+          <label for="email">Correo ElectrÃ³nico</label>
           <div class="input-wrapper">
             <i class="bi bi-envelope input-icon"></i>
             <input class="form-input-glass" type="email" name="email" id="email" placeholder="usuario@ejemplo.com"
@@ -29,17 +30,17 @@
         </div>
 
         <div class="form-group">
-          <label for="password">Contraseña</label>
+          <label for="password">ContraseÃ±a</label>
           <div class="input-wrapper">
             <i class="bi bi-lock input-icon"></i>
-            <input class="form-input-glass" type="password" name="password" id="password" placeholder="••••••••"
+            <input class="form-input-glass" type="password" name="password" id="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
               required />
             <i class="bi bi-eye-slash toggle-password" id="togglePassword"></i>
           </div>
         </div>
 
         <button class="btn-premium-submit" type="submit">
-          Iniciar Sesión
+          Iniciar SesiÃ³n
           <i class="bi bi-arrow-right-short"></i>
         </button>
 
@@ -48,19 +49,19 @@
         <div class="form-footer">
           <p>
             Al ingresar aceptas nuestros
-            <a href="terms.html">Términos</a> y
-            <a href="dataPolicy.html">Política de Datos</a>.
+            <a href="terms.html">TÃ©rminos</a> y
+            <a href="dataPolicy.html">PolÃ­tica de Datos</a>.
           </p>
         </div>
 
         <div class="form-footer option-login">
           <p>
-            ¿Eres nuevo? <br />
-            <a href="registro.html">¡Regístrate ahora!</a>
+            Â¿Eres nuevo? <br />
+            <a href="registro.html">Â¡RegÃ­strate ahora!</a>
           </p>
           <p style="margin-top: 15px;">
             <a href="reset.html" style="color: var(--color-humo-gris); font-size: 0.85rem;">
-              ¿Olvidaste tu contraseña?
+              Â¿Olvidaste tu contraseÃ±a?
             </a>
           </p>
         </div>
@@ -68,9 +69,9 @@
     </section>
   </main>
 
-  <jam-footer></jam-footer>
+  <div id="react-footer-root"></div>
 
-  <script src="js/components/Footer.js"></script>
+  <script src="js/react-footer.bundle.js"></script>
   <script src="js/logoSound.js"></script>
   <script src="js/services/api.js?v=4.3"></script>
   <script src="js/login.js?v=2"></script>

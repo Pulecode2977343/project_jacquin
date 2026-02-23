@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Contact Form Logic
  */
 
@@ -15,7 +15,7 @@
                 if (msgArea) {
                     // Check if already filled to avoid overwrite if user typing (rare case on load)
                     if (!msgArea.value.includes(reservaEvento)) {
-                        msgArea.value = `Hola, me gustaría adquirir entradas para "${reservaEvento}". Quisiera saber más detalles y disponibilidad.`;
+                        msgArea.value = `Hola, me gustarÃ­a adquirir entradas para "${reservaEvento}". Quisiera saber mÃ¡s detalles y disponibilidad.`;
 
                         // Visual cue for user
                         msgArea.style.transition = "all 0.3s";
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const result = await ApiService.sendContactMessage(formData);
 
                 if (result.success || result.status === 200) {
-                    showStatusOverlay("¡Gracias! Tu mensaje ha sido enviado exitosamente. Nos pondremos en contacto pronto.", "success");
+                    showStatusOverlay("Â¡Gracias! Tu mensaje ha sido enviado exitosamente. Nos pondremos en contacto pronto.", "success");
                     contactForm.reset();
                     // Reset visual cues
                     const msgArea = contactForm.querySelector("textarea[name='mensaje']");
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             } catch (error) {
                 console.error(error);
-                showStatusOverlay("Error de conexión. Por favor intenta más tarde.", "error");
+                showStatusOverlay("Error de conexiÃ³n. Por favor intenta mÃ¡s tarde.", "error");
             } finally {
                 btn.textContent = originalText;
                 btn.disabled = false;
@@ -132,7 +132,7 @@ function showStatusOverlay(message, type = "success") {
                     padding: 40px; border-radius: 24px; text-align: center; max-width: 400px; width: 90%;
                     box-shadow: 0 25px 50px rgba(0,0,0,0.5); transform: scale(0.9); transition: transform 0.3s;">
             <i class="bi ${icon}" style="font-size: 4rem; color: ${color}; margin-bottom: 20px; display: block;"></i>
-            <h3 style="color: white; margin-bottom: 15px;">${type === "success" ? "¡Listo!" : "Atención"}</h3>
+            <h3 style="color: white; margin-bottom: 15px;">${type === "success" ? "Â¡Listo!" : "AtenciÃ³n"}</h3>
             <p style="color: #ccc; line-height: 1.6; margin-bottom: 25px;">${message}</p>
             <button id="close-status-btn" style="
                 background: white; color: #111; border: none; padding: 12px 35px; 

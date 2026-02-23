@@ -1,71 +1,71 @@
-// ==========================================
+﻿// ==========================================
 // PROGRAMS CAROUSEL (Swiper with Coverflow)
 // ==========================================
 
 // Default Data (Fallback)
 const DEFAULT_PROGRAM_DETAILS = {
     'program_d1': {
-        title: 'Percusión',
-        subtitle: 'Ritmo y Energía',
+        title: 'PercusiÃ³n',
+        subtitle: 'Ritmo y EnergÃ­a',
         icon: 'bi-music-note-beamed',
-        description: 'Siente el ritmo en tu cuerpo. Aprende batería, percusión latina y sinfónica. Desarrolla tu coordinación, tempo y musicalidad en un ambiente dinámico.',
-        features: ['Batería acústica y electrónica', 'Percusión latina (Congas, Bongos)', 'Lectura rítmica avanzada', 'Independencia de extremidades'],
+        description: 'Siente el ritmo en tu cuerpo. Aprende baterÃ­a, percusiÃ³n latina y sinfÃ³nica. Desarrolla tu coordinaciÃ³n, tempo y musicalidad en un ambiente dinÃ¡mico.',
+        features: ['BaterÃ­a acÃºstica y electrÃ³nica', 'PercusiÃ³n latina (Congas, Bongos)', 'Lectura rÃ­tmica avanzada', 'Independencia de extremidades'],
         image: 'images/programs/percussion.png'
     },
     'program_d2': {
         title: 'Guitarra',
-        subtitle: 'Acústica y Eléctrica',
+        subtitle: 'AcÃºstica y ElÃ©ctrica',
         icon: 'bi-guitar',
-        description: 'Domina las cuerdas con nuestra metodología integral. Desde acordes básicos hasta solos complejos de rock, jazz y blues. Aprenderás técnica, lectura musical e improvisación.',
-        features: ['Lectura de partituras y tablaturas', 'Técnica de púa y dedos (Fingerstyle)', 'Improvisación y teoría aplicada', 'Ensambles y presentaciones en vivo'],
+        description: 'Domina las cuerdas con nuestra metodologÃ­a integral. Desde acordes bÃ¡sicos hasta solos complejos de rock, jazz y blues. AprenderÃ¡s tÃ©cnica, lectura musical e improvisaciÃ³n.',
+        features: ['Lectura de partituras y tablaturas', 'TÃ©cnica de pÃºa y dedos (Fingerstyle)', 'ImprovisaciÃ³n y teorÃ­a aplicada', 'Ensambles y presentaciones en vivo'],
         image: 'images/programs/guitar.png'
     },
     'program_d3': {
         title: 'Piano',
-        subtitle: 'Clásico y Moderno',
+        subtitle: 'ClÃ¡sico y Moderno',
         icon: 'bi-grid-3x3-gap',
-        description: 'Descubre el poder del piano. Nuestro programa abarca desde la elegancia de la música clásica hasta la versatilidad del pop y jazz moderno. Desarrolla tu oído y técnica.',
-        features: ['Técnica pianística avanzada', 'Repertorio clásico y contemporáneo', 'Acompañamiento y armonía', 'Lectura a primera vista'],
+        description: 'Descubre el poder del piano. Nuestro programa abarca desde la elegancia de la mÃºsica clÃ¡sica hasta la versatilidad del pop y jazz moderno. Desarrolla tu oÃ­do y tÃ©cnica.',
+        features: ['TÃ©cnica pianÃ­stica avanzada', 'Repertorio clÃ¡sico y contemporÃ¡neo', 'AcompaÃ±amiento y armonÃ­a', 'Lectura a primera vista'],
         image: 'images/programs/piano.png'
     },
     'program_d4': {
         title: 'Voz',
-        subtitle: 'Técnica Vocal',
+        subtitle: 'TÃ©cnica Vocal',
         icon: 'bi-mic',
-        description: 'Tu voz es tu instrumento más poderoso. Aprende a controlarla, proyectarla y cuidarla. Trabajamos respiración, afinación, rango vocal y expresión escénica.',
-        features: ['Respiración y apoyo diafragmático', 'Vocalización y afinación', 'Interpretación y estilo', 'Salud vocal y cuidado'],
+        description: 'Tu voz es tu instrumento mÃ¡s poderoso. Aprende a controlarla, proyectarla y cuidarla. Trabajamos respiraciÃ³n, afinaciÃ³n, rango vocal y expresiÃ³n escÃ©nica.',
+        features: ['RespiraciÃ³n y apoyo diafragmÃ¡tico', 'VocalizaciÃ³n y afinaciÃ³n', 'InterpretaciÃ³n y estilo', 'Salud vocal y cuidado'],
         image: 'images/programs/voice.png'
     },
     'program_d5': {
         title: 'Senior\'s',
         subtitle: 'Adulto Mayor',
         icon: 'bi-person-hearts',
-        description: 'Nunca es tarde para aprender música. Un programa diseñado especialmente para adultos mayores, enfocado en el disfrute, la memoria y la socialización a través del arte.',
-        features: ['Repertorio de música de antaño', 'Estimulación cognitiva y memoria', 'Clases grupales e individuales', 'Ambiente relajado y social'],
+        description: 'Nunca es tarde para aprender mÃºsica. Un programa diseÃ±ado especialmente para adultos mayores, enfocado en el disfrute, la memoria y la socializaciÃ³n a travÃ©s del arte.',
+        features: ['Repertorio de mÃºsica de antaÃ±o', 'EstimulaciÃ³n cognitiva y memoria', 'Clases grupales e individuales', 'Ambiente relajado y social'],
         image: 'images/programs/seniors.png'
     },
     'program_d6': {
         title: 'Shows',
         subtitle: 'Presentaciones',
         icon: 'bi-ticket-perforated',
-        description: 'La música cobra vida en el escenario. Preparamos a nuestros estudiantes para brillar en conciertos reales, perdiendo el miedo escénico y ganando confianza profesional.',
-        features: ['Montaje de repertorio en vivo', 'Expresión corporal y escénica', 'Manejo de equipo de sonido', 'Conciertos semestrales'],
+        description: 'La mÃºsica cobra vida en el escenario. Preparamos a nuestros estudiantes para brillar en conciertos reales, perdiendo el miedo escÃ©nico y ganando confianza profesional.',
+        features: ['Montaje de repertorio en vivo', 'ExpresiÃ³n corporal y escÃ©nica', 'Manejo de equipo de sonido', 'Conciertos semestrales'],
         image: 'images/programs/shows.png'
     },
     'program_d7': {
-        title: 'Exploración',
-        subtitle: 'Iniciación Musical',
+        title: 'ExploraciÃ³n',
+        subtitle: 'IniciaciÃ³n Musical',
         icon: 'bi-balloon',
-        description: 'El primer paso para los más pequeños. Un acercamiento lúdico a la música donde los niños descubren ritmos, melodías e instrumentos mientras juegan y se divierten.',
-        features: ['Rítmica dalcroze y juegos musicales', 'Exploración de instrumentos Orff', 'Canto y movimiento', 'Desarrollo auditivo temprano'],
+        description: 'El primer paso para los mÃ¡s pequeÃ±os. Un acercamiento lÃºdico a la mÃºsica donde los niÃ±os descubren ritmos, melodÃ­as e instrumentos mientras juegan y se divierten.',
+        features: ['RÃ­tmica dalcroze y juegos musicales', 'ExploraciÃ³n de instrumentos Orff', 'Canto y movimiento', 'Desarrollo auditivo temprano'],
         image: 'images/programs/exploration.png'
     },
     'program_d8': {
-        title: 'Psicomúsica',
+        title: 'PsicomÃºsica',
         subtitle: 'Bienestar y Terapia',
         icon: 'bi-heart-pulse',
-        description: 'La música como herramienta de sanación y crecimiento personal. Sesiones enfocadas en el bienestar emocional, relajación y desarrollo de habilidades a través del sonido.',
-        features: ['Musicoterapia activa y receptiva', 'Relajación y mindfulness sonoro', 'Expresión emocional', 'Desarrollo de habilidades sociales'],
+        description: 'La mÃºsica como herramienta de sanaciÃ³n y crecimiento personal. Sesiones enfocadas en el bienestar emocional, relajaciÃ³n y desarrollo de habilidades a travÃ©s del sonido.',
+        features: ['Musicoterapia activa y receptiva', 'RelajaciÃ³n y mindfulness sonoro', 'ExpresiÃ³n emocional', 'Desarrollo de habilidades sociales'],
         image: 'images/programs/psychomusic.png'
     }
 };
@@ -144,7 +144,7 @@ function initProgramsCarousel(totalSlides) {
     new Swiper('.programs-swiper', {
         effect: 'slide', // Efecto lineal plano solicitado
         grabCursor: true,
-        centeredSlides: false, // Inicio desde la izquierda para llenar la línea
+        centeredSlides: false, // Inicio desde la izquierda para llenar la lÃ­nea
         spaceBetween: 20, // Espacio entre tarjetas
         slidesPerView: 1, // Default mobile
 
@@ -163,7 +163,7 @@ function initProgramsCarousel(totalSlides) {
         },
 
         breakpoints: {
-            // Móvil
+            // MÃ³vil
             480: { slidesPerView: 1.2, spaceBetween: 15 },
             // Tablet Portrait
             768: { slidesPerView: 2.2, spaceBetween: 20 },
@@ -171,7 +171,7 @@ function initProgramsCarousel(totalSlides) {
             1024: { slidesPerView: 3.2, spaceBetween: 20 },
             // Laptop / Desktop Standard
             1366: { slidesPerView: 4, spaceBetween: 25 },
-            // Large Screens (Objetivo Usuario: 5 por línea)
+            // Large Screens (Objetivo Usuario: 5 por lÃ­nea)
             1600: { slidesPerView: 5, spaceBetween: 30 }
         },
 
@@ -224,19 +224,19 @@ window.openProgramModal = function (programId) {
             <div style="padding:30px;">
                 <p style="color:#ddd; line-height:1.6; font-size:1.05rem; margin-bottom:25px;">${data.description}</p>
                 
-                <h4 style="color:var(--color-acento-azul); border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:15px;">Lo que aprenderás:</h4>
+                <h4 style="color:var(--color-acento-azul); border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:15px;">Lo que aprenderÃ¡s:</h4>
                 <ul style="list-style:none; padding:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:15px;">
                     ${data.features && data.features.length > 0 ? data.features.map(feat => `
                         <li style="display:flex; align-items:center; gap:10px; color:#bbb;">
                             <i class="bi bi-check-circle-fill" style="color:var(--color-acento-naranja);"></i> ${feat}
                         </li>
-                    `).join('') : '<li style="color:#666">Detalles próximamente.</li>'}
+                    `).join('') : '<li style="color:#666">Detalles prÃ³ximamente.</li>'}
                 </ul>
 
                 <div style="margin-top:35px; text-align:center;">
                     <button onclick="handleProgramEnrollment('${programId}')" 
                         style="background:var(--color-acento-azul); color:white; border:none; padding:12px 30px; border-radius:30px; font-size:1rem; font-weight:bold; cursor:pointer; transition:all 0.3s; box-shadow:0 10px 20px rgba(52, 152, 219, 0.3);">
-                        ¡Inscribirme Ahora!
+                        Â¡Inscribirme Ahora!
                     </button>
                 </div>
             </div>
@@ -292,7 +292,7 @@ async function showSchedulingModal(programId) {
     if (!coursesRes.success) return showToast("Error conectando con la base de datos de cursos.", "error");
 
     const dbCourse = coursesRes.data.find(c => c.name.toLowerCase().includes(data.title.toLowerCase()));
-    if (!dbCourse) return showToast("Este curso aún no tiene horarios configurados en el sistema.", "warning");
+    if (!dbCourse) return showToast("Este curso aÃºn no tiene horarios configurados en el sistema.", "warning");
 
     // 2. Load Schedules
     const schedRes = await ApiService.getSchedules(dbCourse.id_course);
@@ -328,12 +328,12 @@ async function showSchedulingModal(programId) {
                 <h3 style="color:white; margin:0;">Elige tu Horario</h3>
                 <button onclick="this.closest('.modal-overlay').remove()" style="background:none; border:none; color:#666; font-size:1.5rem; cursor:pointer;">&times;</button>
             </div>
-            <p style="color:#aaa; margin-bottom:20px;">Estás a un paso de inscribirte en <strong>${data.title}</strong>. Selecciona el horario que mejor te convenga:</p>
+            <p style="color:#aaa; margin-bottom:20px;">EstÃ¡s a un paso de inscribirte en <strong>${data.title}</strong>. Selecciona el horario que mejor te convenga:</p>
             <div style="max-height:350px; overflow-y:auto; padding-right:5px;">
                 ${schedHtml}
             </div>
             <p style="color:#666; font-size:0.75rem; margin-top:20px; text-align:center; line-height:1.4;">
-                <i class="bi bi-info-circle"></i> La asignación del docente es gestionada directamente por la administración de la academia de acuerdo al horario seleccionado.
+                <i class="bi bi-info-circle"></i> La asignaciÃ³n del docente es gestionada directamente por la administraciÃ³n de la academia de acuerdo al horario seleccionado.
             </p>
         </div>
     `;
@@ -344,7 +344,7 @@ async function showSchedulingModal(programId) {
 
 window.confirmEnrollment = async function (courseId, scheduleId, courseName) {
     const user = ApiService.getSession();
-    if (!user) return showToast("Sesión expirada.", "error");
+    if (!user) return showToast("SesiÃ³n expirada.", "error");
 
     // Visual loading
     const btn = event.target;
@@ -356,10 +356,10 @@ window.confirmEnrollment = async function (courseId, scheduleId, courseName) {
 
     if (res.success) {
         // Show success and move to dashboard
-        btn.innerText = "¡Solicitado!";
+        btn.innerText = "Â¡Solicitado!";
         btn.style.background = "#2ecc71";
 
-        await showToast(`¡Excelente elección! Tu solicitud para ${courseName} ha sido recibida. El administrador te contactará pronto para la aprobación final.`, "success");
+        await showToast(`Â¡Excelente elecciÃ³n! Tu solicitud para ${courseName} ha sido recibida. El administrador te contactarÃ¡ pronto para la aprobaciÃ³n final.`, "success");
         window.location.href = 'gestion.html';
     } else {
         showToast("Error: " + res.message, "error");
@@ -403,7 +403,7 @@ function showAuthRequiredOverlay() {
                     background: var(--color-acento-azul); color: white; border: none; padding: 14px; 
                     border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem;
                     transition: transform 0.2s; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);">
-                    Iniciar Sesión
+                    Iniciar SesiÃ³n
                 </button>
                 
                 <button onclick="window.location.href='registro.html'" style="
@@ -415,7 +415,7 @@ function showAuthRequiredOverlay() {
             </div>
 
             <p style="color: #666; font-size: 0.85rem; margin-top: 25px;">
-                ¡Descubre tu talento musical con nosotros!
+                Â¡Descubre tu talento musical con nosotros!
             </p>
         </div>
     `;
@@ -446,7 +446,7 @@ function recoverEnrollmentIntent() {
     const pendingTitle = sessionStorage.getItem('pending_enrollment_title');
 
     if (pendingId && window.ApiService && ApiService.isAuthenticated()) {
-        console.log("Sistema: Recuperando intención para", pendingTitle || pendingId);
+        console.log("Sistema: Recuperando intenciÃ³n para", pendingTitle || pendingId);
 
         // Find the correct ID if we only have the title
         let finalId = pendingId;
@@ -470,4 +470,3 @@ function recoverEnrollmentIntent() {
         }
     }
 }
-

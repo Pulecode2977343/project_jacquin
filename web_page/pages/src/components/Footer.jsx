@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import JamLogo from './JamLogo';
+import EnrollmentStatusBadge from './EnrollmentStatusBadge';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -18,18 +19,15 @@ const Footer = () => {
                     <p className="brand-desc">
                         Donde la pasión se encuentra con la excelencia. Formando la próxima generación de artistas integrales en un entorno inspirador y profesional.
                     </p>
-                    <div className="jam-status-badge">
-                        <span className="pulse-dot"></span>
-                        <span>Matrículas Abiertas 2026</span>
-                    </div>
+                    <EnrollmentStatusBadge />
                 </div>
 
                 <div className="jam-footer-col">
                     <h3>Descubre</h3>
                     <ul className="jam-footer-links">
-                        <li><a href="#programas" className="hover-link">Nuestros Programas</a></li>
-                        <li><a href="#eventos" className="hover-link">Agenda de Eventos</a></li>
-                        <li><a href="#nosotros" className="hover-link">Sobre Nosotros</a></li>
+                        <li><a href="/#programas" className="hover-link">Nuestros Programas</a></li>
+                        <li><a href="/#eventos" className="hover-link">Agenda de Eventos</a></li>
+                        <li><a href="/#nosotros" className="hover-link">Sobre Nosotros</a></li>
                         <li><a href="galeria.html" className="hover-link">Galería Multimedia</a></li>
                     </ul>
                 </div>
@@ -79,7 +77,7 @@ const Footer = () => {
                 <div className="footer-bottom-links">
                     <a href="contactanos.html">Soporte</a>
                     <span className="separator">•</span>
-                    <a href="#programas">Mapa del Sitio</a>
+                    <a href="/#programas">Mapa del Sitio</a>
                 </div>
             </div>
         </footer>

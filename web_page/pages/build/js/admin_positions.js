@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Admin Positions Manager
- * Gestión de Cargos y Funciones
+ * GestiÃ³n de Cargos y Funciones
  */
 
 let currentPositions = [];
@@ -11,7 +11,7 @@ let eligibleUsers = [];
 const positionIcons = {
     'Profesor': 'bi-mortarboard-fill',
     'Secretario': 'bi-clipboard-data-fill',
-    'Logística': 'bi-box-seam-fill',
+    'LogÃ­stica': 'bi-box-seam-fill',
     'Servicios Generales': 'bi-tools',
     'default': 'bi-person-badge-fill'
 };
@@ -27,9 +27,9 @@ function getPositionIcon(position) {
 }
 
 
-// Inicialización
+// InicializaciÃ³n
 document.addEventListener('DOMContentLoaded', async () => {
-    // Verificar sesión
+    // Verificar sesiÃ³n
     currentUser = ApiService.getSession();
     if (!currentUser || currentUser.id_rol != 1) {
         window.location.href = 'dashboard.html';
@@ -63,7 +63,7 @@ async function loadPositions() {
         contentEl.innerHTML = `
             <div class="loading-container">
                 <i class="bi bi-exclamation-triangle" style="font-size: 3rem; color: var(--accent-red);"></i>
-                <p style="margin-top: 15px;">Error de conexión</p>
+                <p style="margin-top: 15px;">Error de conexiÃ³n</p>
             </div>
         `;
     }
@@ -96,7 +96,7 @@ function renderPositions() {
                 ${pos.is_predefined ? '<div class="predefined-badge"><i class="bi bi-shield-check"></i> Predefinido</div>' : ''}
                 <span class="position-icon">${getPositionIcon(pos)}</span>
                 <div class="position-name">${escapeHtml(pos.name)}</div>
-                <div class="position-description">${escapeHtml(pos.description || 'Sin descripción')}</div>
+                <div class="position-description">${escapeHtml(pos.description || 'Sin descripciÃ³n')}</div>
                 <div class="position-stats">
                     <span class="stat-badge">
                         <i class="bi bi-list-check"></i> ${pos.functions_count || 0} funciones
@@ -129,13 +129,13 @@ async function openCreatePositionModal() {
         html: `
             <div style="text-align: left; padding: 10px 0;">
                 <label style="display: block; margin-bottom: 5px; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Nombre del Cargo *</label>
-                <input type="text" id="swal-name" class="swal2-input" placeholder="Ej: Coordinador Académico" style="margin: 0 0 15px 0; width: 100%;">
+                <input type="text" id="swal-name" class="swal2-input" placeholder="Ej: Coordinador AcadÃ©mico" style="margin: 0 0 15px 0; width: 100%;">
                 
                 <label style="display: block; margin-bottom: 5px; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Icono (emoji)</label>
-                <input type="text" id="swal-icon" class="swal2-input" placeholder="👤" value="👤" style="margin: 0 0 15px 0; width: 100%;">
+                <input type="text" id="swal-icon" class="swal2-input" placeholder="ðŸ‘¤" value="ðŸ‘¤" style="margin: 0 0 15px 0; width: 100%;">
                 
-                <label style="display: block; margin-bottom: 5px; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Descripción</label>
-                <textarea id="swal-description" class="swal2-textarea" placeholder="Descripción breve del cargo..." style="margin: 0; width: 100%; min-height: 80px;"></textarea>
+                <label style="display: block; margin-bottom: 5px; color: rgba(255,255,255,0.7); font-size: 0.85rem;">DescripciÃ³n</label>
+                <textarea id="swal-description" class="swal2-textarea" placeholder="DescripciÃ³n breve del cargo..." style="margin: 0; width: 100%; min-height: 80px;"></textarea>
             </div>
         `,
         showCancelButton: true,
@@ -154,7 +154,7 @@ async function openCreatePositionModal() {
             }
             return {
                 name: name,
-                icon: document.getElementById('swal-icon').value.trim() || '👤',
+                icon: document.getElementById('swal-icon').value.trim() || 'ðŸ‘¤',
                 description: document.getElementById('swal-description').value.trim(),
                 created_by: currentUser.id_usuario
             };
@@ -168,7 +168,7 @@ async function openCreatePositionModal() {
             if (result.success) {
                 await Swal.fire({
                     icon: 'success',
-                    title: '¡Cargo Creado!',
+                    title: 'Â¡Cargo Creado!',
                     text: 'Ahora puedes agregar funciones y asignar usuarios.',
                     confirmButtonColor: '#2ecc71',
                     background: '#1a1a2e',
@@ -190,7 +190,7 @@ async function openCreatePositionModal() {
     }
 }
 
-// Inyectar estilos para las pestañas
+// Inyectar estilos para las pestaÃ±as
 const tabsStyles = document.createElement('style');
 tabsStyles.innerHTML = `
     .pos-tabs { display: flex; gap: 5px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
@@ -203,7 +203,7 @@ tabsStyles.innerHTML = `
 `;
 document.head.appendChild(tabsStyles);
 
-// Función global para cambiar pestañas
+// FunciÃ³n global para cambiar pestaÃ±as
 window.switchPositionTab = function (tabName) {
     document.querySelectorAll('.pos-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -212,7 +212,7 @@ window.switchPositionTab = function (tabName) {
     document.getElementById('tab-content-' + tabName).classList.add('active');
 };
 
-// Abrir detalle de un cargo con Pestañas
+// Abrir detalle de un cargo con PestaÃ±as
 async function openPositionDetail(positionId) {
     const position = currentPositions.find(p => p.id_position == positionId);
     if (!position) return;
@@ -235,7 +235,7 @@ async function openPositionDetail(positionId) {
                 <button onclick="event.stopPropagation(); deleteFunction(${f.id_function}, ${positionId})" 
                     style="background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.2); color: var(--accent-red); cursor: pointer; padding: 6px; border-radius: 6px; transition: all 0.2s;"
                     onmouseover="this.style.background='rgba(231, 76, 60, 0.2)'" onmouseout="this.style.background='rgba(231, 76, 60, 0.1)'"
-                    title="Eliminar función">
+                    title="Eliminar funciÃ³n">
                     <i class="bi bi-trash"></i>
                 </button>
             </div>
@@ -291,7 +291,7 @@ async function openPositionDetail(positionId) {
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h4 style="margin: 0; font-size: 1rem; color: white;">Lista de Funciones</h4>
                         <button onclick="addFunctionPrompt(${positionId})" style="background: linear-gradient(135deg, var(--accent-green), #27ae60); border: none; color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);">
-                            <i class="bi bi-plus-lg"></i> Agregar Función
+                            <i class="bi bi-plus-lg"></i> Agregar FunciÃ³n
                         </button>
                     </div>
                     <div id="functions-list">${functionsHtml}</div>
@@ -404,7 +404,7 @@ async function assignUserToPosition(positionId, userIdInput = null) {
     if (!userId) {
         Swal.fire({
             icon: 'warning',
-            title: 'Atención',
+            title: 'AtenciÃ³n',
             text: 'Debes seleccionar un usuario de la lista para continuar.',
             background: '#1a1a2e',
             color: '#ffffff'
@@ -418,7 +418,7 @@ async function assignUserToPosition(positionId, userIdInput = null) {
         if (result.success) {
             await Swal.fire({
                 icon: 'success',
-                title: '¡Usuario Asignado!',
+                title: 'Â¡Usuario Asignado!',
                 text: 'El cargo ha sido asignado correctamente.',
                 timer: 1500,
                 showConfirmButton: false,
@@ -435,12 +435,12 @@ async function assignUserToPosition(positionId, userIdInput = null) {
     }
 }
 
-// Agregar función a un cargo
+// Agregar funciÃ³n a un cargo
 async function addFunctionPrompt(positionId) {
     const { value: description } = await Swal.fire({
-        title: 'Nueva Función',
+        title: 'Nueva FunciÃ³n',
         input: 'text',
-        inputPlaceholder: 'Descripción de la función...',
+        inputPlaceholder: 'DescripciÃ³n de la funciÃ³n...',
         showCancelButton: true,
         confirmButtonText: 'Agregar',
         cancelButtonText: 'Cancelar',
@@ -449,7 +449,7 @@ async function addFunctionPrompt(positionId) {
         color: '#ffffff',
         inputValidator: (value) => {
             if (!value || !value.trim()) {
-                return 'La descripción es obligatoria';
+                return 'La descripciÃ³n es obligatoria';
             }
         }
     });
@@ -465,14 +465,14 @@ async function addFunctionPrompt(positionId) {
     }
 }
 
-// Eliminar función
+// Eliminar funciÃ³n
 async function deleteFunction(functionId, positionId) {
     const confirm = await Swal.fire({
-        title: '¿Eliminar función?',
-        text: 'Esta acción no se puede deshacer',
+        title: 'Â¿Eliminar funciÃ³n?',
+        text: 'Esta acciÃ³n no se puede deshacer',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar',
+        confirmButtonText: 'SÃ­, eliminar',
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#e74c3c',
         background: '#1a1a2e',
@@ -492,14 +492,14 @@ async function deleteFunction(functionId, positionId) {
 }
 
 
-// Remover asignación de usuario
+// Remover asignaciÃ³n de usuario
 async function removeUserAssignment(assignmentId, positionId) {
     const confirm = await Swal.fire({
-        title: '¿Remover asignación?',
-        text: 'El usuario ya no tendrá este cargo asignado',
+        title: 'Â¿Remover asignaciÃ³n?',
+        text: 'El usuario ya no tendrÃ¡ este cargo asignado',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Sí, remover',
+        confirmButtonText: 'SÃ­, remover',
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#e74c3c',
         background: '#1a1a2e',
@@ -530,9 +530,9 @@ async function editPositionModal(positionId) {
                 <input type="text" id="swal-name" class="swal2-input" value="${escapeHtml(position.name)}" style="margin: 0 0 15px 0; width: 100%;">
                 
                 <label style="display: block; margin-bottom: 5px; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Icono</label>
-                <input type="text" id="swal-icon" class="swal2-input" value="${position.icon || '👤'}" style="margin: 0 0 15px 0; width: 100%;">
+                <input type="text" id="swal-icon" class="swal2-input" value="${position.icon || 'ðŸ‘¤'}" style="margin: 0 0 15px 0; width: 100%;">
                 
-                <label style="display: block; margin-bottom: 5px; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Descripción</label>
+                <label style="display: block; margin-bottom: 5px; color: rgba(255,255,255,0.7); font-size: 0.85rem;">DescripciÃ³n</label>
                 <textarea id="swal-description" class="swal2-textarea" style="margin: 0; width: 100%; min-height: 80px;">${escapeHtml(position.description || '')}</textarea>
             </div>
         `,
@@ -546,7 +546,7 @@ async function editPositionModal(positionId) {
         preConfirm: () => ({
             id_position: positionId,
             name: document.getElementById('swal-name').value.trim(),
-            icon: document.getElementById('swal-icon').value.trim() || '👤',
+            icon: document.getElementById('swal-icon').value.trim() || 'ðŸ‘¤',
             description: document.getElementById('swal-description').value.trim()
         })
     });
@@ -584,11 +584,11 @@ async function togglePositionVisibility(positionId, currentVisibility) {
 // Eliminar cargo
 async function deletePositionConfirm(positionId) {
     const confirm = await Swal.fire({
-        title: '¿Eliminar Cargo?',
-        text: 'Se eliminarán todas las funciones y asignaciones asociadas. Esta acción no se puede deshacer.',
+        title: 'Â¿Eliminar Cargo?',
+        text: 'Se eliminarÃ¡n todas las funciones y asignaciones asociadas. Esta acciÃ³n no se puede deshacer.',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Sí, eliminar todo',
+        confirmButtonText: 'SÃ­, eliminar todo',
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#e74c3c',
         background: '#1a1a2e',
@@ -629,7 +629,7 @@ function showError(message) {
 function showSuccess(message) {
     Swal.fire({
         icon: 'success',
-        title: '¡Éxito!',
+        title: 'Â¡Ã‰xito!',
         text: message,
         timer: 2000,
         showConfirmButton: false,

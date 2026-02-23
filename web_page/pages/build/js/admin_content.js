@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Admin Content Manager
- * Gestiona las tarjetas "Sobre Nosotros" y contenido dinámico
+ * Gestiona las tarjetas "Sobre Nosotros" y contenido dinÃ¡mico
  */
 
 (function () {
@@ -30,9 +30,9 @@
                     <div>
                         <h2 style="color:white; margin:0; font-size:1.5rem; font-weight:500; display:flex; align-items:center; gap:12px;">
                             <i class="bi bi-layout-text-window-reverse" style="color:var(--color-acento-naranja);"></i>
-                            Gestión de Contenido Web
+                            GestiÃ³n de Contenido Web
                         </h2>
-                        <p style="color:#888; margin:5px 0 0 0; font-size:0.9rem;">Administra las tarjetas "Sobre Nosotros" de la página principal</p>
+                        <p style="color:#888; margin:5px 0 0 0; font-size:0.9rem;">Administra las tarjetas "Sobre Nosotros" de la pÃ¡gina principal</p>
                     </div>
                     <div style="display:flex; gap:10px; align-items:center;">
                         <button onclick="window.openAddAboutCardModal()" style="background:linear-gradient(135deg, #9b59b6, #8e44ad); color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer; font-size:0.9rem; font-weight:600; display:flex; align-items:center; gap:8px;">
@@ -50,7 +50,7 @@
                         <i class="bi bi-card-text"></i> Tarjetas "Sobre Nosotros"
                     </button>
                     <button onclick="window.switchContentTab('mission')" id="tab-mission" style="padding:15px 25px; background:transparent; border:none; border-bottom:3px solid transparent; color:#888; font-weight:600; cursor:pointer; transition:all 0.2s;">
-                        <i class="bi bi-star-fill"></i> Misión y Valores
+                        <i class="bi bi-star-fill"></i> MisiÃ³n y Valores
                     </button>
                 </div>
 
@@ -68,21 +68,21 @@
                     <!-- Mission Section -->
                     <div style="background:rgba(255,255,255,0.03); padding:25px; border-radius:15px; border:1px solid #333; margin-bottom:25px;">
                         <h3 style="color:white; margin:0 0 15px 0; font-size:1.1rem; border-bottom:1px solid #333; padding-bottom:10px;">
-                            <i class="bi bi-pencil-square" style="color:#2ecc71;"></i> Nuestra Misión
+                            <i class="bi bi-pencil-square" style="color:#2ecc71;"></i> Nuestra MisiÃ³n
                         </h3>
                         <div class="form-group">
-                            <label>Texto de la Misión</label>
+                            <label>Texto de la MisiÃ³n</label>
                             <textarea id="admin-mission-desc" class="form-control" rows="3" style="resize:vertical;"></textarea>
                         </div>
                         <button onclick="window.saveMissionOnly()" class="btn-module" style="width:auto; padding:8px 25px; margin-top:10px; background:var(--color-acento-azul); color:white;">
-                            Actualizar Misión
+                            Actualizar MisiÃ³n
                         </button>
                     </div>
 
                     <!-- Values Section -->
                     <div style="background:rgba(255,255,255,0.03); padding:25px; border-radius:15px; border:1px solid #333;">
                         <h3 style="color:white; margin:0 0 15px 0; font-size:1.1rem; border-bottom:1px solid #333; padding-bottom:10px;">
-                            <i class="bi bi-gem" style="color:#f1c40f;"></i> Valores de la Institución
+                            <i class="bi bi-gem" style="color:#f1c40f;"></i> Valores de la InstituciÃ³n
                         </h3>
                         <div id="admin-values-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
                             <!-- Values injected via JS -->
@@ -97,8 +97,8 @@
                         <div style="flex:1; min-width:200px;">
                             <p style="color:#888; font-size:0.85rem; margin:0; line-height:1.5;">
                                 <strong style="color:#2ecc71;">Tips:</strong> 
-                                Las tarjetas aparecen en "Sobre Nosotros". Use imágenes de alta calidad (800x600px). 
-                                Cambie el orden editando el número. Las inactivas no se muestran públicamente.
+                                Las tarjetas aparecen en "Sobre Nosotros". Use imÃ¡genes de alta calidad (800x600px). 
+                                Cambie el orden editando el nÃºmero. Las inactivas no se muestran pÃºblicamente.
                             </p>
                         </div>
                     </div>
@@ -147,7 +147,7 @@
             grid.innerHTML = `
                 <div style="color:#e74c3c; text-align:center; padding:2rem; grid-column:1/-1;">
                     <i class="bi bi-exclamation-triangle" style="font-size:2rem;"></i>
-                    <p>Error de conexión</p>
+                    <p>Error de conexiÃ³n</p>
                 </div>
             `;
         }
@@ -190,7 +190,7 @@
                         font-size: 0.75rem;
                         font-weight: 600;
                         border: 1px solid ${card.is_active ? 'rgba(46, 204, 113, 0.3)' : 'rgba(231, 76, 60, 0.3)'};
-                    ">${card.is_active ? '● Activo' : '○ Inactivo'}</span>
+                    ">${card.is_active ? 'â— Activo' : 'â—‹ Inactivo'}</span>
                     <span style="
                         background: rgba(147, 182, 238, 0.15);
                         color: var(--color-acento-azul);
@@ -286,7 +286,7 @@
             grid.innerHTML = `
                 <div style="color: #e74c3c; text-align: center; padding: 2rem; grid-column: 1 / -1;">
                     <i class="bi bi-exclamation-triangle" style="font-size: 2rem;"></i>
-                    <p>Error de conexión</p>
+                    <p>Error de conexiÃ³n</p>
                 </div>
             `;
         }
@@ -418,12 +418,12 @@
 
                 <form id="about-card-form" style="display: flex; flex-direction: column; gap: 1rem;">
                     <div class="form-group">
-                        <label>Título *</label>
+                        <label>TÃ­tulo *</label>
                         <input type="text" class="form-control" name="title" required value="${escapeHtml(card.title || '')}">
                     </div>
 
                     <div class="form-group">
-                        <label>Subtítulo</label>
+                        <label>SubtÃ­tulo</label>
                         <input type="text" class="form-control" name="subtitle" value="${escapeHtml(card.subtitle || '')}">
                     </div>
 
@@ -440,7 +440,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Descripción</label>
+                        <label>DescripciÃ³n</label>
                         <textarea class="form-control" name="description" rows="4" style="resize: vertical;">${escapeHtml(card.description || '')}</textarea>
                     </div>
 
@@ -463,7 +463,7 @@
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                             <input type="checkbox" name="is_active" ${card.is_active ? 'checked' : ''} style="width: 20px; height: 20px;">
-                            <span>Tarjeta activa (visible en la página)</span>
+                            <span>Tarjeta activa (visible en la pÃ¡gina)</span>
                         </label>
                     </div>
 
@@ -527,7 +527,7 @@
             };
 
             if (!cardData.title.trim()) {
-                Swal.fire('Error', 'El título es obligatorio', 'error');
+                Swal.fire('Error', 'El tÃ­tulo es obligatorio', 'error');
                 return;
             }
 
@@ -596,12 +596,12 @@
 
     window.deleteAboutCard = async function (cardId) {
         const confirm = await Swal.fire({
-            title: '¿Eliminar tarjeta?',
-            text: 'Esta acción no se puede deshacer',
+            title: 'Â¿Eliminar tarjeta?',
+            text: 'Esta acciÃ³n no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#e74c3c',
-            confirmButtonText: 'Sí, eliminar',
+            confirmButtonText: 'SÃ­, eliminar',
             cancelButtonText: 'Cancelar'
         });
 
@@ -685,10 +685,10 @@
                             </div>
                             <div style="flex:1;">
                                 <div class="form-group" style="margin-bottom:8px;">
-                                    <input type="text" class="form-control value-title" data-id="${val.id}" value="${escapeHtml(val.title)}" placeholder="Título" style="font-weight:600;">
+                                    <input type="text" class="form-control value-title" data-id="${val.id}" value="${escapeHtml(val.title)}" placeholder="TÃ­tulo" style="font-weight:600;">
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" class="form-control value-desc" value="${escapeHtml(val.description)}" placeholder="Descripción corta" style="font-size:0.9rem;">
+                                    <input type="text" class="form-control value-desc" value="${escapeHtml(val.description)}" placeholder="DescripciÃ³n corta" style="font-size:0.9rem;">
                                 </div>
                             </div>
                         </div>
@@ -747,9 +747,9 @@
         const desc = document.getElementById('admin-mission-desc').value;
         try {
             const res = await ApiService.updateMissionValues({
-                mission: { title: 'Nuestra Misión', description: desc }
+                mission: { title: 'Nuestra MisiÃ³n', description: desc }
             });
-            if (res.success) Swal.fire({ icon: 'success', title: 'Misión actualizada', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+            if (res.success) Swal.fire({ icon: 'success', title: 'MisiÃ³n actualizada', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
         } catch (e) { /* error toast */ }
     };
 

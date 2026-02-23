@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/premium-forms.css?v=1" />
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
-  <title>JACQUIN - Inscripción</title>
+  <title>JACQUIN - InscripciÃ³n</title>
 </head>
 
 <body>
@@ -16,7 +16,7 @@
 
   <main class="main-login-container">
     <section class="login-card" style="max-width: 600px;">
-      <h1 class="login-title">Inscripción Aspirante</h1>
+      <h1 class="login-title">InscripciÃ³n Aspirante</h1>
 
       <form id="register-form">
 
@@ -30,7 +30,7 @@
         </div>
 
         <div class="form-group">
-          <label for="email">Correo Electrónico</label>
+          <label for="email">Correo ElectrÃ³nico</label>
           <div class="input-wrapper">
             <i class="bi bi-envelope input-icon"></i>
             <input type="email" id="email" name="email" class="form-input-glass" placeholder="ejemplo@correo.com"
@@ -39,7 +39,7 @@
         </div>
 
         <div class="form-group">
-          <label for="phone">Número de Teléfono</label>
+          <label for="phone">NÃºmero de TelÃ©fono</label>
           <div class="input-wrapper">
             <i class="bi bi-telephone input-icon"></i>
             <input type="tel" id="phone" name="phone" class="form-input-glass" placeholder="+57 318 888 8888"
@@ -48,33 +48,33 @@
         </div>
 
         <div class="form-group">
-          <label for="password">Contraseña</label>
+          <label for="password">ContraseÃ±a</label>
           <div class="input-wrapper">
             <i class="bi bi-lock input-icon"></i>
-            <input type="password" id="password" class="form-input-glass" placeholder="Crea una contraseña segura"
+            <input type="password" id="password" class="form-input-glass" placeholder="Crea una contraseÃ±a segura"
               autocomplete="new-password" required />
             <i class="bi bi-eye-slash toggle-password" id="togglePassword"></i>
           </div>
           <small
             style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin-top: 5px; display: block; padding-left: 10px;">
-            Mínimo 8 caracteres, una mayúscula, un número y un símbolo.
+            MÃ­nimo 8 caracteres, una mayÃºscula, un nÃºmero y un sÃ­mbolo.
           </small>
         </div>
 
         <div class="form-group">
-          <label for="course">Curso de Interés</label>
+          <label for="course">Curso de InterÃ©s</label>
           <div class="input-wrapper">
             <i class="bi bi-music-note-beamed input-icon"></i>
             <select id="course" name="course" class="form-input-glass">
               <option value="">Selecciona un curso</option>
-              <option value="percusión">Percusión</option>
-              <option value="guitarra">Guitarra (Acústica y Eléctrica)</option>
-              <option value="piano">Piano (Clásico y Moderno)</option>
-              <option value="voz">Voz (Técnica Vocal)</option>
+              <option value="percusiÃ³n">PercusiÃ³n</option>
+              <option value="guitarra">Guitarra (AcÃºstica y ElÃ©ctrica)</option>
+              <option value="piano">Piano (ClÃ¡sico y Moderno)</option>
+              <option value="voz">Voz (TÃ©cnica Vocal)</option>
               <option value="seniors">Senior's (Adulto Mayor)</option>
               <option value="shows">Shows (Presentaciones en Vivo)</option>
-              <option value="exploración">Exploración (Iniciación Musical)</option>
-              <option value="psicomúsica">Psicomúsica (Bienestar y Terapia)</option>
+              <option value="exploraciÃ³n">ExploraciÃ³n (IniciaciÃ³n Musical)</option>
+              <option value="psicomÃºsica">PsicomÃºsica (Bienestar y Terapia)</option>
             </select>
           </div>
         </div>
@@ -83,13 +83,13 @@
           <label style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; cursor: pointer;">
             <input type="checkbox" required style="margin-top: 3px" />
             <span style="color: var(--color-humo-gris); font-size: 0.9rem;">
-              He leído y acepto los <a href="terms.html">Términos y Condiciones</a>.
+              He leÃ­do y acepto los <a href="terms.html">TÃ©rminos y Condiciones</a>.
             </span>
           </label>
           <label style="display: flex; gap: 10px; align-items: flex-start; cursor: pointer;">
             <input type="checkbox" required style="margin-top: 3px" />
             <span style="color: var(--color-humo-gris); font-size: 0.9rem;">
-              Acepto la <a href="dataPolicy.html">Política de Tratamiento de Datos</a>.
+              Acepto la <a href="dataPolicy.html">PolÃ­tica de Tratamiento de Datos</a>.
             </span>
           </label>
         </div>
@@ -104,10 +104,10 @@
     </section>
   </main>
 
-  <jam-footer></jam-footer>
+  <div id="react-footer-root"></div>
 
   <!-- Web Components & Logic -->
-  <script src="js/components/Footer.js"></script>
+  <script src="js/react-footer.bundle.js"></script>
   <script src="js/services/api.js?v=4.3"></script>
   <script src="js/register.js"></script>
   <script src="/js/react-header.bundle.js"></script>

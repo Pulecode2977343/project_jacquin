@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Password Recovery Logic
  * Multi-step process: Email -> Code -> New Password (with Strength Meter)
  */
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            setLoading(true, "Enviando código...");
+            setLoading(true, "Enviando cÃ³digo...");
 
             try {
                 const res = await ApiService.requestRecoveryCode(userEmail);
@@ -50,14 +50,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     sessionStorage.setItem("jam_recovery_email", userEmail); // Save Email
                     currentStep = 2;
                     renderStep2();
-                    setLoading(false, "Verificar Código");
+                    setLoading(false, "Verificar CÃ³digo");
                 } else {
                     setLoading(false, "Enviar Instrucciones");
                     showError(res.message || "Error al enviar. Verifique el email.");
                 }
             } catch (err) {
                 setLoading(false, "Enviar Instrucciones");
-                showError("Error de conexión.");
+                showError("Error de conexiÃ³n.");
             }
 
             // --- STEP 2: VERIFY CODE ---
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const code = codeInput.value.trim();
 
             if (!code) {
-                showError("Ingrese el código.");
+                showError("Ingrese el cÃ³digo.");
                 return;
             }
 
@@ -80,14 +80,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     renderStep3();
                     // RenderStep3 re-creates DOM, so strength listeners must be attached AFTER
                     attachPasswordStrengthLogic();
-                    setLoading(false, "Restablecer Contraseña");
+                    setLoading(false, "Restablecer ContraseÃ±a");
                 } else {
-                    setLoading(false, "Verificar Código");
-                    showError(res.message || "Código incorrecto.");
+                    setLoading(false, "Verificar CÃ³digo");
+                    showError(res.message || "CÃ³digo incorrecto.");
                 }
             } catch (err) {
-                setLoading(false, "Verificar Código");
-                showError("Error de conexión.");
+                setLoading(false, "Verificar CÃ³digo");
+                showError("Error de conexiÃ³n.");
             }
 
             // --- STEP 3: RESET PASSWORD ---
@@ -96,12 +96,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const confirmPass = document.getElementById("confirm-password").value;
 
             if (newPass !== confirmPass) {
-                showError("Las contraseñas no coinciden.");
+                showError("Las contraseÃ±as no coinciden.");
                 return;
             }
 
             if (!verifiedCode) {
-                showError("Sesión expirada. Reinicie el proceso.");
+                showError("SesiÃ³n expirada. Reinicie el proceso.");
                 setTimeout(() => window.location.reload(), 2000);
                 return;
             }
@@ -116,27 +116,27 @@ document.addEventListener("DOMContentLoaded", () => {
                     sessionStorage.removeItem("jam_recovery_email");
                     sessionStorage.removeItem("jam_recovery_code");
 
-                    feedback.textContent = resFinal.message || "¡Contraseña actualizada!";
+                    feedback.textContent = resFinal.message || "Â¡ContraseÃ±a actualizada!";
                     feedback.style.color = "var(--verde-neon)";
 
                     // Success UI
                     container.innerHTML = `
                         <div style="text-align:center; padding: 20px;">
                             <i class="bi bi-check-circle-fill" style="font-size: 3rem; color: var(--verde-neon);"></i>
-                            <h3 style="margin: 10px 0;">¡Éxito!</h3>
-                            <p>Tu contraseña ha sido restablecida.</p>
+                            <h3 style="margin: 10px 0;">Â¡Ã‰xito!</h3>
+                            <p>Tu contraseÃ±a ha sido restablecida.</p>
                         </div>
                     `;
                     submitBtn.style.display = "none";
 
                     setTimeout(() => window.location.href = "login.html", 3000);
                 } else {
-                    setLoading(false, "Restablecer Contraseña");
+                    setLoading(false, "Restablecer ContraseÃ±a");
                     showError(resFinal.message || "Error actualizando password.");
                 }
             } catch (err) {
-                setLoading(false, "Restablecer Contraseña");
-                showError("Error crítico de conexión.");
+                setLoading(false, "Restablecer ContraseÃ±a");
+                showError("Error crÃ­tico de conexiÃ³n.");
             }
         }
     });
@@ -159,12 +159,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- RENDERERS ---
 
     function renderStep2() {
-        title.textContent = "Verificar Código";
-        instructions.innerHTML = `Hemos enviado un código a <b>${userEmail}</b>.<br>Ingrésalo a continuación.`;
+        title.textContent = "Verificar CÃ³digo";
+        instructions.innerHTML = `Hemos enviado un cÃ³digo a <b>${userEmail}</b>.<br>IngrÃ©salo a continuaciÃ³n.`;
 
         container.innerHTML = `
             <div class="form-group">
-                <label for="recovery-code">Código de Verificación</label>
+                <label for="recovery-code">CÃ³digo de VerificaciÃ³n</label>
                 <div class="input-wrapper">
                     <i class="bi bi-key input-icon"></i>
                     <input type="text" id="recovery-code" class="form-input-glass" placeholder="123456" maxlength="6" style="letter-spacing: 5px; text-align: center; padding-left: 15px;" required>
@@ -174,15 +174,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderStep3() {
-        title.textContent = "Nueva Contraseña";
-        instructions.textContent = "Crea una contraseña fuerte para proteger tu cuenta.";
+        title.textContent = "Nueva ContraseÃ±a";
+        instructions.textContent = "Crea una contraseÃ±a fuerte para proteger tu cuenta.";
 
         container.innerHTML = `
             <div class="form-group">
-                <label for="new-password">Nueva Contraseña</label>
+                <label for="new-password">Nueva ContraseÃ±a</label>
                 <div class="input-wrapper">
                     <i class="bi bi-lock input-icon"></i>
-                    <input type="password" id="new-password" class="form-input-glass" placeholder="••••••••" required>
+                    <input type="password" id="new-password" class="form-input-glass" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required>
                     <i class="bi bi-eye-slash toggle-password"></i>
                 </div>
                 <!-- Strength Meter -->
@@ -193,10 +193,10 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
             <div class="form-group">
-                <label for="confirm-password">Confirmar Contraseña</label>
+                <label for="confirm-password">Confirmar ContraseÃ±a</label>
                 <div class="input-wrapper">
                     <i class="bi bi-lock-fill input-icon"></i>
-                    <input type="password" id="confirm-password" class="form-input-glass" placeholder="••••••••" required>
+                    <input type="password" id="confirm-password" class="form-input-glass" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required>
                     <i class="bi bi-eye-slash toggle-password"></i>
                 </div>
             </div>
@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
             switch (strength) {
                 case 0:
                 case 1:
-                    status = "Débil";
+                    status = "DÃ©bil";
                     color = "#ff4d4d"; // Red
                     break;
                 case 2:

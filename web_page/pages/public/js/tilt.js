@@ -1,4 +1,4 @@
-/**
+﻿/**
  * J.A.M 3D Tilt Effect
  * Replicates the Apple TV / refined holographic card effect.
  * Lightweight, zero-dependency.

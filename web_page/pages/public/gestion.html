@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+Ôªø<!DOCTYPE html>
 <html lang="es">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>JACQUIN - GestiÛn Institucional</title>
+  <title>JACQUIN - Gesti√≥n Institucional</title>
+  <link rel="stylesheet" href="css/footer.css" />
   <link rel="stylesheet" href="css/style.css?v=26" />
   <link rel="stylesheet" href="css/academic.css?v=2.0" />
   <!-- Bootstrap Icons -->
@@ -93,7 +94,7 @@
     }
 
     .dashboard-list li::before {
-      content: "ï";
+      content: "‚Ä¢";
       color: var(--color-acento-azul);
       font-weight: bold;
     }
@@ -549,7 +550,7 @@
   <main>
     <section class="gestion-section">
       <div class="gestion-intro">
-        <h1 id="dashboard-header-title">Sistema de GestiÛn</h1>
+        <h1 id="dashboard-header-title">Sistema de Gesti√≥n</h1>
         <p id="welcome-message">Bienvenido al Panel de Control</p>
         <div id="admin-alert-container" style="min-height: 0; transition: all 0.5s ease; margin-top: 20px;"></div>
 
@@ -557,7 +558,7 @@
         <!-- DASHBOARD GRID -->
         <div class="bento-grid dashboard-grid">
 
-          <!-- MÛdulo Admin (Directorio) -->
+          <!-- M√≥dulo Admin (Directorio) -->
           <div id="mod-profesores" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(231, 76, 60, 0.4), rgba(192, 57, 43, 0.4));">
             <div class="icon-glow"><i class="bi bi-people-fill"></i></div>
@@ -571,20 +572,20 @@
 
 
 
-          <!-- MÛdulo Programas (NUEVO) -->
+          <!-- M√≥dulo Programas (NUEVO) -->
           <div id="mod-programs" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(46, 204, 113, 0.4), rgba(39, 174, 96, 0.4));"
             onclick="window.location.href='admin_programs.html'">
             <div class="icon-glow"><i class="bi bi-collection-play"></i></div>
             <div class="card-content">
               <h3>Programas</h3>
-              <p>Administra los cursos y contenido de la p·gina principal</p>
+              <p>Administra los cursos y contenido de la p√°gina principal</p>
               <button class="btn-module">Gestionar</button>
             </div>
             <div class="card-shine"></div>
           </div>
 
-          <!-- MÛdulo Estudiante - UNIFIED CARD -->
+          <!-- M√≥dulo Estudiante - UNIFIED CARD -->
           <div id="mod-student-main" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(41, 128, 185, 0.4)); grid-column: 1 / -1; flex-direction: column; padding: 2rem; gap: 1rem;">
             <!-- Top: Name & Role (Centered relative to Card) -->
@@ -620,7 +621,7 @@
                   </button>
                   <button onclick="ApiService.logout()" class="btn-module"
                     style="margin:0; background: rgba(231, 76, 60, 0.2); color: #e74c3c; grid-column: span 2;"><i
-                      class="bi bi-box-arrow-right"></i> Cerrar SesiÛn</button>
+                      class="bi bi-box-arrow-right"></i> Cerrar Sesi√≥n</button>
                 </div>
               </div>
             </div>
@@ -643,7 +644,7 @@
             </div>
           </div>
 
-          <!-- MÛdulo Docente: Tarjeta Principal de Perfil -->
+          <!-- M√≥dulo Docente: Tarjeta Principal de Perfil -->
           <div id="mod-teacher-main" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(230, 126, 34, 0.4), rgba(211, 84, 0, 0.4)); grid-column: 1 / -1; flex-direction: column; padding: 2rem; gap: 1rem;">
             <!-- Top: Name & Role -->
@@ -671,20 +672,20 @@
                       class="bi bi-camera"></i> Cambiar Foto</button>
                   <button class="btn-module"
                     style="margin:0; background: var(--color-acento-naranja); color: white; grid-column: span 2; font-weight: bold; padding: 12px;"
-                    onclick="window.contactAdmin()"><i class="bi bi-envelope"></i> Contactar AdministraciÛn</button>
+                    onclick="window.contactAdmin()"><i class="bi bi-envelope"></i> Contactar Administraci√≥n</button>
                   <button id="btn-teacher-academic-access" class="btn-module"
                     style="margin:0; background: linear-gradient(135deg, var(--color-acento-azul), var(--color-acento-naranja)); color: white; grid-column: span 2; font-weight: bold; padding: 12px;">
-                    <i class="bi bi-chalkboard-teacher"></i> GestiÛn AcadÈmica
+                    <i class="bi bi-chalkboard-teacher"></i> Gesti√≥n Acad√©mica
                   </button>
                   <button onclick="ApiService.logout()" class="btn-module"
                     style="margin:0; background: rgba(231, 76, 60, 0.2); color: #e74c3c; grid-column: span 2;"><i
-                      class="bi bi-box-arrow-right"></i> Cerrar SesiÛn</button>
+                      class="bi bi-box-arrow-right"></i> Cerrar Sesi√≥n</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- MÛdulo Docente: Mis Cursos Asignados -->
+          <!-- M√≥dulo Docente: Mis Cursos Asignados -->
           <div id="mod-teacher-courses" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(44, 62, 80, 0.6), rgba(30, 40, 50, 0.6)); grid-column: span 1; flex-direction: column; padding: 2rem; gap: 1rem; overflow-y: auto; max-height: 450px;">
             <div
@@ -701,7 +702,7 @@
             </div>
           </div>
 
-          <!-- MÛdulo Colaborador: Dashboard Principal (NUEVO) -->
+          <!-- M√≥dulo Colaborador: Dashboard Principal (NUEVO) -->
           <div id="mod-collaborator-main" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(22, 160, 133, 0.4), rgba(26, 188, 156, 0.4)); grid-column: 1 / -1; flex-direction: column; padding: 2rem; gap: 1rem;">
             <!-- Top: Name & Role -->
@@ -730,15 +731,15 @@
 
                   <button class="btn-module"
                     style="margin:0; background: rgba(255, 255, 255, 0.1); color: white; grid-column: span 1; font-weight: bold; padding: 12px; cursor: not-allowed; opacity: 0.7;"
-                    title="PrÛximamente"><i class="bi bi-box-seam"></i> Inventario</button>
+                    title="Pr√≥ximamente"><i class="bi bi-box-seam"></i> Inventario</button>
 
                   <button class="btn-module"
                     style="margin:0; background: rgba(255, 255, 255, 0.1); color: white; grid-column: span 1; font-weight: bold; padding: 12px; cursor: not-allowed; opacity: 0.7;"
-                    title="PrÛximamente"><i class="bi bi-list-check"></i> Mis Tareas</button>
+                    title="Pr√≥ximamente"><i class="bi bi-list-check"></i> Mis Tareas</button>
 
                   <button class="btn-module"
                     style="margin:0; background: rgba(255, 255, 255, 0.1); color: white; grid-column: span 2; font-weight: bold; padding: 12px; cursor: not-allowed; opacity: 0.7;"
-                    title="PrÛximamente"><i class="bi bi-calendar3"></i> Mi Calendario</button>
+                    title="Pr√≥ximamente"><i class="bi bi-calendar3"></i> Mi Calendario</button>
 
                   <button class="btn-module"
                     style="margin:0; background: linear-gradient(135deg, var(--color-acento-azul), #2980b9); color: white; grid-column: span 2; font-weight: bold; padding: 12px;"
@@ -746,26 +747,26 @@
 
                   <button onclick="ApiService.logout()" class="btn-module"
                     style="margin:0; background: rgba(231, 76, 60, 0.2); color: #e74c3c; grid-column: span 2;"><i
-                      class="bi bi-box-arrow-right"></i> Cerrar SesiÛn</button>
+                      class="bi bi-box-arrow-right"></i> Cerrar Sesi√≥n</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- MÛdulo Cargos (NUEVO) -->
+          <!-- M√≥dulo Cargos (NUEVO) -->
           <div id="mod-positions" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, #8e44ad, #9b59b6);"
             onclick="window.location.href='admin_positions.html'">
             <div class="icon-glow"><i class="bi bi-briefcase-fill"></i></div>
             <div class="card-content">
-              <h3>GestiÛn de Cargos</h3>
+              <h3>Gesti√≥n de Cargos</h3>
               <p>Estructura organizacional y funciones del personal</p>
               <button class="btn-module">Configurar</button>
             </div>
             <div class="card-shine"></div>
           </div>
 
-          <!-- MÛdulo Hero (Portada) -->
+          <!-- M√≥dulo Hero (Portada) -->
           <div id="mod-hero" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, #2c3e50 0%, #000000 100%);"
             onclick="window.openHeroManager()">
@@ -790,22 +791,22 @@
             <div class="card-shine"></div>
           </div>
 
-          <!-- MÛdulo AcadÈmico -->
+          <!-- M√≥dulo Acad√©mico -->
           <div id="mod-academic" class="bento-card dashboard-card" style="display: none; grid-column: span 1;"
             onclick="if(window.openCourseManagement) window.openCourseManagement()">
             <div class="icon-glow"><i class="bi bi-calendar-week"></i></div>
             <div class="card-content">
-              <h3>GestiÛn AcadÈmica</h3>
+              <h3>Gesti√≥n Acad√©mica</h3>
               <ul class="dashboard-list">
                 <li>Cursos y Materias</li>
-                <li>AsignaciÛn de Estudiantes</li>
+                <li>Asignaci√≥n de Estudiantes</li>
               </ul>
               <button class="btn-module">Acceder</button>
             </div>
             <div class="card-shine"></div>
           </div>
 
-          <!-- MÛdulo Inventario -->
+          <!-- M√≥dulo Inventario -->
           <div id="mod-inventory" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(46, 204, 113, 0.4), rgba(39, 174, 96, 0.4));">
             <div class="icon-glow"><i class="bi bi-box-seam-fill"></i></div>
@@ -815,20 +816,35 @@
                 <li>Instrumentos</li>
                 <li>Equipos</li>
               </ul>
-              <button class="btn-module" onclick="window.location.href='admin_inventory.html'">Acceder</button>
             </div>
-            <div class="card-shine"></div>
           </div>
 
-          <!-- MÛdulo Contenido Web (NUEVO) -->
+          <!-- M√≥dulo Contenido Web (NUEVO) -->
           <div id="mod-content" class="bento-card dashboard-card"
             style="display: none; background: linear-gradient(135deg, rgba(155, 89, 182, 0.4), rgba(142, 68, 173, 0.4));"
             onclick="window.openContentManager()">
             <div class="icon-glow"><i class="bi bi-layout-text-window-reverse"></i></div>
             <div class="card-content">
               <h3>Contenido Web</h3>
-              <p>Gestionar secciÛn "Sobre Nosotros" y contenido din·mico</p>
-              <button class="btn-module">Gestionar</button>
+              <p>Sobre Nosotros, Misi√≥n y Valores</p>
+            </div>
+            <div class="card-shine"></div>
+          </div>
+
+          <!-- M√≥dulo Matr√≠culas (NUEVO) -->
+          <div id="mod-enrollment" class="bento-card dashboard-card"
+            style="display: none; background: linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(41, 128, 185, 0.4)); position: relative;"
+            onclick="window.openContentManager(); setTimeout(() => window.switchContentTab('enrollment'), 100);">
+            <div id="dashboard-enrollment-dot"
+              style="position: absolute; top: 15px; right: 15px; width: 12px; height: 12px; border-radius: 50%; background: #ccc; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+            </div>
+            <div class="icon-glow"><i class="bi bi-check2-circle"></i></div>
+            <div class="card-content">
+              <h3>Matr√≠culas</h3>
+              <p id="dashboard-enrollment-status">Cargando estado...</p>
+              <div id="dashboard-enrollment-year"
+                style="font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 5px; color: #aaa;">
+                Vigencia: ----</div>
             </div>
             <div class="card-shine"></div>
           </div>
@@ -836,7 +852,7 @@
       </div>
 
       <!-- =========================================
-             SECCIONES DE ADMINISTRACI”N (SPA)
+             SECCIONES DE ADMINISTRACI√ìN (SPA)
              ========================================= -->
 
       <div id="admin-modules-container" style="display: none; margin-top: 4rem">
@@ -845,11 +861,12 @@
           <div class="section-header-block">
             <div>
               <h2>
-                <i class="bi bi-people"></i> GestiÛn de Clientes (Directorio)
+                <i class="bi bi-people"></i> Gesti√≥n de Clientes (Directorio)
               </h2>
               <p>Administra todos los roles desde un solo panel unificado.</p>
             </div>
-            <a href="#welcome-message" class="btn-back-top"><i class="bi bi-arrow-up-circle"></i> Volver al Panel</a>
+            <a href="#welcome-message" class="btn-back-top"><i class="bi bi-arrow-up-circle"></i> Volver al
+              Panel</a>
           </div>
 
           <div class="directory-grid">
@@ -888,21 +905,23 @@
           <div class="section-header-block">
             <div>
               <h2>
-                <i class="bi bi-layout-text-window-reverse"></i> GestiÛn de Contenido
+                <i class="bi bi-layout-text-window-reverse"></i> Gesti√≥n de Contenido
               </h2>
-              <p>Administra las tarjetas "Sobre Nosotros" y contenido din·mico de la p·gina principal.</p>
+              <p>Administra las tarjetas "Sobre Nosotros" y contenido din√°mico de la p√°gina principal.</p>
             </div>
-            <a href="#welcome-message" class="btn-back-top"><i class="bi bi-arrow-up-circle"></i> Volver al Panel</a>
+            <a href="#welcome-message" class="btn-back-top"><i class="bi bi-arrow-up-circle"></i> Volver al
+              Panel</a>
           </div>
 
           <!-- About Cards Grid -->
           <div class="card-glass" style="margin-bottom: 2rem;">
             <div
               style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 15px;">
-              <h3 style="color: white; margin: 0;"><i class="bi bi-card-heading"></i> Tarjetas "Sobre Nosotros"</h3>
+              <h3 style="color: white; margin: 0;"><i class="bi bi-card-heading"></i> Tarjetas "Sobre Nosotros"
+              </h3>
               <button onclick="window.openAddAboutCardModal()" class="btn-module"
                 style="margin: 0; background: var(--color-acento-azul);">
-                <i class="bi bi-plus-circle"></i> AÒadir Tarjeta
+                <i class="bi bi-plus-circle"></i> A√±adir Tarjeta
               </button>
             </div>
             <div id="about-cards-admin-grid"
@@ -919,10 +938,10 @@
           <div class="card-glass" style="background: rgba(46, 204, 113, 0.1); border-color: rgba(46, 204, 113, 0.3);">
             <h4 style="color: #2ecc71; margin-bottom: 10px;"><i class="bi bi-lightbulb"></i> Consejos</h4>
             <ul style="color: #aaa; margin: 0; padding-left: 20px; font-size: 0.9rem;">
-              <li>Las tarjetas aparecen en la secciÛn "Sobre Nosotros" de la p·gina principal.</li>
-              <li>Use im·genes de alta calidad (recomendado 800x600px o superior).</li>
-              <li>El orden de las tarjetas puede cambiarse editando el n˙mero de orden.</li>
-              <li>Las tarjetas desactivadas no se muestran en la p·gina p˙blica.</li>
+              <li>Las tarjetas aparecen en la secci√≥n "Sobre Nosotros" de la p√°gina principal.</li>
+              <li>Use im√°genes de alta calidad (recomendado 800x600px o superior).</li>
+              <li>El orden de las tarjetas puede cambiarse editando el n√∫mero de orden.</li>
+              <li>Las tarjetas desactivadas no se muestran en la p√°gina p√∫blica.</li>
             </ul>
           </div>
         </section>
@@ -933,7 +952,7 @@
     </section>
   </main>
 
-  <jam-footer></jam-footer>
+  <div id="react-footer-root"></div>
 
   <!-- User Profile Modal (Reused) -->
   <div id="user-profile-modal" style="display: none;">
@@ -969,24 +988,24 @@
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <script src="js/services/api.js?v=4.4"></script>
-  <script src="js/user_profile_modal.js?v=5.0"></script>
-  <script src="js/admin_users.js?v=4.6"></script>
-  <script src="js/admin_directory.js?v=26"></script>
+  <script src="js/services/api.js?v=4.5"></script>
+  <script src="js/user_profile_modal.js?v=5.1"></script>
+  <script src="js/admin_users.js?v=4.7"></script>
+  <script src="js/admin_directory.js?v=27"></script>
   <!-- Note: admin_directory replaces script.js legacy logic eventually -->
-  <script src="js/admin_academic_schedules.js?v=26"></script>
-  <script src="js/admin_content.js?v=27"></script>
-  <script src="js/admin_compliance.js?v=1.6"></script>
-  <script src="js/teacher_academic.js?v=2.7"></script>
-  <script src="js/student_academic.js?v=2.7"></script>
+  <script src="js/admin_academic_schedules.js?v=27"></script>
+  <script src="js/admin_content.js?v=28"></script>
+  <script src="js/admin_compliance.js?v=1.7"></script>
+  <script src="js/teacher_academic.js?v=2.8"></script>
+  <script src="js/student_academic.js?v=2.8"></script>
 
   <!-- Main Logic -->
-  <script src="js/components/Footer.js?v=4.5"></script>
-  <script src="js/dashboard.js?v=7.9"></script>
-  <script src="js/notifications.js?v=1.3"></script>
-  <script src="js/toast_overlay.js?v=2.4"></script>
-  <script src="js/events_manager.js?v=2.4"></script>
-  <script src="js/react-header.bundle.js?v=1.5"></script>
+  <script src="js/react-footer.bundle.js"></script>
+  <script src="js/dashboard.js?v=8.0"></script>
+  <script src="js/notifications.js?v=1.4"></script>
+  <script src="js/toast_overlay.js?v=2.5"></script>
+  <script src="js/events_manager.js?v=2.5"></script>
+  <script src="js/react-header.bundle.js?v=1.6"></script>
 </body>
 
 </html>

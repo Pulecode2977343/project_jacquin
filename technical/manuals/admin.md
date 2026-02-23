@@ -32,9 +32,12 @@ Este manual detalla todas las funciones que un administrador puede realizar en e
 - **Control de Existencias**: Registro de instrumentos de la academia.
 - **Estado**: Seguir el rastro de instrumentos en mantenimiento o disponibles para alumnos.
 
-## 7. Personalización (Hero Banner)
-- **Actualización de Portada**: Capacidad para cambiar la imagen principal (Hero) de la web.
-- **Herramienta de Recorte**: Incluye un sistema para ajustar la imagen a la resolución óptima.
+## 8. Gestión de Contenido Web y Disponibilidad
+- **Matrículas**: Controla el estado global de inscripciones desde "Gestión de Contenido".
+- **Lógica de Visibilidad**: 
+    - Al cerrar matrículas, el campo "Año" se inhabilita y se vuelve opcional. El sistema ocultará automáticamente el año en la web para mayor limpieza.
+    - Al abrir matrículas, es **obligatorio** especificar el año (ej: 2026) para que los alumnos sepan a qué periodo aplican.
+- **Sincronización en Vivo**: Cualquier cambio guardado se refleja instantáneamente en el footer de todas las páginas del sitio sin necesidad de recargar.
 
 ---
-*Documentación generada por Antigravity AI — 2026*
+*Documentación actualizada por Antigravity AI — febrero 2026*

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SweetAlert2 Adapter (Replaces Glass Toast)
  * Wraps Swal.fire to provide the requested "Elegant Overlay" style.
  * Maintains window.showToast signature for compatibility.
@@ -7,12 +7,12 @@
 (function () {
     // 1. Alert / Notification Overlay
     window.showToast = function (message, type = 'info') {
-        let title = 'Notificación';
+        let title = 'NotificaciÃ³n';
         let confirmBtnColor = 'var(--color-acento-azul, #3498db)';
 
-        if (type === 'success') { title = '¡Excelente!'; confirmBtnColor = '#2ecc71'; }
-        else if (type === 'error') { title = '¡Error!'; confirmBtnColor = '#e74c3c'; }
-        else if (type === 'warning') { title = '¡Atención!'; confirmBtnColor = '#f39c12'; }
+        if (type === 'success') { title = 'Â¡Excelente!'; confirmBtnColor = '#2ecc71'; }
+        else if (type === 'error') { title = 'Â¡Error!'; confirmBtnColor = '#e74c3c'; }
+        else if (type === 'warning') { title = 'Â¡AtenciÃ³n!'; confirmBtnColor = '#f39c12'; }
 
         if (typeof Swal !== 'undefined') {
             return Swal.fire({
@@ -35,7 +35,7 @@
     window.showConfirm = function (message, confirmText = 'Aceptar', cancelText = 'Cancelar') {
         if (typeof Swal !== 'undefined') {
             return Swal.fire({
-                title: 'Confirmación',
+                title: 'ConfirmaciÃ³n',
                 text: message,
                 icon: 'question',
                 showCancelButton: true,

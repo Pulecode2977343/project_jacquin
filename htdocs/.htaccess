@@ -1,23 +1,5 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
+AddDefaultCharset UTF-8
 
-    # Evitar loops si es index.html
-    RewriteRule ^index\.html$ - [L]
-
-    # No interceptar la carpeta del API
-    RewriteRule ^jacquin_api/ - [L]
-
-    # Si el archivo o directorio existe, servirlo directamente
-    # Esto permite que login.html, gestion.html, etc. sigan funcionando
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # Si nada de lo anterior coincide (es una ruta de React SPA), servir index.html
-    RewriteRule . /index.html [L]
+<IfModule mod_mime.c>
+    AddCharset UTF-8 .html .js .css .php
 </IfModule>
-
-# Configuración adicional para InfinityFree
-Options -Indexes
-DirectoryIndex index.html index.php

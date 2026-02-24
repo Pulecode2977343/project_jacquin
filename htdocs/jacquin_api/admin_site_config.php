@@ -10,10 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require_once 'middleware/admin_auth.php';
-requireAdminAuth();
+require_once 'helpers/auth_helper.php';
+validateAdmin();
 
-require_once 'config/db.php';
+require_once 'config/connection.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
@@ -24,16 +24,28 @@ if (!isset($data->enrollment_open) || !isset($data->enrollment_year)) {
 }
 
 $isOpen = $data->enrollment_open ? '1' : '0';
-$year   = (int)$data->enrollment_year;
+$yearRaw = isset($data->enrollment_year) ? $data->enrollment_year : null;
+$year = null;
 
-if ($year < 2020 || $year > 2099) {
-    http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Año inválido."]);
-    exit;
+if ($isOpen === '1') {
+    if (empty($yearRaw)) {
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "El año de vigencia es obligatorio cuando las matrículas están abiertas."]);
+        exit;
+    }
+    $year = (int)$yearRaw;
+    if ($year < 2020 || $year > 2099) {
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "Año inválido (debe ser entre 2020 y 2099)."]);
+        exit;
+    }
+} else {
+    // Si está cerrado, el año es opcional. Si lo envían, lo guardamos; si no, queda vacío o nulo.
+    $year = !empty($yearRaw) ? (int)$yearRaw : null;
 }
 
 try {
-    $stmt = $conn->prepare(
+    $stmt = $pdo->prepare(
         "INSERT INTO site_config (config_key, config_value) VALUES (?, ?)
          ON DUPLICATE KEY UPDATE config_value = VALUES(config_value)"
     );

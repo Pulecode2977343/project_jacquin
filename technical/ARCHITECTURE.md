@@ -157,3 +157,6 @@ El sistema utiliza una estrategia de **Micro-Frontends** para componentes transv
     *   **Reactividad**: Implementación de sistema de eventos para actualización en tiempo real de estados de matrícula.
     *   **Dashboards**: Unificación de la experiencia visual en todas las vistas administrativas y de estudiantes.
     *   **Lógica de Negocio**: Optimización del flujo de matrículas (Año de vigencia obligatorio en "Abierto", oculto y opcional en "Cerrado").
+    *   **Codificación**: Resolución masiva de caracteres extraños (Mojibake) en modales y notificaciones.
+    *   **Usuarios**: Corrección de `showToast is not defined` y unificación de lógica de eliminación de usuarios en `admin_users.html`.
+    *   **Despliegue**: Generación de build de producción y sincronización limpia a la carpeta `htdocs`.

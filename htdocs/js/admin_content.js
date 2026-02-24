@@ -30,9 +30,9 @@
                     <div>
                         <h2 style="color:white; margin:0; font-size:1.5rem; font-weight:500; display:flex; align-items:center; gap:12px;">
                             <i class="bi bi-layout-text-window-reverse" style="color:var(--color-acento-naranja);"></i>
-                            GestiÃ³n de Contenido Web
+                            Gestión de Contenido Web
                         </h2>
-                        <p style="color:#888; margin:5px 0 0 0; font-size:0.9rem;">Administra las tarjetas "Sobre Nosotros" de la pÃ¡gina principal</p>
+                        <p style="color:#888; margin:5px 0 0 0; font-size:0.9rem;">Administra las tarjetas "Sobre Nosotros" de la página principal</p>
                     </div>
                     <div style="display:flex; gap:10px; align-items:center;">
                         <button onclick="window.openAddAboutCardModal()" style="background:linear-gradient(135deg, #9b59b6, #8e44ad); color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer; font-size:0.9rem; font-weight:600; display:flex; align-items:center; gap:8px;">
@@ -45,12 +45,15 @@
                 </div>
                 
                 <!-- Navigation Tabs -->
-                <div style="display:flex; background:#111; padding:0 30px;">
+                <div style="display:flex; background:#111; padding:0 30px; border-bottom:1px solid #333;">
                     <button onclick="window.switchContentTab('cards')" id="tab-cards" style="padding:15px 25px; background:rgba(155,89,182,0.15); border:none; border-bottom:3px solid #9b59b6; color:white; font-weight:600; cursor:pointer; transition:all 0.2s;">
                         <i class="bi bi-card-text"></i> Tarjetas "Sobre Nosotros"
                     </button>
                     <button onclick="window.switchContentTab('mission')" id="tab-mission" style="padding:15px 25px; background:transparent; border:none; border-bottom:3px solid transparent; color:#888; font-weight:600; cursor:pointer; transition:all 0.2s;">
-                        <i class="bi bi-star-fill"></i> MisiÃ³n y Valores
+                        <i class="bi bi-star-fill"></i> Misión y Valores
+                    </button>
+                    <button onclick="window.switchContentTab('enrollment')" id="tab-enrollment" style="padding:15px 25px; background:transparent; border:none; border-bottom:3px solid transparent; color:#888; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                        <i class="bi bi-check2-circle"></i> Disponibilidad Matrículas
                     </button>
                 </div>
 
@@ -68,24 +71,59 @@
                     <!-- Mission Section -->
                     <div style="background:rgba(255,255,255,0.03); padding:25px; border-radius:15px; border:1px solid #333; margin-bottom:25px;">
                         <h3 style="color:white; margin:0 0 15px 0; font-size:1.1rem; border-bottom:1px solid #333; padding-bottom:10px;">
-                            <i class="bi bi-pencil-square" style="color:#2ecc71;"></i> Nuestra MisiÃ³n
+                            <i class="bi bi-pencil-square" style="color:#2ecc71;"></i> Nuestra Misión
                         </h3>
                         <div class="form-group">
-                            <label>Texto de la MisiÃ³n</label>
+                            <label>Texto de la Misión</label>
                             <textarea id="admin-mission-desc" class="form-control" rows="3" style="resize:vertical;"></textarea>
                         </div>
                         <button onclick="window.saveMissionOnly()" class="btn-module" style="width:auto; padding:8px 25px; margin-top:10px; background:var(--color-acento-azul); color:white;">
-                            Actualizar MisiÃ³n
+                            Actualizar Misión
                         </button>
                     </div>
 
                     <!-- Values Section -->
                     <div style="background:rgba(255,255,255,0.03); padding:25px; border-radius:15px; border:1px solid #333;">
                         <h3 style="color:white; margin:0 0 15px 0; font-size:1.1rem; border-bottom:1px solid #333; padding-bottom:10px;">
-                            <i class="bi bi-gem" style="color:#f1c40f;"></i> Valores de la InstituciÃ³n
+                            <i class="bi bi-gem" style="color:#f1c40f;"></i> Valores de la Institución
                         </h3>
                         <div id="admin-values-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
                             <!-- Values injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-tab-enrollment" style="padding:40px 30px; max-height:calc(85vh - 180px); overflow-y:auto; display:none;">
+                    <div style="max-width:600px; margin:0 auto; background:rgba(255,255,255,0.03); padding:35px; border-radius:20px; border:1px solid #333; text-align:center;">
+                        <div id="enrollment-status-indicator" style="width:80px; height:80px; border-radius:50%; margin:0 auto 25px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; transition:all 0.3s; background:rgba(46, 204, 113, 0.1); color:#2ecc71; border:2px solid rgba(46, 204, 113, 0.3);">
+                            <i class="bi bi-unlock-fill"></i>
+                        </div>
+                        
+                        <h3 id="enrollment-status-text" style="color:white; margin:0 0 10px 0; font-size:1.4rem;">Matrículas Abiertas</h3>
+                        <p style="color:#888; margin-bottom:30px;">Controla si los aspirantes pueden realizar su pre-inscripción en la web.</p>
+                        
+                        <div style="display:flex; flex-direction:column; gap:25px; align-items:center; background:rgba(0,0,0,0.2); padding:30px; border-radius:15px; border:1px solid #444;">
+                            <!-- Enrollment Toggle -->
+                            <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:400px;">
+                                <span style="color:white; font-size:1.1rem; font-weight:500;">Estado del Sistema</span>
+                                <label class="switch" style="position:relative; display:inline-block; width:60px; height:34px;">
+                                    <input type="checkbox" id="enrollment-open-toggle" onchange="window.updateEnrollmentPreview(this.checked)" style="opacity:0; width:0; height:0;">
+                                    <span class="slider round" style="position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#333; transition:.4s; border-radius:34px;"></span>
+                                </label>
+                            </div>
+                            
+                            <!-- Year Selection -->
+                            <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:400px;">
+                                <div style="text-align:left;">
+                                    <span style="color:white; font-size:1.1rem; font-weight:500; display:block;">Año de Vigencia</span>
+                                    <small style="color:#666;">Próximo periodo de matrículas</small>
+                                </div>
+                                <input type="number" id="enrollment-year-input" class="form-control" style="width:100px; text-align:center; font-size:1.2rem; font-weight:bold; background:#111; color:white; border-color:#444;" value="${new Date().getFullYear()}">
+                            </div>
+                            
+                            <button onclick="window.saveEnrollmentConfig()" class="btn-module" style="width:100%; max-width:400px; padding:15px; margin-top:10px; background:linear-gradient(135deg, #2ecc71, #27ae60); color:white; font-weight:bold; font-size:1rem; border:none; box-shadow:0 5px 15px rgba(46, 204, 113, 0.2);">
+                                <i class="bi bi-save-fill"></i> Guardar Configuración
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -97,8 +135,8 @@
                         <div style="flex:1; min-width:200px;">
                             <p style="color:#888; font-size:0.85rem; margin:0; line-height:1.5;">
                                 <strong style="color:#2ecc71;">Tips:</strong> 
-                                Las tarjetas aparecen en "Sobre Nosotros". Use imÃ¡genes de alta calidad (800x600px). 
-                                Cambie el orden editando el nÃºmero. Las inactivas no se muestran pÃºblicamente.
+                                Las tarjetas aparecen en "Sobre Nosotros". Use imágenes de alta calidad (800x600px). 
+                                Cambie el orden editando el número. Las inactivas no se muestran públicamente.
                             </p>
                         </div>
                     </div>
@@ -636,26 +674,36 @@
     window.switchContentTab = function (tab) {
         document.getElementById('content-tab-cards').style.display = tab === 'cards' ? 'block' : 'none';
         document.getElementById('content-tab-mission').style.display = tab === 'mission' ? 'block' : 'none';
+        document.getElementById('content-tab-enrollment').style.display = tab === 'enrollment' ? 'block' : 'none';
 
         // Update tab styling
         const tabCards = document.getElementById('tab-cards');
         const tabMission = document.getElementById('tab-mission');
+        const tabEnrollment = document.getElementById('tab-enrollment');
+
+        // Reset all
+        [tabCards, tabMission, tabEnrollment].forEach(t => {
+            if (t) {
+                t.style.background = 'transparent';
+                t.style.borderColor = 'transparent';
+                t.style.color = '#888';
+            }
+        });
 
         if (tab === 'cards') {
             tabCards.style.background = 'rgba(155,89,182,0.15)';
             tabCards.style.borderColor = '#9b59b6';
             tabCards.style.color = 'white';
-            tabMission.style.background = 'transparent';
-            tabMission.style.borderColor = 'transparent';
-            tabMission.style.color = '#888';
-        } else {
+        } else if (tab === 'mission') {
             tabMission.style.background = 'rgba(46, 204, 113, 0.1)';
             tabMission.style.borderColor = '#2ecc71';
             tabMission.style.color = 'white';
-            tabCards.style.background = 'transparent';
-            tabCards.style.borderColor = 'transparent';
-            tabCards.style.color = '#888';
             loadMissionValuesAdmin();
+        } else if (tab === 'enrollment') {
+            tabEnrollment.style.background = 'rgba(52, 152, 219, 0.1)';
+            tabEnrollment.style.borderColor = 'var(--color-acento-azul)';
+            tabEnrollment.style.color = 'white';
+            loadEnrollmentConfigAdmin();
         }
     };
 
@@ -767,6 +815,124 @@
             });
             if (res.success) Swal.fire({ icon: 'success', title: 'Valor actualizado', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
         } catch (e) { /* error toast */ }
+    };
+
+    // ==========================================
+    // ENROLLMENT CONFIG LOGIC
+    // ==========================================
+
+    async function loadEnrollmentConfigAdmin() {
+        try {
+            const response = await ApiService.getEnrollmentStatus();
+            if (response.success) {
+                const isOpen = response.enrollment_open;
+                const year = response.enrollment_year;
+
+                const toggle = document.getElementById('enrollment-open-toggle');
+                const yearInput = document.getElementById('enrollment-year-input');
+
+                if (toggle) toggle.checked = isOpen;
+                if (yearInput) yearInput.value = year;
+
+                window.updateEnrollmentPreview(isOpen);
+            }
+        } catch (error) {
+            console.error('Error loading enrollment config:', error);
+        }
+    }
+
+    window.updateEnrollmentPreview = function (isOpen) {
+        const indicator = document.getElementById('enrollment-status-indicator');
+        const statusText = document.getElementById('enrollment-status-text');
+        const slider = document.querySelector('#content-tab-enrollment .slider');
+
+        const yearInput = document.getElementById('enrollment-year-input');
+        const yearGroup = yearInput ? yearInput.parentElement : null;
+
+        if (isOpen) {
+            indicator.style.background = 'rgba(46, 204, 113, 0.1)';
+            indicator.style.color = '#2ecc71';
+            indicator.style.borderColor = 'rgba(46, 204, 113, 0.3)';
+            indicator.innerHTML = '<i class="bi bi-unlock-fill"></i>';
+            statusText.textContent = 'Matrículas Abiertas';
+            statusText.style.color = '#2ecc71';
+            if (slider) slider.style.backgroundColor = '#2ecc71';
+
+            // Habilitar input de año
+            if (yearInput) {
+                yearInput.disabled = false;
+                yearInput.placeholder = "Ej: 2026";
+            }
+            if (yearGroup) yearGroup.style.opacity = '1';
+        } else {
+            indicator.style.background = 'rgba(231, 76, 60, 0.1)';
+            indicator.style.color = '#e74c3c';
+            indicator.style.borderColor = 'rgba(231, 76, 60, 0.3)';
+            indicator.innerHTML = '<i class="bi bi-lock-fill"></i>';
+            statusText.textContent = 'Matrículas Cerradas';
+            statusText.style.color = '#e74c3c';
+            if (slider) slider.style.backgroundColor = '#e74c3c';
+
+            // Deshabilitar input de año si se prefiere dejar vacío al cerrar
+            if (yearInput) {
+                yearInput.disabled = true;
+                yearInput.placeholder = "(Opcional al estar cerrado)";
+            }
+            if (yearGroup) yearGroup.style.opacity = '0.6';
+        }
+    };
+
+    window.saveEnrollmentConfig = async function () {
+        const isOpen = document.getElementById('enrollment-open-toggle').checked;
+        const yearInput = document.getElementById('enrollment-year-input');
+        const yearValue = yearInput ? yearInput.value.trim() : "";
+        const year = yearValue ? parseInt(yearValue) : null;
+
+        if (isOpen) {
+            if (!year || isNaN(year) || year < 2020 || year > 2099) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Año requerido',
+                    text: 'Debe especificar una vigencia válida (2020-2099) para abrir las matrículas.',
+                    background: '#1a1a1a',
+                    color: '#fff'
+                });
+                return;
+            }
+        }
+
+        Swal.fire({
+            title: 'Guardando...',
+            didOpen: () => Swal.showLoading(),
+            background: '#1a1a1a',
+            color: '#fff'
+        });
+
+        try {
+            const result = await ApiService.updateEnrollmentStatus(isOpen, year);
+            if (result.success) {
+                const statusLabel = isOpen ? 'Abiertas' : 'Cerradas';
+                const yearLabel = year ? ` para el periodo ${year}` : '';
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Configuración guardada',
+                    text: `Matrículas ${statusLabel}${yearLabel}`,
+                    background: '#1a1a1a',
+                    color: '#fff',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                // Actualizar badges en otras partes si es necesario
+                document.dispatchEvent(new CustomEvent('enrollment-status-updated', {
+                    detail: { isOpen, year }
+                }));
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            Swal.fire('Error', error.message || 'Error al guardar configuración', 'error');
+        }
     };
 
     function escapeHtml(text) {

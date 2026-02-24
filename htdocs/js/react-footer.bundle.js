@@ -16490,14 +16490,13 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     },
     async updateEnrollmentStatus(isOpen, year) {
       try {
-        const session = this.getSession();
-        const token = session?.token || "";
         const response = await fetch(`${API_CONFIG.BASE_URL}admin_site_config.php`, {
           method: "POST",
-          headers: { ...API_CONFIG.HEADERS, Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ enrollment_open: isOpen, enrollment_year: year })
+          headers: API_CONFIG.HEADERS,
+          body: JSON.stringify({ enrollment_open: isOpen, enrollment_year: year }),
+          credentials: "include"
         });
-        return await response.json();
+        return await this.handleResponse(response);
       } catch (error) {
         return { success: false, message: "Error actualizando estado de matr\xEDculas." };
       }
@@ -16511,18 +16510,30 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   var EnrollmentStatusBadge = () => {
     const [status, setStatus] = (0, import_react2.useState)(null);
     (0, import_react2.useEffect)(() => {
-      api_default.getEnrollmentStatus().then((data2) => {
-        if (data2.success) {
-          setStatus({ open: data2.enrollment_open, year: data2.enrollment_year });
-        }
-      }).catch(() => {
-        setStatus({ open: true, year: (/* @__PURE__ */ new Date()).getFullYear() });
-      });
+      const fetchStatus = () => {
+        api_default.getEnrollmentStatus().then((data2) => {
+          if (data2.success) {
+            setStatus({ open: data2.enrollment_open, year: data2.enrollment_year });
+          }
+        }).catch((err) => {
+          console.error("[Badge] Error fetching status:", err);
+          setStatus({ open: true, year: (/* @__PURE__ */ new Date()).getFullYear() });
+        });
+      };
+      fetchStatus();
+      const handleUpdate = (e) => {
+        console.log("[Badge] Enrollment status updated event received:", e.detail);
+        const { isOpen: isOpen2, year } = e.detail;
+        setStatus({ open: isOpen2, year });
+      };
+      document.addEventListener("enrollment-status-updated", handleUpdate);
+      return () => document.removeEventListener("enrollment-status-updated", handleUpdate);
     }, []);
     if (!status) return null;
-    const isOpen = status.open;
+    const isOpen = !!status.open && (status.open === true || status.open === "open" || status.open === 1 || status.open === "1");
     const badgeClass = `jam-status-badge${isOpen ? "" : " jam-status-badge--closed"}`;
-    const label = isOpen ? `Matr\xEDculas Abiertas ${status.year}` : `Matr\xEDculas Cerradas ${status.year}`;
+    const statusText = isOpen ? "Matr\xEDculas Abiertas" : "Matr\xEDculas Cerradas";
+    const label = isOpen && status.year ? `${statusText} ${status.year}` : statusText;
     return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: badgeClass, children: [
       /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { className: "pulse-dot" }),
       /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("span", { children: label })

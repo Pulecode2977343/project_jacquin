@@ -37,8 +37,8 @@ const Footer = () => {
                     <ul className="jam-footer-links">
                         <li><a href="login.html" className="hover-link"><i className="bi bi-person-circle"></i> Portal Estudiantes</a></li>
                         <li><a href="registro.html" className="hover-link"><i className="bi bi-pencil-square"></i> Inscripciones</a></li>
-                        <li><a href="terminos.html" className="hover-link">Términos y Condiciones</a></li>
-                        <li><a href="politicas.html" className="hover-link">Política de Privacidad</a></li>
+                        <li><Link to="/terms" className="hover-link">Términos y Condiciones</Link></li>
+                        <li><Link to="/politicas" className="hover-link">Política de Privacidad</Link></li>
                     </ul>
                 </div>
 

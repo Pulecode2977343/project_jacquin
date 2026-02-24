@@ -232,7 +232,7 @@ a {
    es position:fixed y no ocupa espacio en el flujo del documento */
 
 /* Páginas estáticas: empuja contenido debajo del header fijo */
-body > main {
+body>main {
     padding-top: 17vh;
 }
 
@@ -2229,274 +2229,7 @@ textarea:-webkit-autofill:active {
     color: white;
 }
 
-.brand-desc {
-    color: #94a3b8;
-    line-height: 1.7;
-    font-size: 0.95rem;
-    margin-bottom: 2rem;
-    max-width: 90%;
-}
-
-.jam-status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(46, 204, 113, 0.15);
-    color: #2ecc71;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border: 1px solid rgba(46, 204, 113, 0.3);
-}
-
-.pulse-dot {
-    width: 8px;
-    height: 8px;
-    background: #2ecc71;
-    border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
-    animation: pulse-green 2s infinite;
-}
-
-@keyframes pulse-green {
-    0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
-    }
-
-    70% {
-        transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
-    }
-
-    100% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
-    }
-}
-
-/* --- Columnas Links --- */
-.jam-footer-col h3 {
-    color: white;
-    font-size: 1.1rem;
-    margin-bottom: 1.8rem;
-    position: relative;
-    display: inline-block;
-    letter-spacing: 0.5px;
-}
-
-.jam-footer-col h3::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 30px;
-    height: 2px;
-    background: var(--color-acento-naranja);
-    border-radius: 2px;
-}
-
-.jam-footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.jam-footer-links li {
-    margin-bottom: 12px;
-}
-
-.hover-link {
-    color: #94a3b8;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    position: relative;
-    width: fit-content;
-}
-
-.hover-link i {
-    font-size: 1.1rem;
-    color: #64748b;
-    transition: color 0.3s ease;
-}
-
-/* Efecto hover deslizante */
-.hover-link::before {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--color-acento-azul);
-    transition: width 0.3s ease;
-}
-
-.hover-link:hover {
-    color: white;
-    transform: translateX(5px);
-}
-
-.hover-link:hover i {
-    color: var(--color-acento-azul);
-}
-
-.hover-link:hover::before {
-    width: 100%;
-}
-
-/* --- Columna Contacto --- */
-.contact-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.icon-box {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-acento-naranja);
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.contact-item:hover .icon-box {
-    background: rgba(231, 140, 59, 0.1);
-    transform: rotate(10deg);
-    border-color: rgba(231, 140, 59, 0.3);
-}
-
-.label {
-    display: block;
-    font-size: 0.75rem;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 2px;
-}
-
-.value {
-    color: white;
-    font-size: 0.95rem;
-    font-weight: 500;
-}
-
-/* Social Premium */
-.social-links-premium {
-    display: flex;
-    gap: 12px;
-}
-
-.social-links-premium a {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.2rem;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.social-links-premium a:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* Brand Colors for Socials on Hover */
-.social-links-premium a[aria-label="Facebook"]:hover {
-    background: #1877f2;
-    border-color: #1877f2;
-}
-
-.social-links-premium a[aria-label="Instagram"]:hover {
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    border: none;
-}
-
-.social-links-premium a[aria-label="TikTok"]:hover {
-    background: black;
-    border-color: #333;
-}
-
-.social-links-premium a[aria-label="WhatsApp"]:hover {
-    background: #25d366;
-    border-color: #25d366;
-}
-
-/* --- Footer Bottom --- */
-.jam-footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 25px 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.2);
-    position: relative;
-    z-index: 2;
-    max-width: 1300px;
-    margin: 0 auto;
-}
-
-.copyright {
-    color: #64748b;
-    font-size: 0.9rem;
-}
-
-.copyright strong {
-    color: #94a3b8;
-}
-
-.footer-bottom-links {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.footer-bottom-links a {
-    color: #64748b;
-    font-size: 0.85rem;
-    transition: color 0.2s;
-}
-
-.footer-bottom-links a:hover {
-    color: var(--color-acento-azul);
-}
-
-.separator {
-    color: #334155;
-}
-
-/* --- Responsive Footer --- */
-@media (max-width: 1024px) {
-    .jam-footer-content {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 3rem;
-        padding: 4rem 2rem;
-    }
-}
-
+/* --- Link Columns and Socials (Handled by footer.css / React) --- */
 @media (max-width: 600px) {
     .jam-footer-content {
         grid-template-columns: 1fr;
@@ -2504,10 +2237,7 @@ textarea:-webkit-autofill:active {
         text-align: center;
     }
 
-    .jam-footer-brand .footer-logo,
-    .jam-footer-brand .jam-status-badge {
-        justify-content: center;
-        /* Center flex items */
+    .jam-footer-brand .footer-logo {
         margin-left: auto;
         margin-right: auto;
     }
@@ -2521,29 +2251,15 @@ textarea:-webkit-autofill:active {
         transform: translateX(-50%);
     }
 
-    .hover-link {
-        margin: 0 auto;
-    }
-
+    .hover-link,
     .contact-item {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
-
-    .social-links-premium {
         justify-content: center;
     }
 
     .jam-footer-bottom {
         flex-direction: column;
-        gap: 15px;
+        gap: 1.5rem;
         text-align: center;
-    }
-
-    .rights {
-        display: block;
-        margin-top: 5px;
     }
 }
 

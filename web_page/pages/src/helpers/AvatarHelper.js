@@ -34,6 +34,7 @@ const AvatarHelper = {
             'web_page/pages/uploads/',
             'public/uploads/avatars/',
             'uploads/avatars/',
+            'uploads/',
             'public/'
         ];
 

@@ -123,6 +123,14 @@ document.addEventListener("DOMContentLoaded", async function () {
                 modContent.style.cursor = "pointer";
             }
 
+            // Show Enrollment Module for Admin (NUEVO)
+            const modEnrollment = document.getElementById("mod-enrollment");
+            if (modEnrollment) {
+                modEnrollment.style.display = "flex";
+                modEnrollment.style.cursor = "pointer";
+                initDashboardEnrollmentStatus();
+            }
+
             // Show Positions Card for Admin
             if (modPositions) {
                 modPositions.style.display = "flex";
@@ -398,7 +406,43 @@ document.addEventListener("DOMContentLoaded", async function () {
         }, 800);
     }
 
+    // --- ENROLLMENT SYNC ---
+    document.addEventListener('enrollment-status-updated', (e) => {
+        updateDashboardEnrollmentUI(e.detail.isOpen, e.detail.year);
+    });
+
 });
+
+async function initDashboardEnrollmentStatus() {
+    try {
+        const response = await ApiService.getEnrollmentStatus();
+        if (response.success) {
+            updateDashboardEnrollmentUI(response.enrollment_open, response.enrollment_year);
+        }
+    } catch (e) {
+        console.error("Error loading dashboard enrollment status:", e);
+    }
+}
+
+function updateDashboardEnrollmentUI(isOpen, year) {
+    const dot = document.getElementById('dashboard-enrollment-dot');
+    const statusText = document.getElementById('dashboard-enrollment-status');
+    const yearText = document.getElementById('dashboard-enrollment-year');
+
+    if (dot) dot.style.background = isOpen ? '#2ecc71' : '#e74c3c';
+    if (dot) dot.style.boxShadow = isOpen ? '0 0 10px rgba(46, 204, 113, 0.5)' : '0 0 10px rgba(231, 76, 60, 0.5)';
+    if (statusText) statusText.textContent = isOpen ? 'Matrículas Abiertas' : 'Matrículas Cerradas';
+    if (statusText) statusText.style.color = isOpen ? '#2ecc71' : '#e74c3c';
+
+    if (yearText) {
+        if (isOpen && year) {
+            yearText.textContent = `Vigencia: ${year}`;
+            yearText.style.display = 'inline-block';
+        } else {
+            yearText.style.display = 'none';
+        }
+    }
+}
 
 // ==========================================
 // STUDENT COURSES LOGIC

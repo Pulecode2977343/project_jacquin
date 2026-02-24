@@ -7,7 +7,7 @@
  * - Search functionality
  */
 
-console.log("Admin Users v4.0 Loaded");
+console.log("Admin Users v4.1 Loaded");
 
 // Safe global declaration
 window.allUsers = window.allUsers || [];
@@ -90,9 +90,13 @@ function updateStats() {
     const students = window.allUsers.filter(u => u.id_rol == 3 || u.id_rol == 4).length;
     const teachers = window.allUsers.filter(u => u.id_rol == 2).length;
 
-    document.getElementById('stat-total').textContent = total;
-    document.getElementById('stat-students').textContent = students;
-    document.getElementById('stat-teachers').textContent = teachers;
+    const totalEl = document.getElementById('stat-total');
+    const studentsEl = document.getElementById('stat-students');
+    const teachersEl = document.getElementById('stat-teachers');
+
+    if (totalEl) totalEl.textContent = total;
+    if (studentsEl) studentsEl.textContent = students;
+    if (teachersEl) teachersEl.textContent = teachers;
 }
 
 function applyFilters() {
@@ -120,6 +124,8 @@ function applyFilters() {
 
 function renderUsers(users) {
     const tableBody = document.querySelector("#users-table tbody");
+    if (!tableBody) return;
+
     tableBody.innerHTML = "";
 
     if (!users || !Array.isArray(users)) {
@@ -152,7 +158,7 @@ function renderUsers(users) {
             const avatarSrc = ApiService.getAvatarUrl(u.avatar_url);
 
             const avatarHtml = avatarSrc && !avatarSrc.includes('avatars/default_avatar.svg')
-                ? `<img src="${avatarSrc}" alt="Avatar de ${fullName}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><span style="display:none;">${initials}</span>`
+                ? `<img src="${avatarSrc}" alt="Avatar de ${fullName}" title="${fullName}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex'"> <span style="display:none;">${initials}</span>`
                 : initials;
 
             row.innerHTML = `
@@ -213,14 +219,25 @@ function getRoleIcon(id) {
 // ==========================================
 
 window.deleteUser = async function (userId, userName) {
+    if (typeof Swal === 'undefined') {
+        if (confirm('\u00bfRealmente desea eliminar a ' + userName + '?')) {
+            const res = await ApiService.deleteUser(userId);
+            if (res.success) {
+                if (window.showToast) showToast("Usuario eliminado", "success");
+                loadUsers();
+            }
+        }
+        return;
+    }
+
     const result = await Swal.fire({
-        title: 'Â¿Eliminar usuario?',
-        html: `<p style="color:#aaa;">Se eliminarÃ¡ permanentemente a <strong style="color:white;">${userName}</strong></p>`,
+        title: '\u00bfEliminar usuario?',
+        html: `<p style="color:#aaa;">Se eliminar\u00e1 permanentemente a <strong style="color:white;">${userName}</strong></p>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#e74c3c',
         cancelButtonColor: '#555',
-        confirmButtonText: 'SÃ­, eliminar',
+        confirmButtonText: 'S\u00ed, eliminar',
         cancelButtonText: 'Cancelar',
         background: '#1a1a2e',
         color: '#fff'
@@ -228,18 +245,22 @@ window.deleteUser = async function (userId, userName) {
 
     if (!result.isConfirmed) return;
 
-    const res = await ApiService.deleteUser(userId);
-    if (res.success) {
-        if (window.showToast) showToast("Usuario eliminado", "success");
-        loadUsers();
-    } else {
-        Swal.fire({
-            title: 'Error',
-            text: res.message || 'No se pudo eliminar el usuario',
-            icon: 'error',
-            background: '#1a1a2e',
-            color: '#fff'
-        });
+    try {
+        const res = await ApiService.deleteUser(userId);
+        if (res.success) {
+            if (window.showToast) showToast("Usuario eliminado", "success");
+            loadUsers();
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: res.message || 'No se pudo eliminar el usuario',
+                icon: 'error',
+                background: '#1a1a2e',
+                color: '#fff'
+            });
+        }
+    } catch (err) {
+        console.error("Delete user error:", err);
     }
 };
 

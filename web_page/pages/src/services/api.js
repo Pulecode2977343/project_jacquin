@@ -81,6 +81,7 @@ const ApiService = {
             'web_page/pages/uploads/',
             'public/uploads/avatars/',
             'uploads/avatars/',
+            'uploads/',
             'public/'
         ];
 
@@ -91,6 +92,7 @@ const ApiService = {
         if (filename.startsWith('/')) filename = filename.substring(1);
 
         // Standard static structure for the backend
+        // This will point to [API_URL]/public/uploads/avatars/[filename]
         return `${this.BASE_URL}public/uploads/avatars/${filename}`;
     },
 

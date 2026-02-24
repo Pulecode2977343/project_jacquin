@@ -4,10 +4,10 @@ require_once 'helpers/cors_helper.php';
 handleCors();
 header("Content-Type: application/json; charset=UTF-8");
 
-require_once 'config/db.php';
+require_once 'config/connection.php';
 
 try {
-    $stmt = $conn->query(
+    $stmt = $pdo->query(
         "SELECT config_key, config_value FROM site_config
          WHERE config_key IN ('enrollment_open', 'enrollment_year')"
     );

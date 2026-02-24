@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
@@ -11,6 +11,8 @@ import Register from './components/Register';
 import ResetPassword from './components/ResetPassword';
 import ContactUs from './components/ContactUs';
 import CookieBanner from './components/CookieBanner';
+import Terms from './components/Terms';
+import Privacy from './components/Privacy';
 
 // Hace scroll al elemento cuyo id coincide con el hash de la URL (#eventos, #programas, etc.)
 // Usa polling porque algunos componentes (Events, Programs) cargan datos asíncronamente
@@ -80,7 +82,9 @@ function App() {
                         <Route path="/registro" element={<Register />} />
                         <Route path="/reset" element={<ResetPassword />} />
                         <Route path="/contactanos" element={<ContactUs />} />
-                        {/* Rutas adicionales aquí */}
+                        <Route path="/terms" element={<Terms />} />
+                        <Route path="/terminos" element={<Navigate to="/terms" replace />} />
+                        <Route path="/politicas" element={<Privacy />} />
                     </Routes>
                 </main>
                 <Footer />

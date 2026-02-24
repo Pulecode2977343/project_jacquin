@@ -1,0 +1,2 @@
+[2026-02-23 23:38:17] TO: admin@jacquin.edu.co | SUBJECT: Actualización de Perfil - JACQUIN | BODY: Hola Administrador JAM,<br><br>Un administrador ha actualizado tu perfil:<br><ul><li>Rol actualizado</li></ul><br>Si no reconoces estos cambios, contacta a soporte.
+[2026-02-24 00:03:14] TO: test_estudiante@gmail.com | SUBJECT: Actualización de Perfil - JACQUIN | BODY: Hola Estudiante de Prueba,<br><br>Un administrador ha actualizado tu perfil:<br><ul><li>Rol actualizado</li></ul><br>Si no reconoces estos cambios, contacta a soporte.

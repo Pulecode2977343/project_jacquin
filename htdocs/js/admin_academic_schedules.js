@@ -71,7 +71,7 @@ const AcademicManager = {
         }
 
         Swal.fire({
-            title: 'Cargando gestiÃ³n acadÃ©mica...',
+            title: 'Cargando gestión académica...',
             allowOutsideClick: false,
             didOpen: () => Swal.showLoading(),
             background: '#1a1a1a',
@@ -149,7 +149,7 @@ const AcademicManager = {
             <div class="modal-card-container custom-scroll">
                 <div class="modal-header-row">
                     <div>
-                        <h2 style="color:white; margin:0; font-size:1.8rem; font-weight:300;">GestiÃ³n AcadÃ©mica</h2>
+                        <h2 style="color:white; margin:0; font-size:1.8rem; font-weight:300;">Gestión Académica</h2>
                         <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">Selecciona una materia para gestionar inscritos y horarios.</p>
                     </div>
                     <button class="btn-close-modal" onclick="document.getElementById('${this.modalId}').style.display='none'"><i class="bi bi-x-lg"></i></button>
@@ -328,7 +328,7 @@ const AcademicManager = {
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
                     <div>
                         <h2 style="color:white; margin:0; font-size:1.8rem;">${courseName}</h2>
-                        <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">GestiÃ³n de alumnos y programaciÃ³n.</p>
+                        <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">Gestión de alumnos y programación.</p>
                     </div>
                      <div style="display:flex; gap:10px;">
                         <button onclick="editCourseBasicInfo(${courseId}, '${courseName.replace(/'/g, "\\'")}', '${(info.description || '').replace(/'/g, "\\'")}', ${info.price || 0})" class="btn-back-top">
@@ -371,14 +371,14 @@ const AcademicManager = {
         try {
             const result = await ApiService.createCourse(data);
             if (result.success) {
-                Swal.fire('Ã‰xito', 'Curso creado', 'success');
+                Swal.fire('Éxito', 'Curso creado', 'success');
                 e.target.reset();
                 this.loadCourses(); // Refresh list if exists
             } else {
                 Swal.fire('Error', result.message, 'error');
             }
         } catch (err) {
-            Swal.fire('Error', 'Error de conexiÃ³n', 'error');
+            Swal.fire('Error', 'Error de conexión', 'error');
         }
     },
 
@@ -402,7 +402,7 @@ const AcademicManager = {
     },
 
     async deleteCourse(id, name) {
-        if ((await Swal.fire({ title: `Â¿Eliminar ${name}?`, text: "Se borrarÃ¡n los horarios asociados. Esta acciÃ³n es irreversible.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#e74c3c' })).isConfirmed) {
+        if ((await Swal.fire({ title: `¿Eliminar ${name}?`, text: "Se borrarán los horarios asociados. Esta acción es irreversible.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#e74c3c' })).isConfirmed) {
             const res = await ApiService.deleteCourse(id);
             if (res.success) { Swal.fire('Eliminado', '', 'success'); this.loadCourses(); this.openOverview(); }
             else Swal.fire('Error', res.message, 'error');
@@ -431,18 +431,18 @@ const AcademicManager = {
     async handleRequest(id, action, courseId, courseName, schedId, teacherId) {
         const actionText = action === 'approve' ? 'Aprobar' : 'Rechazar';
         let htmlContent = action === 'approve'
-            ? `<p>Â¿Seguro que deseas aprobar esta solicitud?</p>`
-            : `<p>Â¿Por quÃ© rechazas esta solicitud?</p><textarea id="reject-reason" class="swal2-textarea" placeholder="RazÃ³n..."></textarea>`;
+            ? `<p>¿Seguro que deseas aprobar esta solicitud?</p>`
+            : `<p>¿Por qué rechazas esta solicitud?</p><textarea id="reject-reason" class="swal2-textarea" placeholder="Razón..."></textarea>`;
 
         const result = await Swal.fire({
             title: `${actionText} Solicitud`,
             html: htmlContent,
             icon: action === 'approve' ? 'question' : 'warning',
             showCancelButton: true,
-            confirmButtonText: `SÃ­, ${actionText} `,
+            confirmButtonText: `Sí, ${actionText} `,
             confirmButtonColor: action === 'approve' ? '#2ecc71' : '#e74c3c',
             preConfirm: () => {
-                if (action === 'reject') return document.getElementById('reject-reason').value || "Sin razÃ³n.";
+                if (action === 'reject') return document.getElementById('reject-reason').value || "Sin razón.";
                 return "Aprobada";
             }
         });

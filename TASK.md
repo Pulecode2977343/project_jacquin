@@ -20,3 +20,6 @@
 | **Gestión de Skills de Agente** | ✅ | Registro y vinculación de la habilidad `header-manager` en el sistema global. |
 | **Migración Footer Micro-Frontend** | ✅ | Footer unificado en React + Inyección en Dashboards. Reemplazo de Vanilla CSS. |
 | **Update Enrollment Logic** | ✅ | Sincronización en tiempo real vía Custom Events + Lógica de vigencia inteligente. |
+| **Fix Upload Avatares** | ✅ | Nueva ruta dinámica con `PathHelper`, refresh automático `Date.now()` en vista perfil. |
+| **Micro-frontend Footer React** | ✅ | Componente React standalone montado vía IIFE en estáticos HTML. Script PS1 listo. |
+| **Resolución LFS Git & Builds** | ✅ | Limpieza de `assets (2).zip` > 100MB de caché Git. Empaquetado de producción de React inyectado. |

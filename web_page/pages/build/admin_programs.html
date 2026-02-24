@@ -12,9 +12,7 @@
   <style>
     /* Specific styles for this dashboard */
     .admin-container {
-      padding: 2rem 5%;
-      padding-top: 2rem;
-      /* Consistent with User Management */
+      padding: 17vh 5% 2rem;
       margin-top: 0;
     }
 
@@ -22,7 +20,25 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .admin-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 0;
+      color: white;
+    }
+
+    .admin-header h1 i {
+      color: #e67e22;
     }
 
     .form-grid {
@@ -167,8 +183,6 @@
 
     @media (max-width: 768px) {
       .admin-container {
-        padding-top: 2rem;
-        /* Less padding on mobile */
         padding-left: 20px;
         padding-right: 20px;
       }
@@ -201,8 +215,11 @@
     <!-- Breadcrumb / Header -->
     <div class="admin-header">
       <div>
-        <h1 style="color: white; margin-top: 0.5rem">Gestión de Programas</h1>
-        <p style="color: var(--color-humo-gris)">
+        <h1>
+          <i class="bi bi-collection-play-fill"></i>
+          Gestión de Programas
+        </h1>
+        <p style="color: var(--color-humo-gris); margin: 6px 0 0 0;">
           Edita la información de las tarjetas de programas.
         </p>
       </div>

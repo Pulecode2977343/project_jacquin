@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ApiService from '../services/api';
 
@@ -8,14 +8,21 @@ const Register = () => {
         email: '',
         phone: '',
         password: '',
-        course: ''
+        idCourse: ''
     });
+    const [courses, setCourses] = useState([]);
     const [showPassword, setShowPassword] = useState(false);
     const [message, setMessage] = useState('');
     const [isError, setIsError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        ApiService.getCourses()
+            .then(res => { if (res.success && res.data) setCourses(res.data); })
+            .catch(() => {});
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,13 +36,12 @@ const Register = () => {
         setIsError(false);
 
         try {
-            // Nota: Aquí se asume que ApiService tiene un método register similar al login
             const result = await ApiService.register({
-                full_name: formData.fullName,
-                email: formData.email,
-                phone: formData.phone,
+                fullName: formData.fullName,
+                email:    formData.email,
+                nPhone:   formData.phone,
                 password: formData.password,
-                course: formData.course
+                idCourse: formData.idCourse ? Number(formData.idCourse) : null
             });
 
             if (result.success) {
@@ -134,26 +140,23 @@ const Register = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="course">Curso de Interés</label>
+                        <label htmlFor="idCourse">Curso de Interés</label>
                         <div className="input-wrapper">
                             <i className="bi bi-music-note-beamed input-icon"></i>
                             <select
-                                id="course"
-                                name="course"
+                                id="idCourse"
+                                name="idCourse"
                                 className="form-input-glass"
-                                value={formData.course}
+                                value={formData.idCourse}
                                 onChange={handleChange}
                                 required
                             >
                                 <option value="">Selecciona un curso</option>
-                                <option value="percusión">Percusión</option>
-                                <option value="guitarra">Guitarra (Acústica y Eléctrica)</option>
-                                <option value="piano">Piano (Clásico y Moderno)</option>
-                                <option value="voz">Voz (Técnica Vocal)</option>
-                                <option value="seniors">Senior's (Adulto Mayor)</option>
-                                <option value="shows">Shows (Presentaciones en Vivo)</option>
-                                <option value="exploración">Exploración (Iniciación Musical)</option>
-                                <option value="psicomúsica">Psicomúsica (Bienestar y Terapia)</option>
+                                {courses.map(c => (
+                                    <option key={c.id_course} value={c.id_course}>
+                                        {c.course_name}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                     </div>

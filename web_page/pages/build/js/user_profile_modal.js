@@ -60,7 +60,7 @@ window.openPositionDocument = async function (positionId, positionName, userName
                     <div class="paper-sheet" style="width: 100%; max-width: 210mm; background: linear-gradient(135deg, #f5f3e8 0%, #ebe7d7 50%, #f2eede 100%); padding: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); color: #333; font-family: 'Poppins', sans-serif; min-height: 297mm; position: relative; text-align: left; background-image: url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\"%3E%3Cfilter id=\"noise\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" /%3E%3C/filter%3E%3Crect width=\"100\" height=\"100\" filter=\"url(%23noise)\" opacity=\"0.03\" /%3E%3C/svg%3E'), linear-gradient(135deg, #f5f3e8 0%, #ebe7d7 50%, #f2eede 100%);">
                         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1a2a3a; padding-bottom: 20px; margin-bottom: 40px;">
                             <div style="text-align: left;">
-                                <logo-membrete color="#ff6b35" width="239" height="58" show-subtitle="true"></logo-membrete>
+                                <logo-membrete color="#223F61" width="239" height="58" show-subtitle="true"></logo-membrete>
                             </div>
                             <div style="text-align: right;">
                                 <div style="font-weight: 700; font-size: 0.9rem; color: #1a2a3a;">DOC-HR-FUNC-${positionId}</div>
@@ -85,7 +85,7 @@ window.openPositionDocument = async function (positionId, positionName, userName
                         </div>
 
                         <div style="margin-bottom: 60px;">
-                            <h2 style="font-size: 1rem; color: #1a2a3a; margin-bottom: 25px; font-weight: 800; border-bottom: 1px solid #eee; padding-bottom: 15px;">FUNCIONES ESPEC&Iacute;FICAS</h2>
+                            <h2 style="font-size: 1rem; color: #1a2a3a; margin-bottom: 25px; font-weight: 800; border-bottom: 1px solid #eee; padding-bottom: 15px;">FUNCIONES ESPEC\u00cdFICAS</h2>
                             <div style="display: flex; flex-direction: column; gap: 20px;">
                                 ${functions.length > 0 ? functions.map((f, i) => `
                                     <div style="display: flex; gap: 20px;">
@@ -104,8 +104,8 @@ window.openPositionDocument = async function (positionId, positionName, userName
                             </div>
                             <div style="text-align: center;">
                                 <div style="border-bottom: 1px solid #1a2a3a; margin-bottom: 15px; height: 60px;"></div>
-                                <div style="font-size: 0.85rem; font-weight: 700; color: #1a2a3a;">DIRECCI&Oacute;N ADMINISTRATIVA</div>
-                                <div style="font-size: 0.7rem; color: #777; text-transform: uppercase;">Sello de Validaci&oacute;n Acad&eacute;mica</div>
+                                <div style="font-size: 0.85rem; font-weight: 700; color: #1a2a3a;">DIRECCI\u00d3N ADMINISTRATIVA</div>
+                                <div style="font-size: 0.7rem; color: #777; text-transform: uppercase;">Sello de Validaci\u00f3n Acad\u00e9mica</div>
                             </div>
                         </div>
 
@@ -159,7 +159,7 @@ window.openProfile = async function (userId, initialTab = 'info') {
     }
 
     if (!user) {
-        if (window.showToast) showToast("No se pudo cargar la informaciÃ³n del usuario", "error");
+        if (window.showToast) showToast("No se pudo cargar la informaci\u00f3n del usuario", "error");
         return;
     }
 
@@ -229,7 +229,7 @@ window.openProfile = async function (userId, initialTab = 'info') {
 
             <div style="background: rgba(0,0,0,0.2); display: flex; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 20px;">
                 ${(currentUser.id_rol == 1 || (user.id_usuario || user.id) == currentUser.id_usuario) ? `
-                    <button onclick="switchUserTab('info')" id="tab-btn-info" class="modal-tab-btn">InformaciÃ³n</button>
+                    <button onclick="switchUserTab('info')" id="tab-btn-info" class="modal-tab-btn">Informaci\u00f3n</button>
                     <button onclick="switchUserTab('security')" id="tab-btn-security" class="modal-tab-btn">Seguridad</button>
                 ` : ''}
                 
@@ -242,7 +242,7 @@ window.openProfile = async function (userId, initialTab = 'info') {
                 ` : ''}
                 
                 ${(currentUser.id_rol == 1 || (currentUser.id_rol == 2 && user.id_rol == 3)) ? `
-                    <button onclick="switchUserTab('academic')" id="tab-btn-academic" class="modal-tab-btn">${currentUser.id_rol == 2 ? 'Progreso Estudiante' : 'GestiÃ³n AcadÃ©mica'}</button>
+                    <button onclick="switchUserTab('academic')" id="tab-btn-academic" class="modal-tab-btn">${currentUser.id_rol == 2 ? 'Progreso Estudiante' : 'Gesti\u00f3n Acad\u00e9mica'}</button>
                 ` : ''}
             </div>
 
@@ -251,9 +251,9 @@ window.openProfile = async function (userId, initialTab = 'info') {
             </div>
 
             <div style="padding: 20px 35px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
-                <div style="margin-right: auto; font-size: 0.8rem; color: rgba(255,255,255,0.15);">MÃ³dulo de GestiÃ³n AcadÃ©mica</div>
+                <div style="margin-right: auto; font-size: 0.8rem; color: rgba(255,255,255,0.15);">M\u00f3dulo de Gesti\u00f3n Acad\u00e9mica</div>
                 ${currentUser.id_rol == 1 && (user.id_usuario || user.id) != currentUser.id_usuario ? `
-                    <button onclick="deleteUserDirectlyModal(${user.id_usuario || user.id}, '${user.full_name.replace(/'/g, "\\'")}')" style="background: rgba(231, 76, 60, 0.1); color: #ff7675; border: 1px solid rgba(231, 76, 60, 0.3); padding: 10px 20px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Eliminar Usuario</button>
+                    <button onclick="window.deleteUser(${user.id_usuario || user.id}, '${user.full_name.replace(/'/g, "\\'")}')" style="background: rgba(231, 76, 60, 0.1); color: #ff7675; border: 1px solid rgba(231, 76, 60, 0.3); padding: 10px 20px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Eliminar Usuario</button>
                 ` : ''}
                 <button onclick="window.closeProfileModal()" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Cerrar</button>
             </div>
@@ -319,6 +319,8 @@ window.openProfile = async function (userId, initialTab = 'info') {
 
 window.switchUserTab = async function (tab) {
     const content = document.getElementById('modal-tab-content');
+    if (!content) return;
+
     const user = window.currentModalUser;
     const currentUser = ApiService.getSession();
     const canEdit = currentUser.id_rol == 1 || (currentUser.id_usuario || currentUser.id) == (user.id_usuario || user.id);
@@ -340,11 +342,11 @@ window.switchUserTab = async function (tab) {
                             <input type="text" id="edit-full-name" value="${user.full_name}" class="form-control" ${!canEdit ? 'readonly' : ''}>
                         </div>
                         <div class="info-field-group">
-                            <label>Correo ElectrÃ³nico</label>
+                            <label>Correo Electr\u00f3nico</label>
                             <input type="email" id="edit-email" value="${user.email || ''}" class="form-control" ${currentUser.id_rol != 1 ? 'readonly' : ''}>
                         </div>
                         <div class="info-field-group">
-                            <label>TelÃ©fono</label>
+                            <label>Tel\u00e9fono</label>
                             <input type="text" id="edit-phone" value="${user.n_phone || ''}" class="form-control" ${!canEdit ? 'readonly' : ''}>
                         </div>
                     </div>
@@ -360,7 +362,7 @@ window.switchUserTab = async function (tab) {
                             </select>
                         </div>
                         <div class="info-field-group" style="margin-top:20px;">
-                            <label>ConfiguraciÃ³n</label>
+                            <label>Configuraci\u00f3n</label>
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 ${canEdit ? `
                                     <div onclick="triggerAvatarUploadInModal()" style="padding: 12px 15px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s;" onmouseover="this.style.borderColor='var(--color-acento-azul)'; this.style.background='rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.background='rgba(0,0,0,0.2)'">
@@ -394,7 +396,7 @@ window.switchUserTab = async function (tab) {
                             ${courses.map(c => {
                         const idToUse = isTeacher ? c.id_course : c.id_enrollment;
                         const actionFn = isTeacher ? 'unassignTeacherFromCourse' : 'unenrollUserFromCourse';
-                        const btnTitle = isTeacher ? 'Remover asignaciÃ³n de docente' : 'Desvincular del curso';
+                        const btnTitle = isTeacher ? 'Remover asignaci\u00f3n de docente' : 'Desvincular del curso';
 
                         return `
                                     <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
@@ -427,8 +429,7 @@ window.switchUserTab = async function (tab) {
                 // TEACHER ACADEMIC
                 const res = await ApiService.getCourses();
                 const allCourses = res.success ? res.data : [];
-                const teaching = allCourses.filter(c => c.teacher_id == targetUserId);
-                const available = allCourses.filter(c => c.teacher_id != targetUserId && c.name !== 'Instalaciones');
+                const teaching = allCourses.filter(c => (c.teacher_id == targetUserId));
 
                 content.innerHTML = `
                     <div style="animation: fadeInModal 0.3s ease-out;">
@@ -500,17 +501,17 @@ window.switchUserTab = async function (tab) {
                                                     ` : ''}
                                                     ${t.submission_text ? `<p style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin: 0; line-height: 1.4;">"${t.submission_text}"</p>` : ''}
                                                 </div>
-                                            ` : '<div style="color: rgba(255,255,255,0.2); font-size: 0.8rem; font-style: italic; margin-top: 10px;">El estudiante aÃºn no ha realizado esta entrega.</div>'}
+                                            ` : '<div style="color: rgba(255,255,255,0.2); font-size: 0.8rem; font-style: italic; margin-top: 10px;">El estudiante a\u00fan no ha realizado esta entrega.</div>'}
 
                                             ${status === 'graded' ? `
                                                 <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
                                                     <div style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; padding: 5px 15px; border-radius: 10px; font-weight: 800; font-size: 1rem;">Nota: ${t.grade}</div>
                                                 </div>
-                                            ` : status === 'submitted' ? `
+                                            ` : (status === 'submitted' ? `
                                                 <div style="margin-top: 15px; text-align: right;">
                                                     <button onclick="TeacherAcademic.openModal(); window.closeProfileModal()" style="background: var(--color-acento-azul); color: #081d33; border: none; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">Calificar ahora</button>
                                                 </div>
-                                            ` : ''}
+                                            ` : '')}
                                         </div>
                                     `;
                 }).join('')}
@@ -523,6 +524,18 @@ window.switchUserTab = async function (tab) {
             const res = await ApiService.getUserPositions(user.id_usuario || user.id);
             if (res.success) {
                 const assignments = res.data || [];
+
+                // Marcar notificaciones de cargos como vistas si el usuario ve su propio perfil
+                const session = ApiService.getSession();
+                const viewedId = String(user.id_usuario || user.id);
+                if (session && String(session.id_usuario) === viewedId) {
+                    fetch(`${ApiService.BASE_URL}get_position_notifications.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_id: viewedId })
+                    }).catch(() => {});
+                }
+
                 content.innerHTML = `
                     <div style="animation: fadeInModal 0.3s ease-out;">
                         <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding: 18px 22px; background: rgba(231, 140, 59, 0.05); border-radius: 15px; border-left: 4px solid var(--color-acento-naranja);">
@@ -538,7 +551,7 @@ window.switchUserTab = async function (tab) {
                                 <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;" onmouseover="this.style.borderColor='var(--color-acento-azul)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)'">
                                     <div style="display: flex; align-items: center; gap: 20px;">
                                         <div style="width: 50px; height: 50px; background: rgba(147, 182, 238, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                                            ${a.icon || 'ðŸ‘¤'}
+                                            ${a.icon || '\ud83d\udc64'}
                                         </div>
                                         <div>
                                             <div style="color: white; font-weight: 700; font-size: 1.05rem;">${a.position_name}</div>
@@ -552,7 +565,7 @@ window.switchUserTab = async function (tab) {
                             `).join('') : `
                                 <div style="text-align: center; padding: 40px; background: rgba(0,0,0,0.1); border-radius: 15px; border: 1px dashed rgba(255,255,255,0.1);">
                                     <i class="bi bi-info-circle" style="font-size: 2rem; color: rgba(255,255,255,0.1); display: block; margin-bottom: 10px;"></i>
-                                    <div style="color: rgba(255,255,255,0.2); font-size: 0.9rem;">No hay cargos especÃ­ficos asignados a este perfil.</div>
+                                    <div style="color: rgba(255,255,255,0.2); font-size: 0.9rem;">No hay cargos espec\u00edficos asignados a este perfil.</div>
                                 </div>
                             `}
                         </div>
@@ -564,22 +577,22 @@ window.switchUserTab = async function (tab) {
                 <div style="animation: fadeInModal 0.3s ease-out; max-width: 500px; margin: 0 auto;">
                     <div style="background: rgba(231, 76, 60, 0.05); border-left: 4px solid #e74c3c; padding: 15px 20px; border-radius: 10px; margin-bottom: 25px;">
                         <div style="color: white; font-weight: 700; font-size: 0.95rem; margin-bottom: 5px;">Seguridad de la Cuenta</div>
-                        <div style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Te recomendamos cambiar tu contraseÃ±a periÃ³dicamente para proteger tu informaciÃ³n acadÃ©mica.</div>
+                        <div style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Te recomendamos cambiar tu contrase\u00f1a peri\u00f3dicamente para proteger tu informaci\u00f3n acad\u00e9mica.</div>
                     </div>
 
                     <form onsubmit="handleModalPasswordChange(event)" id="modal-password-form">
                         <div class="info-field-group">
-                            <label>ContraseÃ±a Actual</label>
-                            <input type="password" name="currentPassword" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+                            <label>Contrase\u00f1a Actual</label>
+                            <input type="password" name="currentPassword" required placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022">
                         </div>
                         <div class="info-field-group">
-                            <label>Nueva ContraseÃ±a</label>
-                            <input type="password" name="newPassword" required placeholder="MÃ­nimo 8 caracteres">
-                            <small style="color: rgba(255,255,255,0.2); font-size: 0.7rem; margin-top: 5px; display: block;">Usa mayÃºsculas, nÃºmeros y sÃ­mbolos para mayor seguridad.</small>
+                            <label>Nueva Contrase\u00f1a</label>
+                            <input type="password" name="newPassword" required placeholder="M\u00ednimo 8 caracteres">
+                            <small style="color: rgba(255,255,255,0.2); font-size: 0.7rem; margin-top: 5px; display: block;">Usa may\u00fasculas, n\u00fameros y s\u00edmbolos para mayor seguridad.</small>
                         </div>
                         <div class="info-field-group">
-                            <label>Confirmar Nueva ContraseÃ±a</label>
-                            <input type="password" name="confirmPassword" required placeholder="Repite la nueva contraseÃ±a">
+                            <label>Confirmar Nueva Contrase\u00f1a</label>
+                            <input type="password" name="confirmPassword" required placeholder="Repite la nueva contrase\u00f1a">
                         </div>
                         
                         <button type="submit" style="width: 100%; background: linear-gradient(135deg, #e74c3c, #c0392b); border: none; padding: 12px; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;">
@@ -591,7 +604,7 @@ window.switchUserTab = async function (tab) {
         }
     } catch (e) {
         console.error("switchUserTab Error:", e);
-        content.innerHTML = '<div style="color:red; padding:20px;">Error al cargar datos de la pestaÃ±a.</div>';
+        content.innerHTML = '<div style="color:red; padding:20px;">Error al cargar datos de la pesta\u00f1a.</div>';
     }
 };
 
@@ -599,6 +612,7 @@ function getRoleName(id) {
     const roles = { 1: 'Administrador', 2: 'Docente', 3: 'Estudiante', 4: 'Aspirante', 5: 'Colaborador' };
     return roles[id] || 'Usuario';
 }
+
 function triggerAvatarUploadInModal() {
     const input = document.createElement('input');
     input.type = 'file';
@@ -606,20 +620,26 @@ function triggerAvatarUploadInModal() {
     input.onchange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const res = await ApiService.uploadAvatar(file);
+        const res = await ApiService.uploadAvatar(window.currentModalUserId, file);
         if (res.success) {
-            showToast("Avatar actualizado correctamente", "success");
-            window.location.reload();
+            if (window.showToast) showToast("Avatar actualizado correctamente", "success");
+            else Swal.fire("\u00c9xito", "Avatar actualizado", "success");
+
+            // Refresh modal avatar
+            const avatarContainer = document.getElementById('modal-avatar-container');
+            if (avatarContainer) {
+                const img = avatarContainer.querySelector('img');
+                if (img) img.src = ApiService.getAvatarUrl(res.data.avatar_url) + '?t=' + Date.now();
+            }
+            if (typeof loadUsers === 'function') loadUsers();
         } else {
-            showToast("Error al subir imagen", "error");
+            if (window.showToast) showToast("Error al subir imagen", "error");
+            else Swal.fire("Error", res.message || "Error al subir imagen", "error");
         }
     };
     input.click();
 }
 
-/**
- * GLOBAL OVERRIDE: Redirects all openMyProfile calls to the Premium Modal
- */
 window.openMyProfile = function () {
     const user = ApiService.getSession();
     if (user) {
@@ -636,41 +656,45 @@ window.handleModalPasswordChange = async function (e) {
     const user = ApiService.getSession();
 
     if (data.newPassword !== data.confirmPassword) {
-        return showToast("Las contraseÃ±as no coinciden", "error");
+        if (window.showToast) showToast("Las contrase\u00f1as no coinciden", "error");
+        return;
     }
 
     if (data.newPassword.length < 8) {
-        return showToast("La nueva contraseÃ±a debe tener al menos 8 caracteres", "warning");
+        if (window.showToast) showToast("La nueva contrase\u00f1a debe tener al menos 8 caracteres", "warning");
+        return;
     }
 
     try {
         const res = await ApiService.changePassword(user.id_usuario, data.currentPassword, data.newPassword);
         if (res.success) {
-            showToast("ContraseÃ±a actualizada con Ã©xito", "success");
+            if (window.showToast) showToast("Contrase\u00f1a actualizada con \u00e9xito", "success");
             e.target.reset();
         } else {
-            showToast(res.message || "Error al cambiar contraseÃ±a", "error");
+            if (window.showToast) showToast(res.message || "Error al cambiar contrase\u00f1a", "error");
         }
     } catch (err) {
-        showToast("Error de conexiÃ³n", "error");
+        if (window.showToast) showToast("Error de conexi\u00f3n", "error");
     }
 };
 
 window.updateProfileFromModal = async function () {
     const sessionUser = ApiService.getSession();
-    const targetUserId = window.currentModalUserId; // The user ID being edited
+    const targetUserId = window.currentModalUserId;
     const fullName = document.getElementById('edit-full-name').value;
     const email = document.getElementById('edit-email').value;
     const phone = document.getElementById('edit-phone').value;
     const roleSelect = document.getElementById('edit-role');
-    const roleId = roleSelect ? roleSelect.value : (sessionUser.id_rol); // Default to current if not present
+    const roleId = roleSelect ? roleSelect.value : (sessionUser.id_rol);
 
-    if (!fullName) return showToast("El nombre es requerido", "warning");
+    if (!fullName) {
+        if (window.showToast) showToast("El nombre es requerido", "warning");
+        return;
+    }
 
     try {
         let result;
 
-        // Si soy Admin, uso el endpoint completo que permite cambiar Rol y Email
         if (sessionUser.id_rol == 1) {
             result = await ApiService.adminUpdateUserFull({
                 id_usuario: targetUserId,
@@ -678,11 +702,9 @@ window.updateProfileFromModal = async function () {
                 email: email,
                 n_phone: phone,
                 id_rol: roleId,
-                avatar_action: 'keep' // Por ahora el avatar se maneja separado
+                avatar_action: 'keep'
             });
         } else {
-            // Si soy usuario normal, solo actualizo mis datos bÃ¡sicos
-            // Use ApiService.BASE_URL instead of hardcoded path
             const response = await fetch(`${ApiService.BASE_URL}update_profile.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -696,32 +718,31 @@ window.updateProfileFromModal = async function () {
         }
 
         if (result.success) {
-            showToast("Perfil actualizado correctamente", "success");
+            if (window.showToast) showToast("Perfil actualizado correctamente", "success");
+            else Swal.fire("\u00c9xito", "Perfil actualizado", "success");
 
-            // Only update local session if I am editing MYSELF
             if (sessionUser && (sessionUser.id_usuario == targetUserId)) {
                 sessionUser.full_name = fullName;
                 sessionUser.n_phone = phone;
                 if (sessionUser.id_rol == 1) {
                     sessionUser.email = email;
-                    // sessionUser.id_rol = roleId; // Cuidado con quitarse permisos de admin a uno mismo
                 }
                 ApiService.saveSession(sessionUser);
 
-                // Refresh UI if elements exist (e.g. Header Name)
                 const nameEl = document.getElementById('dashboard-user-name') || document.getElementById('teacher-user-name');
                 if (nameEl) nameEl.textContent = fullName;
             } else {
-                // If Admin edited someone else, try to refresh the table if open
                 if (typeof loadUsers === 'function') loadUsers();
             }
 
-            window.closeProfileModal(); // Auto-close modal on success
+            window.closeProfileModal();
         } else {
-            showToast(result.message || "Error al actualizar", "error");
+            if (window.showToast) showToast(result.message || "Error al actualizar", "error");
+            else Swal.fire("Error", result.message || "Error al actualizar", "error");
         }
     } catch (e) {
         console.error("Error updating profile:", e);
-        showToast("Error de conexiÃ³n al actualizar perfil", "error");
+        if (window.showToast) showToast("Error de conexi\u00f3n al actualizar perfil", "error");
+        else Swal.fire("Error", "Error de conexi\u00f3n al actualizar perfil", "error");
     }
 };

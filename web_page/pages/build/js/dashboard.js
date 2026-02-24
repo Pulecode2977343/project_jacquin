@@ -7,8 +7,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Helper to resolve paths based on current location (root vs pages/)
     function resolvePath(path) {
         if (!path) return '';
-        if (path.startsWith('http') || path.startsWith('/') || path.startsWith('../')) return path;
-        // Assets are located in public/assets, so they are siblings to current pages
+        if (path.startsWith('http')) return path;
+
+        // Si es un avatar (uploads/avatars/), redirigir a la carpeta public del backend
+        if (path.includes('uploads/avatars/')) {
+            let filename = path.split('/').pop();
+            return (window.ApiService ? window.ApiService.BASE_URL : '/jacquin_api/') + 'public/uploads/avatars/' + filename;
+        }
+
+        if (path.startsWith('/') || path.startsWith('../')) return path;
+
         return path;
     }
 
@@ -325,10 +333,16 @@ document.addEventListener("DOMContentLoaded", async function () {
                 if (res.success) {
                     showToast("Tu foto de perfil ha sido actualizada.", "success");
                     // Update Local Session & UI
-                    sessionUser.avatar_url = res.data; // URL
+                    sessionUser.avatar_url = res.data; // e.g. "uploads/avatars/avatar_3_123.png"
                     ApiService.saveSession(sessionUser);
-                    const avatarUrl = res.data.startsWith('http') ? res.data : (ApiService.BASE_URL + res.data);
-                    document.getElementById("dashboard-avatar").src = avatarUrl + "?t=" + new Date().getTime();
+
+                    const avatarUrl = resolvePath(res.data);
+                    const avatarEl = document.getElementById("dashboard-avatar");
+                    if (avatarEl) avatarEl.src = avatarUrl + "?t=" + new Date().getTime();
+
+                    // Also update teacher/student views if they are visible
+                    const specificAvatar = document.querySelector('.user-avatar-wrapper img, .avatar-image, #teacher-avatar, #student-avatar');
+                    if (specificAvatar) specificAvatar.src = avatarUrl + "?t=" + new Date().getTime();
                 } else {
                     showToast("No pudimos actualizar la foto: " + res.message, "error");
                 }

@@ -4,7 +4,7 @@
  * Basado en: Vertical_WhiteLogo.svg
  * 
  * Uso:
- * <logo-membrete color="#ff6b35"></logo-membrete>
+ * <logo-membrete color="#223F61"></logo-membrete>
  */
 
 class LogoMembrete extends HTMLElement {
@@ -13,7 +13,7 @@ class LogoMembrete extends HTMLElement {
     }
 
     connectedCallback() {
-        const color = this.getAttribute('color') || '#ff6b35'; // Naranja por defecto
+        const color = this.getAttribute('color') || '#223F61'; // Azul oscuro institucional por defecto
         const width = this.getAttribute('width') || '265';
         const height = this.getAttribute('height') || '43';
 

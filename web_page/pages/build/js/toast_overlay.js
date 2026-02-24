@@ -7,12 +7,12 @@
 (function () {
     // 1. Alert / Notification Overlay
     window.showToast = function (message, type = 'info') {
-        let title = 'NotificaciÃ³n';
+        let title = 'Notificaci\u00f3n';
         let confirmBtnColor = 'var(--color-acento-azul, #3498db)';
 
-        if (type === 'success') { title = 'Â¡Excelente!'; confirmBtnColor = '#2ecc71'; }
-        else if (type === 'error') { title = 'Â¡Error!'; confirmBtnColor = '#e74c3c'; }
-        else if (type === 'warning') { title = 'Â¡AtenciÃ³n!'; confirmBtnColor = '#f39c12'; }
+        if (type === 'success') { title = '\u00a1Excelente!'; confirmBtnColor = '#2ecc71'; }
+        else if (type === 'error') { title = '\u00a1Error!'; confirmBtnColor = '#e74c3c'; }
+        else if (type === 'warning') { title = '\u00a1Atenci\u00f3n!'; confirmBtnColor = '#f39c12'; }
 
         if (typeof Swal !== 'undefined') {
             return Swal.fire({
@@ -35,7 +35,7 @@
     window.showConfirm = function (message, confirmText = 'Aceptar', cancelText = 'Cancelar') {
         if (typeof Swal !== 'undefined') {
             return Swal.fire({
-                title: 'ConfirmaciÃ³n',
+                title: 'Confirmaci\u00f3n',
                 text: message,
                 icon: 'question',
                 showCancelButton: true,

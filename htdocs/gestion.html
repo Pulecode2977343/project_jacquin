@@ -677,6 +677,11 @@
                     style="margin:0; background: linear-gradient(135deg, var(--color-acento-azul), var(--color-acento-naranja)); color: white; grid-column: span 2; font-weight: bold; padding: 12px;">
                     <i class="bi bi-chalkboard-teacher"></i> Gestión Académica
                   </button>
+                  <button id="btn-teacher-positions" class="btn-module"
+                    style="margin:0; background: rgba(34, 63, 97, 0.4); color: var(--color-acento-azul); border: 1px solid rgba(147,182,238,0.2); grid-column: span 2; font-weight: bold; padding: 12px;"
+                    onclick="(()=>{ const s=ApiService.getSession(); if(s && window.openProfile) window.openProfile(s.id_usuario,'position'); })()">
+                    <i class="bi bi-briefcase-fill"></i> Mis Cargos y Funciones
+                  </button>
                   <button onclick="ApiService.logout()" class="btn-module"
                     style="margin:0; background: rgba(231, 76, 60, 0.2); color: #e74c3c; grid-column: span 2;"><i
                       class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
@@ -744,6 +749,12 @@
                   <button class="btn-module"
                     style="margin:0; background: linear-gradient(135deg, var(--color-acento-azul), #2980b9); color: white; grid-column: span 2; font-weight: bold; padding: 12px;"
                     onclick="window.showDirectoryOnly()"><i class="bi bi-people-fill"></i> Ver Directorio</button>
+
+                  <button class="btn-module"
+                    style="margin:0; background: rgba(34, 63, 97, 0.4); color: var(--color-acento-azul); border: 1px solid rgba(147,182,238,0.2); grid-column: span 2; font-weight: bold; padding: 12px;"
+                    onclick="(()=>{ const s=ApiService.getSession(); if(s && window.openProfile) window.openProfile(s.id_usuario,'position'); })()">
+                    <i class="bi bi-briefcase-fill"></i> Mis Cargos y Funciones
+                  </button>
 
                   <button onclick="ApiService.logout()" class="btn-module"
                     style="margin:0; background: rgba(231, 76, 60, 0.2); color: #e74c3c; grid-column: span 2;"><i

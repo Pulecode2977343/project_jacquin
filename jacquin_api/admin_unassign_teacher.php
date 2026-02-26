@@ -34,26 +34,32 @@ try {
         exit;
     }
 
-    // 3. Unassign teacher from all schedules of this course
+    // 3. Unassign teacher from all schedules of this course (both legacy column and junction table)
     $stmt = $pdo->prepare("UPDATE schedules SET teacher_id = NULL WHERE id_course = ? AND teacher_id = ?");
     $result = $stmt->execute([$data->course_id, $data->teacher_id]);
-    
-    if ($result) {
-        $affectedRows = $stmt->rowCount();
-        if ($affectedRows > 0) {
-            echo json_encode([
-                "success" => true, 
-                "message" => "Docente {$user['full_name']} desasignado de {$course['course_name']} ({$affectedRows} horario(s))."
-            ]);
-        } else {
-            echo json_encode([
-                "success" => false, 
-                "message" => "El docente no estaba asignado a ningún horario de este curso."
-            ]);
-        }
-    } else {
-        echo json_encode(["success" => false, "message" => "No se pudo actualizar."]);
-    }
+    $affectedRows = $stmt->rowCount();
+
+    // Also remove from schedule_teachers junction table
+    $stmtJunction = $pdo->prepare("
+        DELETE st FROM schedule_teachers st
+        JOIN schedules s ON st.id_schedule = s.id_schedule
+        WHERE s.id_course = ? AND st.id_teacher = ?
+    ");
+    $stmtJunction->execute([$data->course_id, $data->teacher_id]);
+    $junctionRows = $stmtJunction->rowCount();
+
+    // Also clear legacy courses.teacher_id if it matches
+    $stmtCourseTeacher = $pdo->prepare("UPDATE courses SET teacher_id = NULL WHERE id_course = ? AND teacher_id = ?");
+    $stmtCourseTeacher->execute([$data->course_id, $data->teacher_id]);
+    $courseRows = $stmtCourseTeacher->rowCount();
+
+    $totalRemoved = $affectedRows + $junctionRows + $courseRows;
+
+    // We return success true even if 0 rows matched, because the desired state (not assigned) is achieved.
+    echo json_encode([
+        "success" => true,
+        "message" => "Docente unlinked correctamente."
+    ]);
 } catch (Exception $e) {
     echo json_encode(["success" => false, "message" => "Error DB: " . $e->getMessage()]);
 }

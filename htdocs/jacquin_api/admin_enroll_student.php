@@ -1,3 +1,25 @@
+<?php
+/**
+ * admin_enroll_student.php
+ * Inscribe un estudiante directamente (Admin). Soporta uno o varios horarios.
+ * Body: { "student_id": X, "course_id": Y, "schedule_id": Z }
+ *    o: { "student_id": X, "course_id": Y, "schedule_ids": [Z1, Z2] }
+ */
+require_once 'helpers/cors_helper.php';
+handleCors();
+header("Content-Type: application/json; charset=UTF-8");
+
+include_once 'config/connection.php';
+require_once 'helpers/auth_helper.php';
+require_once 'helpers/conflict_helper.php';
+
+validateAdmin();
+
+$data = json_decode(file_get_contents("php://input"), true);
+
+if (!isset($data['student_id'], $data['course_id'])) {
+    echo json_encode(['success' => false, 'message' => 'Datos incompletos (student_id y course_id son requeridos).']);
+    exit;
 }
 
 // Normalize to array of schedule IDs
@@ -14,7 +36,7 @@ $scheduleIds = array_filter($scheduleIds, function ($id) {
 });
 
 if (empty($scheduleIds)) {
-    echo json_encode(['success' => false, 'message' => 'ID de horario inválido o no proporcionado', 'received_data' => $data]);
+    echo json_encode(['success' => false, 'message' => 'Debe indicar al menos un horario válido.']);
     exit;
 }
 
@@ -32,26 +54,18 @@ try {
     foreach ($scheduleIds as $schedId) {
         $schedResult = ['id' => $schedId, 'success' => false, 'message' => ''];
 
-        // 1. Check for 'Pre-inscrito' slot to reuse (specific to this schedule?? 
-        // Logic change: Pre-enrollment usually allows ANY schedule. If we find a pre-enrollment without schedule or with different, handling is complex.
-        // Simplified: Check if there is a pre-enrollment for this course AND this student.
-        // If found, update it for the FIRST successful schedule, then insert new rows for others?
-        // Or just Insert new rows and ignore pre-enrollment cleanup?
-        // Better: Try to match exact schedule first, or just Insert.
-
-        // REVISED LOGIC FOR MULTI: Just insert/check duplicates.
         // 1. Check for EXACT duplicate (Same Course AND Same Schedule)
-        $checkDup = $pdo->prepare("SELECT id_enrollment FROM enrollments WHERE student_id = ? AND course_id = ? AND schedule_id = ? AND status != 'Cancelado' AND status != 'Rechazado' AND status != 'Retirado'");
+        $checkDup = $pdo->prepare("SELECT id_enrollment FROM enrollments WHERE student_id = ? AND course_id = ? AND schedule_id = ? AND status NOT IN ('Cancelado','Rechazado','Retirado')");
         $checkDup->execute([$data['student_id'], $data['course_id'], $schedId]);
 
         if ($checkDup->fetch()) {
-            $schedResult['message'] = 'Ya inscrito en este horario';
+            $schedResult['message'] = 'El estudiante ya está inscrito en este horario.';
             $results[] = $schedResult;
             $failCount++;
             continue;
         }
 
-        // 1b. Check for TIME CONFLICTS (Overlapping schedules)
+        // 2. Check for TIME CONFLICTS
         $conflict = checkScheduleConflict($pdo, (int) $data['student_id'], (int) $schedId);
         if ($conflict['conflict']) {
             $schedResult['message'] = $conflict['message'];
@@ -60,24 +74,19 @@ try {
             continue;
         }
 
-        // 2. CHECK CAPACITY (Aforo = 15)
+        // 3. CHECK CAPACITY
         $stmtCount = $pdo->prepare("SELECT COUNT(*) as total FROM enrollments WHERE schedule_id = ? AND status = 'Activo'");
         $stmtCount->execute([$schedId]);
         $count = $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
 
         if ($count >= 15) {
-            $schedResult['message'] = 'Cupo lleno';
+            $schedResult['message'] = 'Cupo lleno para este horario.';
             $results[] = $schedResult;
             $failCount++;
             continue;
         }
 
-        // 3. ENROLL (New Record)
-        // Check if there is a generic "Pre-inscrito" (null schedule) to consume?
-        // For simplicity in multi-select, we will just INSERT new active records.
-        // If there was a single "Pre-inscrito", it might remain. We can clean it up later or leave it.
-        // Let's try to update a "Pre-inscrito" record IF it exists and has NO schedule_id, but only once.
-
+        // 4. ENROLL
         $stmt = $pdo->prepare("INSERT INTO enrollments (student_id, course_id, schedule_id, status) VALUES (?, ?, ?, 'Activo')");
         if ($stmt->execute([$data['student_id'], $data['course_id'], $schedId])) {
             $newEnrollmentId = $pdo->lastInsertId();
@@ -90,25 +99,36 @@ try {
             $schedResult['message'] = 'Inscrito exitosamente';
             $successCount++;
         } else {
-            $schedResult['message'] = 'Error al insertar';
+            $schedResult['message'] = 'Error al insertar la inscripción.';
             $failCount++;
         }
         $results[] = $schedResult;
     }
 
-    // Attempt to clean up any "Pre-inscrito" entries for this user/course if we successfully enrolled at least once
+    // Cleanup: remove Pre-inscrito entries if we enrolled successfully
     if ($successCount > 0) {
         $cleanup = $pdo->prepare("DELETE FROM enrollments WHERE student_id = ? AND course_id = ? AND status = 'Pre-inscrito'");
         $cleanup->execute([$data['student_id'], $data['course_id']]);
     }
 
     if ($successCount > 0) {
-        echo json_encode(['success' => true, 'message' => "Inscrito en $successCount horario(s)." . ($failCount > 0 ? " ($failCount fallidos)" : ""), 'details' => $results]);
+        $msg = "Inscrito en {$successCount} horario(s).";
+        if ($failCount > 0) {
+            $failMsgs = array_map(fn($r) => $r['message'], array_filter($results, fn($r) => !$r['success']));
+            $msg .= " ({$failCount} no procesado(s): " . implode('; ', array_unique($failMsgs)) . ")";
+        }
+        echo json_encode(['success' => true, 'message' => $msg, 'details' => $results]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'No se pudo inscribir en ningún horario.', 'details' => $results]);
+        $failMsgs = array_map(fn($r) => $r['message'], array_filter($results, fn($r) => !$r['success']));
+        $uniqueMsgs = array_unique($failMsgs);
+        echo json_encode([
+            'success' => false,
+            'message' => count($uniqueMsgs) > 0 ? implode(' | ', $uniqueMsgs) : 'No se pudo inscribir en ningún horario.',
+            'details' => $results
+        ]);
     }
 
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Error SQL: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Error en base de datos: ' . $e->getMessage()]);
 }
 ?>

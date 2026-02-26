@@ -79,11 +79,16 @@ if ($id_usuario > 0) {
                     }
 
                     if (!$exists) {
+                        $schTeacher = $row['teacher_name'];
+                        if (!$schTeacher || $row['teacher_role'] == 1) {
+                            $schTeacher = 'Por asignar';
+                        }
                         $enrollMap[$eId]['schedules'][] = [
                             'id_schedule' => (int) $row['id_schedule'],
                             'day_of_week' => $row['day'],
                             'start_time' => $row['time_start'],
-                            'end_time' => $row['time_end']
+                            'end_time' => $row['time_end'],
+                            'teacher_name' => $schTeacher
                         ];
                     }
 
@@ -117,10 +122,11 @@ if ($id_usuario > 0) {
                          WHERE es.schedule_id = s.id_schedule AND e.status = 'Activo') as student_count
                     FROM courses c
                     LEFT JOIN schedules s ON c.id_course = s.id_course
-                    WHERE c.teacher_id = ? OR s.teacher_id = ?
+                    LEFT JOIN schedule_teachers st ON s.id_schedule = st.id_schedule
+                    WHERE c.teacher_id = ? OR s.teacher_id = ? OR st.id_teacher = ?
                     ORDER BY c.course_name ASC, s.day, s.time_start ASC
                 ");
-                $stmtTeach->execute([$id_usuario, $id_usuario]);
+                $stmtTeach->execute([$id_usuario, $id_usuario, $id_usuario]);
                 $teachingRaw = $stmtTeach->fetchAll(PDO::FETCH_ASSOC);
 
                 $coursesMap = [];

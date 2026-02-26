@@ -25,8 +25,8 @@ try {
         echo json_encode(["success" => true, "message" => "Horario actualizado."]);
     } else {
         // INSERT
-        // Note: Default capacity is 15 based on previous scripts.
-        $stmt = $pdo->prepare("INSERT INTO schedules (id_course, day, time_start, time_end, capacity, enrolled_count) VALUES (?, ?, ?, ?, 15, 0)");
+        // Note: Default quota is 15 based on previous scripts.
+        $stmt = $pdo->prepare("INSERT INTO schedules (id_course, day, time_start, time_end, quota) VALUES (?, ?, ?, ?, 15)");
         $stmt->execute([$data->course_id, $data->day, $data->time_start, $data->time_end]);
         echo json_encode(["success" => true, "message" => "Nuevo horario creado."]);
     }

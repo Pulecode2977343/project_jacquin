@@ -1,4 +1,15 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+﻿// Resuelve paths de imágenes: rutas subidas via API → prefija BASE_URL
+function resolveAdminImageUrl(img) {
+    if (!img) return 'assets/images/hero/hero-banner.jpg';
+    if (img.startsWith('http') || img.startsWith('data:') || img.startsWith('assets/')) return img;
+    if (img.startsWith('public/uploads/') || img.startsWith('uploads/')) {
+        const base = window.ApiService ? window.ApiService.BASE_URL : '/jacquin_api/';
+        return base + img;
+    }
+    return 'assets/' + img.replace(/^\//, '');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
     // Auth Check
     if (window.ApiService && !window.ApiService.isAuthenticated()) {
         window.location.href = 'login.html';
@@ -14,51 +25,51 @@
 // Original Default Data (Backup)
 const DEFAULT_PROGRAMS = {
     'percussion': {
-        title: 'PercusiÃ³n',
-        subtitle: 'Ritmo y EnergÃ­a',
+        title: 'Percusi\u00f3n',
+        subtitle: 'Ritmo y Energ\u00eda',
         icon: 'bi-music-note-beamed',
-        description: 'Siente el ritmo en tu cuerpo. Aprende baterÃ­a, percusiÃ³n latina y sinfÃ³nica. Desarrolla tu coordinaciÃ³n, tempo y musicalidad en un ambiente dinÃ¡mico.',
-        features: ['BaterÃ­a acÃºstica y electrÃ³nica', 'PercusiÃ³n latina (Congas, Bongos)', 'Lectura rÃ­tmica avanzada', 'Independencia de extremidades'],
+        description: 'Siente el ritmo en tu cuerpo. Aprende bater\u00eda, percusi\u00f3n latina y sinf\u00f3nica. Desarrolla tu coordinaci\u00f3n, tempo y musicalidad en un ambiente din\u00e1mico.',
+        features: ['Bater\u00eda ac\u00fastica y electr\u00f3nica', 'Percusi\u00f3n latina (Congas, Bongos)', 'Lectura r\u00edtmica avanzada', 'Independencia de extremidades'],
         image: 'images/programs/percussion.png'
     },
     'guitarra': {
         title: 'Guitarra',
-        subtitle: 'AcÃºstica y ElÃ©ctrica',
+        subtitle: 'Ac\u00fastica y El\u00e9ctrica',
         icon: 'bi-guitar',
-        description: 'Domina las cuerdas con nuestra metodologÃ­a integral. Desde acordes bÃ¡sicos hasta solos complejos de rock, jazz y blues. AprenderÃ¡s tÃ©cnica, lectura musical e improvisaciÃ³n.',
-        features: ['Lectura de partituras y tablaturas', 'TÃ©cnica de pÃºa y dedos (Fingerstyle)', 'ImprovisaciÃ³n y teorÃ­a aplicada', 'Ensambles y presentaciones en vivo'],
+        description: 'Domina las cuerdas con nuestra metodolog\u00eda integral. Desde acordes b\u00e1sicos hasta solos complejos de rock, jazz y blues. Aprender\u00e1s t\u00e9cnica, lectura musical e improvisaci\u00f3n.',
+        features: ['Lectura de partituras y tablaturas', 'T\u00e9cnica de p\u00faa y dedos (Fingerstyle)', 'Improvisaci\u00f3n y teor\u00eda aplicada', 'Ensambles y presentaciones en vivo'],
         image: 'images/programs/guitar.png'
     },
     'piano': {
         title: 'Piano',
-        subtitle: 'ClÃ¡sico y Moderno',
+        subtitle: 'Cl\u00e1sico y Moderno',
         icon: 'bi-grid-3x3-gap',
-        description: 'Descubre el poder del piano. Nuestro programa abarca desde la elegancia de la mÃºsica clÃ¡sica hasta la versatilidad del pop y jazz moderno. Desarrolla tu oÃ­do y tÃ©cnica.',
-        features: ['TÃ©cnica pianÃ­stica avanzada', 'Repertorio clÃ¡sico y contemporÃ¡neo', 'AcompaÃ±amiento y armonÃ­a', 'Lectura a primera vista'],
+        description: 'Descubre el poder del piano. Nuestro programa abarca desde la elegancia de la m\u00fasica cl\u00e1sica hasta la versatilidad del pop y jazz moderno. Desarrolla tu o\u00eddo y t\u00e9cnica.',
+        features: ['T\u00e9cnica pian\u00edstica avanzada', 'Repertorio cl\u00e1sico y contempor\u00e1neo', 'Acompa\u00f1amiento y armon\u00eda', 'Lectura a primera vista'],
         image: 'images/programs/piano.png'
     },
     'voz': {
         title: 'Voz',
-        subtitle: 'TÃ©cnica Vocal',
+        subtitle: 'T\u00e9cnica Vocal',
         icon: 'bi-mic',
-        description: 'Tu voz es tu instrumento mÃ¡s poderoso. Aprende a controlarla, proyectarla y cuidarla. Trabajamos respiraciÃ³n, afinaciÃ³n, rango vocal y expresiÃ³n escÃ©nica.',
-        features: ['RespiraciÃ³n y apoyo diafragmÃ¡tico', 'VocalizaciÃ³n y afinaciÃ³n', 'InterpretaciÃ³n y estilo', 'Salud vocal y cuidado'],
+        description: 'Tu voz es tu instrumento m\u00e1s poderoso. Aprende a controlarla, proyectarla y cuidarla. Trabajamos respiraci\u00f3n, afinaci\u00f3n, rango vocal y expresi\u00f3n esc\u00e9nica.',
+        features: ['Respiraci\u00f3n y apoyo diafragm\u00e1tico', 'Vocalizaci\u00f3n y afinaci\u00f3n', 'Interpretaci\u00f3n y estilo', 'Salud vocal y cuidado'],
         image: 'images/programs/voice.png'
     },
     'seniors': {
         title: 'Senior\'s',
         subtitle: 'Adulto Mayor',
         icon: 'bi-person-hearts',
-        description: 'Nunca es tarde para aprender mÃºsica. Un programa diseÃ±ado especialmente para adultos mayores, enfocado en el disfrute, la memoria y la socializaciÃ³n a travÃ©s del arte.',
-        features: ['Repertorio de mÃºsica de antaÃ±o', 'EstimulaciÃ³n cognitiva y memoria', 'Clases grupales e individuales', 'Ambiente relajado y social'],
+        description: 'Nunca es tarde para aprender m\u00fasica. Un programa dise\u00f1ado especialmente para adultos mayores, enfocado en el disfrute, la memoria y la socializaci\u00f3n a trav\u00e9s del arte.',
+        features: ['Repertorio de m\u00fasica de anta\u00f1o', 'Estimulaci\u00f3n cognitiva y memoria', 'Clases grupales e individuales', 'Ambiente relajado y social'],
         image: 'images/programs/seniors.png'
     },
     'shows': {
         title: 'Shows',
         subtitle: 'Presentaciones',
         icon: 'bi-ticket-perforated',
-        description: 'La mÃºsica cobra vida en el escenario. Preparamos a nuestros estudiantes para brillar en conciertos reales, perdiendo el miedo escÃ©nico y ganando confianza profesional.',
-        features: ['Montaje de repertorio en vivo', 'ExpresiÃ³n corporal y escÃ©nica', 'Manejo de equipo de sonido', 'Conciertos semestrales'],
+        description: 'La m\u00fasica cobra vida en el escenario. Preparamos a nuestros estudiantes para brillar en conciertos reales, perdiendo el miedo esc\u00e9nico y ganando confianza profesional.',
+        features: ['Montaje de repertorio en vivo', 'Expresi\u00f3n corporal y esc\u00e9nica', 'Manejo de equipo de sonido', 'Conciertos semestrales'],
         image: 'images/programs/shows.png'
     },
     'exploration': {
@@ -70,11 +81,11 @@ const DEFAULT_PROGRAMS = {
         image: 'images/programs/exploration.png'
     },
     'psychomusic': {
-        title: 'PsicomÃºsica',
+        title: 'Psicom\u00fasica',
         subtitle: 'Bienestar y Terapia',
         icon: 'bi-heart-pulse',
-        description: 'La mÃºsica como herramienta de sanaciÃ³n y crecimiento personal. Sesiones enfocadas en el bienestar emocional, relajaciÃ³n y desarrollo de habilidades a travÃ©s del sonido.',
-        features: ['Musicoterapia activa y receptiva', 'RelajaciÃ³n y mindfulness sonoro', 'ExpresiÃ³n emocional', 'Desarrollo de habilidades sociales'],
+        description: 'La m\u00fasica como herramienta de sanaci\u00f3n y crecimiento personal. Sesiones enfocadas en el bienestar emocional, relajaci\u00f3n y desarrollo de habilidades a trav\u00e9s del sonido.',
+        features: ['Musicoterapia activa y receptiva', 'Relajaci\u00f3n y mindfulness sonoro', 'Expresi\u00f3n emocional', 'Desarrollo de habilidades sociales'],
         image: 'images/programs/psychomusic.png'
     }
 };
@@ -109,7 +120,7 @@ async function loadPrograms() {
         card.className = 'admin-program-card';
         card.innerHTML = `
             <div style="height:150px; overflow:hidden; position:relative;">
-                <img src="${p.image || 'assets/default.png'}" class="program-thumb" style="width:100%; height:100%; object-fit:cover;" alt="${p.title}">
+                <img src="${resolveAdminImageUrl(p.image)}" class="program-thumb" style="width:100%; height:100%; object-fit:cover;" alt="${p.title}">
                 <button onclick="deleteProgram('${key}')" style="position:absolute; top:10px; right:10px; background:rgba(231,76,60,0.8); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">
                     <i class="bi bi-trash"></i>
                 </button>
@@ -146,7 +157,7 @@ window.openEditModal = (key) => {
 
     // Image
     document.getElementById('imageBase64').value = p.image || '';
-    document.getElementById('preview-img').innerHTML = p.image ? `<img src="${p.image}" class="preview-media">` : 'Sin imagen';
+    document.getElementById('preview-img').innerHTML = p.image ? `<img src="${resolveAdminImageUrl(p.image)}" class="preview-media">` : 'Sin imagen';
     document.getElementById('imageInput').value = '';
 
     showModal();
@@ -181,7 +192,7 @@ window.previewImage = (input) => {
         const file = input.files[0];
         // Allow slightly larger for base64
         if (file.size > 3 * 1024 * 1024) {
-            Swal.fire('Error', 'La imagen es demasiado grande. MÃ¡ximo 3MB.', 'error');
+            Swal.fire('Error', 'La imagen es demasiado grande. M\u00e1ximo 3MB.', 'error');
             input.value = '';
             return;
         }
@@ -229,7 +240,7 @@ async function handleProgramSave(e) {
         const res = await ApiService.saveProgramsJson(currentPrograms);
         if (res.success) {
             Swal.fire({
-                title: 'Â¡Guardado!',
+                title: '\u00a1Guardado!',
                 text: 'Cambios aplicados en todos los dispositivos.',
                 icon: 'success',
                 timer: 1500,
@@ -249,13 +260,13 @@ async function handleProgramSave(e) {
 
 window.deleteProgram = (key) => {
     Swal.fire({
-        title: 'Â¿Eliminar Programa?',
-        text: "Esta acciÃ³n lo borrarÃ¡ de todos los dispositivos.",
+        title: '\u00bfEliminar Programa?',
+        text: "Esta acci\u00f3n lo borrar\u00e1 de todos los dispositivos.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'SÃ­, eliminar',
+        confirmButtonText: 'S\u00ed, eliminar',
         background: '#1a1a1a',
         color: '#fff'
     }).then(async (result) => {
@@ -289,8 +300,8 @@ window.deleteProgram = (key) => {
 
 window.resetData = () => {
     Swal.fire({
-        title: 'Â¿Restaurar de FÃ¡brica?',
-        text: "Se borrarÃ¡n todos los programas personalizados y volverÃ¡n los originales.",
+        title: '\u00bfRestaurar de F\u00e1brica?',
+        text: "Se borrar\u00e1n todos los programas personalizados y volver\u00e1n los originales.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ff3b30',

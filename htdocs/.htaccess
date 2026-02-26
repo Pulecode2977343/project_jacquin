@@ -1,5 +1,37 @@
 AddDefaultCharset UTF-8
 
+# MIME types explícitos — requeridos por InfinityFree CDN
 <IfModule mod_mime.c>
-    AddCharset UTF-8 .html .js .css .php
+    AddType text/css                .css
+    AddType text/javascript         .js
+    AddType application/javascript  .js
+    AddType text/html               .html
+    AddType application/json        .json
+    AddType image/svg+xml           .svg
+    AddType image/x-icon            .ico
+    AddCharset UTF-8 .html .js .css .php .json
+</IfModule>
+
+# Servir archivos estáticos directamente sin procesamiento
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Permitir acceso directo a archivos y carpetas que existen
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Redirigir rutas de API al directorio jacquin_api
+    RewriteRule ^api/(.*)$ jacquin_api/$1 [L]
+</IfModule>
+
+# Cabeceras de caché para estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css              "access plus 7 days"
+    ExpiresByType text/javascript       "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+    ExpiresByType image/png             "access plus 30 days"
+    ExpiresByType image/jpeg            "access plus 30 days"
+    ExpiresByType image/svg+xml         "access plus 30 days"
 </IfModule>

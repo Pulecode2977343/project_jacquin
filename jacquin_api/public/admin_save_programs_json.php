@@ -1,46 +1,26 @@
 <?php
+// DEPRECATED: Este endpoint es un duplicado del raíz.
+// El endpoint activo es jacquin_api/admin_save_programs_json.php
+// Este archivo se mantiene protegido por seguridad pero no debe usarse.
+
+// [SECURITY FIX 1] session_start() antes de cualquier header
+session_start();
 require_once __DIR__ . '/../config/cors.php';
 
 header('Content-Type: application/json');
 
-// Only allow POST requests
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Método no permitido']);
+// [SECURITY FIX 1] Verificar sesión de administrador
+if (!isset($_SESSION['user']) || $_SESSION['user']['id_rol'] != 1) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Acceso denegado.']);
     exit;
 }
 
-// Read the raw POST data
-$input = file_get_contents('php://input');
-$programsData = json_decode($input, true);
-
-if ($programsData === null && json_last_error() !== JSON_ERROR_NONE) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'JSON inválido: ' . json_last_error_msg()]);
-    exit;
-}
-
-// Define file path
-$dataDir = __DIR__ . '/../data';
-$programsFile = $dataDir . '/programs.json';
-
-// Ensure data directory exists
-if (!is_dir($dataDir)) {
-    if (!mkdir($dataDir, 0755, true)) {
-        http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'No se pudo crear el directorio de datos']);
-        exit;
-    }
-}
-
-// Write the data to file
-$jsonData = json_encode($programsData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-
-if (file_put_contents($programsFile, $jsonData) === false) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Error al escribir el archivo']);
-    exit;
-}
-
-echo json_encode(['success' => true, 'message' => 'Programas guardados exitosamente']);
+// Redirigir internamente al endpoint canónico (raíz)
+// Los clientes deben llamar a /jacquin_api/admin_save_programs_json.php directamente.
+http_response_code(410);
+echo json_encode([
+    'success' => false,
+    'message' => 'Este endpoint está obsoleto. Usar /jacquin_api/admin_save_programs_json.php'
+]);
 ?>

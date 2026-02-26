@@ -40,8 +40,8 @@ const TicketModal = ({ event, onClose }) => {
                 onClose();
                 Swal.fire({
                     icon: 'success',
-                    title: '¡Solicitud enviada!',
-                    text: result.message || 'Te hemos enviado un correo de confirmación.',
+                    title: '¡Gracias por tu interés!',
+                    text: result.message || 'Nuestro equipo de coordinación pronto se pondrá en contacto contigo.',
                     background: '#1a2f48',
                     color: '#fff',
                     confirmButtonColor: '#E78C3B'

@@ -37,6 +37,18 @@ const Header = ({ staticPage = false }) => {
         if (session) {
             setIsAuthenticated(true);
             setUser(session);
+
+            // Persistencia del Chat: Inyectar widget si el usuario está autenticado
+            if (!document.getElementById('jchat-script')) {
+                const script = document.createElement('script');
+                script.id = 'jchat-script';
+                script.src = 'js/messaging_widget.js';
+                script.async = true;
+                script.onload = () => {
+                    if (window.JChat) window.JChat.init();
+                };
+                document.body.appendChild(script);
+            }
         }
 
         return () => window.removeEventListener('scroll', handleScroll);

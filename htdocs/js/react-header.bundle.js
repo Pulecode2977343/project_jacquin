@@ -15418,6 +15418,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         "web_page/pages/uploads/",
         "public/uploads/avatars/",
         "uploads/avatars/",
+        "uploads/",
         "public/"
       ];
       prefixesToRemove.forEach((prefix) => {
@@ -16323,6 +16324,8 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         const response = await fetch(`${API_CONFIG.BASE_URL}admin_save_programs_json.php`, {
           method: "POST",
           headers: API_CONFIG.HEADERS,
+          credentials: "include",
+          // [SECURITY FIX 1] Enviar cookie de sesión al backend
           body: JSON.stringify(programsData)
         });
         return await response.json();
@@ -16490,21 +16493,54 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     },
     async updateEnrollmentStatus(isOpen, year) {
       try {
-        const session = this.getSession();
-        const token = session?.token || "";
         const response = await fetch(`${API_CONFIG.BASE_URL}admin_site_config.php`, {
           method: "POST",
-          headers: { ...API_CONFIG.HEADERS, Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ enrollment_open: isOpen, enrollment_year: year })
+          headers: API_CONFIG.HEADERS,
+          body: JSON.stringify({ enrollment_open: isOpen, enrollment_year: year }),
+          credentials: "include"
         });
-        return await response.json();
+        return await this.handleResponse(response);
       } catch (error) {
         return { success: false, message: "Error actualizando estado de matr\xEDculas." };
+      }
+    },
+    async getAcademicStats() {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_academic_stats.php`, {
+          headers: API_CONFIG.HEADERS,
+          credentials: "include"
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        return { success: false, message: "Error obteniendo estad\xEDsticas acad\xE9micas." };
+      }
+    },
+    async getAcademicOverview() {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}get_academic_overview.php`, {
+          headers: API_CONFIG.HEADERS,
+          credentials: "include"
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        return { success: false, message: "Error obteniendo vista general acad\xE9mica." };
+      }
+    },
+    async getScheduleStudents(scheduleId) {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}get_academic_data.php?action=get_schedule_students&schedule_id=${encodeURIComponent(scheduleId)}`, {
+          headers: API_CONFIG.HEADERS,
+          credentials: "include"
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        return { success: false, message: "Error obteniendo estudiantes del horario." };
       }
     }
   };
   var api_default = ApiService;
   window.ApiService = ApiService;
+  window.API_CONFIG = API_CONFIG;
 
   // src/components/Navbar.jsx
   var import_jsx_runtime2 = __toESM(require_jsx_runtime());
@@ -16617,6 +16653,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         "web_page/pages/uploads/",
         "public/uploads/avatars/",
         "uploads/avatars/",
+        "uploads/",
         "public/"
       ];
       prefixesToRemove.forEach((prefix) => {
@@ -16712,6 +16749,16 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       if (session) {
         setIsAuthenticated(true);
         setUser(session);
+        if (!document.getElementById("jchat-script")) {
+          const script = document.createElement("script");
+          script.id = "jchat-script";
+          script.src = "js/messaging_widget.js";
+          script.async = true;
+          script.onload = () => {
+            if (window.JChat) window.JChat.init();
+          };
+          document.body.appendChild(script);
+        }
       }
       return () => window.removeEventListener("scroll", handleScroll);
     }, []);

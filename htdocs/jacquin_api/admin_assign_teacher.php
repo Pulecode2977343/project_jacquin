@@ -90,7 +90,7 @@ try {
         if ($conflict) {
             echo json_encode([
                 "success" => false,
-                "message" => "Conflicto: {$teacherName} ya tiene clase de '{$conflict['course_name']}' en este horario."
+                "message" => "La asignación no puede ser procesada. El docente {$teacherName} ya tiene el curso \"{$conflict['course_name']}\" activo en ese horario. Por favor selecciona un horario diferente."
             ]);
             exit;
         }

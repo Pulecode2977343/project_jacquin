@@ -88,6 +88,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (modPrograms) modPrograms.style.display = "none";
     if (modPositions) modPositions.style.display = "none";
     if (modAcademic) modAcademic.style.display = "none"; // Hide by default
+    const modStorage = document.getElementById("mod-storage");
+    if (modStorage) modStorage.style.display = "none";
 
     // Filter Logic
     switch (roleId) {
@@ -144,6 +146,13 @@ document.addEventListener("DOMContentLoaded", async function () {
                 modPositions.style.display = "flex";
                 modPositions.onclick = () => window.location.href = "admin_positions.html";
                 modPositions.style.cursor = "pointer";
+            }
+
+            // Show Storage Module for Admin
+            if (modStorage) {
+                modStorage.style.display = "flex";
+                modStorage.onclick = () => window.location.href = "admin_storage.html";
+                modStorage.style.cursor = "pointer";
             }
 
             // Dispatch evento para notificar que el dashboard de admin está cargado
@@ -224,6 +233,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 if (colAvatar) {
                     colAvatar.src = resolvePath(sessionUser.avatar_url || 'assets/images/avatars/default_avatar.svg');
                 }
+
+                // Cargar estadísticas de programas para el colaborador
+                loadCollaboratorStats();
             }
 
             // Hide Admin/Teacher/Student Items explicitly if needed (though defaults should hide them)
@@ -512,11 +524,13 @@ async function fetchStudentCourses(userId) {
                             groupedByCourse[c.id_course].byDay[day].push({
                                 id: s.id_schedule,
                                 time: s.start_time,
-                                endTime: s.end_time
+                                endTime: s.end_time,
+                                teacher: (s.teacher_name && s.teacher_name !== 'Por asignar') ? s.teacher_name : (c.teacher_name || 'Sin asignar')
                             });
                         }
                     });
                 }
+                groupedByCourse[c.id_course].hasSchedules = (c.schedules && c.schedules.length > 0);
             });
 
             container.innerHTML = Object.values(groupedByCourse).map((course, idx) => {
@@ -540,10 +554,17 @@ async function fetchStudentCourses(userId) {
                     
                     <div id="${accordionId}" style="display:none; padding:0 20px 20px 20px; border-top:1px solid rgba(255,255,255,0.05);">
                         <div style="margin-top:15px;">
+                            ${!course.hasSchedules ? `
+                            <div style="background:rgba(255,159,67,0.07); border:1px dashed rgba(255,159,67,0.3); border-radius:12px; padding:20px; text-align:center; color:rgba(255,159,67,0.8);">
+                                <i class="bi bi-calendar-x" style="font-size:2rem; display:block; margin-bottom:10px; opacity:0.5;"></i>
+                                <div style="font-weight:600; margin-bottom:5px;">Horario pendiente de asignación</div>
+                                <div style="font-size:0.8rem; opacity:0.7;">Tu inscripción está activa. El administrador asignará tu horario pronto.</div>
+                            </div>
+                            ` : `
                             <div style="font-size: 0.8rem; color: var(--color-acento-azul); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
                                 <i class="bi bi-calendar3"></i> Tu Horario Semanal <span style="opacity:0.6;">(Click para ver tus compañeros)</span>
                             </div>
-                            
+
                             <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;">
                                 ${daysBase.map((day, dIdx) => `
                                     <div style="text-align: center;">
@@ -555,6 +576,7 @@ async function fetchStudentCourses(userId) {
                                                  style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(52, 152, 219, 0.05)); padding: 10px 5px; border-radius: 8px; margin-bottom: 6px; border: 1px solid rgba(52, 152, 219, 0.3); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'; this.style.borderColor='var(--color-acento-azul)'" onmouseout="this.style.transform='scale(1)'; this.style.borderColor='rgba(52, 152, 219, 0.3)'">
                                                 <div style="font-size: 0.75rem; color: white; font-weight: 700;">${ApiService.formatTime(s.time)}</div>
                                                 <div style="font-size: 0.6rem; color: rgba(255,255,255,0.4);">${ApiService.formatTime(s.endTime)}</div>
+                                                ${s.teacher && s.teacher !== 'Sin asignar' ? `<div style="font-size:0.58rem; color:rgba(255,200,100,0.7); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${s.teacher}"><i class="bi bi-person-fill"></i> ${s.teacher.split(' ')[0]}</div>` : ''}
                                             </div>
                                         `).join('') : `
                                             <div style="height: 50px; border: 1px dashed rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.05);">
@@ -564,6 +586,7 @@ async function fetchStudentCourses(userId) {
                                     </div>
                                 `).join('')}
                             </div>
+                            `}
                         </div>
                     </div>
                 </div>`;
@@ -889,55 +912,26 @@ window.closeTeacherCourseOverlay = function () {
     }
 };
 
-// Contact Admin Function
-window.contactAdmin = function (courseName = '') {
-    const user = ApiService.getSession();
-    const subject = courseName
-        ? `Reporte de Inconsistencia - ${courseName}`
-        : 'Contacto desde Panel Docente';
-
-    Swal.fire({
-        title: '<i class="bi bi-envelope-paper"></i> Contactar Administración',
-        html: `
-            <div style="text-align:left; color:#333;">
-                <p style="margin-bottom:15px;">Envía un mensaje al equipo administrativo.</p>
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">Asunto:</label>
-                <input id="swal-subject" class="swal2-input" value="${subject}" style="margin:0 0 15px 0; width:100%;">
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">Mensaje:</label>
-                <textarea id="swal-message" class="swal2-textarea" placeholder="Describe el problema o consulta..." style="margin:0; width:100%; height:120px;"></textarea>
-            </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Enviar',
-        cancelButtonText: 'Cancelar',
-        confirmButtonColor: 'var(--color-acento-naranja)',
-        preConfirm: () => {
-            const subjectVal = document.getElementById('swal-subject').value;
-            const messageVal = document.getElementById('swal-message').value;
-            if (!messageVal.trim()) {
-                Swal.showValidationMessage('Por favor escribe un mensaje');
-                return false;
-            }
-            return { subject: subjectVal, message: messageVal };
+// Contact Admin Function - Now uses internal chat
+window.contactAdmin = async function (courseName = '') {
+    if (typeof JChat === 'undefined') {
+        showToast('El módulo de mensajería no está disponible.', 'error');
+        return;
+    }
+    // Find admin users to pre-select
+    try {
+        const res = await fetch(`${API_CONFIG.BASE_URL}chat_search_users.php?q=&exclude=0`);
+        const data = await res.json();
+        // Get admin users (role_id 1)
+        let admins = (data.data || []).filter(u => u.role_id === 1);
+        if (admins.length === 0) {
+            JChat.openWith([], []);
+        } else {
+            JChat.openWith(admins.map(a => a.id), admins.map(a => a.name));
         }
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            // Send to backend
-            const res = await ApiService.sendContactMessage({
-                name: user.full_name,
-                email: user.email,
-                subject: result.value.subject,
-                message: result.value.message,
-                source: 'teacher_dashboard'
-            });
-
-            if (res.success) {
-                showToast('Mensaje enviado correctamente. Recibirás respuesta pronto.', 'success');
-            } else {
-                showToast('Error al enviar: ' + (res.message || 'Intenta de nuevo'), 'error');
-            }
-        }
-    });
+    } catch (e) {
+        JChat.openWith([], []);
+    }
 };
 
 // Course Detail Overlay
@@ -1008,6 +1002,81 @@ function getRoleName(id) {
         case 5: return "Colaborador";
         default: return "Usuario";
     }
+}
+
+/**
+ * Carga estadísticas de disponibilidad de programas para el panel del colaborador.
+ * Inyecta una sección con barra de ocupación por programa.
+ */
+async function loadCollaboratorStats() {
+    const container = document.getElementById('mod-collaborator-main');
+    if (!container) return;
+
+    // Eliminar sección anterior si ya existe
+    const existingStats = document.getElementById('collaborator-program-stats');
+    if (existingStats) existingStats.remove();
+
+    const res = await ApiService.getAcademicOverview().catch(() => null);
+    if (!res || !res.success || !res.programs) return;
+
+    const programs = res.programs;
+    const events = res.events || [];
+
+    const barColor = (pct) => pct >= 100 ? '#e74c3c' : pct >= 75 ? '#f1c40f' : '#2ecc71';
+
+    const programRows = programs.map(p => {
+        const pct = p.occupancy_pct || 0;
+        const bc = barColor(pct);
+        const available = p.total_quota > 0 ? p.total_quota - p.active_count : null;
+        return `
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:12px 16px; margin-bottom:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:4px;">
+                    <span style="color:#fff; font-weight:600; font-size:0.9rem;">${p.course_name}</span>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        ${p.pending_count > 0 ? `<span style="background:rgba(255,159,67,0.15); color:#ff9f43; font-size:0.72rem; padding:2px 8px; border-radius:20px; border:1px solid rgba(255,159,67,0.3);">${p.pending_count} pend.</span>` : ''}
+                        <span style="font-size:0.78rem; color:rgba(255,255,255,0.4);">${p.active_count} inscritos${available !== null ? ` · ${available} libres` : ''}</span>
+                        <span style="font-size:0.78rem; font-weight:700; color:${bc};">${pct}%</span>
+                    </div>
+                </div>
+                <div style="width:100%; height:4px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden;">
+                    <div style="width:${pct}%; height:100%; background:${bc}; transition:width 0.5s;"></div>
+                </div>
+            </div>`;
+    }).join('');
+
+    const eventRows = events.length === 0 ? '<p style="color:rgba(255,255,255,0.35); font-size:0.85rem; margin:0;">Sin eventos próximos.</p>' :
+        events.map(ev => `
+            <div style="display:flex; gap:10px; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04);">
+                <i class="bi bi-calendar-event" style="color:#3498db; flex-shrink:0;"></i>
+                <div>
+                    <div style="color:#fff; font-size:0.88rem; font-weight:500;">${ev.title}</div>
+                    <div style="color:rgba(255,255,255,0.4); font-size:0.75rem;">${ev.event_date} · ${ev.event_type}</div>
+                </div>
+            </div>`).join('');
+
+    const statsDiv = document.createElement('div');
+    statsDiv.id = 'collaborator-program-stats';
+    statsDiv.style.cssText = 'width:100%; margin-top:20px;';
+    statsDiv.innerHTML = `
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; width:100%;">
+            <!-- Programas -->
+            <div style="background:rgba(0,0,0,0.2); border-radius:16px; padding:18px; border:1px solid rgba(255,255,255,0.05);">
+                <h4 style="margin:0 0 14px; color:rgba(255,255,255,0.7); font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:8px;">
+                    <i class="bi bi-bar-chart-fill" style="color:#E78C3B;"></i> Disponibilidad de Programas
+                </h4>
+                ${programRows}
+            </div>
+            <!-- Eventos -->
+            <div style="background:rgba(0,0,0,0.2); border-radius:16px; padding:18px; border:1px solid rgba(255,255,255,0.05);">
+                <h4 style="margin:0 0 14px; color:rgba(255,255,255,0.7); font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:8px;">
+                    <i class="bi bi-calendar2-week" style="color:#3498db;"></i> Próximos Eventos
+                </h4>
+                ${eventRows}
+            </div>
+        </div>
+    `;
+
+    container.appendChild(statsDiv);
 }
 
 // ==========================================
@@ -1727,10 +1796,10 @@ window.submitMultipleEnrollments = async function () {
     let successCount = 0;
     let errors = [];
 
-    // Process each schedule enrollment
+    // Process each schedule enrollment (student requests, not admin direct enroll)
     for (const scheduleId of scheduleIds) {
         try {
-            const res = await ApiService.enrollStudent(user.id_usuario, courseId, scheduleId);
+            const res = await ApiService.requestEnrollment(user.id_usuario, courseId, scheduleId);
             if (res.success) {
                 successCount++;
             } else {
@@ -1833,7 +1902,7 @@ window.submitMultipleEnrollments = async function () {
 
     for (const scheduleId of scheduleIds) {
         try {
-            const res = await ApiService.enrollStudent(user.id_usuario, courseId, scheduleId);
+            const res = await ApiService.requestEnrollment(user.id_usuario, courseId, scheduleId);
             if (res.success) {
                 successCount++;
             } else {

@@ -77,7 +77,7 @@ try {
         echo json_encode([
             "success" => false,
             "conflict" => true,
-            "message" => "Conflicto de horario detectado con el curso: " . $conflictDetails['course'] . " (" . $conflictDetails['time'] . ")"
+            "message" => "Su inscripción no puede ser procesada. Ya tiene el curso \"" . $conflictDetails['course'] . "\" activo en ese horario (" . $conflictDetails['time'] . ")."
         ]);
     } else {
         echo json_encode([

@@ -58,7 +58,7 @@ try {
     // Enviamos confirmación al usuario (Ack)
     $emailService->sendContactAckEmail($guest_email, $guest_name);
 
-    echo json_encode(['success' => true, 'message' => '¡Solicitud recibida! Te hemos enviado un correo de confirmación con los siguientes pasos.']);
+    echo json_encode(['success' => true, 'message' => 'Gracias por tu interés en participar en nuestro evento. Nuestro equipo de coordinación de eventos y presentaciones pronto se pondrá en contacto contigo.']);
 
 } catch (Exception $e) {
     http_response_code(500);

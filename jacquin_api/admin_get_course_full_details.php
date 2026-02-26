@@ -68,15 +68,18 @@ if ($course_id > 0) {
 
             // Post-process to attach teachers array and legacy support
             foreach ($schedules as &$sch) {
-                // Attach structured teachers array
-                // FETCH_GROUP returns array of arrays, removing the grouping key from the inner arrays
+                // Attach structured teachers array from junction table
                 $sch['teachers'] = isset($teachersMap[$sch['id_schedule']]) ? $teachersMap[$sch['id_schedule']] : [];
 
-                // Validar legacy/display
+                // If junction table has no entry but legacy column does, build synthetic entry
+                if (empty($sch['teachers']) && !empty($sch['legacy_teacher_name']) && !empty($sch['teacher_id'])) {
+                    $sch['teachers'] = [['id' => (int)$sch['teacher_id'], 'name' => $sch['legacy_teacher_name']]];
+                }
+
+                // Validar legacy/display string
                 if (!empty($sch['teacher_names'])) {
                     $sch['teacher_name'] = $sch['teacher_names'];
                 } elseif (!empty($sch['teachers'])) {
-                    // Fallback: build string from array if teacher_names was null for some reason
                     $names = array_column($sch['teachers'], 'name');
                     $sch['teacher_name'] = implode(', ', $names);
                 } else {

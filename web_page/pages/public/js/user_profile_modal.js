@@ -398,15 +398,36 @@ window.switchUserTab = async function (tab) {
                         const actionFn = isTeacher ? 'unassignTeacherFromCourse' : 'unenrollUserFromCourse';
                         const btnTitle = isTeacher ? 'Remover asignaci\u00f3n de docente' : 'Desvincular del curso';
 
+                        const statusColor = c.status === 'Activo' ? '#2ecc71' : (c.status === 'Pendiente' ? '#ff9f43' : 'rgba(255,255,255,0.3)');
+                        const scheduleChips = !isTeacher && c.schedules && c.schedules.length > 0
+                            ? c.schedules.map(sch => {
+                                const fmt = t => (t || '').substring(0, 5);
+                                const profLabel = sch.teacher_name && sch.teacher_name !== 'Por asignar'
+                                    ? ` · <i class="bi bi-person-fill" style="opacity:.7;"></i> ${sch.teacher_name}`
+                                    : ` · <span style="color:rgba(255,159,67,0.7);">Sin docente</span>`;
+                                return `<span style="background:rgba(52,152,219,0.12); color:var(--color-acento-azul); padding:3px 10px; border-radius:20px; font-size:0.72rem; border:1px solid rgba(52,152,219,0.2); display:inline-flex; align-items:center; gap:4px;"><i class="bi bi-clock"></i>${sch.day_of_week} ${fmt(sch.start_time)}-${fmt(sch.end_time)}${profLabel}</span>`;
+                              }).join('')
+                            : (!isTeacher ? `<span style="color:rgba(255,159,67,0.7); font-size:0.75rem;"><i class="bi bi-exclamation-triangle" style="margin-right:4px;"></i>Sin horario asignado</span>` : '');
+
+                        const teacherLine = !isTeacher && (!c.schedules || c.schedules.length === 0)
+                            ? (c.teacher_name && c.teacher_name !== 'Por asignar'
+                                ? `<div style="color:rgba(255,255,255,0.35); font-size:0.75rem; margin-top:3px;"><i class="bi bi-person" style="margin-right:4px;"></i>${c.teacher_name}</div>`
+                                : `<div style="color:rgba(255,159,67,0.4); font-size:0.75rem; margin-top:3px;"><i class="bi bi-person" style="margin-right:4px;"></i>Docente pendiente</div>`)
+                            : '';
+
                         return `
-                                    <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
-                                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                                            <div>
+                                    <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); border-left: 3px solid ${statusColor};">
+                                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                            <div style="flex:1;">
                                                 <div style="color:white; font-weight:600;">${c.name}</div>
-                                                ${isTeacher ? `<div style="color:rgba(255,255,255,0.3); font-size:0.75rem; margin-top:2px;">Materia Principal</div>` : ''}
+                                                ${isTeacher
+                                                    ? `<div style="color:rgba(255,255,255,0.3); font-size:0.75rem; margin-top:2px;">${(c.schedules||[]).length} horario(s) · ${c.total_students || 0} estudiante(s)</div>`
+                                                    : teacherLine
+                                                }
+                                                ${!isTeacher ? `<div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:5px;">${scheduleChips}</div>` : ''}
                                             </div>
-                                            <div style="display:flex; gap:10px; align-items:center;">
-                                                <span style="color:rgba(255,255,255,0.4); font-size:0.8rem;">${c.status || 'Activo'}</span>
+                                            <div style="display:flex; gap:10px; align-items:center; margin-left:10px;">
+                                                <span style="color:${statusColor}; font-size:0.78rem; font-weight:600; white-space:nowrap;">${c.status || 'Activo'}</span>
                                                 ${currentUser.id_rol == 1 ? `
                                                     <button onclick="${actionFn}(${idToUse}, ${user.id_usuario || user.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; padding:5px;" title="${btnTitle}">
                                                         <i class="bi bi-trash"></i>
@@ -459,6 +480,54 @@ window.switchUserTab = async function (tab) {
                         </div>
                     </div>
                 `;
+            } else if (currentUser.id_rol == 1 && user.id_rol == 3) {
+                // ADMIN VIEWING STUDENT — inscripciones + horarios
+                const detailsRes = await ApiService.getUserDetails(targetUserId);
+                const enrolled = (detailsRes.success && detailsRes.data && detailsRes.data.enrolled) ? detailsRes.data.enrolled : [];
+
+                const fmt = t => (t || '').substring(0, 5);
+                const statusColor = s => s === 'Activo' ? '#2ecc71' : s === 'Pendiente' ? '#ff9f43' : '#e74c3c';
+                const statusBg   = s => s === 'Activo' ? 'rgba(46,204,113,0.12)' : s === 'Pendiente' ? 'rgba(255,159,67,0.12)' : 'rgba(231,76,60,0.12)';
+
+                content.innerHTML = `
+                    <div style="animation: fadeInModal 0.3s ease-out;">
+                        <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px;padding:16px 20px;background:rgba(147,182,238,0.06);border-radius:14px;border-left:4px solid var(--color-acento-azul);">
+                            <i class="bi bi-journal-bookmark-fill" style="font-size:1.6rem;color:var(--color-acento-azul);"></i>
+                            <div>
+                                <div style="color:white;font-weight:700;font-size:1rem;">Inscripciones Académicas</div>
+                                <div style="color:rgba(255,255,255,0.45);font-size:0.78rem;">${enrolled.length} curso${enrolled.length !== 1 ? 's' : ''} registrado${enrolled.length !== 1 ? 's' : ''}</div>
+                            </div>
+                        </div>
+
+                        ${enrolled.length > 0 ? `
+                        <div style="display:grid;gap:12px;">
+                            ${enrolled.map(c => {
+                                const schChips = (c.schedules && c.schedules.length > 0)
+                                    ? c.schedules.map(s => {
+                                        const prof = s.teacher_name && s.teacher_name !== 'Por asignar'
+                                            ? `<span style="color:rgba(255,200,100,0.75);margin-left:4px;"><i class="bi bi-person-fill" style="font-size:0.6rem;"></i> ${s.teacher_name}</span>`
+                                            : `<span style="color:rgba(255,159,67,0.6);margin-left:4px;">Sin docente</span>`;
+                                        return `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(147,182,238,0.1);border:1px solid rgba(147,182,238,0.18);border-radius:20px;padding:3px 10px;font-size:0.72rem;color:rgba(221,221,221,0.85);">
+                                            <i class="bi bi-clock" style="font-size:0.65rem;opacity:0.6;"></i>
+                                            <strong>${s.day_of_week}</strong> ${fmt(s.start_time)}–${fmt(s.end_time)}${prof}
+                                        </span>`;
+                                    }).join(' ')
+                                    : `<span style="color:rgba(255,255,255,0.25);font-size:0.75rem;font-style:italic;">Sin horario asignado</span>`;
+
+                                return `
+                                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px 18px;">
+                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                                        <div style="color:white;font-weight:700;font-size:0.95rem;">${c.course_name || c.name || '—'}</div>
+                                        <span style="background:${statusBg(c.status)};color:${statusColor(c.status)};border:1px solid ${statusColor(c.status)}44;padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:800;text-transform:uppercase;">${c.status}</span>
+                                    </div>
+                                    <div style="display:flex;flex-wrap:wrap;gap:5px;">${schChips}</div>
+                                </div>`;
+                            }).join('')}
+                        </div>
+                        ` : `<div style="text-align:center;padding:50px;color:rgba(255,255,255,0.2);"><i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:10px;"></i>Este estudiante no tiene inscripciones registradas.</div>`}
+                    </div>
+                `;
+
             } else if (currentUser.id_rol == 2 && user.id_rol == 3) {
                 // TEACHER VIEWING STUDENT
                 const tasksRes = await ApiService.getAcademicData('get_my_assignments', { student_id: targetUserId });
@@ -744,5 +813,62 @@ window.updateProfileFromModal = async function () {
         console.error("Error updating profile:", e);
         if (window.showToast) showToast("Error de conexi\u00f3n al actualizar perfil", "error");
         else Swal.fire("Error", "Error de conexi\u00f3n al actualizar perfil", "error");
+    }
+};
+
+// ─── Funciones globales para botones inline en el modal de perfil ─────────────
+
+window.unassignTeacherFromCourse = async function(courseId, teacherId) {
+    const confirm = await Swal.fire({
+        title: '¿Remover asignación?',
+        text: 'El docente dejará de estar asignado a este curso.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, remover',
+        cancelButtonText: 'Cancelar',
+        background: 'rgba(20,20,40,0.97)',
+        color: '#fff',
+        confirmButtonColor: '#e74c3c',
+        cancelButtonColor: 'rgba(255,255,255,0.1)'
+    });
+    if (!confirm.isConfirmed) return;
+
+    const result = await ApiService.unassignTeacherFromCourse(teacherId, courseId);
+    if (result.success) {
+        if (window.showToast) showToast('Docente removido del curso', 'success');
+        else Swal.fire({ title: 'Listo', icon: 'success', timer: 1500, background: 'rgba(20,20,40,0.97)', color: '#fff' });
+        // Refrescar la pestaña actual del modal
+        const activeTab = document.querySelector('.modal-tab-btn.active');
+        if (activeTab) activeTab.click();
+    } else {
+        if (window.showToast) showToast(result.message || 'Error al remover docente', 'error');
+        else Swal.fire({ title: 'Error', text: result.message, icon: 'error', background: 'rgba(20,20,40,0.97)', color: '#fff' });
+    }
+};
+
+window.unenrollUserFromCourse = async function(enrollmentId, userId) {
+    const confirm = await Swal.fire({
+        title: '¿Desvincular del curso?',
+        text: 'La inscripción del estudiante será cancelada.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, desvincular',
+        cancelButtonText: 'Cancelar',
+        background: 'rgba(20,20,40,0.97)',
+        color: '#fff',
+        confirmButtonColor: '#e74c3c',
+        cancelButtonColor: 'rgba(255,255,255,0.1)'
+    });
+    if (!confirm.isConfirmed) return;
+
+    const result = await ApiService.unenrollStudent(enrollmentId);
+    if (result.success) {
+        if (window.showToast) showToast('Estudiante desvinculado del curso', 'success');
+        else Swal.fire({ title: 'Listo', icon: 'success', timer: 1500, background: 'rgba(20,20,40,0.97)', color: '#fff' });
+        const activeTab = document.querySelector('.modal-tab-btn.active');
+        if (activeTab) activeTab.click();
+    } else {
+        if (window.showToast) showToast(result.message || 'Error al desvincular estudiante', 'error');
+        else Swal.fire({ title: 'Error', text: result.message, icon: 'error', background: 'rgba(20,20,40,0.97)', color: '#fff' });
     }
 };

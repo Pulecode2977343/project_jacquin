@@ -7,13 +7,20 @@
   <title>Admin Programas - JACQUIN</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="css/footer.css" />
-  <link rel="stylesheet" href="css/style.css?v=25" />
+  <link rel="stylesheet" href="css/style.css" />
   ...
   <style>
     /* Specific styles for this dashboard */
     .admin-container {
       padding: 17vh 5% 2rem;
       margin-top: 0;
+      transition: padding-right 0.3s ease;
+    }
+
+    @media (min-width: 1200px) {
+      body.jchat-open .admin-container {
+        padding-right: 420px;
+      }
     }
 
     .admin-header {
@@ -99,8 +106,8 @@
 
     .programs-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
     }
 
     .admin-program-card {

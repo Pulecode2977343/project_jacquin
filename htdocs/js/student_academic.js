@@ -10,7 +10,7 @@ window.StudentAcademic = {
         this.session = ApiService.getSession();
         if (!this.session || parseInt(this.session.id_rol) !== 3) return; // Solo estudiantes
 
-        // Usar botÃ³n existente del HTML
+        // Usar botón existente del HTML
         const button = document.getElementById('btn-student-academic-access');
         if (button) {
             button.onclick = () => this.openModal();
@@ -159,7 +159,7 @@ window.StudentAcademic = {
         const container = document.getElementById('student-assignments-content');
 
         if (assignments.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.2);"><i class="fas fa-check-circle" style="font-size:3rem; margin-bottom:20px; display:block;"></i>Â¡EstÃ¡s al dÃ­a! No hay tareas pendientes.</div>';
+            container.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.2);"><i class="fas fa-check-circle" style="font-size:3rem; margin-bottom:20px; display:block;"></i>¡Estás al día! No hay tareas pendientes.</div>';
             return;
         }
 
@@ -216,7 +216,7 @@ window.StudentAcademic = {
                 <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
                     ${dueDate ? `
                         <div style="color: ${isOverdue ? '#ff7675' : 'rgba(255,255,255,0.4)'}; font-size: 0.85rem;">
-                            <i class="far fa-clock" style="margin-right: 5px;"></i> LÃ­mite: ${dueDate.toLocaleDateString()}
+                            <i class="far fa-clock" style="margin-right: 5px;"></i> Límite: ${dueDate.toLocaleDateString()}
                         </div>
                     ` : ''}
                     
@@ -260,7 +260,7 @@ window.StudentAcademic = {
                     <input type="text" id="swal-submission-url" class="swal2-input" placeholder="https://..." style="width: 100%; margin: 0 0 20px 0; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; height: 45px;">
                     
                     <label style="color: rgba(255,255,255,0.5); font-size: 0.85rem; display: block; margin-bottom: 8px;">Comentarios para el profesor (opcional)</label>
-                    <textarea id="swal-submission-text" class="swal2-textarea" placeholder="Escribe aquÃ­..." style="width: 100%; margin: 0; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; height: 100px; padding: 12px;"></textarea>
+                    <textarea id="swal-submission-text" class="swal2-textarea" placeholder="Escribe aquí..." style="width: 100%; margin: 0; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; height: 100px; padding: 12px;"></textarea>
                 </div>
             `,
             showCancelButton: true,
@@ -283,8 +283,8 @@ window.StudentAcademic = {
             }
         }).then(async (result) => {
             if (result.isConfirmed) {
-                // SimulaciÃ³n de entrega (Backend actualiza tabla student_submissions)
-                Swal.fire({ title: 'Â¡Enviado!', text: 'Tu trabajo ha sido registrado correctamente.', icon: 'success', background: '#1a1a2e', color: '#fff' });
+                // Simulación de entrega (Backend actualiza tabla student_submissions)
+                Swal.fire({ title: '¡Enviado!', text: 'Tu trabajo ha sido registrado correctamente.', icon: 'success', background: '#1a1a2e', color: '#fff' });
                 this.loadAssignments();
             }
         });
@@ -302,7 +302,7 @@ window.StudentAcademic = {
             if (result.success && result.data) {
                 this.renderNotes(result.data);
             } else {
-                container.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.2);"><i class="fas fa-star-half-alt" style="font-size:3rem; margin-bottom:20px; display:block;"></i>AÃºn no tienes notas registradas en el sistema.</div>';
+                container.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.2);"><i class="fas fa-star-half-alt" style="font-size:3rem; margin-bottom:20px; display:block;"></i>Aún no tienes notas registradas en el sistema.</div>';
             }
         } catch (error) {
             container.innerHTML = '<p style="color: #FF5252; text-align:center;">Error conectando con el servidor.</p>';
@@ -313,7 +313,7 @@ window.StudentAcademic = {
         const container = document.getElementById('student-notes-content');
 
         if (notes.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.2);">AÃºn no tienes calificaciones registradas.</div>';
+            container.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.2);">Aún no tienes calificaciones registradas.</div>';
             return;
         }
 

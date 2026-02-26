@@ -38,10 +38,16 @@ const Login = () => {
 
                 setTimeout(() => {
                     const pendingId = sessionStorage.getItem('pending_enrollment');
-                    if (pendingId) {
+                    // Solo los estudiantes (id_rol 3) deben recobrar flujos de inscripción
+                    if (pendingId && result.user.id_rol == 3) {
                         setMessage('¡Bienvenido! Retomando tu inscripción...');
-                        navigate('/#programas');
+                        // navigate con state para que Programs.jsx recupere el intent
+                        // sin recargar la página (DOMContentLoaded no se dispara en SPA)
+                        navigate('/', { state: { recoverEnrollment: true } });
                     } else {
+                        // Limpiar intents atascados si es admin o docente
+                        sessionStorage.removeItem('pending_enrollment');
+                        sessionStorage.removeItem('pending_enrollment_title');
                         window.location.href = 'gestion.html';
                     }
                 }, 1000);

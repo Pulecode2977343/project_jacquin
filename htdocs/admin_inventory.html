@@ -1,175 +1,237 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario - JACQUIN</title>
-    <link rel="stylesheet" href="css/footer.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventario - JACQUIN</title>
+  <link rel="stylesheet" href="css/footer.css" />
   <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-      .admin-section {
-        padding: 2rem 5%;
-        min-height: 80vh;
-        color: white;
-      }
-      .admin-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 1rem;
-      }
-      .table-container {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 15px;
-        overflow-x: auto;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      th, td {
-        text-align: left;
-        padding: 15px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      }
-      th {
-        background-color: rgba(0, 0, 0, 0.2);
-        color: var(--color-acento-naranja);
-        font-weight: 600;
-      }
-      tr:hover { background-color: rgba(255, 255, 255, 0.02); }
-      .badge-estado {
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 0.8em;
-        font-weight: bold;
-      }
-      .estado-Nuevo { background-color: #2ecc71; color: black; }
-      .estado-Bueno { background-color: #3498db; color: white; }
-      .estado-Regular { background-color: #f1c40f; color: black; }
-      .estado-Malo { background-color: #e74c3c; color: white; }
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    .admin-section {
+      padding: 2rem 5%;
+      min-height: 80vh;
+      color: white;
+    }
 
-      .btn-add {
-        background-color: var(--verde-neon);
-        color: black;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 50px;
-        font-weight: bold;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
-      }
-      
-      /* Simple Modal */
-      .modal {
-        display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
-        background-color: rgba(0,0,0,0.8);
-        justify-content: center; align-items: center;
-      }
-      .modal-content {
-        background: var(--color-principal-azul);
-        padding: 2rem;
-        border-radius: 20px;
-        width: 90%;
-        max-width: 500px;
-        border: 1px solid rgba(255,255,255,0.1);
-      }
-      .input-group { margin-bottom: 15px; }
-      .input-group label { display: block; margin-bottom: 5px; color: #ccc; }
-      .input-group input, .input-group select, .input-group textarea {
-        width: 100%; padding: 10px; border-radius: 10px; border: none;
-        background: rgba(0,0,0,0.2); color: white;
-      }
-      .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-    </style>
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 1rem;
+    }
+
+    .table-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      overflow-x: auto;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    th {
+      background-color: rgba(0, 0, 0, 0.2);
+      color: var(--color-acento-naranja);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .badge-estado {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: bold;
+    }
+
+    .estado-Nuevo {
+      background-color: #2ecc71;
+      color: black;
+    }
+
+    .estado-Bueno {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .estado-Regular {
+      background-color: #f1c40f;
+      color: black;
+    }
+
+    .estado-Malo {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .btn-add {
+      background-color: var(--verde-neon);
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+    }
+
+    /* Simple Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: var(--color-principal-azul);
+      padding: 2rem;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 500px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #ccc;
+    }
+
+    .input-group input,
+    .input-group select,
+    .input-group textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
+
 <body>
-    <div id="react-header-root"></div>
+  <div id="react-header-root"></div>
 
-    <main>
-      <section class="admin-section">
-        <div class="admin-header">
-            <div>
-                <h1>Control de Inventario</h1>
-                <p style="color: #ccc; font-size: 0.9em;">Gestión de instrumentos y equipos</p>
-            </div>
-            <div style="display: flex; gap: 15px;">
-                <button class="btn-add" onclick="openModal()"><i class="bi bi-plus-lg"></i> Nuevo Ítem</button>
-                <a href="gestion.html" class="btn btn-module" style="background: rgba(255,255,255,0.1);">Volver</a>
-            </div>
+  <main>
+    <section class="admin-section">
+      <div class="admin-header">
+        <div>
+          <h1>Control de Inventario</h1>
+          <p style="color: #ccc; font-size: 0.9em;">Gestión de instrumentos y equipos</p>
         </div>
+        <div style="display: flex; gap: 15px;">
+          <button class="btn-add" onclick="openModal()"><i class="bi bi-plus-lg"></i> Nuevo Ítem</button>
+          <a href="gestion.html" class="btn btn-module" style="background: rgba(255,255,255,0.1);">Volver</a>
+        </div>
+      </div>
 
-        <div class="table-container">
-          <table id="inventory-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Tipo</th>
-                <th>Serial / Código</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="5" style="text-align:center">Cargando...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </main>
+      <div class="table-container">
+        <table id="inventory-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Serial / Código</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="5" style="text-align:center">Cargando...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 
-    <!-- Add Item Modal -->
-    <div id="addModal" class="modal">
-        <div class="modal-content">
-            <h2 style="color: white; margin-bottom: 20px;">Agregar Ítem</h2>
-            <form id="addForm">
-                <div class="input-group">
-                    <label>Nombre del Ítem</label>
-                    <input type="text" id="nombre" required placeholder="Ej: Guitarra Yamaha">
-                </div>
-                <div class="input-group">
-                    <label>Tipo</label>
-                    <select id="tipo">
-                        <option value="Instrumento">Instrumento</option>
-                        <option value="Equipo">Equipo (Audio/PC)</option>
-                        <option value="Accesorio">Accesorio</option>
-                        <option value="Otro">Otro</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>Serial / Código</label>
-                    <input type="text" id="serial" placeholder="Opcional">
-                </div>
-                <div class="input-group">
-                    <label>Estado</label>
-                    <select id="estado">
-                        <option value="Nuevo">Nuevo</option>
-                        <option value="Bueno" selected>Bueno</option>
-                        <option value="Regular">Regular</option>
-                        <option value="Malo">Malo</option>
-                    </select>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" onclick="closeModal()" style="padding: 10px 20px; border-radius: 20px; border: none; background: #666; color: white; cursor: pointer;">Cancelar</button>
-                    <button type="submit" style="padding: 10px 20px; border-radius: 20px; border: none; background: var(--color-acento-naranja); color: white; cursor: pointer;">Guardar</button>
-                </div>
-            </form>
+  <!-- Add Item Modal -->
+  <div id="addModal" class="modal">
+    <div class="modal-content">
+      <h2 style="color: white; margin-bottom: 20px;">Agregar Ítem</h2>
+      <form id="addForm">
+        <div class="input-group">
+          <label>Nombre del Ítem</label>
+          <input type="text" id="nombre" required placeholder="Ej: Guitarra Yamaha">
         </div>
+        <div class="input-group">
+          <label>Tipo</label>
+          <select id="tipo">
+            <option value="Instrumento">Instrumento</option>
+            <option value="Equipo">Equipo (Audio/PC)</option>
+            <option value="Accesorio">Accesorio</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Serial / Código</label>
+          <input type="text" id="serial" placeholder="Opcional">
+        </div>
+        <div class="input-group">
+          <label>Estado</label>
+          <select id="estado">
+            <option value="Nuevo">Nuevo</option>
+            <option value="Bueno" selected>Bueno</option>
+            <option value="Regular">Regular</option>
+            <option value="Malo">Malo</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" onclick="closeModal()"
+            style="padding: 10px 20px; border-radius: 20px; border: none; background: #666; color: white; cursor: pointer;">Cancelar</button>
+          <button type="submit"
+            style="padding: 10px 20px; border-radius: 20px; border: none; background: var(--color-acento-naranja); color: white; cursor: pointer;">Guardar</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <div id="react-footer-root"></div>
+  <div id="react-footer-root"></div>
 
-    <script src="js/react-footer.bundle.js"></script>
-    <script src="js/services/api.js"></script>
-    <script src="js/admin_inventory.js"></script>
-  <script src="/js/react-header.bundle.js"></script>
+  <script src="js/react-footer.bundle.js"></script>
+  <script src="js/services/api.js"></script>
+  <script src="js/admin_inventory.js"></script>
+  <script src="js/react-header.bundle.js"></script>
 </body>
+
 </html>

@@ -7,6 +7,7 @@ const AcademicManager = {
     // State
     courses: [],
     pendingGroups: {},
+    courseStats: {}, // { courseId: { active_count, pending_count, schedule_count, total_quota } }
 
     // Config
     modalId: "admin-courses-modal",
@@ -35,6 +36,8 @@ const AcademicManager = {
         window.editCourseBasicInfo = this.editCourseBasicInfo.bind(this);
         window.switchTab = this.switchTab.bind(this);
         window.closeCourseDetailsModal = this.closeDetails.bind(this);
+        window.viewScheduleStudents = this.viewScheduleStudents.bind(this);
+        window.processRequest = this.handleRequest.bind(this); // alias para backward compat
 
         this.setupForms();
 
@@ -93,13 +96,17 @@ const AcademicManager = {
      */
     async refreshData() {
         try {
-            const [coursesRes, pendingRes] = await Promise.all([
+            const getStats = typeof ApiService.getAcademicStats === 'function'
+                ? ApiService.getAcademicStats()
+                : Promise.resolve({ success: false, data: {} });
+
+            const [coursesRes, pendingRes, statsRes] = await Promise.all([
                 ApiService.getCourses(),
-                ApiService.getPendingEnrollments()
+                ApiService.getPendingEnrollments(),
+                getStats
             ]);
 
             if (coursesRes.success) {
-                // Ensure we handle 'Instalaciones' exclusion if needed, or keep all
                 this.courses = coursesRes.data || [];
             } else {
                 throw new Error("Failed to load courses");
@@ -112,6 +119,8 @@ const AcademicManager = {
                     this.pendingGroups[r.course_id]++;
                 });
             }
+
+            this.courseStats = (statsRes.success && statsRes.data) ? statsRes.data : {};
         } catch (e) {
             console.error("Refresh Data Error", e);
             throw e;
@@ -146,15 +155,22 @@ const AcademicManager = {
         }).join('') || '<div style="color:#666; text-align:center; padding:40px;">No hay cursos registrados.</div>';
 
         modal.innerHTML = `
-            <div class="modal-card-container custom-scroll">
-                <div class="modal-header-row">
-                    <div>
-                        <h2 style="color:white; margin:0; font-size:1.8rem; font-weight:300;">Gestión Académica</h2>
-                        <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">Selecciona una materia para gestionar inscritos y horarios.</p>
+            <div class="modal-card-container custom-scroll" style="background: linear-gradient(135deg, #12161f 0%, #1a2333 100%);">
+                <div class="modal-header-row" style="align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px;">
+                    <div style="display:flex; align-items: center; gap: 15px;">
+                        <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(52, 152, 219, 0.15); display:flex; align-items:center; justify-content:center; color: #3498db; font-size: 1.8rem;">
+                            <i class="bi bi-journal-bookmark-fill"></i>
+                        </div>
+                        <div>
+                            <h2 style="color:white; margin:0; font-size:1.6rem; font-weight:600; letter-spacing: -0.5px;">Panel Académico</h2>
+                            <p style="color:rgba(255,255,255,0.45); margin:4px 0 0 0; font-size: 0.9rem;">Elige un programa musical para ver la lista de sus alumnos, asignar docentes y configurar sus horarios.</p>
+                        </div>
                     </div>
-                    <button class="btn-close-modal" onclick="document.getElementById('${this.modalId}').style.display='none'"><i class="bi bi-x-lg"></i></button>
+                    <button class="btn-close-modal" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); width: 35px; height: 35px; border-radius: 50%; color:#aaa; cursor:pointer;" onclick="document.getElementById('${this.modalId}').style.display='none'">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
-                <div class="courses-grid">${coursesListHtml}</div>
+                <div class="courses-grid" style="margin-top: 25px;">${coursesListHtml}</div>
             </div>
         `;
 
@@ -167,21 +183,53 @@ const AcademicManager = {
     },
 
     buildCourseCard(c, pCount, hasAction) {
+        const st = this.courseStats[c.id_course] || {};
+        const activeCount = st.active_count || 0;
+        const schedCount = st.schedule_count || 0;
+        const totalQuota = st.total_quota || 0;
+        const pct = totalQuota > 0 ? Math.min(Math.round((activeCount / totalQuota) * 100), 100) : 0;
+        const barColor = pct >= 100 ? '#e74c3c' : pct >= 75 ? '#f1c40f' : '#2ecc71';
+
         return `
-        <div onclick="openCourseDetails(${c.id_course}, '${c.name.replace(/'/g, "\\'")}')" 
+        <div onclick="openCourseDetails(${c.id_course}, '${c.name.replace(/'/g, "\\'")}')"
              class="admin-course-card"
-             style="border-color:${hasAction ? 'rgba(255, 159, 67, 0.4)' : 'rgba(255,255,255,0.05)'}; 
-                    border-left-color:${hasAction ? '#ff9f43' : 'var(--color-acento-azul)'};">
-            
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <div class="course-title">${c.name}</div>
-                    <div class="course-subtitle">ID: ${c.id_course} | DOCENTE: <span style="color: var(--color-acento-azul);">${c.teacher_name || 'SIN ASIGNAR'}</span></div>
-                </div>
+             style="border: 1px solid rgba(255,255,255,0.05); border-left: 4px solid ${hasAction ? '#ff9f43' : '#3498db'};
+                    background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; margin-bottom: 12px; cursor:pointer;
+                    transition: all 0.2s ease;"
+             onmouseover="this.style.background='rgba(52, 152, 219, 0.05)';"
+             onmouseout="this.style.background='rgba(255,255,255,0.02)';">
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <div class="course-title" style="font-size: 1.15rem; font-weight: 600; color: #fff;">${c.name}</div>
                 ${hasAction ? `
-                    <div class="pending-badge">${pCount}</div>
-                ` : '<i class="bi bi-chevron-right" style="color:#444;"></i>'}
+                    <div style="background: rgba(255,159,67,0.15); color: #ff9f43; border: 1px solid rgba(255,159,67,0.3); padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 0.78rem; display:flex; align-items:center; gap:5px; animation: pulse-alert 2s infinite;">
+                        <i class="bi bi-exclamation-circle-fill"></i> ${pCount} Solicitude${pCount !== 1 ? 's' : ''}
+                    </div>
+                ` : '<i class="bi bi-arrow-right-short" style="color:rgba(255,255,255,0.3); font-size:1.4rem;"></i>'}
             </div>
+
+            <!-- Métricas rápidas -->
+            <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:8px;">
+                <span style="font-size:0.78rem; color:rgba(255,255,255,0.45);">
+                    <i class="bi bi-people-fill" style="margin-right:4px; color:#2ecc71;"></i>
+                    <strong style="color:#fff;">${activeCount}</strong> inscrito${activeCount !== 1 ? 's' : ''} activo${activeCount !== 1 ? 's' : ''}
+                </span>
+                <span style="font-size:0.78rem; color:rgba(255,255,255,0.45);">
+                    <i class="bi bi-calendar3" style="margin-right:4px; color:#3498db;"></i>
+                    <strong style="color:#fff;">${schedCount}</strong> horario${schedCount !== 1 ? 's' : ''}
+                </span>
+                ${totalQuota > 0 ? `
+                <span style="font-size:0.78rem; color:rgba(255,255,255,0.45);">
+                    <i class="bi bi-bar-chart-fill" style="margin-right:4px; color:${barColor};"></i>
+                    <strong style="color:${barColor};">${pct}%</strong> ocupado
+                </span>` : ''}
+            </div>
+
+            <!-- Barra de ocupación (solo si hay cupo total definido) -->
+            ${totalQuota > 0 ? `
+            <div style="width:100%; height:3px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden;">
+                <div style="width:${pct}%; height:100%; background:${barColor}; transition:width 0.5s;"></div>
+            </div>` : ''}
         </div>
         `;
     },
@@ -324,26 +372,35 @@ const AcademicManager = {
         const pendingHtml = this.generatePendingList(pending, courseId, courseName);
 
         modal.innerHTML = `
-            <div class="modal-card-container custom-scroll" style="max-width:800px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-                    <div>
-                        <h2 style="color:white; margin:0; font-size:1.8rem;">${courseName}</h2>
-                        <p style="color:rgba(255,255,255,0.4); margin:5px 0 0 0;">Gestión de alumnos y programación.</p>
+            <div class="modal-card-container custom-scroll" style="max-width:850px; background: linear-gradient(135deg, #12161f 0%, #1a2333 100%);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px;">
+                    <div style="display:flex; align-items: center; gap: 15px;">
+                         <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(52, 152, 219, 0.15); display:flex; align-items:center; justify-content:center; color: #3498db; font-size: 1.8rem;">
+                            <i class="bi bi-music-note-list"></i>
+                        </div>
+                        <div>
+                            <h2 style="color:white; margin:0; font-size:1.6rem; font-weight:600; letter-spacing: -0.5px;">${courseName}</h2>
+                            <p style="color:rgba(255,255,255,0.45); margin:4px 0 0 0; font-size: 0.9rem;">Área de trabajo: Aprueba inscripciones y organiza los horarios.</p>
+                        </div>
                     </div>
                      <div style="display:flex; gap:10px;">
-                        <button onclick="editCourseBasicInfo(${courseId}, '${courseName.replace(/'/g, "\\'")}', '${(info.description || '').replace(/'/g, "\\'")}', ${info.price || 0})" class="btn-back-top">
-                            <i class="bi bi-pencil-square"></i> Editar
+                        <button onclick="editCourseBasicInfo(${courseId}, '${courseName.replace(/'/g, "\\'")}', '${(info.description || '').replace(/'/g, "\\'")}', ${info.price || 0})" class="btn-back-top" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; padding: 8px 15px; cursor: pointer;">
+                            <i class="bi bi-pencil-square" style="margin-right:5px;"></i> Editar
                         </button>
-                         <button onclick="AcademicManager.closeDetails()" class="btn-close-modal">
+                         <button onclick="AcademicManager.closeDetails()" class="btn-close-modal" style="background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.3); color: #e74c3c; width: 35px; height: 35px; border-radius: 50%; display:flex; align-items:center; justify-content:center; cursor: pointer;">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- Tabs -->
-                <div style="display:flex; gap:15px; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
-                    <button id="btn-tab-enrollments" onclick="switchTab('tab-enrollments')" style="background:none; border:none; color:white; font-size:1rem; cursor:pointer; padding:5px 10px;">Inscritos (${students.length})</button>
-                    <button id="btn-tab-schedules" onclick="switchTab('tab-schedules')" style="background:none; border:none; color:#777; font-size:1rem; cursor:pointer; padding:5px 10px;">Horarios (${schedules.length})</button>
+                <div style="display:flex; gap:20px; margin-bottom:25px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 12px; width: max-content;">
+                    <button id="btn-tab-enrollments" onclick="switchTab('tab-enrollments')" style="background:var(--color-acento-azul); color:#121212; border:none; border-radius: 8px; font-weight:600; font-size:0.95rem; cursor:pointer; padding:8px 20px; transition: 0.2s;">
+                        <i class="bi bi-people-fill" style="margin-right: 6px;"></i> Estudiantes Inscritos <span style="background:rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 10px; margin-left:5px;">${students.length}</span>
+                    </button>
+                    <button id="btn-tab-schedules" onclick="switchTab('tab-schedules')" style="background:transparent; color:#888; border:none; border-radius: 8px; font-weight:600; font-size:0.95rem; cursor:pointer; padding:8px 20px; transition: 0.2s;">
+                        <i class="bi bi-calendar-event-fill" style="margin-right: 6px;"></i> Horarios y Docentes <span style="background:rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 10px; margin-left:5px;">${schedules.length}</span>
+                    </button>
                 </div>
 
                 <div id="tab-enrollments">
@@ -458,13 +515,13 @@ const AcademicManager = {
     },
 
     editSchedule(scheduleId, courseId, courseName, currentDay = '', currentStart = '', currentEnd = '') {
-        const days = ['Lunes', 'Martes', 'MiÃ©rcoles', 'Jueves', 'Viernes', 'SÃ¡bado', 'Domingo'];
+        const days = ['Lunes', 'Martes', 'Mi\u00e9rcoles', 'Jueves', 'Viernes', 'S\u00e1bado', 'Domingo'];
         const title = scheduleId ? 'Editar Horario' : 'Nuevo Horario';
 
         // Helper to create valid HTML for Swal
         const html = `
             <div style="text-align:left;">
-                <label style="display:block; margin-bottom:5px; color:#aaa;">DÃ­a</label>
+                <label style="display:block; margin-bottom:5px; color:#aaa;">D\u00eda</label>
                 <select id="swal-sched-day" class="swal2-select" style="width:100%; margin:0 0 15px 0; box-sizing:border-box;">
                     ${days.map(d => `<option value="${d}" ${d === currentDay ? 'selected' : ''}>${d}</option>`).join('')}
                 </select>
@@ -545,12 +602,12 @@ const AcademicManager = {
 
     async unassignTeacherSchedule(scheduleId, courseId, courseName) {
         if ((await Swal.fire({
-            title: 'Â¿Desasignar Docente?',
-            text: "El horario volverÃ¡ a estado PENDIENTE.",
+            title: '\u00bfDesasignar Docente?',
+            text: "El horario volver\u00e1 a estado PENDIENTE.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            confirmButtonText: 'SÃ­, desasignar'
+            confirmButtonText: 'S\u00ed, desasignar'
         })).isConfirmed) {
             const res = await ApiService.assignTeacher('remove', scheduleId);
             if (res.success) {
@@ -610,7 +667,7 @@ const AcademicManager = {
     },
 
     async unenrollStudentAdmin(enrollmentId, courseId, courseName) {
-        if ((await Swal.fire({ title: 'Â¿Desinscribir?', text: 'Esta acciÃ³n es irreversible.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })).isConfirmed) {
+        if ((await Swal.fire({ title: '\u00bfDesinscribir?', text: 'Esta acci\u00f3n es irreversible.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33' })).isConfirmed) {
             const res = await ApiService.unenrollStudent(enrollmentId);
             if (res.success) {
                 Swal.fire('Desinscrito', '', 'success');
@@ -622,7 +679,7 @@ const AcademicManager = {
     toggleStudentAccordion(enrollmentId) {
         // Implementation for the accordion inside the modal
         // This requires the DOM elements to exist, which are rendered in `renderDetailsModal`
-        alert("Esta funciÃ³n estÃ¡ siendo optimizada. Por favor use 'Horarios' para ver disponibilidad general.");
+        alert("Esta funci\u00f3n est\u00e1 siendo optimizada. Por favor use 'Horarios' para ver disponibilidad general.");
     },
 
     async editCourseBasicInfo(id, name, desc, price) {
@@ -630,7 +687,7 @@ const AcademicManager = {
             title: 'Editar Curso',
             html: `
                 <input id="swal-input1" class="swal2-input" placeholder="Nombre" value="${name}">
-                <textarea id="swal-input2" class="swal2-textarea" placeholder="DescripciÃ³n">${desc}</textarea>
+                <textarea id="swal-input2" class="swal2-textarea" placeholder="Descripci\u00f3n">${desc}</textarea>
                 <input id="swal-input3" class="swal2-input" type="number" placeholder="Precio" value="${price}">
             `,
             focusConfirm: false,
@@ -667,20 +724,69 @@ const AcademicManager = {
             const isActiveEn = tab === 'tab-enrollments';
             const isActiveSc = tab === 'tab-schedules';
 
-            btnEn.style.background = isActiveEn ? 'var(--color-acento-azul)' : 'none';
-            btnEn.style.color = isActiveEn ? '#121212' : '#777';
-            btnEn.style.boxShadow = isActiveEn ? '0 0 10px rgba(52, 152, 219, 0.3)' : 'none';
+            btnEn.style.background = isActiveEn ? 'var(--color-acento-azul)' : 'transparent';
+            btnEn.style.color = isActiveEn ? '#121212' : '#888';
+            btnEn.style.boxShadow = isActiveEn ? '0 4px 10px rgba(52, 152, 219, 0.3)' : 'none';
 
-            btnSc.style.background = isActiveSc ? 'var(--color-acento-azul)' : 'none';
-            btnSc.style.color = isActiveSc ? '#121212' : '#777';
-            btnSc.style.boxShadow = isActiveSc ? '0 0 10px rgba(52, 152, 219, 0.3)' : 'none';
+            btnSc.style.background = isActiveSc ? 'var(--color-acento-azul)' : 'transparent';
+            btnSc.style.color = isActiveSc ? '#121212' : '#888';
+            btnSc.style.boxShadow = isActiveSc ? '0 4px 10px rgba(52, 152, 219, 0.3)' : 'none';
         }
+    },
+
+    /**
+     * Ver estudiantes inscritos en un horario específico
+     */
+    async viewScheduleStudents(scheduleId, scheduleLabel, courseId, courseName) {
+        Swal.fire({ title: 'Cargando...', allowOutsideClick: false, didOpen: () => Swal.showLoading(), background: '#1a1a1a', color: '#fff' });
+
+        const res = await ApiService.getScheduleStudents(scheduleId);
+        Swal.close();
+
+        if (!res.success) {
+            return Swal.fire('Error', res.message || 'No se pudieron cargar los estudiantes.', 'error');
+        }
+
+        const students = Array.isArray(res.data) ? res.data : [];
+        const listHtml = students.length === 0
+            ? `<div style="text-align:center; padding:30px; color:rgba(255,255,255,0.4); font-style:italic;">No hay estudiantes en este horario.</div>`
+            : students.map(st => `
+                <div style="display:flex; align-items:center; gap:12px; padding:12px; background:rgba(255,255,255,0.03); border-radius:10px; border:1px solid rgba(255,255,255,0.05); margin-bottom:8px;">
+                    <div style="width:36px; height:36px; background:rgba(52,152,219,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#3498db; flex-shrink:0;">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div style="flex:1; min-width:0;">
+                        <div style="color:#fff; font-weight:600; font-size:0.95rem;">${st.full_name || st.student_name || 'Sin nombre'}</div>
+                        <div style="color:rgba(255,255,255,0.4); font-size:0.78rem;">${st.email || ''}</div>
+                    </div>
+                </div>
+            `).join('');
+
+        Swal.fire({
+            title: `<span style="font-size:1.1rem; color:#3498db;">Horario: ${scheduleLabel}</span>`,
+            html: `
+                <div style="font-size:0.82rem; color:rgba(255,255,255,0.5); margin-bottom:16px;">
+                    <i class="bi bi-people-fill" style="margin-right:6px;"></i>${students.length} estudiante${students.length !== 1 ? 's' : ''} inscrito${students.length !== 1 ? 's' : ''}
+                </div>
+                <div style="max-height:320px; overflow-y:auto; text-align:left;">
+                    ${listHtml}
+                </div>
+            `,
+            showCancelButton: true,
+            cancelButtonText: 'Cerrar',
+            confirmButtonText: '<i class="bi bi-arrow-left"></i> Volver al curso',
+            confirmButtonColor: '#3498db',
+            background: '#1a1a1a',
+            color: '#fff'
+        }).then(r => {
+            if (r.isConfirmed) this.openDetails(courseId, courseName);
+        });
     },
 
     async unassignSingleTeacher(scheduleId, teacherId, courseId, courseName) {
         if ((await Swal.fire({
-            title: 'Â¿Remover docente?',
-            text: "Se desasignarÃ¡ solo a este docente del horario.",
+            title: '\u00bfRemover docente?',
+            text: "Se desasignar\u00e1 solo a este docente del horario.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#e74c3c'
@@ -763,87 +869,83 @@ const AcademicManager = {
             <div style="text-align:center; padding:40px;">
                 <div style="font-size:3rem; color:rgba(255,255,255,0.1); margin-bottom:15px;"><i class="bi bi-calendar-x"></i></div>
                 <div style="color:rgba(255,255,255,0.4); margin-bottom:20px;">No hay horarios configurados para este curso.</div>
-                <button onclick="editSchedule(null, ${courseId}, '${courseName.replace(/'/g, "\\'")}')" style="background:var(--color-acento-azul); border:none; padding:10px 25px; border-radius:30px; color:white; font-weight:600; box-shadow:0 5px 15px rgba(52, 152, 219, 0.4); cursor:pointer;">
+                <button onclick="editSchedule(null, ${courseId}, '${courseName.replace(/'/g, "\\'")}')"
+                        style="background:var(--color-acento-azul); border:none; padding:10px 25px; border-radius:30px; color:white; font-weight:600; cursor:pointer;">
                     <i class="bi bi-plus-lg"></i> Agregar Primer Horario
                 </button>
             </div>`;
 
-        return `
-            <div style="text-align:right; margin-bottom:15px;">
-                <button onclick="editSchedule(null, ${courseId}, '${courseName.replace(/'/g, "\\'")}')" style="background:rgba(52, 152, 219, 0.15); border:1px solid rgba(52, 152, 219, 0.3); color:#3498db; padding:8px 20px; border-radius:20px; font-weight:600; cursor:pointer; transition:0.3s;">
-                    <i class="bi bi-plus-circle"></i> Nuevo Horario
-                </button>
-            </div>
-    ${schedules.map(s => {
-            const hasTeachers = s.teachers && s.teachers.length > 0;
-            const teacherNames = hasTeachers ? s.teachers.map(t => t.name).join(', ') : 'Sin asignar';
-            const currentTeacherIds = hasTeachers ? JSON.stringify(s.teachers.map(t => t.id)) : '[]';
-            const enrolled = s.enrolled_count || 0;
-            const capacity = s.max_capacity || 0; // Assuming max_capacity exists or default to 0
-            const progress = capacity > 0 ? (enrolled / capacity) * 100 : 0;
-            const progressColor = progress >= 100 ? '#e74c3c' : (progress >= 80 ? '#f1c40f' : '#2ecc71');
+        const DAY_ORDER = ['Lunes', 'Martes', 'Mi\u00e9rcoles', 'Jueves', 'Viernes', 'S\u00e1bado', 'Domingo'];
+        const byDay = {};
+        DAY_ORDER.forEach(d => { byDay[d] = []; });
+        schedules.forEach(s => { const d = s.day || 'Otros'; if (!byDay[d]) byDay[d] = []; byDay[d].push(s); });
+        const activeDays = DAY_ORDER.filter(d => byDay[d].length > 0);
+        const safeCourseName = courseName.replace(/'/g, "\\'");
 
-            return `
-                <div class="admin-course-card" style="background: linear-gradient(145deg, rgba(20, 20, 20, 0.6) 0%, rgba(30, 30, 30, 0.4) 100%); border-left: 4px solid ${hasTeachers ? '#3498db' : '#95a5a6'}; margin-bottom:15px; padding:20px; border-radius:15px; border:1px solid rgba(255,255,255,0.05); box-shadow:0 5px 20px rgba(0,0,0,0.3);">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div style="flex-grow:1;">
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="course-title" style="font-size:1.2rem; color:#fff; text-shadow:0 0 10px rgba(52, 152, 219, 0.3);">${s.day}</div>
-                                <span style="background:rgba(255,255,255,0.1); padding:2px 8px; border-radius:5px; font-size:0.8rem; color:#ccc;">${ApiService.formatTime(s.time_start)} - ${ApiService.formatTime(s.time_end)}</span>
-                            </div>
-                            
+        const dayColumns = activeDays.map(day => {
+            const slots = byDay[day];
+            const slotCards = slots.map(s => {
+                const hasTeachers = s.teachers && s.teachers.length > 0;
+                const currentTeacherIds = hasTeachers ? JSON.stringify(s.teachers.map(t => t.id)) : '[]';
+                const enrolled = s.enrolled_count || 0;
+                const capacity = s.quota || 15;
+                const pct = capacity > 0 ? Math.min((enrolled / capacity) * 100, 100) : 0;
+                const barColor = pct >= 100 ? '#e74c3c' : pct >= 80 ? '#f1c40f' : '#2ecc71';
+                const bdr = hasTeachers ? 'rgba(52,152,219,0.4)' : 'rgba(255,255,255,0.06)';
 
+                const teacherChip = hasTeachers
+                    ? '<div style="margin:6px 0 4px; display:flex; flex-wrap:wrap; gap:4px; align-items:center;">' +
+                    s.teachers.map(t =>
+                        '<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(52,152,219,0.12);color:#74b9ff;border:1px solid rgba(52,152,219,0.25);border-radius:20px;padding:2px 7px;font-size:0.69rem;">' +
+                        '<i class="bi bi-person-fill" style="font-size:0.62rem;"></i>' + t.name +
+                        '<span onclick="unassignSingleTeacher(' + s.id_schedule + ',' + t.id + ',' + courseId + ',\'' + safeCourseName + '\')" style="cursor:pointer;color:rgba(255,100,100,0.6);margin-left:2px;" title="Remover" onmouseover="this.style.color=\'#e74c3c\'" onmouseout="this.style.color=\'rgba(255,100,100,0.6)\'">&times;</span>' +
+                        '</span>'
+                    ).join('') +
+                    '<button onclick="assignTeacherModal(' + s.id_schedule + ',' + courseId + ',\'' + safeCourseName + '\',' + currentTeacherIds + ')" title="Asignar docente" style="background:rgba(52,152,219,0.1);border:none;color:#3498db;width:20px;height:20px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.65rem;" onmouseover="this.style.background=\'rgba(52,152,219,0.22)\'" onmouseout="this.style.background=\'rgba(52,152,219,0.1)\'"><i class="bi bi-person-plus"></i></button>' +
+                    '</div>'
+                    : '<div style="margin:6px 0 4px;color:rgba(255,159,67,0.55);font-size:0.69rem;display:flex;align-items:center;gap:5px;">' +
+                    '<button onclick="assignTeacherModal(' + s.id_schedule + ',' + courseId + ',\'' + safeCourseName + '\',' + currentTeacherIds + ')" title="Asignar docente" style="background:rgba(255,159,67,0.12);border:none;color:rgba(255,159,67,0.85);width:20px;height:20px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.65rem;" onmouseover="this.style.background=\'rgba(255,159,67,0.22)\'" onmouseout="this.style.background=\'rgba(255,159,67,0.12)\'"><i class="bi bi-person-plus"></i></button>' +
+                    'Sin docente</div>';
 
-                            <div style="margin-top:12px;">
-                                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:rgba(255,255,255,0.4); margin-bottom:4px;">
-                                    <span>Cupos: ${enrolled} / ${capacity}</span>
-                                    <span>${Math.round(progress)}%</span>
-                                </div>
-                                <div style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; overflow:hidden;">
-                                    <div style="width:${Math.min(progress, 100)}%; height:100%; background:${progressColor}; box-shadow:0 0 10px ${progressColor}; transition:width 0.5s;"></div>
-                                </div>
-                            </div>
-                        </div>
+                const viewBtn = enrolled > 0
+                    ? '<button onclick="viewScheduleStudents(' + s.id_schedule + ',\'' + day + ' ' + ApiService.formatTime(s.time_start) + '\',' + courseId + ',\'' + safeCourseName + '\')" title="Ver inscritos" style="background:rgba(46,204,113,0.1);border:none;color:#2ecc71;width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.68rem;" onmouseover="this.style.background=\'rgba(46,204,113,0.22)\'" onmouseout="this.style.background=\'rgba(46,204,113,0.1)\'"><i class="bi bi-people"></i></button>'
+                    : '';
 
-                        <div style="display:flex; flex-direction:column; gap:8px; margin-left:20px;">
-                            <button onclick="editSchedule(${s.id_schedule}, ${courseId}, '${courseName.replace(/'/g, "\\'")}', '${s.day}', '${s.time_start}', '${s.time_end}')" style="background:rgba(255,255,255,0.05); border:none; color:#fff; width:36px; height:36px; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button onclick="assignTeacherModal(${s.id_schedule}, ${courseId}, '${courseName.replace(/'/g, "\\'")}', ${currentTeacherIds})" style="background:rgba(52, 152, 219, 0.1); border:none; color:#3498db; width:36px; height:36px; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; box-shadow:0 0 10px rgba(52, 152, 219, 0.1);" onmouseover="this.style.background='rgba(52, 152, 219, 0.2)'" onmouseout="this.style.background='rgba(52, 152, 219, 0.1)'">
-                                <i class="bi bi-person-plus"></i>
-                            </button>
-                             ${hasTeachers ? `
-                                <button onclick="unassignTeacherSchedule(${s.id_schedule}, ${courseId}, '${courseName.replace(/'/g, "\\'")}')" style="background:rgba(231, 76, 60, 0.1); border:none; color:#e74c3c; width:36px; height:36px; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;" onmouseover="this.style.background='rgba(231, 76, 60, 0.2)'" onmouseout="this.style.background='rgba(231, 76, 60, 0.1)'" title="Desasignar TODOS">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            ` : ''}
-                        </div>
-                    </div>
-                     ${hasTeachers ? `
-                        <div style="margin-top:15px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.05);">
-                             <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); margin-bottom:8px; letter-spacing:1px; text-transform:uppercase;">Docentes Asignados</div>
-                             <div style="display:flex; flex-direction:column; gap:8px;">
-                                ${s.teachers.map(t => `
-                                    <div style="background:rgba(20, 20, 20, 0.6); border:1px solid rgba(255,255,255,0.05); padding:8px 12px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-                                        <div style="display:flex; align-items:center; gap:10px;">
-                                            <div style="width:30px; height:30px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#aaa; font-size:0.9rem;">
-                                                <i class="bi bi-person"></i>
-                                            </div>
-                                            <span style="color:#eee; font-size:0.9rem;">${t.name}</span>
-                                        </div>
-                                        <button onclick="unassignSingleTeacher(${s.id_schedule}, ${t.id}, ${courseId}, '${courseName.replace(/'/g, "\\'")}')" title="Remover Docente" style="background:rgba(231, 76, 60, 0.1); color:#e74c3c; border:none; width:30px; height:30px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;" onmouseover="this.style.background='rgba(231, 76, 60, 0.2)'" onmouseout="this.style.background='rgba(231, 76, 60, 0.1)'">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                `).join('')}
-                             </div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        }).join('')
-            }
-`;
+                return '<div style="background:rgba(255,255,255,0.03);border:1px solid ' + bdr + ';border-radius:11px;padding:9px 10px;margin-bottom:7px;transition:border-color 0.2s;" onmouseover="this.style.borderColor=\'rgba(52,152,219,0.45)\'" onmouseout="this.style.borderColor=\'' + bdr + '\'">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;gap:3px;">' +
+                    '<span style="background:rgba(52,152,219,0.14);color:#74b9ff;border:1px solid rgba(52,152,219,0.2);padding:2px 7px;border-radius:7px;font-size:0.72rem;font-weight:600;white-space:nowrap;">' +
+                    ApiService.formatTime(s.time_start) + '&ndash;' + ApiService.formatTime(s.time_end) +
+                    '</span>' +
+                    '<div style="display:flex;gap:3px;flex-shrink:0;">' +
+                    '<button onclick="editSchedule(' + s.id_schedule + ',' + courseId + ',\'' + safeCourseName + '\',\'' + s.day + '\',\'' + s.time_start + '\',\'' + s.time_end + '\')" title="Editar" style="background:rgba(255,255,255,0.05);border:none;color:rgba(255,255,255,0.45);width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.68rem;" onmouseover="this.style.background=\'rgba(255,255,255,0.12)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'rgba(255,255,255,0.05)\';this.style.color=\'rgba(255,255,255,0.45)\'"><i class="bi bi-pencil"></i></button>' +
+                    viewBtn +
+                    '</div>' +
+                    '</div>' +
+                    teacherChip +
+                    '<div style="margin-top:5px;">' +
+                    '<div style="display:flex;justify-content:space-between;font-size:0.66rem;color:rgba(255,255,255,0.27);margin-bottom:2px;"><span>' + enrolled + '/' + capacity + '</span><span>' + Math.round(pct) + '%</span></div>' +
+                    '<div style="width:100%;height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;"><div style="width:' + pct + '%;height:100%;background:' + barColor + ';transition:width 0.4s;"></div></div>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+
+            return '<div style="min-width:150px;flex:1;">' +
+                '<div style="text-align:center;padding:6px 4px 9px;margin-bottom:8px;border-bottom:2px solid rgba(52,152,219,0.22);">' +
+                '<div style="color:#74b9ff;font-weight:700;font-size:0.8rem;letter-spacing:0.5px;text-transform:uppercase;">' + day + '</div>' +
+                '<div style="color:rgba(255,255,255,0.2);font-size:0.67rem;margin-top:2px;">' + slots.length + ' horario' + (slots.length !== 1 ? 's' : '') + '</div>' +
+                '</div>' +
+                slotCards +
+                '</div>';
+        }).join('');
+
+        return '<div style="display:flex;justify-content:flex-end;margin-bottom:13px;">' +
+            '<button onclick="editSchedule(null,' + courseId + ',\'' + safeCourseName + '\')" style="background:rgba(52,152,219,0.14);border:1px solid rgba(52,152,219,0.28);color:#3498db;padding:6px 16px;border-radius:20px;font-size:0.8rem;font-weight:600;cursor:pointer;">' +
+            '<i class="bi bi-plus-circle"></i> Nuevo Horario' +
+            '</button>' +
+            '</div>' +
+            '<div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;align-items:flex-start;">' +
+            dayColumns +
+            '</div>';
     },
 
     closeDetails() {

@@ -210,8 +210,144 @@
             </div>
         </div>
 
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!--  CICLO AUDITORÍA DE SEGURIDAD 24/02/2026 — Módulo Programas  -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+
+        <div class="log-entry resolved">
+            <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span>
+                    <strong>VULN-001: Sin Autenticación en Endpoint de Escritura de Programas</strong></div>
+                <small>Build: 24022026SECFIX | CVSS estimado: 9.1 (Crítico)</small>
+            </div>
+            <div class="log-content">
+                <strong>Archivos afectados:</strong>
+                <code>jacquin_api/admin_save_programs_json.php</code> (raíz) y
+                <code>jacquin_api/public/admin_save_programs_json.php</code> (copia).
+                Ambos carecían de <code>session_start()</code> y verificación de rol.
+                Cualquier actor externo podía enviar un POST anónimo y sobrescribir o vaciar
+                <code>programs.json</code> borrando la sección pública instantáneamente.
+                <strong>Solución:</strong> Añadido <code>session_start()</code> + guard
+                <code>$_SESSION['user']['id_rol'] != 1</code> → HTTP 403 en ambos archivos.
+                El endpoint <code>public/</code> marcado además como deprecado (HTTP 410).
+                <code>ApiService.saveProgramsJson()</code> actualizado con <code>credentials: 'include'</code>
+                (legacy + React) para transmitir la cookie de sesión PHP.
+            </div>
+        </div>
+
+        <div class="log-entry resolved">
+            <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span>
+                    <strong>VULN-002: Imágenes Base64 Embebidas en programs.json (838 KB)</strong></div>
+                <small>Build: 24022026SECFIX | Severidad: Alta — Performance</small>
+            </div>
+            <div class="log-content">
+                <strong>Evidencia real:</strong> <code>program_1768517168737</code> contenía una imagen Base64
+                de <strong>844,922 caracteres</strong>. El JSON completo pesaba <strong>858,635 bytes (838 KB)</strong>.
+                Cada visita al home descargaba esos 838 KB antes de renderizar la sección "Nuestros Programas".
+                Proyección máxima con 9 programas × 3 MB: JSON de ~36 MB.
+                <strong>Solución backend:</strong> El endpoint detecta automáticamente cualquier campo
+                <code>image</code> que empiece con <code>data:image/</code>, decodifica el Base64,
+                valida tipo MIME (jpg/png/webp/gif), valida tamaño (máx 5 MB), guarda en
+                <code>public/uploads/programs/</code> con <code>PathHelper</code>, y sustituye el campo por la
+                ruta relativa (<30 chars).
+                <strong>Migración ejecutada:</strong> <code>programs.json</code> pasó de 858 KB → <strong>5 KB
+                (−99.4%)</strong>. Imagen guardada como archivo PNG físico (618 KB).
+                <strong>Frontend:</strong> <code>Programs.jsx</code> actualizado con <code>resolveImageUrl()</code>
+                para manejar rutas <code>public/uploads/</code> vía <code>ApiService.BASE_URL</code>.
+            </div>
+        </div>
+
+        <div class="log-entry resolved">
+            <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span>
+                    <strong>VULN-003: Sin Bloqueo de Archivo en Escrituras Concurrentes (Sin LOCK_EX)</strong></div>
+                <small>Build: 24022026SECFIX | Severidad: Moderada</small>
+            </div>
+            <div class="log-content">
+                <strong>Archivos afectados:</strong> Ambos endpoints de escritura usaban
+                <code>file_put_contents()</code> sin flags.
+                En escritura simultánea de dos admins, los bytes podían intercalarse produciendo un JSON
+                corrupto que dejaba <code>Programs.jsx</code> en blanco (el <code>JSON.parse</code> fallaría
+                silenciosamente).
+                <strong>Solución:</strong> Añadido flag <code>LOCK_EX</code> en todas las llamadas
+                <code>file_put_contents()</code> de ambos archivos. Verificado por test de 5 procesos
+                paralelos (Bloque 4, 24022026STRESS).
+            </div>
+        </div>
+
+        <div class="log-entry resolved">
+            <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span>
+                    <strong>VULN-004: Directorio data/ Creado con Permisos 0777</strong></div>
+                <small>Build: 24022026SECFIX | Severidad: Baja-Media</small>
+            </div>
+            <div class="log-content">
+                <strong>Archivo afectado:</strong> <code>admin_save_programs_json.php</code> (raíz),
+                línea 26: <code>mkdir(dirname($file), 0777, true)</code>.
+                En hosting compartido (Linux), un directorio world-writable permite que cualquier proceso
+                del servidor modifique <code>programs.json</code>.
+                <strong>Solución:</strong> <code>0777</code> → <code>0755</code>. La copia en <code>public/</code>
+                ya usaba 0755 correctamente.
+            </div>
+        </div>
+
+        <div class="log-entry resolved">
+            <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span>
+                    <strong>VULN-005: Sin Cache Headers en get_programs_json.php</strong></div>
+                <small>Build: 24022026SECFIX | Severidad: Performance</small>
+            </div>
+            <div class="log-content">
+                <strong>Archivo afectado:</strong> <code>jacquin_api/get_programs_json.php</code>.
+                Sin ningún header de caché, cada visita al home descargaba el JSON completo
+                (838 KB al momento del hallazgo) desde InfinityFree sin posibilidad de caché del navegador.
+                <strong>Solución:</strong> Añadidos <code>Cache-Control: public, max-age=300</code>,
+                <code>ETag</code> (MD5 del archivo) y <code>Last-Modified</code>.
+                Lógica de respuesta <code>304 Not Modified</code> cuando el cliente ya tiene la versión actual.
+                Ahorro real: en visitas repetidas, el JSON no se descarga (0 bytes de transferencia).
+            </div>
+        </div>
+
+        <div class="log-entry resolved">
+            <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span>
+                    <strong>VULN-006: Dos Copias Independientes del Endpoint de Escritura</strong></div>
+                <small>Build: 24022026SECFIX | Severidad: Arquitectura</small>
+            </div>
+            <div class="log-content">
+                <strong>Archivos:</strong> <code>jacquin_api/admin_save_programs_json.php</code> (raíz, activo)
+                y <code>jacquin_api/public/admin_save_programs_json.php</code> (duplicado).
+                Ambas con lógica ligeramente diferente (0777 vs 0755, mensajes distintos) pero apuntando al
+                mismo <code>programs.json</code>. Duplica la superficie de ataque y complica el mantenimiento.
+                <strong>Solución:</strong> El endpoint canónico es el raíz (al que apunta <code>ApiService</code>).
+                El duplicado en <code>public/</code> devuelve HTTP 410 Gone indicando su obsolescencia.
+            </div>
+        </div>
+
+        <div class="log-entry resolved">
+            <div class="log-header">
+                <div><span class="badge resolved">RESUELTO</span>
+                    <strong>VULN-007: Sin Validación de Payload en Backend</strong></div>
+                <small>Build: 24022026SECFIX | Severidad: Media</small>
+            </div>
+            <div class="log-content">
+                <strong>Riesgos identificados:</strong> (a) Payload de decenas de MB podía enviarse libremente.
+                (b) Un array vacío <code>[]</code> pasaba la validación <code>is_array()</code> → borraba todos
+                los programas. (c) Arrays secuenciales como <code>[{"title":"x"}]</code> podían corromper la
+                estructura del JSON.
+                <strong>Nota técnica:</strong> La detección de <code>[]</code> vacío con
+                <code>array_keys($data) === range(0, count($data)-1)</code> fallaba porque
+                <code>range(0, -1)</code> devuelve <code>[0, -1]</code> en PHP (no un array vacío).
+                Bug descubierto durante la suite de tests y corregido inmediatamente añadiendo
+                <code>empty($data)</code>.
+                <strong>Solución final:</strong> Límite de 10 MB + rechazo de <code>[]</code> vacío
+                (<code>empty()</code>) + rechazo de arrays secuenciales.
+            </div>
+        </div>
+
         <footer>
-            Generado por Agente Antigravity | Solo para uso interno de ingeniería
+            Generado por Agente Documentador Técnico Pro | Project Jacquin
         </footer>
     </div>
 

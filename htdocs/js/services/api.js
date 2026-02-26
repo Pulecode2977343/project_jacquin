@@ -10,7 +10,7 @@ var API_CONFIG = {
         const host = window.location.hostname;
         const url = host === 'localhost' || host === '127.0.0.1' || host.includes('share.zrok.io')
             ? "/jacquin_api/"
-            : (path.includes('/pages/') ? "../../jacquin_api/" : "../jacquin_api/");
+            : (path.includes('/pages/') ? "../../jacquin_api/" : "./jacquin_api/");
 
         console.log(`[ApiService] Host: ${host} | Base URL: ${url}`);
         return url;
@@ -40,7 +40,7 @@ var ApiService = {
         }
 
         if (response.status === 401) {
-            console.warn("[ApiService] SesiÃ³n expirada o no autorizada (401).");
+            console.warn("[ApiService] Sesión expirada o no autorizada (401).");
             localStorage.removeItem("jam_user_session");
             const path = window.location.pathname;
             if (!path.includes('login.html') && !path.includes('index.html')) {
@@ -48,9 +48,9 @@ var ApiService = {
             }
             try {
                 const err = JSON.parse(text);
-                return { success: false, message: err.message || "SesiÃ³n expirada", unauthorized: true };
+                return { success: false, message: err.message || "Sesión expirada", unauthorized: true };
             } catch (e) {
-                return { success: false, message: "SesiÃ³n expirada", unauthorized: true };
+                return { success: false, message: "Sesión expirada", unauthorized: true };
             }
         }
 
@@ -60,7 +60,7 @@ var ApiService = {
             // Si no es JSON, devolvemos el texto para debugging (truncado)
             return {
                 success: false,
-                message: `Respuesta no vÃ¡lida del servidor (Status ${response.status}): ` + text.substring(0, 100)
+                message: `Respuesta no válida del servidor (Status ${response.status}): ` + text.substring(0, 100)
             };
         }
     },
@@ -124,7 +124,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error de conexiÃ³n en Login." };
+            return { success: false, message: "Error de conexión en Login." };
         }
     },
 
@@ -137,7 +137,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error de conexiÃ³n en Registro." };
+            return { success: false, message: "Error de conexión en Registro." };
         }
     },
 
@@ -295,7 +295,7 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             console.error("Error enrolling student:", error);
-            return { success: false, message: "Error de conexiÃ³n" };
+            return { success: false, message: "Error de conexión" };
         }
     },
 
@@ -334,7 +334,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error solicitando inscripciÃ³n." };
+            return { success: false, message: "Error solicitando inscripción." };
         }
     },
 
@@ -348,7 +348,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error al eliminar inscripciÃ³n." };
+            return { success: false, message: "Error al eliminar inscripción." };
         }
     },
 
@@ -448,7 +448,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error actualizando contraseÃ±a." };
+            return { success: false, message: "Error actualizando contraseña." };
         }
     },
 
@@ -472,7 +472,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error de conexiÃ³n." };
+            return { success: false, message: "Error de conexión." };
         }
     },
 
@@ -485,7 +485,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error eliminando Ã­tem." };
+            return { success: false, message: "Error eliminando ítem." };
         }
     },
 
@@ -523,7 +523,7 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             console.error("Error updating course teacher:", error);
-            return { success: false, message: "Error de conexiÃ³n" };
+            return { success: false, message: "Error de conexión" };
         }
     },
 
@@ -537,7 +537,7 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             console.error("Error updating user:", error);
-            return { success: false, message: "Error de conexiÃ³n" };
+            return { success: false, message: "Error de conexión" };
         }
     },
 
@@ -552,7 +552,7 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             console.error("Error deleting course:", error);
-            return { success: false, message: "Error de conexiÃ³n" };
+            return { success: false, message: "Error de conexión" };
         }
     },
 
@@ -565,6 +565,42 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error obteniendo detalles del curso." };
+        }
+    },
+
+    async getAcademicStats() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_academic_stats.php`, {
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error obteniendo estadísticas académicas." };
+        }
+    },
+
+    async getAcademicOverview() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}get_academic_overview.php`, {
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error obteniendo vista general académica." };
+        }
+    },
+
+    async getScheduleStudents(scheduleId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}get_academic_data.php?action=get_schedule_students&schedule_id=${encodeURIComponent(scheduleId)}`, {
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error obteniendo estudiantes del horario." };
         }
     },
 
@@ -592,7 +628,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error de conexiÃ³n." };
+            return { success: false, message: "Error de conexión." };
         }
     },
 
@@ -698,7 +734,7 @@ var ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             console.error("Error sending message:", error);
-            return { success: false, message: "Error de conexiÃ³n." };
+            return { success: false, message: "Error de conexión." };
         }
     },
 
@@ -709,7 +745,7 @@ var ApiService = {
             });
             return await this.handleResponse(response);
         } catch (error) {
-            return { success: false, message: "Error obteniendo horarios de inscripciÃ³n." };
+            return { success: false, message: "Error obteniendo horarios de inscripción." };
         }
     },
 
@@ -817,6 +853,7 @@ var ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_save_programs_json.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(programsData)
             });
             return await this.handleResponse(response);
@@ -825,3 +862,5 @@ var ApiService = {
         }
     }
 };
+
+window.API_CONFIG = API_CONFIG;

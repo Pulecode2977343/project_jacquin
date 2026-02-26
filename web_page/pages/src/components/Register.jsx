@@ -15,12 +15,28 @@ const Register = () => {
     const [message, setMessage] = useState('');
     const [isError, setIsError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [showLoginHint, setShowLoginHint] = useState(false);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         ApiService.getCourses()
-            .then(res => { if (res.success && res.data) setCourses(res.data); })
+            .then(res => {
+                if (res.success && res.data) {
+                    setCourses(res.data);
+                    // Preseleccionar curso si viene de la sección de programas
+                    const pendingTitle = sessionStorage.getItem('pending_enrollment_title');
+                    if (pendingTitle) {
+                        const match = res.data.find(c =>
+                            c.course_name.toLowerCase().includes(pendingTitle.toLowerCase()) ||
+                            pendingTitle.toLowerCase().includes(c.course_name.toLowerCase())
+                        );
+                        if (match) {
+                            setFormData(prev => ({ ...prev, idCourse: String(match.id_course) }));
+                        }
+                    }
+                }
+            })
             .catch(() => {});
     }, []);
 
@@ -48,8 +64,13 @@ const Register = () => {
                 setMessage('¡Registro exitoso! Redirigiendo al login...');
                 setTimeout(() => navigate('/login'), 2000);
             } else {
-                setMessage(result.message || 'Error en el registro');
+                const msg = result.message || 'Error en el registro';
+                setMessage(msg);
                 setIsError(true);
+                // Si el correo ya existe, ofrecer ir al login
+                if (msg.includes('ya está registrado') || msg.includes('ya registrado') || msg.includes('email')) {
+                    setShowLoginHint(true);
+                }
             }
         } catch (error) {
             setMessage('Error de conexión');
@@ -184,6 +205,16 @@ const Register = () => {
                     <p id="mensaje-respuesta" style={{ color: isError ? 'var(--color-acento-naranja)' : '#2ecc71', textAlign: 'center', marginTop: '15px' }}>
                         {message}
                     </p>
+
+                    {showLoginHint && (
+                        <p style={{ textAlign: 'center', marginTop: '10px', color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>
+                            ¿Ya tienes cuenta?{' '}
+                            <Link to="/login" style={{ color: 'var(--color-acento-naranja)', fontWeight: 'bold' }}>
+                                Inicia sesión aquí
+                            </Link>
+                            {sessionStorage.getItem('pending_enrollment') && ' para continuar con tu inscripción.'}
+                        </p>
+                    )}
                 </form>
             </section>
         </main>

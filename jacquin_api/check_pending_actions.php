@@ -19,17 +19,18 @@ try {
     ];
 
     if ($roleId === 1) { // Admin
-        // Check pending enrollments
-        $stmt = $pdo->query("SELECT COUNT(*) FROM enrollments WHERE status = 'Pendiente'");
+        // Check new registrations (Pre-inscrito) and pending approvals (Pendiente)
+        $stmt = $pdo->query("SELECT COUNT(*) FROM enrollments WHERE status IN ('Pendiente', 'Pre-inscrito')");
         $pending = $stmt->fetchColumn();
         if ($pending > 0) {
             $result['has_alerts'] = true;
             $result['badges']['academic'] = $pending;
             $result['alerts'][] = [
                 'type' => 'info',
-                'title' => 'Gestión Académica',
-                'message' => "Hay $pending solicitud(es) de inscripción pendientes.",
-                'action' => 'open_academic'
+                'title' => 'Nuevas Inscripciones',
+                'message' => "Hay $pending solicitud(es) de inscripción por revisar.",
+                'action' => 'open_academic',
+                'count' => (int)$pending
             ];
         }
     }

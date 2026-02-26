@@ -55,7 +55,7 @@ function checkScheduleConflict($pdo, $studentId, $newScheduleId)
                 $timeFormatted = substr($existing['time_start'], 0, 5) . " - " . substr($existing['time_end'], 0, 5);
                 return [
                     "conflict" => true,
-                    "message" => "Cruce de horario detectado con el curso '{$existing['course_name']}' ({$existing['day']} {$timeFormatted})."
+                    "message" => "Su inscripción no puede ser procesada. Ya tiene el curso \"{$existing['course_name']}\" activo en ese horario ({$existing['day']} {$timeFormatted})."
                 ];
             }
         }

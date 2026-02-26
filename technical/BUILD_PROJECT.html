@@ -269,6 +269,364 @@
             </div>
         </div>
 
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- Entry 005: Security Audit — Módulo Programas             -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <div class="build-entry">
+            <div class="build-header">
+                <span class="build-id">24022026SECAUDIT</span>
+                <span style="font-size: 0.85rem; color: #64748b;">24 Feb 2026 — Auditoría de Seguridad</span>
+            </div>
+
+            <div class="prompt-box">
+                <h3>Instrucción Original</h3>
+                <div class="prompt-text">
+                    "🚨 REPORTE DE AUDITORÍA: Módulo Nuestros Programas — 1. Vulnerabilidad Crítica: Falta de
+                    Autenticación de Administrador. 2. Defecto de Rendimiento/Arquitectura: Almacenado de Imágenes en
+                    formato Base64. 3. Seguridad de Datos Concurrentes: Falta de Bloqueo de Archivos. Realiza auditoría
+                    profunda y completa y confirma la información de vulnerabilidades."
+                </div>
+            </div>
+
+            <div class="tech-box">
+                <h3>Traducción Técnica / Plan</h3>
+                <div class="tech-text">
+                    Auditoría de seguridad integral del módulo <strong>admin_save_programs_json.php</strong> y
+                    ecosistema de archivos relacionados.
+                    <ul style="margin-top: 10px; font-size: 0.9rem; font-weight: 400;">
+                        <li><strong>Alcance:</strong> 8 archivos auditados —
+                            <code>admin_save_programs_json.php</code> (raíz + public),
+                            <code>get_programs_json.php</code>, <code>programs.json</code>,
+                            <code>admin_programs.js</code>, <code>Programs.jsx</code>,
+                            <code>api.js</code> (legacy + React), <code>admin_create_event.php</code>
+                            (referencia), <code>PathHelper.php</code>.
+                        </li>
+                        <li><strong>Resultado:</strong> 3 vulnerabilidades reportadas <strong>confirmadas</strong> +
+                            4 hallazgos adicionales descubiertos.</li>
+                        <li><strong>Evidencia clave:</strong> <code>programs.json</code> pesaba <strong>858,635 bytes
+                                (838 KB)</strong> por 1 imagen base64 embebida. Sin <code>session_start()</code>
+                            ni verificación de rol en ninguno de los dos endpoints de escritura.</li>
+                        <li><strong>Referencias:</strong> VULN-001 · VULN-002 · VULN-003 · VULN-004 · VULN-005 ·
+                            VULN-006 · VULN-007 → <em>ERROR_LOG.html</em></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- Entry 006: Security Fix — 7 vulnerabilidades cerradas     -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <div class="build-entry">
+            <div class="build-header">
+                <span class="build-id">24022026SECFIX</span>
+                <span style="font-size: 0.85rem; color: #64748b;">24 Feb 2026 — Remediación de Seguridad</span>
+            </div>
+
+            <div class="prompt-box">
+                <h3>Instrucción Original</h3>
+                <div class="prompt-text">
+                    "perfecto procede!" (tras confirmación de las 7 vulnerabilidades identificadas en
+                    24022026SECAUDIT)
+                </div>
+            </div>
+
+            <div class="tech-box">
+                <h3>Traducción Técnica / Acciones Ejecutadas</h3>
+                <div class="tech-text">
+                    Remediación completa de 7 vulnerabilidades en el módulo Programas. Archivos modificados y creados:
+                    <ul style="margin-top: 10px; font-size: 0.9rem; font-weight: 400;">
+                        <li><strong>[VULN-001 / CRÍTICA]</strong> <code>admin_save_programs_json.php</code>:
+                            Añadido <code>session_start()</code> + guard <code>$_SESSION['user']['id_rol'] != 1</code>
+                            → HTTP 403. Patrón idéntico a <code>admin_create_event.php</code>.</li>
+                        <li><strong>[VULN-001b]</strong> <code>public/admin_save_programs_json.php</code>:
+                            Mismo guard + marcado como deprecado (HTTP 410).</li>
+                        <li><strong>[VULN-001c]</strong> <code>api.js</code> (legacy + React):
+                            Añadido <code>credentials: 'include'</code> para enviar cookie de sesión PHP.</li>
+                        <li><strong>[VULN-002 / SEVERA]</strong> Backend extrae automáticamente cualquier
+                            <code>data:image/</code> recibida → la guarda en
+                            <code>public/uploads/programs/</code> usando <code>PathHelper</code>.
+                            El JSON almacena solo la ruta (<30 caracteres).</li>
+                        <li><strong>[VULN-002b]</strong> Migración ejecutada: <code>program_1768517168737</code>
+                            (imagen 844,922 chars base64) → archivo físico PNG 618 KB.
+                            <code>programs.json</code>: 858 KB → <strong>5 KB</strong> (−99.4%).
+                        </li>
+                        <li><strong>[VULN-002c]</strong> <code>Programs.jsx</code>: Añadida función
+                            <code>resolveImageUrl()</code> para resolver rutas <code>public/uploads/</code>
+                            via <code>ApiService.BASE_URL</code>.
+                        </li>
+                        <li><strong>[VULN-003 / MODERADA]</strong> <code>file_put_contents()</code> con
+                            flag <code>LOCK_EX</code> en ambos endpoints.</li>
+                        <li><strong>[VULN-004]</strong> <code>mkdir(..., 0777)</code> → <code>0755</code>.</li>
+                        <li><strong>[VULN-005]</strong> <code>get_programs_json.php</code>: Headers
+                            <code>Cache-Control: public, max-age=300</code> + <code>ETag</code> + respuesta
+                            <code>304 Not Modified</code>.
+                        </li>
+                        <li><strong>[VULN-006]</strong> Endpoint duplicado en <code>public/</code> neutralizado
+                            con HTTP 410.</li>
+                        <li><strong>[VULN-007]</strong> Validación de payload: límite 10 MB + rechazo de
+                            <code>[]</code> vacío + rechazo de array secuencial.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- Entry 007: Stress Tests — 37/37 PASS                     -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <div class="build-entry">
+            <div class="build-header">
+                <span class="build-id">24022026STRESS</span>
+                <span style="font-size: 0.85rem; color: #64748b;">24 Feb 2026 — Pruebas de Estrés &amp; Seguridad</span>
+            </div>
+
+            <div class="prompt-box">
+                <h3>Instrucción Original</h3>
+                <div class="prompt-text">
+                    "perfecto, procede con pruebas de estrés"
+                </div>
+            </div>
+
+            <div class="tech-box">
+                <h3>Resultado de Tests</h3>
+                <div class="tech-text">
+                    Suite PHP CLI de 9 bloques / 37 tests. <strong style="color: #16a34a;">37/37 PASS — 0
+                        fallos.</strong>
+                    <ul style="margin-top: 10px; font-size: 0.9rem; font-weight: 400;">
+                        <li>Bloque 1 — Autenticación: 5 escenarios (sin sesión, rol 2, rol 3, rol 1, SESSION malformada)
+                        </li>
+                        <li>Bloque 2 — Validación de payload: JSON roto, <code>[]</code>, array secuencial, 11 MB,
+                            válidos</li>
+                        <li>Bloque 3 — Extracción Base64: PNG/JPEG/WEBP, SVG rechazado, PDF, 6 MB rechazado, corrupto,
+                            multi-programa</li>
+                        <li>Bloque 4 — Concurrencia: presencia LOCK_EX + 5 procesos paralelos</li>
+                        <li>Bloque 5 — Cache headers: Cache-Control, ETag, If-None-Match, max-age</li>
+                        <li>Bloque 6 — Endpoint duplicado: session_start, id_rol, 403/410</li>
+                        <li>Bloque 7 — Permisos: ausencia 0777, presencia 0755</li>
+                        <li>Bloque 8 — Integridad post-migración: tamaño, JSON válido, sin base64, conteo, archivo
+                            físico</li>
+                        <li>Bloque 9 — Carga: 100 saves (~0.02 ms/req), 10 × 1 MB base64</li>
+                        <li><strong>Bug descubierto por tests:</strong> <code>range(0,-1)</code> no capturaba
+                            <code>[]</code> vacío → corregido con <code>empty($data)</code> durante ejecución.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- Entry 008: Reconexión Flujo Inscripción — Sección Programas -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <div class="build-entry">
+            <div class="build-header">
+                <span class="build-id">24022026ENROLL</span>
+                <span style="font-size: 0.85rem; color: #64748b;">24 Feb 2026 — Modal de Programas &amp; Flujo de
+                    Inscripción</span>
+            </div>
+
+            <div class="prompt-box">
+                <h3>Instrucción Original</h3>
+                <p>"Audita la lógica y el flujo perdido de la sección de nuestros programas. Cuando se cliquea en un
+                    programa ofertado, no se despliega el modal. Maneja todos los casos: logueado, no logueado, no
+                    registrado, intento de inscripción y recuperación del hilo del proceso. Realiza el llamado de los
+                    agentes, verifica lo que en su momento se programó y quedó desconectado, readapta si existe, crea si
+                    no existe, evitar archivos duplicados."</p>
+            </div>
+
+            <div class="tech-spec">
+                <h3>Causa Raíz Identificada</h3>
+                <p><strong>Conflicto de paradigma: Vanilla JS vs. React SPA.</strong> <code>programs_carousel.js</code>
+                    (472 líneas) implementa toda la lógica de modal/inscripción en Vanilla JS con
+                    <code>document.addEventListener('DOMContentLoaded', ...)</code>, pero ese archivo
+                    <em>nunca fue incluido</em> en <code>index.html</code> de la SPA. La línea
+                    <code>onClick={() => window.openProgramModal &amp;&amp; window.openProgramModal(key)}</code>
+                    en <code>Programs.jsx</code> cortocircuitaba silenciosamente porque
+                    <code>window.openProgramModal</code> era <code>undefined</code>.
+                </p>
+                <p><strong>Bugs secundarios confirmados:</strong></p>
+                <ul>
+                    <li>Post-login: <code>navigate('/#programas')</code> no dispara
+                        <code>DOMContentLoaded</code> en SPA → recovery de intent nunca ocurría.
+                    </li>
+                    <li>Field mismatch: <code>programs_carousel.js:294</code> usaba <code>c.name</code>
+                        pero la API <code>get_courses.php</code> retorna <code>c.course_name</code>.</li>
+                </ul>
+            </div>
+
+            <div class="tech-spec">
+                <h3>Solución Implementada</h3>
+                <ul>
+                    <li><strong>ProgramModal.jsx</strong> (nuevo) — Modal React con imagen, ícono, título, descripción,
+                        beneficios y botón "Inscribirme".</li>
+                    <li><strong>ScheduleModal.jsx</strong> (nuevo) — Carga cursos, hace match por nombre, carga
+                        horarios, permite selección y llama <code>ApiService.requestEnrollment()</code>. Estados:
+                        loading → select → success / error.</li>
+                    <li><strong>AuthPromptModal.jsx</strong> (nuevo) — Overlay para visitantes. Guarda intent en
+                        <code>sessionStorage</code> antes de navegar a <code>/login</code> o <code>/registro</code>.
+                    </li>
+                    <li><strong>Programs.jsx</strong> (refactorizado) — State <code>selectedKey</code> +
+                        <code>modalStep</code>. Handler <code>openProgram()</code>. Recovery via
+                        <code>useLocation()</code> cuando <code>location.state.recoverEnrollment === true</code>.
+                    </li>
+                    <li><strong>Login.jsx</strong> (corregido) —
+                        <code>navigate('/', { state: { recoverEnrollment: true } })</code> reemplaza
+                        <code>navigate('/#programas')</code>.
+                    </li>
+                    <li>Campo <code>c.course_name</code> usado correctamente en <code>ScheduleModal.jsx</code>.</li>
+                </ul>
+            </div>
+
+            <div class="tech-spec">
+                <h3>Flujos Cubiertos</h3>
+                <ul>
+                    <li><strong>Autenticado:</strong> Click → ProgramModal → "Inscribirme" → ScheduleModal → selección →
+                        requestEnrollment() → Success.</li>
+                    <li><strong>Visitante:</strong> Click → ProgramModal → "Inscribirme" → sessionStorage guardado →
+                        AuthPromptModal → Login → navigate con state → ScheduleModal auto-abierto.</li>
+                    <li><strong>Visitante → Registro:</strong> AuthPromptModal → /registro (curso preseleccionado por
+                        pending_enrollment_title) → Login → recovery.</li>
+                    <li><strong>Sin horarios / sin curso:</strong> ScheduleModal muestra estado de error con mensaje
+                        amigable.</li>
+                </ul>
+            </div>
+
+            <div class="tech-spec">
+                <h3>Archivos Modificados</h3>
+                <ul>
+                    <li><code>src/components/ProgramModal.jsx</code> — CREADO</li>
+                    <li><code>src/components/ScheduleModal.jsx</code> — CREADO</li>
+                    <li><code>src/components/AuthPromptModal.jsx</code> — CREADO</li>
+                    <li><code>src/components/Programs.jsx</code> — REFACTORIZADO</li>
+                    <li><code>src/components/Login.jsx</code> — CORREGIDO (línea 43)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- Entry 009: Chat Interno — contactAdmin + @mention         -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <div class="build-entry">
+            <div class="build-header">
+                <span class="build-id">25022026CHAT</span>
+                <span style="font-size: 0.85rem; color: #64748b;">25 Feb 2026 — Chat Interno &amp; Menciones</span>
+            </div>
+
+            <div class="prompt-box">
+                <h3>Instrucción Original</h3>
+                <div class="prompt-text">
+                    "Integrar contactAdmin() con el sistema de chat interno JChat y corregir el autocompletado de
+                    @mention que no despliega la lista de usuarios."
+                </div>
+            </div>
+
+            <div class="tech-box">
+                <h3>Traducción Técnica / Acciones Ejecutadas</h3>
+                <div class="tech-text">
+                    Reemplazo del canal de comunicación admin de email externo (Brevo) a chat interno JChat, y
+                    corrección de UX en autocompletado de menciones.
+                    <ul style="margin-top: 10px; font-size: 0.9rem; font-weight: 400;">
+                        <li><strong>[FIX-001 / Feature]</strong> <code>dashboard.js:906–957</code>:
+                            Función <code>contactAdmin()</code> reescrita. Ya no usa API de Brevo.
+                            Busca usuarios con <code>role_id === 1</code> via <code>chat_search_users.php</code>
+                            y abre JChat preseleccionando administradores.</li>
+                        <li><strong>[FIX-002 / Bug UX]</strong>
+                            <code>messaging_widget.js:393–406, 550–558, 659–677</code>:
+                            Se limpia el símbolo <code>@</code> del query, se dispara búsqueda inmediata
+                            al escribir <code>@</code>, y se añadió comportamiento de focus.
+                        </li>
+                        <li><strong>Archivos:</strong> <code>dashboard.js</code>, <code>messaging_widget.js</code>,
+                            <code>gestion.html</code> (añadido script + cache bust <code>?v=9.0</code>).
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- Entry 010: Bugfixes Críticos — SyntaxError + Desasignar  -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <div class="build-entry">
+            <div class="build-header">
+                <span class="build-id">25022026BUGFIX</span>
+                <span style="font-size: 0.85rem; color: #64748b;">25 Feb 2026 — Correcciones Críticas Panel Admin</span>
+            </div>
+
+            <div class="prompt-box">
+                <h3>Instrucción Original</h3>
+                <div class="prompt-text">
+                    "El panel de administración muestra error 'Módulo académico no cargado' y 'SyntaxError: Invalid or
+                    unexpected token'. Además, el profesor tiene una asignación de curso que no se puede eliminar."
+                </div>
+            </div>
+
+            <div class="tech-box">
+                <h3>Traducción Técnica / Acciones Ejecutadas</h3>
+                <div class="tech-text">
+                    Resolución de error crítico en cascada (SyntaxError → AcademicManager undefined →
+                    openCourseManagement not found) y bug de lógica en desasignación de docentes.
+                    <ul style="margin-top: 10px; font-size: 0.9rem; font-weight: 400;">
+                        <li><strong>[FIX-003 / CRÍTICO]</strong> <code>admin_academic_schedules.js:872</code>:
+                            Escaping corrupto en template literal (<code>\\"\\\\\\\\'\\"}')\"</code>)
+                            causaba <code>SyntaxError</code> que impedía el parseo completo del archivo.</li>
+                        <li><strong>[FIX-004 / CASCADA]</strong> Error derivado de FIX-003:
+                            <code>AcademicManager</code> nunca se definía → <code>init()</code> nunca ejecutaba
+                            → <code>window.openCourseManagement = undefined</code> → dashboard mostraba
+                            "Módulo académico no cargado". Resuelto automáticamente al corregir FIX-003.
+                        </li>
+                        <li><strong>[FIX-005 / BACKEND]</strong>
+                            <code>jacquin_api/admin_unassign_teacher.php:37–63</code>:
+                            El endpoint solo limpiaba <code>schedules.teacher_id</code> y
+                            <code>schedule_teachers</code>,
+                            pero ignoraba la columna legacy <code>courses.teacher_id</code>.
+                            Añadido:
+                            <code>UPDATE courses SET teacher_id = NULL WHERE id_course = ? AND teacher_id = ?</code>
+                        </li>
+                        <li><strong>Sincronización:</strong> Todos los archivos de <code>web_page/pages/public/</code>
+                            copiados a <code>htdocs/</code> tras las correcciones.</li>
+                        <li><strong>Deuda técnica detectada:</strong> 6 archivos JS con diferencias de tamaño
+                            entre web_page y htdocs. El más crítico: <code>user_profile_modal.js</code>
+                            (59 KB vs 49 KB). Pendiente de auditoría.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <!-- Entry 011: UI Refactor & Encoding Fixes                  -->
+        <!-- ══════════════════════════════════════════════════════════ -->
+        <div class="build-entry">
+            <div class="build-header">
+                <span class="build-id">26022026UIMojo</span>
+                <span style="font-size: 0.85rem; color: #64748b;">26 Feb 2026 — Refactor UI & Mojoibake</span>
+            </div>
+
+            <div class="prompt-box">
+                <h3>Instrucción Original</h3>
+                <div class="prompt-text">
+                    "Ajustar icono de asignar docente y corregir errores de codificación (caracteres extraños) en
+                    títulos y botones."
+                </div>
+            </div>
+
+            <div class="tech-box">
+                <h3>Traducción Técnica / Acciones Ejecutadas</h3>
+                <div class="tech-text">
+                    Optimización de UI en módulo académico y saneamiento de codificación de caracteres (Mojibake).
+                    <ul style="margin-top: 10px; font-size: 0.9rem; font-weight: 400;">
+                        <li><strong>[UI-001]</strong> <code>admin_academic_schedules.js</code>: Reposicionamiento de
+                            icono <code>bi-person-plus</code>. Ahora aparece alineado con el texto "Sin docente" y bajo
+                            el botón de editar, mejorando la jerarquía visual.</li>
+                        <li><strong>[FIX-006 / Backend]</strong> <code>get_user_details.php</code>: Añadido soporte para
+                            la tabla intermedia <code>schedule_teachers</code> en la vista de perfil de usuario.</li>
+                        <li><strong>[FIX-007 / Encoding]</strong> <code>admin_positions.js</code> y otros: Corrección
+                            manual de caracteres corruptos (ej: <code>GestiÃ³n</code> → <code>Gestión</code>).</li>
+                        <li><strong>[FIX-008 / UX]</strong> <code>admin_unassign_teacher.php</code>: Manejo silencioso
+                            de desasignaciones redundantes para evitar modales de error innecesarios.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <footer>
             Generado por Agente Documentador Técnico Pro | Project Jacquin
         </footer>

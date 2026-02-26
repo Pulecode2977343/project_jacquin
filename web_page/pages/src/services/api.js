@@ -1085,6 +1085,7 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_save_programs_json.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
+                credentials: 'include', // [SECURITY FIX 1] Enviar cookie de sesión al backend
                 body: JSON.stringify(programsData)
             });
             return await response.json();
@@ -1263,7 +1264,44 @@ const ApiService = {
             return { success: false, message: "Error actualizando estado de matrículas." };
         }
     },
+
+    async getAcademicStats() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_academic_stats.php`, {
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error obteniendo estadísticas académicas." };
+        }
+    },
+
+    async getAcademicOverview() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}get_academic_overview.php`, {
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error obteniendo vista general académica." };
+        }
+    },
+
+    async getScheduleStudents(scheduleId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}get_academic_data.php?action=get_schedule_students&schedule_id=${encodeURIComponent(scheduleId)}`, {
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error obteniendo estudiantes del horario." };
+        }
+    },
 };
 
 export default ApiService;
 window.ApiService = ApiService;
+window.API_CONFIG = API_CONFIG;

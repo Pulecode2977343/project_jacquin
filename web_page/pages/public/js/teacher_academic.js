@@ -28,6 +28,13 @@ window.TeacherAcademic = {
         modal.id = 'teacher-academic-modal';
         modal.className = 'modal-overlay';
         modal.style.display = 'none';
+        modal.style.position = 'fixed';
+        modal.style.inset = '0';
+        modal.style.background = 'rgba(0,0,0,0.88)';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        modal.style.zIndex = '9999';
+        modal.style.backdropFilter = 'blur(10px)';
         modal.innerHTML = `
             <style>
                 #teacher-academic-modal * {
@@ -45,7 +52,7 @@ window.TeacherAcademic = {
                     height: 48px; 
                     background: rgba(0,0,0,0.4) !important; 
                     color: white !important; 
-                    border: 1px solid rgba(255,255,255,0.1) !important; 
+                    border: 1px solid rgba(147,182,238,0.2) !important; 
                     border-radius: 12px !important;
                     padding: 0 15px;
                     outline: none;
@@ -101,15 +108,18 @@ window.TeacherAcademic = {
                     padding: 8px 12px !important;
                 }
             </style>
-            <div class="modal-content glass-effect" style="max-width: 1100px; width: 95%; height: 90vh; display:flex; flex-direction:column; padding:0; background: rgba(10, 25, 41, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; box-shadow: 0 50px 100px rgba(0,0,0,0.5);">
-                <div class="modal-header" style="padding: 25px 30px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
-                    <h2 style="margin:0; color: white; font-weight: 300; font-size: 1.8rem;"><i class="fas fa-graduation-cap" style="color: var(--color-acento-azul); margin-right: 15px;"></i> GestiÃ³n AcadÃ©mica</h2>
-                    <button class="close-modal-btn" onclick="TeacherAcademic.closeModal()" style="background: rgba(255,255,255,0.05); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">&times;</button>
+            <div class="modal-content glass-effect" style="max-width: 900px; width: 94vw; max-height: 85vh; display:flex; flex-direction:column; padding:0; background: rgba(11, 19, 33, 0.99); border: 1px solid rgba(147, 182, 238, 0.15); border-radius: 20px; box-shadow: 0 40px 100px rgba(0,0,0,0.8);">
+                <div class="modal-header" style="position: relative; padding: 24px 28px 16px; border-bottom: 1px solid rgba(147,182,238,0.1); flex-shrink: 0;">
+                    <p style="color: #93B6EE; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 4px;">Panel Docente</p>
+                    <h2 style="margin:0; color: #dddddd; font-family: 'Spartan', 'Century Gothic', sans-serif; font-size: 1.4rem; padding-right: 48px;">
+                        <i class="fas fa-graduation-cap" style="color: var(--color-acento-azul); margin-right: 10px;"></i> Gesti&oacute;n Acad&eacute;mica
+                    </h2>
+                    <button class="close-modal-btn" onclick="TeacherAcademic.closeModal()" style="position: absolute; top: 14px; right: 18px; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.75); font-size: 1.3rem; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">&times;</button>
                 </div>
                 
-                <div class="modal-body custom-scroll" style="flex:1; overflow-y:auto; padding: 30px;">
+                <div class="modal-body custom-scroll" style="flex:1; overflow-y:auto; padding: 20px 28px;">
                     <!-- Selector de Curso/Horario -->
-                    <div id="course-schedule-selector" style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px;">
+                    <div id="course-schedule-selector" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px; border: 1px solid rgba(147,182,238,0.1); margin-bottom: 25px;">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 0;">
                             <div>
                                 <label class="teacher-label">Curso</label>
@@ -133,14 +143,25 @@ window.TeacherAcademic = {
                     </div>
 
                     <!-- Tabs -->
-                    <div class="tab-container" style="display: flex; gap: 5px; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                        <button class="teacher-tab-btn active" data-tab="attendance">Asistencia</button>
+                    <div class="tab-container" style="display: flex; gap: 5px; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <button class="teacher-tab-btn" data-tab="week" style="color:#E78C3B; border-bottom-color:#E78C3B;"><i class="bi bi-calendar-week" style="margin-right:5px;"></i>Mi Semana</button>
+                        <button class="teacher-tab-btn" data-tab="attendance">Asistencia</button>
                         <button class="teacher-tab-btn" data-tab="assignments">Tareas</button>
                         <button class="teacher-tab-btn" data-tab="notes">Notas</button>
                     </div>
 
+                    <!-- Tab Content: Mi Semana -->
+                    <div id="tab-week" class="tab-content active" style="display: flex; flex-direction: column; min-height: 250px;">
+                        <div id="week-view-content" style="flex: 1; display: flex; flex-direction: column;">
+                            <div style="text-align:center; padding:60px; color:rgba(255,255,255,0.2);">
+                                <i class="bi bi-hourglass-split" style="font-size:2rem; display:block; margin-bottom:15px;"></i>
+                                Cargando tu agenda...
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Tab Content: Asistencia -->
-                    <div id="tab-attendance" class="tab-content active" style="display: block;">
+                    <div id="tab-attendance" class="tab-content" style="display: none;">
                         <div id="attendance-content">
                             <div style="text-align:center; padding: 60px; color:rgba(255,255,255,0.2);">
                                 <i class="fas fa-calendar-check" style="font-size: 3rem; margin-bottom: 20px; display: block;"></i>
@@ -176,7 +197,18 @@ window.TeacherAcademic = {
         modal.onclick = (e) => { if (e.target === modal) this.closeModal(); };
 
         modal.querySelectorAll('.teacher-tab-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
+            btn.addEventListener('click', (e) => {
+                // Remove style overrides for Mi Semana when switching tabs
+                modal.querySelectorAll('.teacher-tab-btn').forEach(b => {
+                    b.style.color = '';
+                    b.style.borderBottomColor = '';
+                });
+                if (e.target.dataset.tab === 'week') {
+                    e.target.style.color = '#E78C3B';
+                    e.target.style.borderBottomColor = '#E78C3B';
+                }
+                this.switchTab(e.target.dataset.tab);
+            });
         });
     },
 
@@ -186,7 +218,187 @@ window.TeacherAcademic = {
             modal.style.display = 'flex';
             await this.loadTeacherCourses();
             this.setupCourseSelector();
+            this.loadWeekView(); // carga la vista semanal al abrir
         }
+    },
+
+    /**
+     * Vista semanal: muestra todos los horarios asignados al docente
+     * organizados de Lunes a Domingo con total de estudiantes por bloque.
+     */
+    async loadWeekView() {
+        const container = document.getElementById('week-view-content');
+        if (!container) return;
+
+        container.innerHTML = '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.4);"><i class="bi bi-hourglass-split" style="font-size:2rem; animation: spin 1.5s linear infinite;"></i><style>@keyframes spin { to { transform: rotate(360deg); } }</style></div>';
+
+        const res = await ApiService.getUserDetails(this.session.id_usuario);
+        if (!res.success || !res.data) {
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:#e74c3c;">No se pudieron cargar los horarios.</div>';
+            return;
+        }
+
+        const teaching = res.data.teaching || [];
+
+        if (teaching.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; padding:60px; color:rgba(255,255,255,0.35);">
+                    <i class="bi bi-calendar-x" style="font-size:3rem; display:block; margin-bottom:16px; opacity:0.4;"></i>
+                    <div style="font-weight:600; margin-bottom:8px;">Sin horarios asignados</div>
+                    <div style="font-size:0.85rem; opacity:0.6;">El administrador te asignar&aacute; horarios pr&oacute;ximamente.</div>
+                </div>`;
+            return;
+        }
+
+        // Agrupar todos los horarios de todos los cursos por d&iacute;a
+        const dayOrder = ['Lunes', 'Martes', 'Mi&eacute;rcoles', 'Jueves', 'Viernes', 'S&aacute;bado', 'Domingo'];
+        const dayOrderNormalized = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        const DAY_SHORT = { Lunes: 'LUN', Martes: 'MAR', 'Miércoles': 'MIÉ', 'Mi&eacute;rcoles': 'MIÉ', Jueves: 'JUE', Viernes: 'VIE', Sábado: 'SÁB', 'S&aacute;bado': 'SÁB', Domingo: 'DOM' };
+
+        const byDay = {};
+        dayOrderNormalized.forEach(d => byDay[d] = []);
+
+        teaching.forEach(course => {
+            (course.schedules || []).forEach(sch => {
+                const rawDay = sch.day_of_week || sch.day || '';
+                // Normalize day name to handle accents correctly
+                let day = dayOrderNormalized.find(d => d.toLowerCase() === rawDay.toLowerCase());
+                // also try ascii comparison
+                if (!day && rawDay.includes('rcoles')) day = 'Miércoles';
+                if (!day && rawDay.includes('bado')) day = 'Sábado';
+
+                if (day && byDay[day]) {
+                    byDay[day].push({ ...sch, course_name: course.name || course.course_name, course_id: course.id_course });
+                } else if (rawDay) {
+                    // Fallback
+                    if (!byDay[rawDay]) byDay[rawDay] = [];
+                    byDay[rawDay].push({ ...sch, course_name: course.name || course.course_name, course_id: course.id_course });
+                }
+            });
+        });
+
+        // Ordenar cada d&iacute;a por hora de inicio
+        Object.keys(byDay).forEach(d => byDay[d].sort((a, b) => (a.start_time || a.time_start || '').localeCompare(b.start_time || b.time_start || '')));
+
+        const activeDays = Object.keys(byDay).filter(d => byDay[d].length > 0);
+
+        if (activeDays.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center; padding:60px; color:rgba(255,255,255,0.35);">
+                    <i class="bi bi-calendar-x" style="font-size:3rem; display:block; margin-bottom:16px; opacity:0.4;"></i>
+                    <div style="font-weight:600;">Tienes cursos asignados pero sin horarios configurados a&uacute;n.</div>
+                </div>`;
+            return;
+        }
+
+        const totalHoras = activeDays.reduce((acc, d) => acc + byDay[d].length, 0);
+
+        container.innerHTML = `
+            <div style="margin-bottom:20px; display:flex; align-items:center; justify-content: space-between; flex-wrap:wrap; gap:10px;">
+                <div style="display:flex; gap: 10px;">
+                    <div style="background:rgba(231,140,59,0.12); border:1px solid rgba(231,140,59,0.3); border-radius:20px; padding:6px 16px; color:#E78C3B; font-size:0.85rem; font-weight:600;">
+                        <i class="bi bi-calendar-week" style="margin-right:6px;"></i>${activeDays.length} d&iacute;a${activeDays.length !== 1 ? 's' : ''} activo${activeDays.length !== 1 ? 's' : ''}
+                    </div>
+                </div>
+                <div style="color:rgba(221,221,221,0.5); font-size:0.85rem;">
+                    <i class="bi bi-grid-3x3-gap" style="margin-right:6px;"></i>${totalHoras} clase${totalHoras !== 1 ? 's' : ''} programada${totalHoras !== 1 ? 's' : ''}
+                </div>
+            </div>
+
+            <div style="overflow-x: auto; overflow-y: hidden; flex: 1; padding: 4px; display: flex;">
+                <div style="display: grid; grid-template-columns: repeat(${activeDays.length}, minmax(130px, 1fr)); gap: 12px; min-width: ${activeDays.length * 140}px; width: 100%;">
+                    ${activeDays.map(day => `
+                        <div>
+                            <div style="background: rgba(147,182,238,0.08); border-radius: 10px 10px 0 0; padding: 8px 10px; text-align: center; border-bottom: 1px solid rgba(147,182,238,0.15); margin-bottom: 8px;">
+                                <div style="color: #93B6EE; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">
+                                    ${DAY_SHORT[day] || day.substring(0, 3).toUpperCase()}
+                                </div>
+                                <div style="color: rgba(221,221,221,0.45); font-size: 0.65rem; margin-top: 2px;">
+                                    ${byDay[day].length} slot${byDay[day].length !== 1 ? 's' : ''}
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                ${byDay[day].map(sch => {
+                                    const startT   = sch.start_time || sch.time_start || '';
+                                    const endT     = sch.end_time   || sch.time_end   || '';
+                                    const enrolled = sch.enrolled_count || 0;
+                                    const quota    = sch.quota || 15;
+                                    const pct      = quota > 0 ? Math.min((enrolled / quota) * 100, 100) : 0;
+                                    const barColor = pct >= 100 ? '#e74c3c' : pct >= 75 ? '#f1c40f' : '#2ecc71';
+                                    const sId      = sch.id_schedule || sch.id_schedule_id || '';
+                                    const isFull   = pct >= 100;
+                                    const safeName = (sch.course_name || '').replace(/'/g, "\\'");
+                                    const label    = day + ' ' + ApiService.formatTime(startT);
+                                    return `
+                                    <div style="background: rgba(147,182,238,0.06); border: 1px solid rgba(147,182,238,0.12); border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.15s; position: relative;"
+                                         onclick="TeacherAcademic.showScheduleStudentsList(${sId || null}, '${safeName}', '${label}')"
+                                         onmouseover="this.style.background='rgba(147,182,238,0.12)'; this.style.borderColor='rgba(147,182,238,0.25)';"
+                                         onmouseout="this.style.background='rgba(147,182,238,0.06)'; this.style.borderColor='rgba(147,182,238,0.12)';">
+                                        <div style="color: #E78C3B; font-weight: 700; font-size: 0.82rem; line-height: 1.2;">
+                                            ${ApiService.formatTime(startT)}
+                                        </div>
+                                        <div style="color: rgba(221,221,221,0.4); font-size: 0.68rem; margin-bottom: 6px;">
+                                            ${ApiService.formatTime(endT)}
+                                        </div>
+                                        <div style="color: #dddddd; font-weight: 600; font-size: 0.75rem; line-height: 1.2; margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;" title="${sch.course_name || 'Curso'}">
+                                            ${sch.course_name || 'Curso'}
+                                        </div>
+                                        <div style="width: 100%; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; margin-bottom: 5px;">
+                                            <div style="width: ${pct}%; height: 100%; background: ${barColor}; border-radius: 2px;"></div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span style="background: ${isFull ? 'rgba(231,76,60,0.1)' : 'rgba(46,204,113,0.1)'}; color: ${isFull ? '#e74c3c' : '#2ecc71'}; border: 1px solid ${isFull ? 'rgba(231,76,60,0.2)' : 'rgba(46,204,113,0.15)'}; font-size: 0.6rem; font-weight: 600; padding: 2px 6px; border-radius: 10px;">
+                                                <i class="bi bi-people-fill" style="margin-right: 3px;"></i>${enrolled} est.
+                                            </span>
+                                            <i class="bi bi-eye" style="color: rgba(255,255,255,0.25); font-size: 0.75rem;"></i>
+                                        </div>
+                                    </div>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    },
+
+    /**
+     * Muestra la lista de estudiantes de un horario específico (desde vista semanal)
+     */
+    async showScheduleStudentsList(scheduleId, courseName, scheduleLabel) {
+        const res = await ApiService.getScheduleStudents(scheduleId);
+        if (!res.success) {
+            return Swal.fire('Error', 'No se pudieron cargar los estudiantes.', 'error');
+        }
+
+        const students = Array.isArray(res.data) ? res.data : [];
+        const listHtml = students.length === 0
+            ? `<div style="text-align:center; padding:30px; color:rgba(255,255,255,0.4); font-style:italic;">No hay estudiantes en este horario aún.</div>`
+            : students.map(st => `
+                <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:rgba(255,255,255,0.03); border-radius:10px; border:1px solid rgba(255,255,255,0.05); margin-bottom:8px;">
+                    <div style="width:34px; height:34px; background:rgba(52,152,219,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#3498db; flex-shrink:0;">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <div>
+                        <div style="color:#fff; font-weight:600; font-size:0.9rem;">${st.full_name || st.student_name || 'Sin nombre'}</div>
+                        <div style="color:rgba(255,255,255,0.4); font-size:0.75rem;">${st.email || ''}</div>
+                    </div>
+                </div>
+            `).join('');
+
+        Swal.fire({
+            title: `<span style="font-size:1rem;">${courseName}</span>`,
+            html: `
+                <div style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:12px; text-align:left;">
+                    <i class="bi bi-clock" style="margin-right:5px;"></i>${scheduleLabel} · ${students.length} estudiante${students.length !== 1 ? 's' : ''}
+                </div>
+                <div style="max-height:320px; overflow-y:auto; text-align:left;">${listHtml}</div>
+            `,
+            confirmButtonText: 'Cerrar',
+            confirmButtonColor: '#3498db',
+            background: '#0a1929',
+            color: '#fff'
+        });
     },
 
     closeModal() {

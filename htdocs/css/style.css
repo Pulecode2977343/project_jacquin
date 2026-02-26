@@ -2520,6 +2520,30 @@ textarea:-webkit-autofill:active {
     font-family: var(--font-principal) !important;
 }
 
+/* =========================================
+   PERSISTENT CHAT ADAPTATION
+   ========================================= */
+
+/* Transición suave para cualquier sección que deba adaptarse al chat */
+.admin-section {
+    transition: padding-right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (min-width: 1200px) {
+
+    /* Cuando el chat está abierto, desplazamos el contenido principal */
+    body.jchat-open .admin-section {
+        padding-right: 420px !important;
+    }
+}
+
+/* Ajustes específicos para móviles */
+@media (max-width: 480px) {
+    body.jchat-open {
+        overflow: hidden;
+    }
+}
+
 .dark-theme-cancel-btn {
     border-radius: 10px !important;
     font-weight: 500 !important;

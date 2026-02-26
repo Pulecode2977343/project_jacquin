@@ -17,8 +17,8 @@ try {
                 s.*, 
                 (SELECT GROUP_CONCAT(u.full_name SEPARATOR ', ') 
                  FROM schedule_teachers st 
-                 JOIN usuario u ON st.id_teacher = u.id_usuario 
-                 WHERE st.id_schedule = s.id_schedule) as teacher_name,
+                 JOIN usuario u ON st.teacher_id = u.id_usuario 
+                 WHERE st.schedule_id = s.id_schedule) as teacher_name,
                 (SELECT COUNT(*) FROM enrollment_schedules es WHERE es.schedule_id = s.id_schedule) as enrolled_count
             FROM schedules s
             WHERE s.id_course = ?

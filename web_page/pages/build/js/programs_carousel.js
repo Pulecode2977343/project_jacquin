@@ -399,15 +399,15 @@ function showAuthRequiredOverlay() {
             </p>
 
             <div style="display: flex; flex-direction: column; gap: 15px;">
-                <button onclick="window.location.href='login.html'" style="
-                    background: var(--color-acento-azul); color: white; border: none; padding: 14px; 
+                <button onclick="window.location.href='/login'" style="
+                    background: var(--color-acento-azul); color: white; border: none; padding: 14px;
                     border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem;
                     transition: transform 0.2s; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);">
-                    Iniciar SesiÃ³n
+                    Iniciar Sesión
                 </button>
-                
-                <button onclick="window.location.href='registro.html'" style="
-                    background: transparent; color: white; border: 2px solid rgba(255,255,255,0.1); padding: 12px; 
+
+                <button onclick="window.location.href='/registro'" style="
+                    background: transparent; color: white; border: 2px solid rgba(255,255,255,0.1); padding: 12px;
                     border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem;
                     transition: all 0.2s;">
                     Registrarme ahora

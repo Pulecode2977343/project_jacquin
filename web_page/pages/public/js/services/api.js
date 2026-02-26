@@ -12,8 +12,7 @@ var API_CONFIG = {
             ? "/jacquin_api/"
             : (path.includes('/pages/') ? "../../jacquin_api/" : "./jacquin_api/");
 
-        console.log(`[ApiService] Host: ${host} | Base URL: ${url}`);
-        return url;
+        return url.replace(' ', '%20'); // Por si acaso, pero lo ideal es que sea jacquin_api
     },
 
     HEADERS: {

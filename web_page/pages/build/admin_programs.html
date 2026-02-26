@@ -14,6 +14,13 @@
     .admin-container {
       padding: 17vh 5% 2rem;
       margin-top: 0;
+      transition: padding-right 0.3s ease;
+    }
+
+    @media (min-width: 1200px) {
+      body.jchat-open .admin-container {
+        padding-right: 420px;
+      }
     }
 
     .admin-header {
@@ -99,8 +106,8 @@
 
     .programs-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
     }
 
     .admin-program-card {
@@ -322,6 +329,7 @@
 
   <!-- Admin Logic -->
   <script src="js/admin_programs.js"></script>
+  <script src="js/messaging_widget.js"></script>
   <script src="js/react-header.bundle.js?v=1.5"></script>
 </body>
 

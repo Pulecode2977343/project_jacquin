@@ -1,32 +1,7 @@
-# ============================================
-# JACQUIN API - Production Configuration (InfinityFree)
-# ============================================
-# NOTA: InfinityFree usa PHP como FastCGI.
-# - NO usar "Header always set" (mod_headers deshabilitado)
-# - NO usar "php_flag" (solo funciona con mod_php)
-# - NO usar "RewriteRule" para OPTIONS (causa conflictos)
-
-# Prevenir listado de directorios
+# JACQUIN API - Simple Configuration for InfinityFree
 Options -Indexes
 
-# Proteger directorios internos (sin RewriteEngine)
-<FilesMatch "^(config|vendor|controllers|models|helpers|middleware)">
-    <IfModule mod_authz_core.c>
-        Require all denied
-    </IfModule>
-    <IfModule !mod_authz_core.c>
-        Order allow,deny
-        Deny from all
-    </IfModule>
-</FilesMatch>
-
-# Proteger archivos sensibles
-<FilesMatch "\.(env|sql|md|gitignore|bak|log|lock)$">
-    <IfModule mod_authz_core.c>
-        Require all denied
-    </IfModule>
-    <IfModule !mod_authz_core.c>
-        Order allow,deny
-        Deny from all
-    </IfModule>
-</FilesMatch>
+# Proteger solo carpetas delicadas de forma simple
+RedirectMatch 403 ^.*/config/.*$
+RedirectMatch 403 ^.*/vendor/.*$
+RedirectMatch 403 \.(env|sql|log|bak)$

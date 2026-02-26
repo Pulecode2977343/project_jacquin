@@ -456,12 +456,12 @@
 
                 <form id="about-card-form" style="display: flex; flex-direction: column; gap: 1rem;">
                     <div class="form-group">
-                        <label>TÃ­tulo *</label>
+                        <label>T\u00edtulo *</label>
                         <input type="text" class="form-control" name="title" required value="${escapeHtml(card.title || '')}">
                     </div>
 
                     <div class="form-group">
-                        <label>SubtÃ­tulo</label>
+                        <label>Subt\u00edtulo</label>
                         <input type="text" class="form-control" name="subtitle" value="${escapeHtml(card.subtitle || '')}">
                     </div>
 
@@ -478,7 +478,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>DescripciÃ³n</label>
+                        <label>Descripci\u00f3n</label>
                         <textarea class="form-control" name="description" rows="4" style="resize: vertical;">${escapeHtml(card.description || '')}</textarea>
                     </div>
 
@@ -501,7 +501,7 @@
                     <div class="form-group">
                         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                             <input type="checkbox" name="is_active" ${card.is_active ? 'checked' : ''} style="width: 20px; height: 20px;">
-                            <span>Tarjeta activa (visible en la pÃ¡gina)</span>
+                            <span>Tarjeta activa (visible en la p\u00e1gina)</span>
                         </label>
                     </div>
 
@@ -565,7 +565,7 @@
             };
 
             if (!cardData.title.trim()) {
-                Swal.fire('Error', 'El tÃ­tulo es obligatorio', 'error');
+                Swal.fire('Error', 'El t\u00edtulo es obligatorio', 'error');
                 return;
             }
 
@@ -634,8 +634,8 @@
 
     window.deleteAboutCard = async function (cardId) {
         const confirm = await Swal.fire({
-            title: 'Â¿Eliminar tarjeta?',
-            text: 'Esta acciÃ³n no se puede deshacer',
+            title: '\u00bfEliminar tarjeta?',
+            text: 'Esta acci\u00f3n no se puede deshacer',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#e74c3c',
@@ -733,10 +733,10 @@
                             </div>
                             <div style="flex:1;">
                                 <div class="form-group" style="margin-bottom:8px;">
-                                    <input type="text" class="form-control value-title" data-id="${val.id}" value="${escapeHtml(val.title)}" placeholder="TÃ­tulo" style="font-weight:600;">
+                                    <input type="text" class="form-control value-title" data-id="${val.id}" value="${escapeHtml(val.title)}" placeholder="T\u00edtulo" style="font-weight:600;">
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" class="form-control value-desc" value="${escapeHtml(val.description)}" placeholder="DescripciÃ³n corta" style="font-size:0.9rem;">
+                                    <input type="text" class="form-control value-desc" value="${escapeHtml(val.description)}" placeholder="Descripci\u00f3n corta" style="font-size:0.9rem;">
                                 </div>
                             </div>
                         </div>
@@ -795,9 +795,9 @@
         const desc = document.getElementById('admin-mission-desc').value;
         try {
             const res = await ApiService.updateMissionValues({
-                mission: { title: 'Nuestra MisiÃ³n', description: desc }
+                mission: { title: 'Nuestra Misi\u00f3n', description: desc }
             });
-            if (res.success) Swal.fire({ icon: 'success', title: 'MisiÃ³n actualizada', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+            if (res.success) Swal.fire({ icon: 'success', title: 'Misi\u00f3n actualizada', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
         } catch (e) { /* error toast */ }
     };
 

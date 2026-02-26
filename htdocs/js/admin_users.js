@@ -60,7 +60,7 @@ async function loadUsers() {
 
     tableBody.innerHTML = `
         <tr class="loading-row">
-            <td colspan="5">
+            <td colspan="4">
                 <div class="loading-spinner"></div>
                 <div style="margin-top: 15px;">Cargando usuarios...</div>
             </td>
@@ -76,7 +76,7 @@ async function loadUsers() {
     } else {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="5" style="text-align:center; padding:40px;">
+                <td colspan="4" style="text-align:center; padding:40px;">
                     <i class="bi bi-exclamation-triangle" style="font-size:2rem; color:#e74c3c; display:block; margin-bottom:10px;"></i>
                     <div style="color:#e74c3c;">Error: ${response.message || 'No se pudieron cargar usuarios'}</div>
                 </td>
@@ -130,14 +130,14 @@ function renderUsers(users) {
 
     if (!users || !Array.isArray(users)) {
         console.error("renderUsers: Data is not an array", users);
-        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:#e74c3c;">Error de datos de usuario.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#e74c3c;">Error de datos de usuario.</td></tr>`;
         return;
     }
 
     if (users.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="5" style="text-align:center; padding:60px;">
+                <td colspan="4" style="text-align:center; padding:60px;">
                     <i class="bi bi-inbox" style="font-size:2.5rem; color:rgba(255,255,255,0.2); display:block; margin-bottom:15px;"></i>
                     <div style="color:rgba(255,255,255,0.4);">No se encontraron usuarios</div>
                 </td>
@@ -172,7 +172,6 @@ function renderUsers(users) {
                         </div>
                     </div>
                 </td>
-                <td style="color:rgba(255,255,255,0.5);">${email}</td>
                 <td><span class="role-badge role-${u.id_rol}">${getRoleIcon(u.id_rol)} ${getRoleName(u.id_rol)}</span></td>
                 <td>
                     <button class="action-btn" onclick="event.stopPropagation(); typeof openProfile === 'function' ? openProfile(${u.id_usuario}) : null" title="Ver Perfil" aria-label="Ver perfil completo de ${fullName}">

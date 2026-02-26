@@ -41,14 +41,14 @@ window.loadDirectory = async function () {
         renderList(listTeachers, teachers, "bi-person-video3");
         renderList(listUsers, others, "bi-people");
     } else {
-        listAdmins.innerHTML = `<div style="color:red; padding:20px;">Error: ${response.message || "Fallo de conexiÃ³n"}</div>`;
+        listAdmins.innerHTML = `<div style="color:red; padding:20px;">Error: ${response.message || "Fallo de conexi\u00f3n"}</div>`;
         console.error("Directory Load Error:", response);
     }
 };
 
 function renderList(container, users, icon) {
     if (users.length === 0) {
-        container.innerHTML = '<div style="opacity:0.5; text-align:center; padding:20px;">VacÃ­o</div>';
+        container.innerHTML = '<div style="opacity:0.5; text-align:center; padding:20px;">Vac\u00edo</div>';
         return;
     }
 
@@ -59,7 +59,7 @@ function renderList(container, users, icon) {
         item.onclick = () => openProfile(u.id_usuario);
 
         const alertHtml = (u.alert_count && u.alert_count > 0)
-            ? `<i class="bi bi-exclamation-circle-fill" style="color:var(--color-acento-naranja); font-size:0.9rem; margin-left:auto; animation:pulse-alert 2s infinite;" title="AcciÃ³n Requerida: Asignar Docente"></i>`
+            ? `<i class="bi bi-exclamation-circle-fill" style="color:var(--color-acento-naranja); font-size:0.9rem; margin-left:auto; animation:pulse-alert 2s infinite;" title="Acci\u00f3n Requerida: Asignar Docente"></i>`
             : '';
 
         item.innerHTML = `
@@ -100,7 +100,7 @@ window.enrollStudentDirect = async function (user) {
                 renderScheduleSelector(coursesContainer, selectedCourse, async (scheduleId) => {
                     const enrollRes = await ApiService.enrollStudent(user.id_usuario, courseId, scheduleId);
                     if (enrollRes.success) {
-                        await showToast("InscripciÃ³n exitosa.", "success");
+                        await showToast("Inscripci\u00f3n exitosa.", "success");
                         openProfile(user.id_usuario);
                     } else {
                         showToast(enrollRes.message, "error");
@@ -133,7 +133,7 @@ window.assignTeacherDirect = async function (user) {
             renderCourseSelector(coursesContainer, courses, "Asignar Docente", async (courseId) => {
                 const assignRes = await ApiService.assignTeacher(user.id_usuario, courseId);
                 if (assignRes.success) {
-                    await showToast("Â¡Docente asignado!", "success");
+                    await showToast("\u00a1Docente asignado!", "success");
                     openProfile(user.id_usuario);
                 } else {
                     showToast(assignRes.message, "error");
@@ -145,7 +145,7 @@ window.assignTeacherDirect = async function (user) {
         }
     } catch (e) {
         console.error(e);
-        showToast("Error de conexiÃ³n", "error");
+        showToast("Error de conexi\u00f3n", "error");
         openProfile(user.id_usuario);
     }
 };
@@ -154,11 +154,11 @@ function renderScheduleSelector(container, course, onConfirm, onCancel) {
     let html = `
         <div style="background:#222; padding:15px; border-radius:10px; border:1px solid #444;">
             <h4 style="color:white; margin-bottom:10px;">Horarios: ${course.name}</h4>
-            <p style="font-size:0.85rem; color:#888;">MÃ¡ximo 15 estudiantes por grupo.</p>
+            <p style="font-size:0.85rem; color:#888;">M\u00e1ximo 15 estudiantes por grupo.</p>
             <select id="schedule-selector" class="form-control" style="width:100%; margin-bottom:15px; background:#333; border:none; color:white; padding:10px;">
                 <option value="">-- Elige un Horario --</option>
                 ${course.schedules.map(s => {
-        const days = { 'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'MiÃ©rcoles', 'Thursday': 'Jueves', 'Friday': 'Viernes', 'Saturday': 'SÃ¡bado', 'Sunday': 'Domingo' };
+        const days = { 'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'Mi\u00e9rcoles', 'Thursday': 'Jueves', 'Friday': 'Viernes', 'Saturday': 'S\u00e1bado', 'Sunday': 'Domingo' };
         const dayName = days[s.day_of_week] || s.day_of_week;
         // Handle id_schedule vs id difference if any
         const sId = s.id_schedule || s.id;
@@ -166,7 +166,7 @@ function renderScheduleSelector(container, course, onConfirm, onCancel) {
     }).join('')}
             </select>
             <div style="display:flex; gap:10px;">
-                <button id="btn-confirm-schedule" class="btn-module" style="background:var(--color-acento-azul); color:black;">Confirmar InscripciÃ³n</button>
+                <button id="btn-confirm-schedule" class="btn-module" style="background:var(--color-acento-azul); color:black;">Confirmar Inscripci\u00f3n</button>
                 <button id="btn-cancel-schedule" class="btn-module" style="background:#444;">Cancelar</button>
             </div>
         </div>
@@ -239,7 +239,7 @@ function createCourseCard(course, roleLabel, color, onDelete, onAssign, onManage
     const infoDiv = document.createElement("div");
     infoDiv.innerHTML = `
         <div style="color:${color}; font-weight:bold; display:flex; align-items:center; gap:5px;">
-            ${course.name} ${onAssign ? '<i class="bi bi-exclamation-triangle-fill" style="color:var(--color-acento-naranja); font-size:0.8rem;" title="Requiere AtenciÃ³n"></i>' : ''}
+            ${course.name} ${onAssign ? '<i class="bi bi-exclamation-triangle-fill" style="color:var(--color-acento-naranja); font-size:0.8rem;" title="Requiere Atenci\u00f3n"></i>' : ''}
         </div>
         <div style="margin-top:4px;">${schedBadges}</div>
         ${teacherDisplay}
@@ -332,7 +332,7 @@ async function openMultiScheduleModal(course, userId) {
     `;
     modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
 
-    const days = { 'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'MiÃ©rcoles', 'Thursday': 'Jueves', 'Friday': 'Viernes', 'Saturday': 'SÃ¡bado', 'Sunday': 'Domingo' };
+    const days = { 'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'Mi\u00e9rcoles', 'Thursday': 'Jueves', 'Friday': 'Viernes', 'Saturday': 'S\u00e1bado', 'Sunday': 'Domingo' };
 
     const scheduleCheckboxes = allSchedules.map(s => {
         const sId = s.id_schedule || s.id;
@@ -375,7 +375,7 @@ async function openMultiScheduleModal(course, userId) {
             
             <div style="padding: 25px; max-height: 400px; overflow-y: auto;">
                 <p style="color: #888; font-size: 0.9rem; margin: 0 0 15px;">
-                    Selecciona los dÃ­as que el estudiante asistirÃ¡ a clase:
+                    Selecciona los d\u00edas que el estudiante asistir\u00e1 a clase:
                 </p>
                 <div id="schedule-checkboxes">
                     ${scheduleCheckboxes || '<p style="color: #666;">No hay horarios disponibles para este curso.</p>'}
@@ -424,14 +424,14 @@ async function openMultiScheduleModal(course, userId) {
         try {
             const result = await ApiService.assignSchedules(course.id_enrollment, selectedIds);
             if (result.success) {
-                showToast(`Horarios actualizados: ${selectedIds.length} dÃ­a(s) asignado(s)`, "success");
+                showToast(`Horarios actualizados: ${selectedIds.length} d\u00eda(s) asignado(s)`, "success");
                 modal.remove();
                 openProfile(userId);
             } else {
                 showToast(result.message || "Error guardando horarios", "error");
             }
         } catch (e) {
-            showToast("Error de conexiÃ³n", "error");
+            showToast("Error de conexi\u00f3n", "error");
         }
     };
 }
@@ -489,11 +489,11 @@ async function changeRoleDirect(targetUser) {
         // Redundant check for safety if target is admin
         if (targetUser.id_rol == 1) {
             const confirmAdmin = await Swal.fire({
-                title: 'Â¿EstÃ¡s seguro?',
-                text: "EstÃ¡s quitando privilegios a otro Administrador.",
+                title: '\u00bfEst\u00e1s seguro?',
+                text: "Est\u00e1s quitando privilegios a otro Administrador.",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'SÃ­, cambiar',
+                confirmButtonText: 'S\u00ed, cambiar',
                 background: '#1a1a1a',
                 color: '#fff'
             });
@@ -514,10 +514,10 @@ async function changeRoleDirect(targetUser) {
 async function deleteUserDirect(targetUser) {
     const isTargetAdmin = targetUser.id_rol == 1;
     const msg = isTargetAdmin
-        ? `EstÃ¡s intentando ELIMINAR a otro ADMINISTRADOR(${targetUser.full_name}). Â¿Confirmas esta acciÃ³n destructiva ? `
-        : `Â¿Eliminar a ${targetUser.full_name}? Esta acciÃ³n es irreversible.`;
+        ? `Est\u00e1s intentando ELIMINAR a otro ADMINISTRADOR(${targetUser.full_name}). \u00bfConfirmas esta acci\u00f3n destructiva ? `
+        : `\u00bfEliminar a ${targetUser.full_name}? Esta acci\u00f3n es irreversible.`;
 
-    if (await showConfirm(msg, 'SÃ­, eliminar', 'Cancelar')) {
+    if (await showConfirm(msg, 'S\u00ed, eliminar', 'Cancelar')) {
         const resultApi = await ApiService.deleteUser(targetUser.id_usuario);
         if (resultApi.success) {
             await showToast("El usuario ha sido borrado del sistema.", "success");

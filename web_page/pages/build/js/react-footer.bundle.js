@@ -15418,6 +15418,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         "web_page/pages/uploads/",
         "public/uploads/avatars/",
         "uploads/avatars/",
+        "uploads/",
         "public/"
       ];
       prefixesToRemove.forEach((prefix) => {
@@ -16323,6 +16324,8 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         const response = await fetch(`${API_CONFIG.BASE_URL}admin_save_programs_json.php`, {
           method: "POST",
           headers: API_CONFIG.HEADERS,
+          credentials: "include",
+          // [SECURITY FIX 1] Enviar cookie de sesión al backend
           body: JSON.stringify(programsData)
         });
         return await response.json();
@@ -16500,10 +16503,44 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
       } catch (error) {
         return { success: false, message: "Error actualizando estado de matr\xEDculas." };
       }
+    },
+    async getAcademicStats() {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_academic_stats.php`, {
+          headers: API_CONFIG.HEADERS,
+          credentials: "include"
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        return { success: false, message: "Error obteniendo estad\xEDsticas acad\xE9micas." };
+      }
+    },
+    async getAcademicOverview() {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}get_academic_overview.php`, {
+          headers: API_CONFIG.HEADERS,
+          credentials: "include"
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        return { success: false, message: "Error obteniendo vista general acad\xE9mica." };
+      }
+    },
+    async getScheduleStudents(scheduleId) {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}get_academic_data.php?action=get_schedule_students&schedule_id=${encodeURIComponent(scheduleId)}`, {
+          headers: API_CONFIG.HEADERS,
+          credentials: "include"
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        return { success: false, message: "Error obteniendo estudiantes del horario." };
+      }
     }
   };
   var api_default = ApiService;
   window.ApiService = ApiService;
+  window.API_CONFIG = API_CONFIG;
 
   // src/components/EnrollmentStatusBadge.jsx
   var import_jsx_runtime2 = __toESM(require_jsx_runtime());
@@ -16573,8 +16610,8 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
               /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("i", { className: "bi bi-pencil-square" }),
               " Inscripciones"
             ] }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("a", { href: "terminos.html", className: "hover-link", children: "T\xE9rminos y Condiciones" }) }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("a", { href: "politicas.html", className: "hover-link", children: "Pol\xEDtica de Privacidad" }) })
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Link, { to: "/terms", className: "hover-link", children: "T\xE9rminos y Condiciones" }) }),
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(Link, { to: "/politicas", className: "hover-link", children: "Pol\xEDtica de Privacidad" }) })
           ] })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "jam-footer-col contact-col", children: [

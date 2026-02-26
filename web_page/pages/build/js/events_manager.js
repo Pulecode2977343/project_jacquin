@@ -58,7 +58,7 @@ window.openEventsManager = async function () {
         <div style="background:#1a1a1a; padding:0; border-radius:16px; width:95%; max-width:700px; max-height:90vh; overflow:hidden; box-shadow:0 30px 60px rgba(0,0,0,0.8); border:1px solid #333;">
             <div style="padding:20px 25px; border-bottom:1px solid #333; display:flex; justify-content:space-between; align-items:center; background:#222;">
                 <h3 style="color:white; margin:0; font-size:1.2rem; display:flex; align-items:center; gap:10px;">
-                    <i class="bi bi-calendar-event" style="color:#8e44ad"></i> GestiÃ³n de Eventos
+                    <i class="bi bi-calendar-event" style="color:#8e44ad"></i> Gesti\u00f3n de Eventos
                 </h3>
                 <button onclick="document.getElementById('${modalId}').style.display='none'" style="background:none; border:none; color:#777; font-size:1.5rem; cursor:pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#777'">&times;</button>
             </div>
@@ -77,8 +77,8 @@ window.openEventsManager = async function () {
     // Delete confirmation
     window.deleteEventConfirm = async function (eventId) {
         Swal.fire({
-            title: 'Â¿Eliminar este evento?',
-            text: "Esta acciÃ³n no se puede deshacer.",
+            title: '\u00bfEliminar este evento?',
+            text: "Esta acci\u00f3n no se puede deshacer.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#e74c3c',
@@ -137,7 +137,7 @@ window.openEventsManager = async function () {
                                 <option value="recital">Recital</option>
                                 <option value="taller">Taller</option>
                                 <option value="masterclass">Masterclass</option>
-                                <option value="presentacion">PresentaciÃ³n</option>
+                                <option value="presentacion">Presentaci\u00f3n</option>
                             </select>
                         </div>
                         <div>
@@ -235,7 +235,7 @@ window.openEventsManager = async function () {
             } else if (type === 'ppt') {
                 container.innerHTML = `
                     <div>
-                        <label style="color:#8e44ad; display:block; margin-bottom:5px;">PresentaciÃ³n PPT/PPTX (mÃ¡x 20MB)</label>
+                        <label style="color:#8e44ad; display:block; margin-bottom:5px;">Presentaci\u00f3n PPT/PPTX (m\u00e1x 20MB)</label>
                         <input type="file" name="media_file" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" style="width:100%; padding:10px; background:#222; border:1px solid #444; border-radius:6px; color:white;">
                     </div>
                 `;
@@ -311,7 +311,7 @@ window.openEventsManager = async function () {
                                 <option value="recital" ${eventData.event_type === 'recital' ? 'selected' : ''}>Recital</option>
                                 <option value="taller" ${eventData.event_type === 'taller' ? 'selected' : ''}>Taller</option>
                                 <option value="masterclass" ${eventData.event_type === 'masterclass' ? 'selected' : ''}>Masterclass</option>
-                                <option value="presentacion" ${eventData.event_type === 'presentacion' ? 'selected' : ''}>PresentaciÃ³n</option>
+                                <option value="presentacion" ${eventData.event_type === 'presentacion' ? 'selected' : ''}>Presentaci\u00f3n</option>
                             </select>
                         </div>
                         <div>
@@ -447,7 +447,7 @@ window.openEventsManager = async function () {
 
                 if (res.success) {
                     formModal.remove();
-                    showToast("Â¡Evento actualizado exitosamente!", "success");
+                    showToast("\u00a1Evento actualizado exitosamente!", "success");
                     openEventsManager();
                 } else {
                     showToast("Error: " + res.message, "error");

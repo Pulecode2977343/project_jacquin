@@ -36,10 +36,10 @@ try {
 
     // Handle explicit single removal
     if (isset($data->action) && $data->action === 'remove_single' && isset($data->teacher_id)) {
-        $pdo->prepare("DELETE FROM schedule_teachers WHERE id_schedule = ? AND id_teacher = ?")->execute([$data->schedule_id, $data->teacher_id]);
+        $pdo->prepare("DELETE FROM schedule_teachers WHERE schedule_id = ? AND teacher_id = ?")->execute([$data->schedule_id, $data->teacher_id]);
         
         // Check if any teachers remain; if not, clear legacy column
-        $count = $pdo->query("SELECT COUNT(*) FROM schedule_teachers WHERE id_schedule = {$data->schedule_id}")->fetchColumn();
+        $count = $pdo->query("SELECT COUNT(*) FROM schedule_teachers WHERE schedule_id = {$data->schedule_id}")->fetchColumn();
         if ($count == 0) {
            $pdo->prepare("UPDATE schedules SET teacher_id = NULL WHERE id_schedule = ?")->execute([$data->schedule_id]);
         }
@@ -50,7 +50,7 @@ try {
 
     if (empty($teacherIds) && isset($data->teacher_id) && $data->teacher_id === 'remove') {
         // Clear all assignments
-        $pdo->prepare("DELETE FROM schedule_teachers WHERE id_schedule = ?")->execute([$data->schedule_id]);
+        $pdo->prepare("DELETE FROM schedule_teachers WHERE schedule_id = ?")->execute([$data->schedule_id]);
         $pdo->prepare("UPDATE schedules SET teacher_id = NULL WHERE id_schedule = ?")->execute([$data->schedule_id]);
         echo json_encode(["success" => true, "message" => "Todos los docentes desasignados."]);
         exit;
@@ -67,9 +67,9 @@ try {
         $query = "
             SELECT c.course_name 
             FROM schedule_teachers st
-            JOIN schedules s ON st.id_schedule = s.id_schedule
+            JOIN schedules s ON st.schedule_id = s.id_schedule
             JOIN courses c ON s.id_course = c.id_course
-            WHERE st.id_teacher = :tid 
+            WHERE st.teacher_id = :tid 
             AND s.day = :day 
             AND s.id_schedule != :sid
             AND (
@@ -100,10 +100,10 @@ try {
     $pdo->beginTransaction();
     
     // Clear old
-    $pdo->prepare("DELETE FROM schedule_teachers WHERE id_schedule = ?")->execute([$data->schedule_id]);
+    $pdo->prepare("DELETE FROM schedule_teachers WHERE schedule_id = ?")->execute([$data->schedule_id]);
     
     // Insert new
-    $stmtInsert = $pdo->prepare("INSERT INTO schedule_teachers (id_schedule, id_teacher) VALUES (?, ?)");
+    $stmtInsert = $pdo->prepare("INSERT INTO schedule_teachers (schedule_id, teacher_id) VALUES (?, ?)");
     foreach ($teacherIds as $tid) {
         $stmtInsert->execute([$data->schedule_id, $tid]);
     }

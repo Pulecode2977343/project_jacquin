@@ -35,11 +35,11 @@ if ($course_id > 0) {
                 SELECT s.*, 
                        (SELECT GROUP_CONCAT(u.full_name SEPARATOR ', ') 
                         FROM schedule_teachers st 
-                        JOIN usuario u ON st.id_teacher = u.id_usuario 
-                        WHERE st.id_schedule = s.id_schedule) as teacher_names,
-                       (SELECT GROUP_CONCAT(st.id_teacher SEPARATOR ',') 
+                        JOIN usuario u ON st.teacher_id = u.id_usuario 
+                        WHERE st.schedule_id = s.id_schedule) as teacher_names,
+                       (SELECT GROUP_CONCAT(st.teacher_id SEPARATOR ',') 
                         FROM schedule_teachers st 
-                        WHERE st.id_schedule = s.id_schedule) as teacher_ids,
+                        WHERE st.schedule_id = s.id_schedule) as teacher_ids,
                        (SELECT COUNT(*) 
                         FROM enrollment_schedules es 
                         JOIN enrollments e ON es.enrollment_id = e.id_enrollment 
@@ -56,10 +56,10 @@ if ($course_id > 0) {
             // Fetch detailed teacher info for all these schedules
             // We use FETCH_GROUP to group by id_schedule automatically
             $stmtTeachers = $pdo->prepare("
-                SELECT st.id_schedule, u.id_usuario as id, u.full_name as name
+                SELECT st.schedule_id as id_schedule, u.id_usuario as id, u.full_name as name
                 FROM schedule_teachers st
-                JOIN usuario u ON st.id_teacher = u.id_usuario
-                WHERE st.id_schedule IN (
+                JOIN usuario u ON st.teacher_id = u.id_usuario
+                WHERE st.schedule_id IN (
                     SELECT id_schedule FROM schedules WHERE id_course = ?
                 )
             ");

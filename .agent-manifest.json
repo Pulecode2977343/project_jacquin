@@ -1,0 +1,65 @@
+{
+    "project_name": "project_jacquin",
+    "orchestrator_version": "1.0.0",
+    "agents_root": "d:/Documentos/Proyectos ADSO/agent/skills",
+    "categories": {
+        "01-Core-Orchestrator": {
+            "path": "01-Core-Orchestrator",
+            "description": "Núcleo de Inteligencia y centralización de instrucciones.",
+            "agents": [
+                "planificacion-pro",
+                "configurador-global",
+                "creador-de-skills",
+                "brainstorming-pro"
+            ]
+        },
+        "02-Builder-Stack": {
+            "path": "02-Builder-Stack",
+            "description": "Herramientas de construcción y generación de código.",
+            "agents": [
+                "doc-to-app",
+                "react-components",
+                "remotion",
+                "shadcn-ui",
+                "design-md",
+                "header-manager",
+                "stitch-loop"
+            ]
+        },
+        "03-Compliance-Docs": {
+            "path": "03-Compliance-Docs",
+            "description": "Documentación técnica, brandbook y cumplimiento legal.",
+            "agents": [
+                "documentador-tecnico",
+                "brandbook",
+                "compliance-legal"
+            ]
+        },
+        "04-Optimization-Flow": {
+            "path": "04-Optimization-Flow",
+            "description": "Optimización de prompts, tracking de personalidad y producción.",
+            "agents": [
+                "enhance-prompt",
+                "personality_tracker",
+                "modo-produccion"
+            ]
+        }
+    },
+    "global_directives": [
+        "Diseño por defecto: PWA Mobile-First.",
+        "Cumplimiento Obligatorio: Ley 1581 (Colombia), GDPR, Resolución 1519 (MinTIC).",
+        "Integración PWA: Service Workers y manifest.json por defecto en cada proyecto.",
+        "Protocolo de Privacidad: Ninguna DB o interfaz puede omitir medidas de accesibilidad y privacidad.",
+        "Concatenación de Agentes: Planificacion-pro -> Design-md -> React-components -> Documentador-tecnico."
+    ],
+    "concatenation_workflow": {
+        "sequence": [
+            "01-Core-Orchestrator/planificacion-pro",
+            "02-Builder-Stack/design-md",
+            "02-Builder-Stack/react-components",
+            "03-Compliance-Docs/documentador-tecnico"
+        ]
+    },
+    "activation_status": "active",
+    "last_reprogramming": "2026-02-27T17:59:00-05:00"
+}

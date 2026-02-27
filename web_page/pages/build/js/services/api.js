@@ -12,8 +12,7 @@ var API_CONFIG = {
             ? "/jacquin_api/"
             : (path.includes('/pages/') ? "../../jacquin_api/" : "./jacquin_api/");
 
-        console.log(`[ApiService] Host: ${host} | Base URL: ${url}`);
-        return url;
+        return url.replace(' ', '%20'); // Por si acaso, pero lo ideal es que sea jacquin_api
     },
 
     HEADERS: {
@@ -541,6 +540,21 @@ var ApiService = {
         }
     },
 
+    async deleteSchedule(scheduleId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_delete_schedule.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: scheduleId }),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            console.error("Error deleting schedule:", error);
+            return { success: false, message: "Error de conexión" };
+        }
+    },
+
     async deleteCourse(courseId) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_delete_course.php`, {
@@ -789,6 +803,25 @@ var ApiService = {
         }
     },
 
+    async studentAssignSchedules(enrollmentId, scheduleIds) {
+        const session = this.getSession();
+        if (!session) return { success: false, message: "Sesión no válida." };
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}student_assign_schedules.php`, {
+                method: 'POST',
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify({
+                    enrollment_id: enrollmentId,
+                    student_id: session.id_usuario,
+                    schedule_ids: scheduleIds
+                })
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error de red al asignar horarios." };
+        }
+    },
+
     async getScheduleById(scheduleId) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}get_schedule_by_id.php?id=${scheduleId}`, {
@@ -860,7 +893,36 @@ var ApiService = {
         } catch (error) {
             return { success: false, message: "Error guardando programas." };
         }
+    },
+
+    async getEnrollmentStatus() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}site_config.php`, {
+                headers: API_CONFIG.HEADERS
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error de red" };
+        }
+    },
+
+    async updateSiteConfig(data) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_site_config.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify(data),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error al actualizar configuración" };
+        }
     }
 };
 
 window.API_CONFIG = API_CONFIG;
+window.ApiService = ApiService;
+
+// Alias for compatibility with some React components
+ApiService.baseUrl = API_CONFIG.BASE_URL;

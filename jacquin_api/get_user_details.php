@@ -42,7 +42,7 @@ if ($id_usuario > 0) {
                 LEFT JOIN enrollment_schedules es ON e.id_enrollment = es.enrollment_id
                 LEFT JOIN schedules s ON es.schedule_id = s.id_schedule
                 LEFT JOIN usuario u_prof ON s.teacher_id = u_prof.id_usuario
-                WHERE e.student_id = ? AND e.status IN ('Activo', 'Pendiente', 'Pre-inscrito')
+                WHERE e.student_id = ? AND e.status IN ('Activo', 'Pendiente', 'Pre-inscrito', 'Inscrito')
                 ORDER BY e.id_enrollment DESC, s.day
             ");
             $stmtEnroll->execute([$id_usuario]);

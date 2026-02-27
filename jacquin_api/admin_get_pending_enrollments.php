@@ -21,19 +21,19 @@ try {
             c.course_name,
             c.id_course as course_id,
             -- Agrupar horarios para mostrar resumen
-            GROUP_CONCAT(CONCAT(s.day, ' ', LEFT(s.start_time, 5)) SEPARATOR ', ') as schedule_day,
-            MAX(s.start_time) as time_start,
-            MAX(s.end_time) as time_end,
-            MAX(s.id) as id_schedule,
-            MAX(st.teacher_id) as teacher_id,
+            GROUP_CONCAT(CONCAT(s.day, ' ', LEFT(s.time_start, 5)) SEPARATOR ', ') as schedule_day,
+            MAX(s.time_start) as time_start,
+            MAX(s.time_end) as time_end,
+            MAX(s.id_schedule) as id_schedule,
+            MAX(st.id_teacher) as teacher_id,
             MAX(t.full_name) as teacher_name
         FROM enrollments e
         JOIN usuario u ON e.student_id = u.id_usuario
         JOIN courses c ON e.course_id = c.id_course
         LEFT JOIN enrollment_schedules es ON e.id_enrollment = es.enrollment_id
-        LEFT JOIN course_schedules s ON es.schedule_id = s.id
-        LEFT JOIN schedule_teachers st ON s.id = st.schedule_id
-        LEFT JOIN usuario t ON st.teacher_id = t.id_usuario
+        LEFT JOIN schedules s ON es.schedule_id = s.id_schedule
+        LEFT JOIN schedule_teachers st ON s.id_schedule = st.id_schedule
+        LEFT JOIN usuario t ON st.id_teacher = t.id_usuario
         WHERE 
             e.status IN ('Pendiente', 'Pre-inscrito') 
         GROUP BY e.id_enrollment

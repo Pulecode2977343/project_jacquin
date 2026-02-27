@@ -70,7 +70,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Elements - CORRECTED IDs based on gestion.html
     const modAdminInventory = document.getElementById("mod-inventory"); // Corrected ID
     const modAdminUsers = document.getElementById("mod-profesores"); // This is the "Usuarios" card
-    const modAcademic = document.getElementById("mod-academic"); // Cursos / Notas
     const modEvents = document.getElementById("mod-events");     // Eventos
     const modPositions = document.getElementById("mod-positions"); // Cargos
     const modStudentCourses = document.getElementById("mod-student-courses"); // Student Card
@@ -87,7 +86,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const modPrograms = document.getElementById("mod-programs");
     if (modPrograms) modPrograms.style.display = "none";
     if (modPositions) modPositions.style.display = "none";
-    if (modAcademic) modAcademic.style.display = "none"; // Hide by default
     const modStorage = document.getElementById("mod-storage");
     if (modStorage) modStorage.style.display = "none";
 
@@ -111,11 +109,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 // Admin Action: Go to Users Page
                 modAdminUsers.onclick = () => window.location.href = "admin_users.html";
                 modAdminUsers.style.cursor = "pointer";
-            }
-            if (modAcademic) {
-                modAcademic.style.display = "flex";
-                // Admin has Manage Courses here
-                // Handled in link modules
             }
             // Admin Check Pending Requests
             if (window.checkPendingRequests) window.checkPendingRequests();
@@ -247,23 +240,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             break;
     }
 
-    // Link Modules (Navigation)
-    if (modAcademic) {
-        modAcademic.onclick = (e) => {
-            if (roleId === 1) {
-                if (window.openCourseManagement) {
-                    window.openCourseManagement();
-                } else {
-                    console.error("openCourseManagement not found");
-                    showToast("Error: Módulo académico no cargado.", "error");
-                }
-            } else {
-                const section = document.getElementById('section-academic');
-                if (section) section.scrollIntoView({ behavior: 'smooth' });
-            }
-        };
-        modAcademic.style.cursor = "pointer";
-    }
 
     // NOTE: mod-profesores (modAdminUsers) is handled in Switch for Admin.
     // Use this block only for Non-Admin who might see it?
@@ -487,41 +463,36 @@ async function fetchStudentCourses(userId) {
         let res = await ApiService.getUserDetails(userId);
 
         // Retry logic for session sync if needed
-        if (!res.success || !res.data || !res.data.enrolled || res.data.enrolled.length === 0) {
-            const session = ApiService.getSession();
-            if (session && session.email) {
-                try {
-                    const syncRes = await fetch(`/jacquin_api/get_user_by_email.php?email=${encodeURIComponent(session.email)}`);
-                    const syncData = await syncRes.json();
-                    if (syncData.success && syncData.user) {
-                        res = await ApiService.getUserDetails(syncData.user.id_usuario);
-                    }
-                } catch (e) { console.log("[STUDENT SYNC] Failed."); }
-            }
-        }
+        // 1. Combine Enrolled + Pending (Pre-inscrito)
+        const enrolled = res.data.enrolled || [];
+        const pending = res.data.pending || [];
+        const allUserCourses = [...enrolled, ...pending];
 
-        if (res.success && res.data && res.data.enrolled && res.data.enrolled.length > 0) {
-            const courses = res.data.enrolled;
+        if (res.success && res.data && allUserCourses.length > 0) {
+            const courses = allUserCourses;
             const daysBase = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
             const dayLabels = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB'];
 
             const groupedByCourse = {};
             courses.forEach(c => {
-                if (!groupedByCourse[c.id_course]) {
-                    groupedByCourse[c.id_course] = {
-                        id_course: c.id_course,
-                        name: c.name,
+                const cid = c.id_course || c.course_id;
+                if (!groupedByCourse[cid]) {
+                    groupedByCourse[cid] = {
+                        id_course: cid,
+                        id_enrollment: c.id_enrollment,
+                        name: c.name || c.course_name,
+                        status: c.status,
                         teacher: c.teacher_name || 'Sin asignar',
                         byDay: {}
                     };
-                    daysBase.forEach(d => groupedByCourse[c.id_course].byDay[d] = []);
+                    daysBase.forEach(d => groupedByCourse[cid].byDay[d] = []);
                 }
 
                 if (c.schedules && c.schedules.length > 0) {
                     c.schedules.forEach(s => {
                         const day = s.day_of_week || 'Sin asignar';
-                        if (groupedByCourse[c.id_course].byDay[day]) {
-                            groupedByCourse[c.id_course].byDay[day].push({
+                        if (groupedByCourse[cid].byDay[day]) {
+                            groupedByCourse[cid].byDay[day].push({
                                 id: s.id_schedule,
                                 time: s.start_time,
                                 endTime: s.end_time,
@@ -530,11 +501,13 @@ async function fetchStudentCourses(userId) {
                         }
                     });
                 }
-                groupedByCourse[c.id_course].hasSchedules = (c.schedules && c.schedules.length > 0);
+                groupedByCourse[cid].hasSchedules = (c.schedules && c.schedules.length > 0);
             });
 
             container.innerHTML = Object.values(groupedByCourse).map((course, idx) => {
                 const accordionId = `student-accordion-${course.id_course}-${idx}`;
+                const isPending = course.status !== 'Activo';
+                const statusColor = isPending ? '#ff9f43' : '#2ecc71';
 
                 return `
                 <div style="background:rgba(255,255,255,0.02); border-radius:16px; margin-bottom:15px; border: 1px solid rgba(255,255,255,0.05); overflow:hidden;">
@@ -546,7 +519,10 @@ async function fetchStudentCourses(userId) {
                             </div>
                             <div>
                                 <span style="color:white; font-weight:600; font-size:1.1rem; display:block;">${course.name}</span>
-                                <span style="color:rgba(255,255,255,0.4); font-size:0.8rem;">Prof: ${course.teacher}</span>
+                                <div style="display:flex; gap:8px; align-items:center; margin-top:4px;">
+                                    <span style="color:${statusColor}; font-size:0.7rem; font-weight:700; text-transform:uppercase; background:${statusColor}11; padding:2px 8px; border-radius:10px; border:1px solid ${statusColor}33;">${course.status}</span>
+                                    <span style="color:rgba(255,255,255,0.3); font-size:0.75rem;">Prof: ${course.teacher}</span>
+                                </div>
                             </div>
                         </div>
                         <i class="bi bi-chevron-down chevron" style="color:rgba(255,255,255,0.3); transition:all 0.3s ease;"></i>
@@ -555,14 +531,24 @@ async function fetchStudentCourses(userId) {
                     <div id="${accordionId}" style="display:none; padding:0 20px 20px 20px; border-top:1px solid rgba(255,255,255,0.05);">
                         <div style="margin-top:15px;">
                             ${!course.hasSchedules ? `
-                            <div style="background:rgba(255,159,67,0.07); border:1px dashed rgba(255,159,67,0.3); border-radius:12px; padding:20px; text-align:center; color:rgba(255,159,67,0.8);">
-                                <i class="bi bi-calendar-x" style="font-size:2rem; display:block; margin-bottom:10px; opacity:0.5;"></i>
-                                <div style="font-weight:600; margin-bottom:5px;">Horario pendiente de asignación</div>
-                                <div style="font-size:0.8rem; opacity:0.7;">Tu inscripción está activa. El administrador asignará tu horario pronto.</div>
+                            <div style="background:rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.1); border-radius:12px; padding:25px; text-align:center;">
+                                <i class="bi bi-calendar-x" style="font-size:2rem; display:block; margin-bottom:12px; color:rgba(255,159,67,0.4);"></i>
+                                <div style="color:white; font-weight:600; margin-bottom:8px;">Sin horario asignado</div>
+                                <p style="font-size:0.85rem; color:rgba(255,255,255,0.4); margin-bottom:15px;">Aún no has seleccionado tus horarios o están pendientes de aprobación.</p>
+                                <button onclick="window.openSchedulePickerForStudent(${course.id_enrollment}, ${course.id_course}, '${course.name.replace(/'/g, "\\'")}')" 
+                                        style="background:var(--color-acento-azul); color:#0a1929; border:none; padding:8px 20px; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.85rem;">
+                                    <i class="bi bi-calendar-plus"></i> Seleccionar Horarios
+                                </button>
                             </div>
                             ` : `
-                            <div style="font-size: 0.8rem; color: var(--color-acento-azul); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                                <i class="bi bi-calendar3"></i> Tu Horario Semanal <span style="opacity:0.6;">(Click para ver tus compañeros)</span>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                                <div style="font-size: 0.8rem; color: var(--color-acento-azul); display: flex; align-items: center; gap: 8px;">
+                                    <i class="bi bi-calendar3"></i> Tu Horario Semanal
+                                </div>
+                                <button onclick="window.openSchedulePickerForStudent(${course.id_enrollment}, ${course.id_course}, '${course.name.replace(/'/g, "\\'")}')" 
+                                        style="background:none; border:none; color:rgba(255,255,255,0.3); font-size:0.75rem; cursor:pointer; text-decoration:underline;">
+                                    Cambiar Horarios
+                                </button>
                             </div>
 
                             <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;">
@@ -573,13 +559,11 @@ async function fetchStudentCourses(userId) {
                                         </div>
                                         ${course.byDay[day].length > 0 ? course.byDay[day].sort((a, b) => a.time.localeCompare(b.time)).map(s => `
                                             <div onclick="showStudentScheduleClassmates(${s.id}, '${course.name.replace(/'/g, "\\'")}', '${day} ${ApiService.formatTime(s.time)}')"
-                                                 style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(52, 152, 219, 0.05)); padding: 10px 5px; border-radius: 8px; margin-bottom: 6px; border: 1px solid rgba(52, 152, 219, 0.3); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'; this.style.borderColor='var(--color-acento-azul)'" onmouseout="this.style.transform='scale(1)'; this.style.borderColor='rgba(52, 152, 219, 0.3)'">
+                                                 style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(52, 152, 219, 0.05)); padding: 10px 5px; border-radius: 8px; margin-bottom: 6px; border: 1px solid rgba(52, 152, 219, 0.3); cursor: pointer; transition: all 0.2s;">
                                                 <div style="font-size: 0.75rem; color: white; font-weight: 700;">${ApiService.formatTime(s.time)}</div>
-                                                <div style="font-size: 0.6rem; color: rgba(255,255,255,0.4);">${ApiService.formatTime(s.endTime)}</div>
-                                                ${s.teacher && s.teacher !== 'Sin asignar' ? `<div style="font-size:0.58rem; color:rgba(255,200,100,0.7); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${s.teacher}"><i class="bi bi-person-fill"></i> ${s.teacher.split(' ')[0]}</div>` : ''}
                                             </div>
                                         `).join('') : `
-                                            <div style="height: 50px; border: 1px dashed rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.05);">
+                                            <div style="height: 40px; border: 1px dashed rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.05);">
                                                 <i class="bi bi-dash-lg"></i>
                                             </div>
                                         `}
@@ -612,6 +596,54 @@ window.toggleStudentCourse = function (id, el) {
     target.style.display = isHidden ? 'block' : 'none';
     el.querySelector('.chevron').style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
     el.parentElement.style.background = isHidden ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)';
+};
+
+window.openSchedulePickerForStudent = async function (enrollmentId, courseId, courseName) {
+    const res = await ApiService.getSchedules(courseId);
+    if (!res.success) return Swal.fire('Error', 'No se cargaron horarios del curso', 'error');
+
+    const schedules = res.data;
+    if (schedules.length === 0) return Swal.fire('Aviso', 'Este curso no tiene horarios definidos aún.', 'warning');
+
+    const existingRes = await ApiService.getEnrollmentSchedules(enrollmentId);
+    const existingIds = existingRes.success ? existingRes.data.map(s => s.id_schedule) : [];
+
+    const html = `
+        <div style="text-align:left; max-height:450px; overflow-y:auto; padding:5px;">
+            <p style="font-size:0.85rem; color:#888; margin-bottom:15px; text-align:center;">Selecciona los días y horas que te resulten convenientes.</p>
+            ${window.renderSchedulePickerGrid(schedules, existingIds.map(String), 'student-sched-cb')}
+        </div>
+        <p style="font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:15px; text-align:center;">* Puedes seleccionar varios horarios si el curso lo requiere.</p>
+    `;
+
+    Swal.fire({
+        title: `Elegir Horarios: ${courseName}`,
+        html: html,
+        width: '850px',
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar Selección',
+        confirmButtonColor: '#3498db',
+        cancelButtonText: 'Cancelar',
+        background: '#0f172a',
+        color: '#fff',
+        preConfirm: () => {
+            const checkboxes = document.querySelectorAll('.student-sched-cb:checked');
+            if (checkboxes.length === 0) return Swal.showValidationMessage('Selecciona al menos un horario.');
+            return Array.from(checkboxes).map(c => c.value);
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            Swal.showLoading();
+            const resAssign = await ApiService.studentAssignSchedules(enrollmentId, result.value);
+            if (resAssign.success) {
+                Swal.fire({ title: '¡Perfecto!', text: 'Tus horarios han sido actualizados.', icon: 'success', background: '#1a1a2e', color: '#fff' });
+                const session = ApiService.getSession();
+                if (session) fetchStudentCourses(session.id_usuario);
+            } else {
+                Swal.fire({ title: 'Error', text: resAssign.message, icon: 'error', background: '#1a1a2e', color: '#fff' });
+            }
+        }
+    });
 };
 
 window.showStudentScheduleClassmates = async function (scheduleId, courseName, timeLabel) {
@@ -1300,11 +1332,25 @@ window.cancelEnrollment = async function (idEnrollment, name) {
 
 // [window.assignStudentSchedule moved to admin_shared_academic.js]
 
-window.openHeroManager = function () {
+window.openHeroManager = async function () {
     const modalId = "hero-manager-modal";
     let modal = document.getElementById(modalId);
 
-    // Config vars
+    // Fetch current config for texts
+    let currentConfig = { hero_tagline: "", hero_cta_text: "" };
+    try {
+        const configRes = await ApiService.getEnrollmentStatus();
+        if (configRes.success) {
+            currentConfig = {
+                hero_tagline: configRes.hero_tagline || "",
+                hero_cta_text: configRes.hero_cta_text || ""
+            };
+        }
+    } catch (e) {
+        console.error("Error loading hero config:", e);
+    }
+
+    // Config vars for cropping
     let cropX = 0, cropY = 0, scale = 1, minScale = 1;
     let dragStart = { x: 0, y: 0 };
     let isDragging = false;
@@ -1330,30 +1376,53 @@ window.openHeroManager = function () {
     const currentSrc = "images/hero-banner.jpg?t=" + new Date().getTime();
 
     modal.innerHTML = `
-        <div style="background:#1a1a1a; padding:0; border-radius:16px; width:95%; max-width:550px; overflow:hidden; box-shadow:0 30px 60px rgba(0,0,0,0.8); border:1px solid #333;">
+        <div style="background:#1a1a1a; padding:0; border-radius:16px; width:95%; max-width:600px; overflow-y:auto; max-height:90vh; box-shadow:0 30px 60px rgba(0,0,0,0.8); border:1px solid #333;">
              <div style="padding:20px 25px; border-bottom:1px solid #333; display:flex; justify-content:space-between; align-items:center; background:#222;">
                 <h3 style="color:white; margin:0; font-size:1.1rem; display:flex; align-items:center; gap:10px;">
-                    <i class="bi bi-crop" style="color:var(--color-acento-azul)"></i> Editor de Portada
+                    <i class="bi bi-image" style="color:var(--color-acento-azul)"></i> Administrar Portada (Hero)
                 </h3>
                 <button onclick="document.getElementById('${modalId}').style.display='none'" style="background:none; border:none; color:#777; font-size:1.5rem; cursor:pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#777'">&times;</button>
             </div>
-            <div style="padding:25px; background:#111; text-align:center;">
-                <div id="crop-container" style="width: ${VP_W}px; height: ${VP_H}px; margin: 0 auto; background: #000; border: 2px solid var(--color-acento-azul); border-radius: 8px; overflow: hidden; position: relative; cursor: grab; box-shadow: 0 0 20px rgba(0,0,0,0.5); box-sizing: content-box;">
-                    <div id="crop-instruction" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#555; pointer-events:none; z-index:10;"><i class="bi bi-arrows-move"></i> Arrastra para ajustar</div>
-                    <img id="crop-target" src="${currentSrc}" style="transform-origin:top left; position:absolute; top:0; left:0; pointer-events:none; user-select:none;">
+            
+            <div style="padding:25px; background:#111;">
+                <!-- SECCIÓN RECORTE IMAGEN -->
+                <div style="margin-bottom:25px;">
+                    <label style="color:var(--color-acento-azul); display:block; margin-bottom:10px; font-weight:bold; font-size:0.8rem; text-transform:uppercase;">1. Imagen de Fondo (Recorte 16:9)</label>
+                    <div id="crop-container" style="width: ${VP_W}px; height: ${VP_H}px; margin: 0 auto; background: #000; border: 2px solid #333; border-radius: 8px; overflow: hidden; position: relative; cursor: grab; box-shadow: 0 0 20px rgba(0,0,0,0.5); box-sizing: content-box;">
+                        <div id="crop-instruction" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#555; pointer-events:none; z-index:10;"><i class="bi bi-arrows-move"></i> Arrastra para ajustar</div>
+                        <img id="crop-target" src="${currentSrc}" style="transform-origin:top left; position:absolute; top:0; left:0; pointer-events:none; user-select:none;">
+                    </div>
+                    <div id="crop-controls" style="margin-top:10px; display:none; align-items:center; justify-content:center; gap:15px;">
+                        <i class="bi bi-zoom-in" style="color:#777"></i>
+                        <input type="range" id="crop-zoom" min="1" max="3" step="0.01" value="1" style="width:200px; accent-color:var(--color-acento-azul);">
+                    </div>
+                    <input type="file" id="hero-upload-input" accept="image/*" style="display:none;">
+                    <div style="margin-top:15px; text-align:center;">
+                        <button onclick="document.getElementById('hero-upload-input').click()" style="background:#222; color:#ccc; border:1px solid #333; padding:8px 16px; border-radius:50px; cursor:pointer; font-size:0.85rem;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='#222'"><i class="bi bi-folder2-open"></i> Elegir nueva foto</button>
+                    </div>
                 </div>
-                <div id="crop-controls" style="margin-top:20px; display:none; align-items:center; justify-content:center; gap:15px;">
-                    <i class="bi bi-zoom-in" style="color:#777"></i>
-                    <input type="range" id="crop-zoom" min="1" max="3" step="0.01" value="1" style="width:200px; accent-color:var(--color-acento-azul);">
+
+                <!-- SECCIÓN TEXTOS -->
+                <div style="border-top:1px solid #333; padding-top:20px;">
+                    <label style="color:var(--color-acento-azul); display:block; margin-bottom:15px; font-weight:bold; font-size:0.8rem; text-transform:uppercase;">2. Textos de la Portada</label>
+                    
+                    <div style="margin-bottom:15px;">
+                        <label style="color:#888; display:block; margin-bottom:5px; font-size:0.85rem;">Frase Principal (Tagline):</label>
+                        <input type="text" id="hero-tagline-input" value="${currentConfig.hero_tagline}" placeholder="Ej: Donde la pasión se convierte en arte" style="width:100%; padding:10px; background:#222; border:1px solid #333; border-radius:8px; color:white; outline:none; font-size:0.95rem; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom:20px;">
+                        <label style="color:#888; display:block; margin-bottom:5px; font-size:0.85rem;">Texto del Botón (CTA):</label>
+                        <input type="text" id="hero-cta-input" value="${currentConfig.hero_cta_text}" placeholder="Ej: Descubre Nuestros Programas" style="width:100%; padding:10px; background:#222; border:1px solid #333; border-radius:8px; color:white; outline:none; font-size:0.95rem; box-sizing:border-box;">
+                    </div>
                 </div>
-                <input type="file" id="hero-upload-input" accept="image/*" style="display:none;">
-                <div style="margin-top:25px; display:flex; gap:10px; justify-content:center;">
-                    <button onclick="document.getElementById('hero-upload-input').click()" style="background:#333; color:#ccc; border:1px solid #444; padding:10px 20px; border-radius:50px; cursor:pointer; display:flex; align-items:center; gap:8px; font-size:0.9rem;" onmouseover="this.style.background='#444';this.style.color='white'" onmouseout="this.style.background='#333';this.style.color='#ccc'"><i class="bi bi-image"></i> Elegir Otra Foto</button>
-                    <button id="btn-save-hero" onclick="uploadHero()" disabled style="background:var(--color-acento-azul); color:white; border:none; padding:10px 30px; border-radius:50px; font-weight:bold; cursor:pointer; opacity:0.5; pointer-events:none; box-shadow:0 4px 15px rgba(52, 152, 219, 0.3); display:flex; align-items:center; gap:8px; font-size:0.9rem;"><i class="bi bi-check-lg"></i> Guardar Recorte</button>
+
+                <div style="text-align:center; padding-top:10px;">
+                    <button id="btn-save-hero" onclick="uploadHero()" style="background:var(--color-acento-azul); color:white; border:none; padding:12px 40px; border-radius:50px; font-weight:bold; cursor:pointer; box-shadow:0 4px 15px rgba(52, 152, 219, 0.3); display:flex; align-items:center; gap:8px; margin:0 auto; font-size:1rem;"><i class="bi bi-check-lg"></i> Guardar Cambios</button>
                 </div>
             </div>
              <div style="padding:15px; background:#1a1a1a; border-top:1px solid #333; text-align:center;">
-                <p style="margin:0; font-size:0.8rem; color:#666;"><i class="bi bi-info-circle"></i> Sube y ajusta manualmente.</p>
+                <p style="margin:0; font-size:0.8rem; color:#666;"><i class="bi bi-info-circle"></i> Los cambios se verán reflejados inmediatamente en la página principal.</p>
             </div>
         </div>
     `;
@@ -1366,19 +1435,26 @@ window.openHeroManager = function () {
     const instructions = document.getElementById('crop-instruction');
     const controls = document.getElementById('crop-controls');
 
+    // Initial load check for current image
+    if (imgEl.complete) {
+        initCropper();
+    } else {
+        imgEl.onload = initCropper;
+    }
+
     // File Input Handler
     document.getElementById('hero-upload-input').onchange = function (e) {
         if (e.target.files && e.target.files[0]) {
             const reader = new FileReader();
             reader.onload = function (evt) {
                 imgEl.src = evt.target.result;
-                imgEl.onload = function () { initCropper(); }
+                imgEl.onload = function () { initCropper(true); }
             };
             reader.readAsDataURL(e.target.files[0]);
         }
     };
 
-    function initCropper() {
+    function initCropper(isNewFile = false) {
         imgWidth = imgEl.naturalWidth;
         imgHeight = imgEl.naturalHeight;
         const scaleW = VP_W / imgWidth;
@@ -1392,7 +1468,7 @@ window.openHeroManager = function () {
         zoomSlider.max = minScale * 3;
         zoomSlider.value = scale;
         controls.style.display = "flex";
-        instructions.style.display = "block";
+        instructions.style.display = isNewFile ? "block" : "none";
         btnSave.disabled = false;
         btnSave.style.opacity = "1";
         btnSave.style.pointerEvents = "auto";
@@ -1410,43 +1486,79 @@ window.openHeroManager = function () {
         imgEl.style.transform = `translate(${cropX}px, ${cropY}px) scale(${scale})`;
     }
 
-    container.onmousedown = (e) => { isDragging = true; dragStart = { x: e.clientX - cropX, y: e.clientY - cropY }; container.style.cursor = "grabbing"; instructions.style.display = "none"; };
-    window.onmousemove = (e) => { if (!isDragging) return; cropX = e.clientX - dragStart.x; cropY = e.clientY - dragStart.y; updateTransform(); };
-    window.onmouseup = () => { isDragging = false; container.style.cursor = "grab"; };
-    zoomSlider.oninput = (e) => { scale = parseFloat(e.target.value); updateTransform(); };
-
-
+    container.onmousedown = (e) => {
+        isDragging = true;
+        dragStart = { x: e.clientX - cropX, y: e.clientY - cropY };
+        container.style.cursor = "grabbing";
+        instructions.style.display = "none";
+        container.style.borderColor = "var(--color-acento-azul)";
+    };
+    window.onmousemove = (e) => {
+        if (!isDragging) return;
+        cropX = e.clientX - dragStart.x;
+        cropY = e.clientY - dragStart.y;
+        updateTransform();
+    };
+    window.onmouseup = () => {
+        isDragging = false;
+        container.style.cursor = "grab";
+        container.style.borderColor = "#333";
+    };
+    zoomSlider.oninput = (e) => {
+        scale = parseFloat(e.target.value);
+        updateTransform();
+    };
 
     window.uploadHero = async function () {
         const input = document.getElementById('hero-upload-input');
+        const taglineInput = document.getElementById('hero-tagline-input');
+        const ctaInput = document.getElementById('hero-cta-input');
         const btn = document.getElementById('btn-save-hero');
         const originalText = btn.innerHTML;
-        btn.innerHTML = `<i class="bi bi-cloud-arrow-up-fill"></i> Procesando...`;
+
+        btn.innerHTML = `<i class="bi bi-hourglass-split"></i> Guardando...`;
         btn.disabled = true;
 
-        const file = input.files[0];
-        const payload = {
-            crop_x: -cropX / scale,
-            crop_y: -cropY / scale,
-            crop_w: VP_W / scale,
-            crop_h: VP_H / scale
+        // 1. Update Texts first (using the new site_config API)
+        const textPayload = {
+            hero_tagline: taglineInput.value.trim(),
+            hero_cta_text: ctaInput.value.trim()
         };
 
-        if (!file) return;
-
         try {
-            const res = await ApiService.updateHeroImage(file, payload);
-            if (res.success) {
-                modal.style.display = "none";
-                await showToast("¡Portada actualizada con éxito!", "success");
-            } else {
-                await showToast("Error: " + res.message, "error");
+            const configRes = await ApiService.updateSiteConfig(textPayload);
+            if (!configRes.success) {
+                showToast("Error guardando textos: " + configRes.message, "error");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
+                return;
             }
+
+            // 2. Upload/Crop Image if a NEW file was selected
+            const file = input.files[0];
+            if (file) {
+                const imgPayload = {
+                    crop_x: -cropX / scale,
+                    crop_y: -cropY / scale,
+                    crop_w: VP_W / scale,
+                    crop_h: VP_H / scale
+                };
+                const imgRes = await ApiService.updateHeroImage(file, imgPayload);
+                if (!imgRes.success) {
+                    showToast("Los textos se guardaron, pero hubo un error con la imagen: " + imgRes.message, "warning");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    return;
+                }
+            }
+
+            // Success!
+            modal.style.display = "none";
+            showToast("¡Hero actualizado correctamente!", "success");
+
         } catch (e) {
             console.error(e);
-            await showToast("Error de red", "error");
+            showToast("Error inesperado", "error");
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
@@ -1573,6 +1685,81 @@ if (!document.getElementById("dashboard-extras-css")) {
 }
 
 // ==========================================
+// RENDER HELPERS
+// ==========================================
+window.renderSchedulePickerGrid = function (schedules, selectedIds = [], checkboxClass = 'schedule-cb') {
+    const daysBase = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const dayLabels = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
+
+    const byDay = {};
+    daysBase.forEach(d => byDay[d] = []);
+
+    schedules.forEach(s => {
+        const d = s.day || s.day_of_week;
+        if (byDay[d]) byDay[d].push(s);
+    });
+
+    return `
+        <div class="weekly-view-container" style="margin-top:20px; border:1px solid rgba(255,255,255,0.06); border-radius:24px; overflow:hidden; background:rgba(0,0,0,0.2);">
+            <div style="display: grid; grid-template-columns: repeat(6, 1fr); background:rgba(52,152,219,0.1); border-bottom:1px solid rgba(52,152,219,0.2);">
+                ${dayLabels.map(label => `
+                    <div style="padding:15px 5px; text-align:center; font-size:0.7rem; color:var(--color-acento-azul); font-weight:900; letter-spacing:1px;">${label}</div>
+                `).join('')}
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(6, 1fr); min-height:300px; background:rgba(255,255,255,0.01);">
+                ${daysBase.map((day) => {
+        const dayScheds = byDay[day].sort((a, b) => (a.time_start || a.start_time).localeCompare(b.time_start || b.start_time));
+        return `
+                    <div style="padding:10px; border-right:1px solid rgba(255,255,255,0.04); display:flex; flex-direction:column; gap:10px;">
+                        ${dayScheds.length > 0 ? dayScheds.map(s => {
+            const sid = s.id_schedule || s.id;
+            const isChecked = selectedIds.includes(String(sid)) || selectedIds.includes(parseInt(sid));
+            const quota = s.quota || 15;
+            const enrolled = s.enrolled_count || 0;
+            const available = quota - enrolled;
+            const isFull = available <= 0 && !isChecked;
+
+            return `
+                                <label style="display:block; cursor:${isFull ? 'not-allowed' : 'pointer'};">
+                                    <input type="checkbox" class="${checkboxClass}" value="${sid}" ${isChecked ? 'checked' : ''} ${isFull ? 'disabled' : ''} style="display:none;">
+                                    <div class="sched-picker-pill ${isChecked ? 'active' : ''} ${isFull ? 'is-full' : ''}" style="
+                                        padding:12px 8px; background:${isChecked ? 'rgba(52,152,219,0.4)' : 'rgba(255,255,255,0.04)'};
+                                        border:1px solid ${isChecked ? 'var(--color-acento-azul)' : 'rgba(255,255,255,0.08)'};
+                                        border-radius:14px; text-align:center; transition:0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                                        opacity:${isFull ? '0.3' : '1'};
+                                    ">
+                                        <div style="color:white; font-weight:700; font-size:0.85rem; margin-bottom:2px;">${ApiService.formatTime(s.time_start || s.start_time)}</div>
+                                        <div style="font-size:0.6rem; color:rgba(255,255,255,0.3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${s.teacher_name || 'Sin Asignar'}">${s.teacher_name || 'Sin Asignar'}</div>
+                                        <div style="font-size:0.6rem; color:${available > 0 ? '#2ecc71' : '#ff7675'}; font-weight:700; margin-top:4px;">
+                                            ${available > 0 ? available + ' cupos' : 'Lleno'}
+                                        </div>
+                                    </div>
+                                </label>
+                            `;
+        }).join('') : '<div style="flex:1; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.03); font-size:0.7rem;">--</div>'}
+                    </div>
+                    `;
+    }).join('')}
+            </div>
+        </div>
+        <style>
+            .weekly-view-container { overflow-x: auto; }
+            @media (max-width: 800px) { .weekly-view-container > div { min-width: 800px; } }
+            .sched-picker-pill:hover:not(.is-full):not(.active) {
+                background: rgba(255,255,255,0.1);
+                border-color: rgba(255,255,255,0.2);
+                transform: translateY(-2px);
+            }
+            .sched-picker-pill.active {
+                background: rgba(52, 152, 219, 0.5) !important;
+                border-color: var(--color-acento-azul) !important;
+                box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+            }
+        </style>
+    `;
+};
+
+// ==========================================
 // STUDENT ENROLLMENT LOGIC
 // ==========================================
 window.openEnrollmentModal = async function () {
@@ -1582,12 +1769,12 @@ window.openEnrollmentModal = async function () {
         modal = document.createElement('div');
         modal.id = 'student-enroll-modal';
         modal.className = 'modal-overlay';
-        modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10001; display:flex; justify-content:center; align-items:center; opacity:0; transition:opacity 0.3s;";
+        modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10001; display:flex; justify-content:center; align-items:center; opacity:0; transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter:blur(10px);";
         modal.onclick = (e) => { if (e.target === modal) closeEnrollModal(); };
 
         modal.innerHTML = `
-            <div style="background:#1a1a1a; width:90%; max-width:450px; border-radius:16px; padding:25px; border:1px solid #333; box-shadow:0 20px 50px rgba(0,0,0,0.6); transform:scale(0.9); transition:transform 0.3s; position:relative; max-height:90vh; overflow-y:auto;">
-                <button onclick="closeEnrollModal()" style="position:absolute; top:12px; right:12px; background:rgba(255,255,255,0.05); border:none; color:white; font-size:1.2rem; cursor:pointer; width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center;">&times;</button>
+            <div style="background:#0f172a; width:95%; max-width:850px; border-radius:32px; padding:40px; border:1px solid rgba(255,255,255,0.08); box-shadow:0 30px 100px rgba(0,0,0,0.9); transform:scale(0.95); transition:transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); position:relative; max-height:90vh; overflow:hidden; display:flex; flex-direction:column;">
+                <button onclick="closeEnrollModal()" style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.05); border:none; color:white; font-size:1.5rem; cursor:pointer; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">&times;</button>
                 
                 <h3 style="color:white; margin:0 0 8px 0; font-size:1.25rem;">Inscribir Nuevo Curso</h3>
                 <p style="color:#888; font-size:0.85rem; margin:0 0 20px 0;">Selecciona el curso y horario de tu preferencia.</p>
@@ -1606,7 +1793,7 @@ window.openEnrollmentModal = async function () {
                     <label style="color:#ccc; display:block; margin-bottom:8px; font-size:0.9rem;">
                         Horarios disponibles <span style="color:#888; font-weight:400;">(puedes seleccionar varios)</span>
                     </label>
-                    <div id="enroll-schedules-list" style="max-height:250px; overflow-y:auto; margin-bottom:12px; padding-right:5px; background:rgba(0,0,0,0.2); border-radius:10px; padding:8px;">
+                    <div id="enroll-schedules-list" style="max-height:450px; overflow-y:auto; margin-bottom:12px; padding-right:5px; background:rgba(0,0,0,0.2); border-radius:10px; padding:8px;">
                         <div style="color:#666; font-style:italic;">Selecciona un curso primero.</div>
                     </div>
                     <div id="enroll-selected-count" style="display:none; color:#2ecc71; font-size:0.85rem; margin-bottom:12px;">
@@ -1682,52 +1869,15 @@ window.enrollNextStep = async function () {
         const result = await ApiService.getSchedules(courseId);
 
         if (result.success && result.data && result.data.length > 0) {
-            container.innerHTML = result.data.map(s => {
-                const quota = s.quota || 15;
-                const enrolled = s.enrolled_count || 0;
-                const available = quota - enrolled;
-                const isFull = available <= 0;
-
-                return `
-                    <label class="schedule-checkbox-label" style="
-                        display: flex;
-                        align-items: center;
-                        gap: 10px;
-                        padding: 10px 12px;
-                        margin-bottom: 6px;
-                        background: ${isFull ? 'rgba(231, 76, 60, 0.1)' : 'rgba(255,255,255,0.03)'};
-                        border: 1px solid ${isFull ? 'rgba(231, 76, 60, 0.3)' : 'rgba(255,255,255,0.08)'};
-                        border-radius: 10px;
-                        cursor: ${isFull ? 'not-allowed' : 'pointer'};
-                        transition: all 0.2s;
-                        opacity: ${isFull ? '0.6' : '1'};
-                    ">
-                        <input type="checkbox" 
-                            class="enroll-schedule-cb"
-                            value="${s.id_schedule}" 
-                            ${isFull ? 'disabled' : ''}
-                            style="width:18px; height:18px; accent-color:#2ecc71; cursor:${isFull ? 'not-allowed' : 'pointer'};">
-                        <div style="flex:1;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div>
-                                    <span style="color:var(--color-acento-azul); font-weight:600; font-size:0.9rem;">${s.day}</span>
-                                    <span style="color:#888; margin:0 6px;">•</span>
-                                    <span style="color:white; font-size:0.9rem;">${s.time_start ? ApiService.formatTime(s.time_start) : ''} - ${s.time_end ? ApiService.formatTime(s.time_end) : ''}</span>
-                                </div>
-                                ${isFull
-                        ? '<span style="background:#e74c3c; color:white; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:600;">LLENO</span>'
-                        : `<span style="color:#2ecc71; font-size:0.8rem; font-weight:500;">${available} cupos</span>`
-                    }
-                            </div>
-                            <div style="font-size:0.75rem; color:#666; margin-top:3px;">${s.teacher_name || 'Docente por asignar'}</div>
-                        </div>
-                    </label>
-                `;
-            }).join('');
+            container.innerHTML = window.renderSchedulePickerGrid(result.data, [], 'enroll-schedule-cb');
 
             // Add event listeners for checkboxes
             container.querySelectorAll('.enroll-schedule-cb').forEach(cb => {
-                cb.addEventListener('change', updateEnrollCount);
+                cb.addEventListener('change', () => {
+                    const pill = cb.nextElementSibling;
+                    pill.classList.toggle('active', cb.checked);
+                    updateEnrollCount();
+                });
             });
 
             // Add hover effects

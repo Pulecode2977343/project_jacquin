@@ -10,6 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once 'config/connection.php';
+require_once 'helpers/auth_helper.php';
+
+// Solo administradores pueden desinscribir
+validateAdmin();
 
 $data = json_decode(file_get_contents("php://input"), true);
 

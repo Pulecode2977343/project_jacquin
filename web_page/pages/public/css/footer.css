@@ -255,6 +255,14 @@
     font-size: 0.9rem;
 }
 
+.image-disclaimer {
+    font-size: 0.72rem;
+    margin-top: 6px;
+    opacity: 0.6;
+    font-weight: 300;
+    line-height: 1.4;
+}
+
 .footer-bottom-links a {
     color: var(--color-humo-gris);
     font-size: 0.85rem;

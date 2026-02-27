@@ -170,7 +170,7 @@ const AcademicManager = {
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
-                <div class="courses-grid" style="margin-top: 25px;">${coursesListHtml}</div>
+                <div class="courses-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; margin-top: 25px;">${coursesListHtml}</div>
             </div>
         `;
 
@@ -193,43 +193,52 @@ const AcademicManager = {
         return `
         <div onclick="openCourseDetails(${c.id_course}, '${c.name.replace(/'/g, "\\'")}')"
              class="admin-course-card"
-             style="border: 1px solid rgba(255,255,255,0.05); border-left: 4px solid ${hasAction ? '#ff9f43' : '#3498db'};
-                    background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; margin-bottom: 12px; cursor:pointer;
-                    transition: all 0.2s ease;"
-             onmouseover="this.style.background='rgba(52, 152, 219, 0.05)';"
-             onmouseout="this.style.background='rgba(255,255,255,0.02)';">
+             style="border: 1px solid rgba(255,255,255,0.06); border-top: 5px solid ${hasAction ? '#ff9f43' : '#3498db'};
+                    background: rgba(255,255,255,0.03); padding: 22px; border-radius: 18px; cursor:pointer;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display:flex; flex-direction:column; gap:12px;
+                    position:relative; overflow:hidden;"
+             onmouseover="this.style.background='rgba(255,255,255,0.06)'; this.style.transform='translateY(-5px)'; this.style.borderColor='rgba(52, 152, 219, 0.3)';"
+             onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.06)';">
+            
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <h3 style="color:white; margin:0; font-size:1.25rem; font-weight:700; letter-spacing:-0.3px;">${c.name}</h3>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    ${hasAction ? `<span style="background:rgba(255,159,67,0.15); color:#ff9f43; border:1px solid rgba(255,159,67,0.3); padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:700; animation: pulse-alert 2s infinite;">${pCount} PENDIENTE</span>` : ''}
+                    <button onclick="event.stopPropagation(); deleteCourse(${c.id_course}, '${c.name.replace(/'/g, "\\'")}')" 
+                            style="background:rgba(231, 76, 60, 0.1); border:1px solid rgba(231, 76, 60, 0.3); color:#e74c3c; width:28px; height:28px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;"
+                            onmouseover="this.style.background='rgba(231, 76, 60, 0.25)'" onmouseout="this.style.background='rgba(231, 76, 60, 0.1)'" title="Eliminar Curso">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </div>
+            </div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <div class="course-title" style="font-size: 1.15rem; font-weight: 600; color: #fff;">${c.name}</div>
-                ${hasAction ? `
-                    <div style="background: rgba(255,159,67,0.15); color: #ff9f43; border: 1px solid rgba(255,159,67,0.3); padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 0.78rem; display:flex; align-items:center; gap:5px; animation: pulse-alert 2s infinite;">
-                        <i class="bi bi-exclamation-circle-fill"></i> ${pCount} Solicitude${pCount !== 1 ? 's' : ''}
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:5px;">
+                <div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:0.65rem; color:rgba(255,255,255,0.3); text-transform:uppercase; margin-bottom:4px;">Inscritos</div>
+                    <div style="color:#2ecc71; font-weight:700; font-size:1rem; display:flex; align-items:center; gap:6px;">
+                        <i class="bi bi-people-fill" style="font-size:0.9rem;"></i> ${activeCount}
                     </div>
-                ` : '<i class="bi bi-arrow-right-short" style="color:rgba(255,255,255,0.3); font-size:1.4rem;"></i>'}
+                </div>
+                <div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:0.65rem; color:rgba(255,255,255,0.3); text-transform:uppercase; margin-bottom:4px;">Horarios</div>
+                    <div style="color:#3498db; font-weight:700; font-size:1rem; display:flex; align-items:center; gap:6px;">
+                        <i class="bi bi-calendar3" style="font-size:0.9rem;"></i> ${schedCount}
+                    </div>
+                </div>
             </div>
 
-            <!-- Métricas rápidas -->
-            <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:8px;">
-                <span style="font-size:0.78rem; color:rgba(255,255,255,0.45);">
-                    <i class="bi bi-people-fill" style="margin-right:4px; color:#2ecc71;"></i>
-                    <strong style="color:#fff;">${activeCount}</strong> inscrito${activeCount !== 1 ? 's' : ''} activo${activeCount !== 1 ? 's' : ''}
-                </span>
-                <span style="font-size:0.78rem; color:rgba(255,255,255,0.45);">
-                    <i class="bi bi-calendar3" style="margin-right:4px; color:#3498db;"></i>
-                    <strong style="color:#fff;">${schedCount}</strong> horario${schedCount !== 1 ? 's' : ''}
-                </span>
-                ${totalQuota > 0 ? `
-                <span style="font-size:0.78rem; color:rgba(255,255,255,0.45);">
-                    <i class="bi bi-bar-chart-fill" style="margin-right:4px; color:${barColor};"></i>
-                    <strong style="color:${barColor};">${pct}%</strong> ocupado
-                </span>` : ''}
-            </div>
-
-            <!-- Barra de ocupación (solo si hay cupo total definido) -->
             ${totalQuota > 0 ? `
-            <div style="width:100%; height:3px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden;">
-                <div style="width:${pct}%; height:100%; background:${barColor}; transition:width 0.5s;"></div>
+            <div style="margin-top:auto; padding-top:10px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:rgba(255,255,255,0.35); margin-bottom:6px;">
+                    <span>Ocupación</span>
+                    <span style="color:${barColor}; font-weight:700;">${pct}%</span>
+                </div>
+                <div style="width:100%; height:4px; background:rgba(255,255,255,0.05); border-radius:4px; overflow:hidden;">
+                    <div style="width:${pct}%; height:100%; background:${barColor}; transition:width 0.6s ease;"></div>
+                </div>
             </div>` : ''}
+
+            <i class="bi bi-chevron-right" style="position:absolute; bottom:20px; right:20px; color:rgba(255,255,255,0.1); font-size:1.2rem;"></i>
         </div>
         `;
     },
@@ -240,9 +249,9 @@ const AcademicManager = {
         style.id = 'academic-manager-styles';
         style.textContent = `
             .modal-card-container {
-                background:#141414; padding:35px; border-radius:30px; width:95%; max-width:700px; 
-                max-height:85vh; overflow-y:auto; border:1px solid rgba(255,255,255,0.1); 
-                box-shadow:0 50px 100px rgba(0,0,0,0.9);
+                background: #141414; padding: 40px; border-radius: 24px; width: 98%; max-width: 1380px; 
+                min-height: 500px; max-height: 90vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); 
+                box-shadow: 0 50px 100px rgba(0,0,0,0.9); transition: all 0.3s ease;
             }
             .modal-header-row { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:30px; }
             .btn-close-modal { 
@@ -372,7 +381,7 @@ const AcademicManager = {
         const pendingHtml = this.generatePendingList(pending, courseId, courseName);
 
         modal.innerHTML = `
-            <div class="modal-card-container custom-scroll" style="max-width:850px; background: linear-gradient(135deg, #12161f 0%, #1a2333 100%);">
+            <div class="modal-card-container custom-scroll" style="max-width:1400px; min-height:650px; background: linear-gradient(135deg, #12161f 0%, #1a2333 100%);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px;">
                     <div style="display:flex; align-items: center; gap: 15px;">
                          <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(52, 152, 219, 0.15); display:flex; align-items:center; justify-content:center; color: #3498db; font-size: 1.8rem;">
@@ -384,9 +393,6 @@ const AcademicManager = {
                         </div>
                     </div>
                      <div style="display:flex; gap:10px;">
-                        <button onclick="editCourseBasicInfo(${courseId}, '${courseName.replace(/'/g, "\\'")}', '${(info.description || '').replace(/'/g, "\\'")}', ${info.price || 0})" class="btn-back-top" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; padding: 8px 15px; cursor: pointer;">
-                            <i class="bi bi-pencil-square" style="margin-right:5px;"></i> Editar
-                        </button>
                          <button onclick="AcademicManager.closeDetails()" class="btn-close-modal" style="background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.3); color: #e74c3c; width: 35px; height: 35px; border-radius: 50%; display:flex; align-items:center; justify-content:center; cursor: pointer;">
                             <i class="bi bi-x-lg"></i>
                         </button>
@@ -896,29 +902,31 @@ const AcademicManager = {
                 const teacherChip = hasTeachers
                     ? '<div style="margin:6px 0 4px; display:flex; flex-wrap:wrap; gap:4px; align-items:center;">' +
                     s.teachers.map(t =>
-                        '<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(52,152,219,0.12);color:#74b9ff;border:1px solid rgba(52,152,219,0.25);border-radius:20px;padding:2px 7px;font-size:0.69rem;">' +
-                        '<i class="bi bi-person-fill" style="font-size:0.62rem;"></i>' + t.name +
+                        '<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(52,152,219,0.12);color:#74b9ff;border:1px solid rgba(52,152,219,0.25);border-radius:20px;padding:1px 6px;font-size:0.65rem;">' +
+                        '<i class="bi bi-person-fill" style="font-size:0.6rem;"></i>' + t.name +
                         '<span onclick="unassignSingleTeacher(' + s.id_schedule + ',' + t.id + ',' + courseId + ',\'' + safeCourseName + '\')" style="cursor:pointer;color:rgba(255,100,100,0.6);margin-left:2px;" title="Remover" onmouseover="this.style.color=\'#e74c3c\'" onmouseout="this.style.color=\'rgba(255,100,100,0.6)\'">&times;</span>' +
                         '</span>'
                     ).join('') +
                     '<button onclick="assignTeacherModal(' + s.id_schedule + ',' + courseId + ',\'' + safeCourseName + '\',' + currentTeacherIds + ')" title="Asignar docente" style="background:rgba(52,152,219,0.1);border:none;color:#3498db;width:20px;height:20px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.65rem;" onmouseover="this.style.background=\'rgba(52,152,219,0.22)\'" onmouseout="this.style.background=\'rgba(52,152,219,0.1)\'"><i class="bi bi-person-plus"></i></button>' +
                     '</div>'
                     : '<div style="margin:6px 0 4px;color:rgba(255,159,67,0.55);font-size:0.69rem;display:flex;align-items:center;gap:5px;">' +
-                    '<button onclick="assignTeacherModal(' + s.id_schedule + ',' + courseId + ',\'' + safeCourseName + '\',' + currentTeacherIds + ')" title="Asignar docente" style="background:rgba(255,159,67,0.12);border:none;color:rgba(255,159,67,0.85);width:20px;height:20px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.65rem;" onmouseover="this.style.background=\'rgba(255,159,67,0.22)\'" onmouseout="this.style.background=\'rgba(255,159,67,0.12)\'"><i class="bi bi-person-plus"></i></button>' +
+                    '<button onclick="assignTeacherModal(' + s.id_schedule + ',' + courseId + ',\'' + safeCourseName + '\',' + currentTeacherIds + ')" title="Asignar docente" style="background:rgba(255,159,67,0.12);border:none;color:rgba(255,159,67,0.85);width:18px;height:18px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.62rem;" onmouseover="this.style.background=\'rgba(255,159,67,0.22)\'" onmouseout="this.style.background=\'rgba(255,159,67,0.12)\'"><i class="bi bi-person-plus"></i></button>' +
                     'Sin docente</div>';
 
                 const viewBtn = enrolled > 0
                     ? '<button onclick="viewScheduleStudents(' + s.id_schedule + ',\'' + day + ' ' + ApiService.formatTime(s.time_start) + '\',' + courseId + ',\'' + safeCourseName + '\')" title="Ver inscritos" style="background:rgba(46,204,113,0.1);border:none;color:#2ecc71;width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.68rem;" onmouseover="this.style.background=\'rgba(46,204,113,0.22)\'" onmouseout="this.style.background=\'rgba(46,204,113,0.1)\'"><i class="bi bi-people"></i></button>'
                     : '';
 
-                return '<div style="background:rgba(255,255,255,0.03);border:1px solid ' + bdr + ';border-radius:11px;padding:9px 10px;margin-bottom:7px;transition:border-color 0.2s;" onmouseover="this.style.borderColor=\'rgba(52,152,219,0.45)\'" onmouseout="this.style.borderColor=\'' + bdr + '\'">' +
+                return '<div onclick="viewScheduleStudents(' + s.id_schedule + ',\'' + day + ' ' + ApiService.formatTime(s.time_start) + '\',' + courseId + ',\'' + safeCourseName + '\')" ' +
+                    'style="background:rgba(255,255,255,0.03);border:1px solid ' + bdr + ';border-radius:11px;padding:8px 8px;margin-bottom:7px;transition:all 0.2s;cursor:pointer;" ' +
+                    'onmouseover="this.style.borderColor=\'rgba(52,152,219,0.45)\';this.style.background=\'rgba(255,255,255,0.06)\'" ' +
+                    'onmouseout="this.style.borderColor=\'' + bdr + '\';this.style.background=\'rgba(255,255,255,0.03)\'">' +
                     '<div style="display:flex;justify-content:space-between;align-items:center;gap:3px;">' +
-                    '<span style="background:rgba(52,152,219,0.14);color:#74b9ff;border:1px solid rgba(52,152,219,0.2);padding:2px 7px;border-radius:7px;font-size:0.72rem;font-weight:600;white-space:nowrap;">' +
+                    '<span style="background:rgba(52,152,219,0.14);color:#74b9ff;border:1px solid rgba(52,152,219,0.2);padding:2px 4px;border-radius:7px;font-size:0.65rem;font-weight:600;white-space:nowrap;">' +
                     ApiService.formatTime(s.time_start) + '&ndash;' + ApiService.formatTime(s.time_end) +
                     '</span>' +
                     '<div style="display:flex;gap:3px;flex-shrink:0;">' +
-                    '<button onclick="editSchedule(' + s.id_schedule + ',' + courseId + ',\'' + safeCourseName + '\',\'' + s.day + '\',\'' + s.time_start + '\',\'' + s.time_end + '\')" title="Editar" style="background:rgba(255,255,255,0.05);border:none;color:rgba(255,255,255,0.45);width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.68rem;" onmouseover="this.style.background=\'rgba(255,255,255,0.12)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'rgba(255,255,255,0.05)\';this.style.color=\'rgba(255,255,255,0.45)\'"><i class="bi bi-pencil"></i></button>' +
-                    viewBtn +
+                    '<button onclick="event.stopPropagation(); editSchedule(' + s.id_schedule + ',' + courseId + ',\'' + safeCourseName + '\',\'' + s.day + '\',\'' + s.time_start + '\',\'' + s.time_end + '\')" title="Editar" style="background:rgba(255,255,255,0.05);border:none;color:rgba(255,255,255,0.45);width:22px;height:22px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.68rem;" onmouseover="this.style.background=\'rgba(255,255,255,0.12)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'rgba(255,255,255,0.05)\';this.style.color=\'rgba(255,255,255,0.45)\'"><i class="bi bi-pencil"></i></button>' +
                     '</div>' +
                     '</div>' +
                     teacherChip +
@@ -929,10 +937,10 @@ const AcademicManager = {
                     '</div>';
             }).join('');
 
-            return '<div style="min-width:150px;flex:1;">' +
+            return '<div style="flex:1; min-width:0;">' +
                 '<div style="text-align:center;padding:6px 4px 9px;margin-bottom:8px;border-bottom:2px solid rgba(52,152,219,0.22);">' +
-                '<div style="color:#74b9ff;font-weight:700;font-size:0.8rem;letter-spacing:0.5px;text-transform:uppercase;">' + day + '</div>' +
-                '<div style="color:rgba(255,255,255,0.2);font-size:0.67rem;margin-top:2px;">' + slots.length + ' horario' + (slots.length !== 1 ? 's' : '') + '</div>' +
+                '<div style="color:#74b9ff;font-weight:700;font-size:0.75rem;letter-spacing:0.5px;text-transform:uppercase;">' + day + '</div>' +
+                '<div style="color:rgba(255,255,255,0.2);font-size:0.62rem;margin-top:2px;">' + slots.length + ' horario' + (slots.length !== 1 ? 's' : '') + '</div>' +
                 '</div>' +
                 slotCards +
                 '</div>';
@@ -943,7 +951,7 @@ const AcademicManager = {
             '<i class="bi bi-plus-circle"></i> Nuevo Horario' +
             '</button>' +
             '</div>' +
-            '<div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;align-items:flex-start;">' +
+            '<div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; padding-bottom:15px; align-items:flex-start;">' +
             dayColumns +
             '</div>';
     },

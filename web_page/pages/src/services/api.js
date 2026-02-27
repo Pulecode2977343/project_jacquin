@@ -10,7 +10,7 @@ export const API_CONFIG = {
         const host = window.location.hostname;
         const url = host === 'localhost' || host === '127.0.0.1' || host.includes('share.zrok.io')
             ? "/jacquin_api/"
-            : (path.includes('/pages/') ? "../../jacquin_api/" : "../jacquin_api/");
+            : (path.includes('/pages/') ? "../../jacquin_api/" : "./jacquin_api/");
 
         console.log(`[ApiService-React] Host: ${host} | Base URL: ${url}`);
         return url;
@@ -1300,6 +1300,31 @@ const ApiService = {
             return { success: false, message: "Error obteniendo estudiantes del horario." };
         }
     },
+
+    async getEnrollmentStatus() {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}site_config.php`, {
+                headers: API_CONFIG.HEADERS
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error de red" };
+        }
+    },
+
+    async updateSiteConfig(data) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_site_config.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify(data),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error al actualizar configuración" };
+        }
+    }
 };
 
 export default ApiService;

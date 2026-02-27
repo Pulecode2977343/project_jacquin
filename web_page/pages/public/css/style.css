@@ -246,45 +246,53 @@ body>main {
    ========================================= */
 
 .header {
-    height: 14vh;
     width: 100%;
-    display: block;
+    display: flex !important;
+    flex-direction: column !important;
     position: fixed;
-    /* Changed from sticky to fixed to overlay hero */
     top: 0;
     z-index: 1000;
-    /* Transparent gradient initially */
-    background: linear-gradient(to bottom,
-            rgba(34, 63, 97, 0.4) 0%,
-            transparent 100%);
+    background: transparent !important;
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s ease;
+    border-bottom: none !important;
+    height: auto !important;
 }
 
 /* Scrolled State - Frosted Glass Effect (Vidrio Esmerilado) */
 jam-header.scrolled,
 .header.scrolled {
-    background: rgba(34, 63, 97, 0.6);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    box-shadow:
-        0 4px 30px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        0 1px 3px rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    height: 11vh;
+    background: rgba(34, 63, 97, 0.85) !important;
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2) !important;
+    min-height: 110px;
+    /* Se comprime ligeramente al hacer scroll */
 }
 
-/* Flex Container for Logo & Menu */
-.logo-links {
-    height: 9vh;
+/* Sub-Contenedores del Header */
+.btns-log-reg {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
+    display: flex !important;
+    justify-content: flex-end !important;
+    padding: 8px 5% 0px !important;
+    /* Más pegado al tope */
+    gap: 12px;
+    height: 45px;
+    /* Altura fija para el nivel superior */
     align-items: center;
-    padding: 0 5%;
+}
+
+.logo-links {
+    width: 100%;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 5px 5% 10px !important;
     box-sizing: border-box;
+    height: 85px;
+    /* Altura fija para el nivel del logo */
 }
 
 /* Desktop: Hide hamburger and checkbox visually (but keep in DOM for CSS selectors) */
@@ -315,7 +323,8 @@ jam-header.scrolled,
 .navbar-link {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
+    /* Icono y texto mucho más cerca */
     color: var(--color-blanco-neutro);
     transition: color 0.3s ease;
     padding: 8px 12px;
@@ -329,7 +338,9 @@ jam-header.scrolled,
 
 .navbar-link .txt-menu {
     font-size: 0.95rem;
-    font-weight: 400;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .navbar-link i {
@@ -483,18 +494,14 @@ jam-header.scrolled,
         justify-content: flex-start !important;
         flex-direction: row !important;
         align-items: center !important;
-        /* Alineación vertical centrada */
-        gap: 15px !important;
+        gap: 6px !important;
+        /* Más cerca */
         width: 85% !important;
-        /* Uniform width */
         max-width: 280px !important;
-        /* Cap width for larger mobile/tablets */
         height: 55px !important;
         border-radius: 12px !important;
         margin: 0 auto !important;
-        /* Center inside li */
         background: rgba(255, 255, 255, 0.05) !important;
-        /* Glass Background */
         box-shadow:
             0 4px 6px rgba(0, 0, 0, 0.2),
             inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
@@ -1477,15 +1484,14 @@ textarea:-webkit-autofill:active {
     }
 
     .btns-log-reg {
-        order: 1 !important;
-        width: 100% !important;
+        grid-column: 3;
+        /* Move to the right in the grid */
         display: flex !important;
         justify-content: flex-end !important;
-        padding: 5px 3% !important;
+        padding: 0 !important;
         background: transparent !important;
         align-items: center !important;
-        gap: 15px;
-        /* Add gap between buttons */
+        gap: 12px;
     }
 
     /* Target the 'Inscríbete' button (which has class .btn-login) */
@@ -1502,13 +1508,21 @@ textarea:-webkit-autofill:active {
     }
 
     .logo-links {
-        order: 2 !important;
-        display: flex !important;
-        justify-content: space-between !important;
+        height: 100px !important;
+        display: grid !important;
+        grid-template-columns: 250px 1fr auto !important;
+        /* Espacios definidos */
         align-items: center !important;
         width: 100% !important;
-        padding: 0 3% !important;
-        flex: 1 !important;
+        padding: 0 4% !important;
+        gap: 0 !important;
+    }
+
+    .navbar-list {
+        justify-content: center !important;
+        display: flex !important;
+        gap: 8px !important;
+        /* Menos espacio entre teclas */
     }
 }
 
@@ -1624,39 +1638,47 @@ textarea:-webkit-autofill:active {
 /* --- 5. PIANO TILE NAVIGATION --- */
 @media (min-width: 1251px) {
     .navbar-link {
-        width: 105px !important;
-        height: 60px !important;
-        border-radius: 12px !important;
-        background: var(--color-principal-azul) !important;
-        /* Convex Neomorphism (Popping out) */
-        box-shadow: 9px 9px 16px #1b324d, -9px -9px 16px #294c75 !important;
-        border: 1px solid rgba(255, 255, 255, 0.02) !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        margin: 0 6px;
+        width: 82px !important;
+        height: 52px !important;
+        border-radius: 8px !important;
+        background: rgba(34, 63, 97, 0.4) !important;
+        /* Vidrio oscuro en lugar de sólido */
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        margin: 0 3px !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
         align-items: center !important;
+        gap: 0 !important;
+        /* Distancia mínima */
         text-align: center;
         text-decoration: none;
     }
 
-    .navbar-link .bi {
-        font-size: 1.3rem !important;
+    .navbar-link .bi,
+    .navbar-link svg {
+        font-size: 1.25rem !important;
         color: var(--color-humo-gris) !important;
-        margin-bottom: 4px;
+        margin-bottom: 0px !important;
+        /* Pegado al texto */
         transition: color 0.3s;
+        display: block;
     }
 
     .navbar-link span,
     .txt-menu {
-        font-size: 0.7rem !important;
+        font-size: 0.75rem !important;
         color: var(--color-humo-gris) !important;
-        font-weight: 500;
-        max-height: 20px;
-        opacity: 1;
-        margin-top: 0;
+        font-weight: 600;
+        margin-top: -2px !important;
+        /* Ajuste fino para proximidad */
         transition: color 0.3s;
+        line-height: 1;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     /* HOVER STATE: PRESSED / SUNKEN KEY */
@@ -1698,48 +1720,7 @@ textarea:-webkit-autofill:active {
    Desktop: Hidden (position:absolute, opacity:0, pointer-events:none)
    Mobile: Still hidden visually but functional for CSS :checked logic */
 
-/* 2. FORCE NAVBAR HORIZONTAL (DESKTOP) */
-@media (min-width: 1251px) {
-    .navbar-list {
-        display: flex !important;
-        flex-direction: row !important;
-        list-style: none !important;
-        gap: 20px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        align-items: center !important;
-    }
 
-    /* Ensure Header Layout Stacks Correctly */
-    jam-header,
-    .header {
-        display: flex !important;
-        flex-direction: column !important;
-        height: auto !important;
-        min-height: 14vh;
-    }
-
-    .btns-log-reg {
-        order: 1 !important;
-        width: 100% !important;
-        display: flex !important;
-        justify-content: flex-end !important;
-        padding: 10px 5% !important;
-        background: transparent !important;
-        align-items: center !important;
-        gap: 30px !important;
-    }
-
-    .logo-links {
-        order: 2 !important;
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        width: 100% !important;
-        padding: 0 5% !important;
-        flex: 1 !important;
-    }
-}
 
 /* 3. RESTORE BUTTON STYLES & NEOMORPHISM */
 .btn {
@@ -1748,55 +1729,43 @@ textarea:-webkit-autofill:active {
     display: inline-flex !important;
     justify-content: center;
     align-items: center;
-    background-color: var(--color-principal-azul) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
     color: var(--color-humo-gris) !important;
-    border: none !important;
-    padding: 10px 25px !important;
-    border-radius: 50px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 8px 22px !important;
+    border-radius: 10px !important;
+    /* Bordes más rectos y modernos */
     cursor: pointer;
-    font-weight: 600 !important;
-    font-size: 0.9rem !important;
-    /* Soft UI Shadow - Standard */
-    box-shadow: 5px 5px 10px #192f48, -5px -5px 10px #2b4f7a !important;
-    transition: all 0.3s ease;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none !important;
-    height: auto !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    height: 40px !important;
     position: relative;
-    overflow: hidden;
 }
 
 .btn:hover {
-    color: var(--color-acento-naranja) !important;
-    transform: translateY(1px);
-    /* Pressed State */
-    box-shadow: inset 4px 4px 8px #192f48, inset -4px -4px 8px #2b4f7a !important;
-}
-
-/* Call to Action Pulse Animation */
-@keyframes emergencyPulse {
-    0% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(231, 140, 59, 0.7);
-    }
-
-    70% {
-        transform: scale(1.05);
-        box-shadow: 0 0 0 10px rgba(231, 140, 59, 0);
-    }
-
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(231, 140, 59, 0);
-    }
+    color: white !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--color-acento-azul) !important;
+    box-shadow: 0 0 20px rgba(147, 182, 238, 0.3) !important;
+    transform: translateY(-2px);
 }
 
 .btn-login {
-    animation: emergencyPulse 2s infinite !important;
-    background: transparent !important;
-    /* Allow shine visibility */
-    overflow: visible !important;
-    /* Allow glow to spill */
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: linear-gradient(135deg, rgba(231, 140, 59, 0.1), rgba(231, 140, 59, 0.2)) !important;
+    border: 1px solid var(--color-acento-naranja) !important;
+    color: white !important;
+    box-shadow: 0 0 15px rgba(231, 140, 59, 0.2) !important;
+}
+
+.btn-login:hover {
+    background: var(--color-acento-naranja) !important;
+    box-shadow: 0 0 25px rgba(231, 140, 59, 0.5) !important;
 }
 
 /* Shine Effect for Register Button */
@@ -2359,6 +2328,7 @@ textarea:-webkit-autofill:active {
     gap: 15px;
 }
 
+/* Ghost Button (Salir / Genérico) */
 /* Ghost Button (Salir) */
 .btn-ghost {
     background: transparent;
@@ -2378,6 +2348,20 @@ textarea:-webkit-autofill:active {
     border-color: rgba(255, 255, 255, 0.8);
     color: white;
     background: rgba(255, 255, 255, 0.05);
+}
+
+/* Auth Buttons */
+.btn-register,
+.btn-login {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.btn-register .link-login,
+.btn-login .link-register {
+    display: inline-block;
+    padding: 10px 20px;
 }
 
 /* Primary Action Button (Mi Panel) */
@@ -2520,22 +2504,7 @@ textarea:-webkit-autofill:active {
     font-family: var(--font-principal) !important;
 }
 
-/* =========================================
-   PERSISTENT CHAT ADAPTATION
-   ========================================= */
 
-/* Transición suave para cualquier sección que deba adaptarse al chat */
-.admin-section {
-    transition: padding-right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@media (min-width: 1200px) {
-
-    /* Cuando el chat está abierto, desplazamos el contenido principal */
-    body.jchat-open .admin-section {
-        padding-right: 420px !important;
-    }
-}
 
 /* Ajustes específicos para móviles */
 @media (max-width: 480px) {

@@ -6,6 +6,10 @@ header("Access-Control-Allow-Methods: POST");
 // Last Updated: 2026-01-06 (Fix for id_course column)
 
 include_once 'config/connection.php';
+require_once 'helpers/auth_helper.php';
+
+// Solo administradores pueden asignar docentes
+validateAdmin();
 
 $data = json_decode(file_get_contents("php://input"));
 

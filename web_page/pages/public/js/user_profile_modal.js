@@ -406,7 +406,7 @@ window.switchUserTab = async function (tab) {
                                     ? ` · <i class="bi bi-person-fill" style="opacity:.7;"></i> ${sch.teacher_name}`
                                     : ` · <span style="color:rgba(255,159,67,0.7);">Sin docente</span>`;
                                 return `<span style="background:rgba(52,152,219,0.12); color:var(--color-acento-azul); padding:3px 10px; border-radius:20px; font-size:0.72rem; border:1px solid rgba(52,152,219,0.2); display:inline-flex; align-items:center; gap:4px;"><i class="bi bi-clock"></i>${sch.day_of_week} ${fmt(sch.start_time)}-${fmt(sch.end_time)}${profLabel}</span>`;
-                              }).join('')
+                            }).join('')
                             : (!isTeacher ? `<span style="color:rgba(255,159,67,0.7); font-size:0.75rem;"><i class="bi bi-exclamation-triangle" style="margin-right:4px;"></i>Sin horario asignado</span>` : '');
 
                         const teacherLine = !isTeacher && (!c.schedules || c.schedules.length === 0)
@@ -421,9 +421,9 @@ window.switchUserTab = async function (tab) {
                                             <div style="flex:1;">
                                                 <div style="color:white; font-weight:600;">${c.name}</div>
                                                 ${isTeacher
-                                                    ? `<div style="color:rgba(255,255,255,0.3); font-size:0.75rem; margin-top:2px;">${(c.schedules||[]).length} horario(s) · ${c.total_students || 0} estudiante(s)</div>`
-                                                    : teacherLine
-                                                }
+                                ? `<div style="color:rgba(255,255,255,0.3); font-size:0.75rem; margin-top:2px;">${(c.schedules || []).length} horario(s) · ${c.total_students || 0} estudiante(s)</div>`
+                                : teacherLine
+                            }
                                                 ${!isTeacher ? `<div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:5px;">${scheduleChips}</div>` : ''}
                                             </div>
                                             <div style="display:flex; gap:10px; align-items:center; margin-left:10px;">
@@ -487,7 +487,7 @@ window.switchUserTab = async function (tab) {
 
                 const fmt = t => (t || '').substring(0, 5);
                 const statusColor = s => s === 'Activo' ? '#2ecc71' : s === 'Pendiente' ? '#ff9f43' : '#e74c3c';
-                const statusBg   = s => s === 'Activo' ? 'rgba(46,204,113,0.12)' : s === 'Pendiente' ? 'rgba(255,159,67,0.12)' : 'rgba(231,76,60,0.12)';
+                const statusBg = s => s === 'Activo' ? 'rgba(46,204,113,0.12)' : s === 'Pendiente' ? 'rgba(255,159,67,0.12)' : 'rgba(231,76,60,0.12)';
 
                 content.innerHTML = `
                     <div style="animation: fadeInModal 0.3s ease-out;">
@@ -502,27 +502,42 @@ window.switchUserTab = async function (tab) {
                         ${enrolled.length > 0 ? `
                         <div style="display:grid;gap:12px;">
                             ${enrolled.map(c => {
-                                const schChips = (c.schedules && c.schedules.length > 0)
-                                    ? c.schedules.map(s => {
-                                        const prof = s.teacher_name && s.teacher_name !== 'Por asignar'
-                                            ? `<span style="color:rgba(255,200,100,0.75);margin-left:4px;"><i class="bi bi-person-fill" style="font-size:0.6rem;"></i> ${s.teacher_name}</span>`
-                                            : `<span style="color:rgba(255,159,67,0.6);margin-left:4px;">Sin docente</span>`;
-                                        return `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(147,182,238,0.1);border:1px solid rgba(147,182,238,0.18);border-radius:20px;padding:3px 10px;font-size:0.72rem;color:rgba(221,221,221,0.85);">
+                    const schChips = (c.schedules && c.schedules.length > 0)
+                        ? c.schedules.map(s => {
+                            const prof = s.teacher_name && s.teacher_name !== 'Por asignar'
+                                ? `<span style="color:rgba(255,200,100,0.75);margin-left:4px;"><i class="bi bi-person-fill" style="font-size:0.6rem;"></i> ${s.teacher_name}</span>`
+                                : `<span style="color:rgba(255,159,67,0.6);margin-left:4px;">Sin docente</span>`;
+                            return `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(147,182,238,0.1);border:1px solid rgba(147,182,238,0.18);border-radius:20px;padding:3px 10px;font-size:0.72rem;color:rgba(221,221,221,0.85);">
                                             <i class="bi bi-clock" style="font-size:0.65rem;opacity:0.6;"></i>
                                             <strong>${s.day_of_week}</strong> ${fmt(s.start_time)}–${fmt(s.end_time)}${prof}
                                         </span>`;
-                                    }).join(' ')
-                                    : `<span style="color:rgba(255,255,255,0.25);font-size:0.75rem;font-style:italic;">Sin horario asignado</span>`;
+                        }).join(' ')
+                        : `<span style="color:rgba(255,255,255,0.25);font-size:0.75rem;font-style:italic;">Sin horario asignado</span>`;
 
-                                return `
-                                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px 18px;">
-                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                                        <div style="color:white;font-weight:700;font-size:0.95rem;">${c.course_name || c.name || '—'}</div>
-                                        <span style="background:${statusBg(c.status)};color:${statusColor(c.status)};border:1px solid ${statusColor(c.status)}44;padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:800;text-transform:uppercase;">${c.status}</span>
-                                    </div>
-                                    <div style="display:flex;flex-wrap:wrap;gap:5px;">${schChips}</div>
-                                </div>`;
-                            }).join('')}
+                    return `
+                                 <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px 18px;">
+                                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                                         <div style="color:white;font-weight:700;font-size:0.95rem;">${c.course_name || c.name || '—'}</div>
+                                         <div style="display:flex; gap:8px; align-items:center;">
+                                             <span style="background:${statusBg(c.status)};color:${statusColor(c.status)};border:1px solid ${statusColor(c.status)}44;padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:800;text-transform:uppercase;">${c.status}</span>
+                                             
+                                             ${currentUser.id_rol == 1 ? `
+                                                 <button onclick="window.assignStudentSchedule(${c.id_enrollment}, ${c.id_course}, '${(c.course_name || c.name || '').replace(/'/g, "\\'")}')" 
+                                                         title="Asignar/Editar Horarios" 
+                                                         style="background:rgba(52, 152, 219, 0.15); border:1px solid rgba(52, 152, 219, 0.3); color:#3498db; width:30px; height:30px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;">
+                                                     <i class="bi bi-calendar-check"></i>
+                                                 </button>
+                                                 <button onclick="window.unenrollStudentAdmin(${c.id_enrollment}, ${c.id_course}, '${(c.course_name || c.name || '').replace(/'/g, "\\'")}')" 
+                                                         title="Desinscribir" 
+                                                         style="background:rgba(231, 76, 60, 0.15); border:1px solid rgba(231, 76, 60, 0.3); color:#e74c3c; width:30px; height:30px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;">
+                                                     <i class="bi bi-person-dash"></i>
+                                                 </button>
+                                             ` : ''}
+                                         </div>
+                                     </div>
+                                     <div style="display:flex;flex-wrap:wrap;gap:5px;">${schChips}</div>
+                                 </div>`;
+                }).join('')}
                         </div>
                         ` : `<div style="text-align:center;padding:50px;color:rgba(255,255,255,0.2);"><i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:10px;"></i>Este estudiante no tiene inscripciones registradas.</div>`}
                     </div>
@@ -602,7 +617,7 @@ window.switchUserTab = async function (tab) {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ user_id: viewedId })
-                    }).catch(() => {});
+                    }).catch(() => { });
                 }
 
                 content.innerHTML = `
@@ -818,7 +833,7 @@ window.updateProfileFromModal = async function () {
 
 // ─── Funciones globales para botones inline en el modal de perfil ─────────────
 
-window.unassignTeacherFromCourse = async function(courseId, teacherId) {
+window.unassignTeacherFromCourse = async function (courseId, teacherId) {
     const confirm = await Swal.fire({
         title: '¿Remover asignación?',
         text: 'El docente dejará de estar asignado a este curso.',
@@ -846,7 +861,7 @@ window.unassignTeacherFromCourse = async function(courseId, teacherId) {
     }
 };
 
-window.unenrollUserFromCourse = async function(enrollmentId, userId) {
+window.unenrollUserFromCourse = async function (enrollmentId, userId) {
     const confirm = await Swal.fire({
         title: '¿Desvincular del curso?',
         text: 'La inscripción del estudiante será cancelada.',

@@ -15355,7 +15355,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     get BASE_URL() {
       const path = window.location.pathname;
       const host = window.location.hostname;
-      const url = host === "localhost" || host === "127.0.0.1" || host.includes("share.zrok.io") ? "/jacquin_api/" : path.includes("/pages/") ? "../../jacquin_api/" : "../jacquin_api/";
+      const url = host === "localhost" || host === "127.0.0.1" || host.includes("share.zrok.io") ? "/jacquin_api/" : path.includes("/pages/") ? "../../jacquin_api/" : "./jacquin_api/";
       console.log(`[ApiService-React] Host: ${host} | Base URL: ${url}`);
       return url;
     },
@@ -16647,7 +16647,8 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
           " ",
           /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("strong", { children: "Jacquin Academia Musical" }),
           ". ",
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "rights", children: "Todos los derechos reservados." })
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "rights", children: "Todos los derechos reservados." }),
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("div", { className: "image-disclaimer", style: { fontSize: "0.75rem", marginTop: "5px", opacity: 0.7, fontWeight: 300 }, children: "Anexo: Las im\xE1genes utilizadas en este sitio web son propiedad exclusiva de Jacquin Academia Musical o cuentan con las debidas licencias y derechos de uso." })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "footer-bottom-links", children: [
           /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("a", { href: "contactanos.html", children: "Soporte" }),

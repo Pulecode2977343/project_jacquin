@@ -73,6 +73,9 @@ const Footer = () => {
             <div className="jam-footer-bottom">
                 <div className="copyright">
                     &copy; {currentYear} <strong>Jacquin Academia Musical</strong>. <span className="rights">Todos los derechos reservados.</span>
+                    <div className="image-disclaimer" style={{ fontSize: '0.75rem', marginTop: '5px', opacity: 0.7, fontWeight: 300 }}>
+                        Anexo: Las imágenes utilizadas en este sitio web son propiedad exclusiva de Jacquin Academia Musical o cuentan con las debidas licencias y derechos de uso.
+                    </div>
                 </div>
                 <div className="footer-bottom-links">
                     <a href="contactanos.html">Soporte</a>

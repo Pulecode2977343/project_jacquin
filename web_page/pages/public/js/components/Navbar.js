@@ -9,18 +9,17 @@
                 <!-- 1. Inicio -->
                 <li>
                     <a class="navbar-link" href="/">
-                        <span class="txt-menu">Inicio</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
                             <path class="icon icon-home" d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4z"/>
                         </svg>
+                        <span class="txt-menu">Inicio</span>
                     </a>
                 </li>
 
                 <!-- 2. Eventos -->
                 <li>
                     <a class="navbar-link" href="index.html#eventos">
-                        <span class="txt-menu">Eventos</span>
-                        <svg viewBox="0 0 60.77 125.05" width="25" height="25" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 60.77 125.05" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
                           <defs>
                             <style>
                               .cls-1{fill:#790505;}.cls-2{fill:#d2f8e6;}.cls-3{fill:#0b3919;}.cls-4{fill:#fff;}.cls-5{fill:#9df3f8;}.cls-6{fill:#66a63e;}.cls-7{fill:#806833;}.cls-8{fill:#4f794f;}.cls-9{fill:#f7f8f5;}.cls-10{fill:#175928;}.cls-11{fill:#e3e156;}.cls-12{fill:#a6441c;}.cls-13{fill:#f5c1a4;}.cls-14{fill:#cd7347;}.cls-15{fill:#33190f;}
@@ -72,39 +71,40 @@
                           <path class="cls-13" d="M19.61,15.48c.12.12-.08,1.45,0,1.92h-2.4c-.39-1.12,1.9-2.44,2.4-1.92Z"/>
                           <path class="cls-5" d="M24.89,16.44c.36-2.55,1.3-2.45,1.44,0-.47-.01-.96.03-1.44,0Z"/>
                         </svg>
+                        <span class="txt-menu">Eventos</span>
                     </a>
                 </li>
 
                 <!-- 3. Nuestros Programas -->
                 <li>
                     <a class="navbar-link" href="index.html#programas">
-                        <span class="txt-menu">Programas</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-music-note-list" viewBox="0 0 16 16">
                             <path d="M12 13c0 1.105-1.12 2-2.5 2S7 14.105 7 13s1.12-2 2.5-2 2.5.895 2.5 2"/>
                             <path fill-rule="evenodd" d="M12 3v10h-1V3z"/>
                             <path d="M11 2.82a1 1 0 0 1 .804-.98l3-.6A1 1 0 0 1 16 2.22V4l-5 1z"/>
                             <path fill-rule="evenodd" d="M0 11.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5m0-4A.5.5 0 0 1 .5 7H8a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5m0-4A.5.5 0 0 1 .5 3H8a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5"/>
                         </svg>
+                        <span class="txt-menu">Programas</span>
                     </a>
                 </li>
 
                 <!-- 4. Sobre Nosotros -->
                 <li>
                     <a class="navbar-link" href="index.html#nosotros">
-                        <span class="txt-menu">Nosotros</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
                             <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
                         </svg>
+                        <span class="txt-menu">Nosotros</span>
                     </a>
                 </li>
 
-                <!-- 5. ContÃ¡ctanos -->
+                <!-- 5. Contáctanos -->
                 <li>
                     <a class="navbar-link" href="contactanos.html">
-                        <span class="txt-menu">ContÃ¡ctanos</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-telephone" viewBox="0 0 16 16">
                             <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z"/>
                         </svg>
+                        <span class="txt-menu">Contáctanos</span>
                     </a>
                 </li>
 
@@ -146,7 +146,7 @@
                     </a>
                 </li>
                 <li class="mobile-only">
-                    <a class="navbar-link btn-bubble-mobile btn-logout-mobile" href="#" onclick="window.ApiService.logout(); return false;" title="Cerrar SesiÃ³n">
+                    <a class="navbar-link btn-bubble-mobile btn-logout-mobile" href="#" onclick="window.ApiService.logout(); return false;" title="Cerrar Sesión">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
                             <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
@@ -158,7 +158,7 @@
         } else {
             return `
                 <li class="mobile-only">
-                    <a class="navbar-link btn-bubble-mobile" href="login.html" title="Iniciar SesiÃ³n">
+                    <a class="navbar-link btn-bubble-mobile" href="login.html" title="Iniciar Sesión">
                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
                             <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
@@ -167,7 +167,7 @@
                     </a>
                 </li>
                 <li class="mobile-only">
-                    <a class="navbar-link btn-bubble-mobile" href="registro.html" title="InscrÃ­bete">
+                    <a class="navbar-link btn-bubble-mobile" href="registro.html" title="Inscríbete">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                           <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                           <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>

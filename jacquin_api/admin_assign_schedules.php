@@ -63,9 +63,9 @@ try {
         }
     }
 
-    // 4. Force Update Status to 'Inscrito' (Clears alerts even if previously 'Activo')
+    // 4. Force Update Status to 'Activo' (Standard status for participants)
     if ($inserted > 0) {
-        $updateStatus = $pdo->prepare("UPDATE enrollments SET status = 'Inscrito' WHERE id_enrollment = ?");
+        $updateStatus = $pdo->prepare("UPDATE enrollments SET status = 'Activo' WHERE id_enrollment = ?");
         $updateStatus->execute([$enrollmentId]);
     }
 

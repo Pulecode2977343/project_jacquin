@@ -1,7 +1,0 @@
-# JACQUIN API - Simple Configuration for InfinityFree
-Options -Indexes
-
-# Proteger solo carpetas delicadas de forma simple
-RedirectMatch 403 ^.*/config/.*$
-RedirectMatch 403 ^.*/vendor/.*$
-RedirectMatch 403 \.(env|sql|log|bak)$

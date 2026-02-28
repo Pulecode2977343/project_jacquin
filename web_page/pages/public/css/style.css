@@ -231,14 +231,14 @@ a {
 /* #react-header-root no necesita CSS especial — el <header> interno
    es position:fixed y no ocupa espacio en el flujo del documento */
 
-/* Páginas estáticas: empuja contenido debajo del header fijo */
+/* Header transparente: el hero ocupa el ancho completo incluyendo el área del header */
 body>main {
-    padding-top: 17vh;
+    padding-top: 0;
 }
 
 /* SPA React: el <main class="jam-main-content"> no es hijo directo de body */
 .jam-main-content {
-    padding-top: 17vh;
+    padding-top: 0;
 }
 
 /* =========================================
@@ -252,14 +252,13 @@ body>main {
     position: fixed;
     top: 0;
     z-index: 1000;
-    background: linear-gradient(to bottom,
-            rgba(34, 63, 97, 0.4) 0%,
-            transparent 100%);
+    background: transparent;
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Scrolled State - Frosted Glass Effect (Vidrio Esmerilado) */
 /* Scrolled State - Frosted Glass Effect (Vidrio Esmerilado) */
 jam-header.scrolled,
 .header.scrolled {
@@ -279,23 +278,19 @@ jam-header.scrolled,
     width: 100%;
     display: flex !important;
     justify-content: flex-end !important;
-    padding: 8px 5% 0px !important;
-    /* Más pegado al tope */
-    gap: 12px;
-    height: 45px;
-    /* Altura fija para el nivel superior */
+    padding: 5px 3% !important;
+    gap: 15px;
     align-items: center;
 }
 
 .logo-links {
+    height: 9vh;
     width: 100%;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    padding: 5px 5% 10px !important;
+    padding: 0 5% !important;
     box-sizing: border-box;
-    height: 85px;
-    /* Altura fija para el nivel del logo */
 }
 
 /* Desktop: Hide hamburger and checkbox visually (but keep in DOM for CSS selectors) */
@@ -341,9 +336,7 @@ jam-header.scrolled,
 
 .navbar-link .txt-menu {
     font-size: 0.95rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 400;
 }
 
 .navbar-link i {
@@ -369,7 +362,7 @@ jam-header.scrolled,
     jam-header,
     .header {
         height: 10vh !important;
-        background: var(--color-principal-azul) !important;
+        background: transparent !important;
     }
 
     .btns-log-reg {
@@ -1434,7 +1427,7 @@ textarea:-webkit-autofill:active {
     /* Ensure Header is VISIBLE */
     jam-header,
     .header {
-        background-color: var(--color-principal-azul) !important;
+        background-color: transparent !important;
         position: sticky !important;
         top: 0;
         z-index: 9999;
@@ -1487,14 +1480,15 @@ textarea:-webkit-autofill:active {
     }
 
     .btns-log-reg {
-        grid-column: 3;
-        /* Move to the right in the grid */
+        order: 1 !important;
+        width: 100% !important;
         display: flex !important;
         justify-content: flex-end !important;
-        padding: 0 !important;
+        padding: 20px 12% 5px !important;
         background: transparent !important;
         align-items: center !important;
-        gap: 12px;
+        gap: 15px;
+        /* Add gap between buttons */
     }
 
     /* Target the 'Inscríbete' button (which has class .btn-login) */
@@ -1511,21 +1505,13 @@ textarea:-webkit-autofill:active {
     }
 
     .logo-links {
-        height: 100px !important;
-        display: grid !important;
-        grid-template-columns: 250px 1fr auto !important;
-        /* Espacios definidos */
+        order: 2 !important;
+        display: flex !important;
+        justify-content: space-between !important;
         align-items: center !important;
         width: 100% !important;
-        padding: 0 4% !important;
-        gap: 0 !important;
-    }
-
-    .navbar-list {
-        justify-content: center !important;
-        display: flex !important;
-        gap: 8px !important;
-        /* Menos espacio entre teclas */
+        padding: 0 12% !important;
+        flex: 1 !important;
     }
 }
 
@@ -1638,7 +1624,56 @@ textarea:-webkit-autofill:active {
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
 }
 
+/* --- 5. PIANO TILE NAVIGATION --- */
+@media (min-width: 1251px) {
+    .navbar-link {
+        width: 105px !important;
+        height: 60px !important;
+        border-radius: 12px !important;
+        background: var(--color-principal-azul) !important;
+        box-shadow: none !important;
+        border: 1px solid rgba(255, 255, 255, 0.02) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        margin: 0 6px;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center;
+        text-decoration: none;
+    }
 
+    .navbar-link .bi {
+        font-size: 1.3rem !important;
+        color: var(--color-humo-gris) !important;
+        margin-bottom: -3px;
+        transition: color 0.3s;
+    }
+
+    .navbar-link span,
+    .txt-menu {
+        font-size: 0.7rem !important;
+        color: var(--color-humo-gris) !important;
+        font-weight: 500;
+        max-height: 20px;
+        opacity: 1;
+        margin-top: 0;
+        transition: color 0.3s;
+    }
+
+    /* HOVER STATE: PRESSED / SUNKEN KEY */
+    .navbar-link:hover {
+        transform: translateY(2px);
+        box-shadow: inset 6px 6px 12px #192f48, inset -6px -6px 12px #2b4f7a !important;
+        border-color: transparent !important;
+    }
+
+    .navbar-link:hover .bi,
+    .navbar-link:hover span {
+        color: var(--color-acento-naranja) !important;
+        text-shadow: 0 0 8px rgba(231, 140, 59, 0.5);
+    }
+}
 
 /* 6. LOGO VISIBILITY ASSURANCE */
 .logo svg {
@@ -1674,60 +1709,99 @@ textarea:-webkit-autofill:active {
     display: inline-flex !important;
     justify-content: center;
     align-items: center;
-    background: rgba(255, 255, 255, 0.03) !important;
+    background-color: var(--color-principal-azul) !important;
     color: var(--color-humo-gris) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    padding: 8px 22px !important;
-    border-radius: 10px !important;
-    /* Bordes más rectos y modernos */
+    border: none !important;
+    padding: 10px 25px !important;
+    border-radius: 50px !important;
     cursor: pointer;
-    font-weight: 500 !important;
-    font-size: 0.85rem !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
-    backdrop-filter: blur(5px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease;
     text-decoration: none !important;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    height: 40px !important;
+    height: auto !important;
     position: relative;
+    overflow: hidden;
 }
 
 .btn:hover {
-    color: white !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: var(--color-acento-azul) !important;
-    box-shadow: 0 0 20px rgba(147, 182, 238, 0.3) !important;
-    transform: translateY(-2px);
+    color: var(--color-acento-naranja) !important;
+    transform: translateY(1px);
+    /* Pressed State */
+    box-shadow: inset 4px 4px 8px #192f48, inset -4px -4px 8px #2b4f7a !important;
+}
+
+.btn-register:hover .link-login,
+.btn-login:hover .link-register {
+    color: var(--color-acento-naranja) !important;
+    transition: color 0.3s ease;
+}
+
+/* Call to Action Pulse Animation */
+@keyframes emergencyPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(231, 140, 59, 0.7);
+    }
+
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(231, 140, 59, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(231, 140, 59, 0);
+    }
 }
 
 .btn-login {
-    background: linear-gradient(135deg, rgba(231, 140, 59, 0.1), rgba(231, 140, 59, 0.2)) !important;
-    border: 1px solid var(--color-acento-naranja) !important;
-    color: white !important;
-    box-shadow: 0 0 15px rgba(231, 140, 59, 0.2) !important;
+    animation: emergencyPulse 2s infinite !important;
+    background: transparent !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .btn-login:hover {
-    background: var(--color-acento-naranja) !important;
-    box-shadow: 0 0 25px rgba(231, 140, 59, 0.5) !important;
+    color: var(--color-acento-naranja) !important;
+    box-shadow: inset 4px 4px 8px #192f48, inset -4px -4px 8px #2b4f7a !important;
 }
 
-/* Shine Effect for Register Button */
+/* Gleam Flash — Auth Buttons */
+@keyframes btnGleam {
+    0%, 65%  { left: -120%; opacity: 0; }
+    70%      { opacity: 1; }
+    95%, 100%{ left: 120%;  opacity: 0; }
+}
+
+.btn-register::before,
 .btn-login::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: 0.5s;
+    top: -10%;
+    left: -120%;
+    width: 45%;
+    height: 120%;
+    background: linear-gradient(105deg,
+        transparent 20%,
+        rgba(231, 140, 59, 0.12) 50%,
+        transparent 80%);
+    animation: btnGleam 5s ease-in-out infinite;
     pointer-events: none;
+    border-radius: inherit;
+    z-index: 0;
 }
 
-.btn-login:hover::before {
-    left: 100%;
+/* El texto queda por encima del destello */
+.btn-register > *,
+.btn-login > * {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-login::before {
+    animation-delay: 2.5s;
 }
 
 /* Navbar Link Icons Color & Shadow */
@@ -1743,9 +1817,8 @@ textarea:-webkit-autofill:active {
         transform: scale(1.2);
     }
 
-    /* Restore Link Shadow */
     .navbar-link {
-        box-shadow: 5px 5px 10px #192f48, -5px -5px 10px #2b4f7a !important;
+        box-shadow: none !important;
     }
 
     .navbar-link:hover {
@@ -1784,7 +1857,7 @@ textarea:-webkit-autofill:active {
     cursor: pointer;
     font-weight: 600 !important;
     font-size: 0.9rem !important;
-    box-shadow: 5px 5px 10px #192f48, -5px -5px 10px #2b4f7a !important;
+    box-shadow: none !important;
     transition: all 0.3s ease;
     text-decoration: none !important;
     height: auto !important;

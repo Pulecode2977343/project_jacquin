@@ -17,9 +17,9 @@ require_once 'config/connection.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
-if (!isset($data->enrollment_open) || !isset($data->enrollment_year)) {
+if (!isset($data->enrollment_open) && !isset($data->hero_tagline)) {
     http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Campos requeridos: enrollment_open, enrollment_year."]);
+    echo json_encode(["success" => false, "message" => "No se enviaron datos para actualizar."]);
     exit;
 }
 
@@ -50,14 +50,23 @@ try {
          ON DUPLICATE KEY UPDATE config_value = VALUES(config_value)"
     );
 
-    $stmt->execute(['enrollment_open', $isOpen]);
-    $stmt->execute(['enrollment_year', (string)$year]);
+    // Guardar matrículas (si se enviaron)
+    if (isset($data->enrollment_open)) {
+        $stmt->execute(['enrollment_open', $isOpen]);
+        $stmt->execute(['enrollment_year', (string)$year]);
+    }
+
+    // Guardar textos del Hero (si se enviaron)
+    if (isset($data->hero_tagline)) {
+        $stmt->execute(['hero_tagline', trim((string)$data->hero_tagline)]);
+    }
+    if (isset($data->hero_cta_text)) {
+        $stmt->execute(['hero_cta_text', trim((string)$data->hero_cta_text)]);
+    }
 
     echo json_encode([
-        "success"         => true,
-        "message"         => "Configuración actualizada.",
-        "enrollment_open" => (bool)(int)$isOpen,
-        "enrollment_year" => $year
+        "success" => true,
+        "message" => "Configuración actualizada correctamente."
     ]);
 } catch (Exception $e) {
     http_response_code(500);

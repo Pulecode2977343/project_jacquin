@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e7f157ce.css",
+    "main.js": "/static/js/main.738bcd93.js",
+    "static/media/logo_hr_jam.svg": "/static/media/logo_hr_jam.ae71e6990736b1e9ad09b339b11823e3.svg",
+    "index.html": "/index.html",
+    "main.e7f157ce.css.map": "/static/css/main.e7f157ce.css.map",
+    "main.738bcd93.js.map": "/static/js/main.738bcd93.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e7f157ce.css",
+    "static/js/main.738bcd93.js"
+  ]
+}

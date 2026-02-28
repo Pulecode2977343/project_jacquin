@@ -2,8 +2,29 @@ import React, { useEffect, useState } from 'react';
 
 const Hero = () => {
     const [scrolled, setScrolled] = useState(false);
+    const [config, setConfig] = useState({
+        hero_tagline: "Donde la pasión se convierte en arte",
+        hero_cta_text: "Descubre Nuestros Programas"
+    });
 
     useEffect(() => {
+        // Fetch site config
+        const fetchConfig = async () => {
+            try {
+                const response = await fetch(`${window.ApiService.baseUrl}site_config.php`);
+                const data = await response.json();
+                if (data.success) {
+                    setConfig({
+                        hero_tagline: data.hero_tagline,
+                        hero_cta_text: data.hero_cta_text
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching hero config:", error);
+            }
+        };
+        fetchConfig();
+
         const handleScroll = () => {
             const heroHeight = document.querySelector('.hero-section')?.offsetHeight || 0;
             if (window.scrollY > heroHeight * 0.3) {
@@ -31,14 +52,14 @@ const Hero = () => {
             <div className="hero-overlay"></div>
 
             <div className="hero-content">
-                {/* Tagline en cursiva — Brandbook: "Donde la pasión se convierte en arte" */}
+                {/* Tagline dinámico */}
                 <p className="hero-tagline">
-                    Donde la pasión se convierte en arte
+                    {config.hero_tagline}
                 </p>
 
-                {/* CTA naranja sólido — exacto al mockup del brandbook */}
+                {/* CTA dinámico */}
                 <a href="#programas" className="hero-cta">
-                    Descubre Nuestros Programas
+                    {config.hero_cta_text}
                     <i className="bi bi-arrow-down"></i>
                 </a>
             </div>

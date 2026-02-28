@@ -233,12 +233,20 @@ a {
 
 /* Header transparente: el hero ocupa el ancho completo incluyendo el área del header */
 body>main {
-    padding-top: 0;
+    padding-top: 14vh;
 }
 
 /* SPA React: el <main class="jam-main-content"> no es hijo directo de body */
 .jam-main-content {
-    padding-top: 0;
+    padding-top: 14vh;
+}
+
+@media (max-width: 1250px) {
+
+    body>main,
+    .jam-main-content {
+        padding-top: 10vh;
+    }
 }
 
 /* =========================================
@@ -1770,9 +1778,22 @@ textarea:-webkit-autofill:active {
 
 /* Gleam Flash — Auth Buttons */
 @keyframes btnGleam {
-    0%, 65%  { left: -120%; opacity: 0; }
-    70%      { opacity: 1; }
-    95%, 100%{ left: 120%;  opacity: 0; }
+
+    0%,
+    65% {
+        left: -120%;
+        opacity: 0;
+    }
+
+    70% {
+        opacity: 1;
+    }
+
+    95%,
+    100% {
+        left: 120%;
+        opacity: 0;
+    }
 }
 
 .btn-register::before,
@@ -1784,9 +1805,9 @@ textarea:-webkit-autofill:active {
     width: 45%;
     height: 120%;
     background: linear-gradient(105deg,
-        transparent 20%,
-        rgba(231, 140, 59, 0.12) 50%,
-        transparent 80%);
+            transparent 20%,
+            rgba(231, 140, 59, 0.12) 50%,
+            transparent 80%);
     animation: btnGleam 5s ease-in-out infinite;
     pointer-events: none;
     border-radius: inherit;
@@ -1794,8 +1815,8 @@ textarea:-webkit-autofill:active {
 }
 
 /* El texto queda por encima del destello */
-.btn-register > *,
-.btn-login > * {
+.btn-register>*,
+.btn-login>* {
     position: relative;
     z-index: 1;
 }

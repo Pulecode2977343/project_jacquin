@@ -15355,7 +15355,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
     get BASE_URL() {
       const path = window.location.pathname;
       const host = window.location.hostname;
-      const url = host === "localhost" || host === "127.0.0.1" || host.includes("share.zrok.io") ? "/jacquin_api/" : path.includes("/pages/") ? "../../jacquin_api/" : "../jacquin_api/";
+      const url = host === "localhost" || host === "127.0.0.1" || host.includes("share.zrok.io") ? "/jacquin_api/" : path.includes("/pages/") ? "../../jacquin_api/" : "./jacquin_api/";
       console.log(`[ApiService-React] Host: ${host} | Base URL: ${url}`);
       return url;
     },
@@ -16535,6 +16535,29 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         return await this.handleResponse(response);
       } catch (error) {
         return { success: false, message: "Error obteniendo estudiantes del horario." };
+      }
+    },
+    async getEnrollmentStatus() {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}site_config.php`, {
+          headers: API_CONFIG.HEADERS
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        return { success: false, message: "Error de red" };
+      }
+    },
+    async updateSiteConfig(data2) {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}admin_site_config.php`, {
+          method: "POST",
+          headers: API_CONFIG.HEADERS,
+          body: JSON.stringify(data2),
+          credentials: "include"
+        });
+        return await this.handleResponse(response);
+      } catch (error) {
+        return { success: false, message: "Error al actualizar configuraci\xF3n" };
       }
     }
   };

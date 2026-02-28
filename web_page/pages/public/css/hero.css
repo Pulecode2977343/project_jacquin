@@ -1,17 +1,147 @@
 /* =========================================
-   HERO SECTION - FULLSCREEN
+   HERO SECTION - FULLSCREEN + CAROUSEL
    ========================================= */
+
+/* ─── Carrusel: track y slides ─────────────────────────────────────────────── */
+.hero-carousel-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.hero-carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(100%);
+    transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.hero-carousel-slide.active {
+    transform: translateX(0);
+}
+
+.hero-carousel-slide.leaving {
+    transform: translateX(-100%);
+}
+
+.hero-carousel-slide img,
+.hero-carousel-slide video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.hero-carousel-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    /* Escalar iframe para que llene el contenedor como un cover */
+    transform: scale(1.05);
+    pointer-events: none;
+}
+
+/* ─── Botones prev / next ──────────────────────────────────────────────────── */
+.hero-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.85);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-carousel-btn:hover {
+    background: rgba(231, 140, 59, 0.25);
+    border-color: var(--color-acento-naranja);
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.hero-carousel-prev { left: 24px; }
+.hero-carousel-next { right: 24px; }
+
+@media (max-width: 768px) {
+    .hero-carousel-prev { left: 12px; }
+    .hero-carousel-next { right: 12px; }
+    .hero-carousel-btn  { width: 38px; height: 38px; font-size: 1rem; }
+}
+
+/* ─── Dots de navegación ───────────────────────────────────────────────────── */
+.hero-carousel-dots {
+    position: absolute;
+    bottom: 16vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.hero-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.35s ease;
+}
+
+.hero-dot.active {
+    background: var(--color-acento-naranja);
+    border-color: var(--color-acento-naranja);
+    transform: scale(1.4);
+    box-shadow: 0 0 10px rgba(231, 140, 59, 0.7);
+}
+
+@media (max-width: 768px) {
+    .hero-carousel-dots { bottom: 18vh; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
 
 .hero-section {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 114vh;
+    /* Adjusted to cover viewport plus header height */
+    margin-top: -14vh;
+    /* Pull up to top */
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* Background handled by <img> now */
-    /* background-image removed */
+}
+
+@media (max-width: 1250px) {
+    .hero-section {
+        height: 110vh;
+        margin-top: -10vh;
+    }
 }
 
 .hero-bg-wrapper {
@@ -196,6 +326,22 @@
         transform: translateY(40px);
     }
 
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Tagline animado al cambiar de slide */
+.hero-tagline-animated {
+    animation: taglineFade 0.7s ease-out forwards;
+}
+
+@keyframes taglineFade {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
     to {
         opacity: 1;
         transform: translateY(0);

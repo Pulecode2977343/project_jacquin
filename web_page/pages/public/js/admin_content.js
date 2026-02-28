@@ -55,6 +55,12 @@
                     <button onclick="window.switchContentTab('enrollment')" id="tab-enrollment" style="padding:15px 25px; background:transparent; border:none; border-bottom:3px solid transparent; color:#888; font-weight:600; cursor:pointer; transition:all 0.2s;">
                         <i class="bi bi-check2-circle"></i> Disponibilidad Matrículas
                     </button>
+                    <button onclick="window.switchContentTab('portada')" id="tab-portada" style="padding:15px 25px; background:transparent; border:none; border-bottom:3px solid transparent; color:#888; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                        <i class="bi bi-image"></i> Hero Portada
+                    </button>
+                    <button onclick="window.switchContentTab('hero')" id="tab-hero" style="padding:15px 25px; background:transparent; border:none; border-bottom:3px solid transparent; color:#888; font-weight:600; cursor:pointer; transition:all 0.2s;">
+                        <i class="bi bi-images"></i> Hero Carrusel
+                    </button>
                 </div>
 
                 <!-- Content Area -->
@@ -128,14 +134,104 @@
                     </div>
                 </div>
                 
+                <!-- Tab: Hero Portada (imagen fija + textos) -->
+                <div id="content-tab-portada" style="padding:25px 30px; max-height:calc(85vh - 180px); overflow-y:auto; display:none;">
+                    <!-- Imagen de fondo con recorte 16:9 -->
+                    <div style="margin-bottom:25px;">
+                        <label style="color:var(--color-acento-azul); display:block; margin-bottom:10px; font-weight:bold; font-size:0.8rem; text-transform:uppercase;">
+                            <i class="bi bi-image"></i> 1. Imagen de Fondo (Respaldo 16:9)
+                        </label>
+                        <p style="color:#555; font-size:0.8rem; margin:0 0 12px 0;">Se muestra cuando no hay carrusel activo. Arrastra para ajustar el encuadre.</p>
+                        <div id="cm-crop-container" style="width:384px; height:216px; margin:0 auto; background:#000; border:2px solid #333; border-radius:10px; overflow:hidden; position:relative; cursor:grab; box-sizing:content-box; max-width:100%;">
+                            <div id="cm-crop-instruction" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#555; pointer-events:none; z-index:10; text-align:center; font-size:0.9rem; white-space:nowrap;">
+                                <i class="bi bi-arrows-move"></i> Arrastra para ajustar
+                            </div>
+                            <img id="cm-crop-target" style="transform-origin:top left; position:absolute; top:0; left:0; pointer-events:none; user-select:none; max-width:none;">
+                        </div>
+                        <div id="cm-crop-controls" style="margin-top:10px; display:none; align-items:center; justify-content:center; gap:15px;">
+                            <i class="bi bi-zoom-in" style="color:#777;"></i>
+                            <input type="range" id="cm-crop-zoom" min="1" max="3" step="0.01" value="1" style="width:200px; accent-color:var(--color-acento-azul);">
+                        </div>
+                        <input type="file" id="cm-hero-upload-input" accept="image/*" style="display:none;">
+                        <div style="margin-top:14px; text-align:center;">
+                            <button onclick="document.getElementById('cm-hero-upload-input').click()" style="background:#1a1a1a; color:#ccc; border:1px solid #444; padding:8px 18px; border-radius:50px; cursor:pointer; font-size:0.85rem;">
+                                <i class="bi bi-folder2-open"></i> Elegir nueva foto
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Textos -->
+                    <div style="border-top:1px solid #333; padding-top:20px; margin-bottom:20px;">
+                        <label style="color:var(--color-acento-azul); display:block; margin-bottom:14px; font-weight:bold; font-size:0.8rem; text-transform:uppercase;">
+                            <i class="bi bi-fonts"></i> 2. Textos de la Portada
+                        </label>
+                        <div style="margin-bottom:14px;">
+                            <label style="color:#888; display:block; margin-bottom:5px; font-size:0.85rem;">Frase Principal (Tagline — imagen fija):</label>
+                            <input type="text" id="cm-hero-tagline-input" placeholder="Ej: Donde la pasión se convierte en arte"
+                                style="width:100%; padding:10px; background:#111; border:1px solid #444; border-radius:8px; color:white; outline:none; font-size:0.95rem; box-sizing:border-box;">
+                        </div>
+                        <div>
+                            <label style="color:#888; display:block; margin-bottom:5px; font-size:0.85rem;">Texto del Botón (CTA):</label>
+                            <input type="text" id="cm-hero-cta-input" placeholder="Ej: Descubre Nuestros Programas"
+                                style="width:100%; padding:10px; background:#111; border:1px solid #444; border-radius:8px; color:white; outline:none; font-size:0.95rem; box-sizing:border-box;">
+                        </div>
+                    </div>
+
+                    <div style="text-align:center; padding-bottom:5px;">
+                        <button onclick="window.saveHeroPortada()" style="background:var(--color-acento-azul); color:white; border:none; padding:12px 40px; border-radius:50px; font-weight:bold; cursor:pointer; display:inline-flex; align-items:center; gap:8px; font-size:1rem; box-shadow:0 4px 15px rgba(52,152,219,0.3);">
+                            <i class="bi bi-check-lg"></i> Guardar Portada
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab: Hero Carrusel -->
+                <div id="content-tab-hero" style="padding:25px 30px; max-height:calc(85vh - 180px); overflow-y:auto; display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <h3 style="color:white; margin:0; font-size:1.1rem;">
+                                <i class="bi bi-images" style="color:var(--color-acento-naranja);"></i> Slides del Hero (máx. 4)
+                            </h3>
+                            <p style="color:#666; font-size:0.82rem; margin:4px 0 0 0;">Soporta imágenes (URL), YouTube, Google Drive, Vimeo o video directo (.mp4).</p>
+                        </div>
+                        <button onclick="window.saveHeroSlides()" style="background:linear-gradient(135deg, var(--color-acento-naranja), #c0671a); color:white; border:none; padding:10px 22px; border-radius:10px; cursor:pointer; font-weight:600; font-size:0.9rem; display:flex; align-items:center; gap:8px;">
+                            <i class="bi bi-save-fill"></i> Guardar Carrusel
+                        </button>
+                    </div>
+                    <!-- Botón CTA global -->
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid #333; border-radius:14px; padding:18px 20px; margin-bottom:16px;">
+                        <label style="color:#aaa; font-size:0.82rem; display:block; margin-bottom:6px;">
+                            <i class="bi bi-cursor-text" style="color:var(--color-acento-naranja);"></i>
+                            Texto del botón CTA <span style="color:#666;">(mismo para todos los slides)</span>
+                        </label>
+                        <input type="text" id="hero-cta-global" class="form-control"
+                            placeholder="Ej: Descubre Nuestros Programas"
+                            style="background:#111; border-color:#444; color:white; font-size:0.9rem; border-radius:8px; padding:8px 12px; width:100%; box-sizing:border-box;">
+                    </div>
+
+                    <div id="hero-slides-grid" style="display:flex; flex-direction:column; gap:16px;">
+                        <div style="color:#888; text-align:center; padding:2rem;">
+                            <i class="bi bi-hourglass-split" style="font-size:2rem; animation:pulse 1.5s infinite;"></i>
+                            <p>Cargando slides...</p>
+                        </div>
+                    </div>
+                    <div style="margin-top:20px; padding:15px 20px; background:rgba(231,140,59,0.06); border:1px solid rgba(231,140,59,0.2); border-radius:12px;">
+                        <p style="color:#aaa; font-size:0.82rem; margin:0; line-height:1.6;">
+                            <i class="bi bi-lightbulb" style="color:var(--color-acento-naranja);"></i>
+                            <strong style="color:var(--color-acento-naranja);">Tips:</strong>
+                            Para YouTube pega la URL normal (ej: <em>youtube.com/watch?v=…</em>). Para Google Drive comparte el archivo y pega el enlace.
+                            Los slides inactivos no aparecen en el sitio. El orden es de arriba a abajo.
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Footer Tips -->
                 <div style="padding:20px 30px; border-top:1px solid #333; background:rgba(0,0,0,0.3); border-radius:0 0 20px 20px;">
                     <div style="display:flex; align-items:flex-start; gap:15px; flex-wrap:wrap;">
                         <i class="bi bi-lightbulb" style="color:#2ecc71; font-size:1.2rem;"></i>
                         <div style="flex:1; min-width:200px;">
                             <p style="color:#888; font-size:0.85rem; margin:0; line-height:1.5;">
-                                <strong style="color:#2ecc71;">Tips:</strong> 
-                                Las tarjetas aparecen en "Sobre Nosotros". Use imágenes de alta calidad (800x600px). 
+                                <strong style="color:#2ecc71;">Tips:</strong>
+                                Las tarjetas aparecen en "Sobre Nosotros". Use imágenes de alta calidad (800x600px).
                                 Cambie el orden editando el número. Las inactivas no se muestran públicamente.
                             </p>
                         </div>
@@ -672,22 +768,20 @@
 
     // --- NEW TAB SYSTEM ---
     window.switchContentTab = function (tab) {
-        document.getElementById('content-tab-cards').style.display = tab === 'cards' ? 'block' : 'none';
-        document.getElementById('content-tab-mission').style.display = tab === 'mission' ? 'block' : 'none';
+        document.getElementById('content-tab-cards').style.display    = tab === 'cards'    ? 'block' : 'none';
+        document.getElementById('content-tab-mission').style.display  = tab === 'mission'  ? 'block' : 'none';
         document.getElementById('content-tab-enrollment').style.display = tab === 'enrollment' ? 'block' : 'none';
+        document.getElementById('content-tab-portada').style.display  = tab === 'portada'  ? 'block' : 'none';
+        document.getElementById('content-tab-hero').style.display     = tab === 'hero'     ? 'block' : 'none';
 
-        // Update tab styling
-        const tabCards = document.getElementById('tab-cards');
-        const tabMission = document.getElementById('tab-mission');
+        const tabCards      = document.getElementById('tab-cards');
+        const tabMission    = document.getElementById('tab-mission');
         const tabEnrollment = document.getElementById('tab-enrollment');
+        const tabPortada    = document.getElementById('tab-portada');
+        const tabHero       = document.getElementById('tab-hero');
 
-        // Reset all
-        [tabCards, tabMission, tabEnrollment].forEach(t => {
-            if (t) {
-                t.style.background = 'transparent';
-                t.style.borderColor = 'transparent';
-                t.style.color = '#888';
-            }
+        [tabCards, tabMission, tabEnrollment, tabPortada, tabHero].forEach(t => {
+            if (t) { t.style.background = 'transparent'; t.style.borderColor = 'transparent'; t.style.color = '#888'; }
         });
 
         if (tab === 'cards') {
@@ -695,15 +789,25 @@
             tabCards.style.borderColor = '#9b59b6';
             tabCards.style.color = 'white';
         } else if (tab === 'mission') {
-            tabMission.style.background = 'rgba(46, 204, 113, 0.1)';
+            tabMission.style.background = 'rgba(46,204,113,0.1)';
             tabMission.style.borderColor = '#2ecc71';
             tabMission.style.color = 'white';
             loadMissionValuesAdmin();
         } else if (tab === 'enrollment') {
-            tabEnrollment.style.background = 'rgba(52, 152, 219, 0.1)';
+            tabEnrollment.style.background = 'rgba(52,152,219,0.1)';
             tabEnrollment.style.borderColor = 'var(--color-acento-azul)';
             tabEnrollment.style.color = 'white';
             loadEnrollmentConfigAdmin();
+        } else if (tab === 'portada') {
+            tabPortada.style.background = 'rgba(52,152,219,0.1)';
+            tabPortada.style.borderColor = 'var(--color-acento-azul)';
+            tabPortada.style.color = 'white';
+            loadHeroPortadaTab();
+        } else if (tab === 'hero') {
+            tabHero.style.background = 'rgba(231,140,59,0.12)';
+            tabHero.style.borderColor = 'var(--color-acento-naranja)';
+            tabHero.style.color = 'white';
+            loadHeroSlidesAdmin();
         }
     };
 
@@ -941,5 +1045,321 @@
         div.textContent = text;
         return div.innerHTML;
     }
+
+    // ==========================================
+    // HERO PORTADA ADMIN (imagen fija + textos)
+    // ==========================================
+
+    const CM_VP_W = 384;
+    const CM_VP_H = 216;
+    let cmCropX = 0, cmCropY = 0, cmScale = 1, cmMinScale = 1;
+    let cmDragStart = { x: 0, y: 0 };
+    let cmIsDragging = false;
+    let cmImgWidth = 0, cmImgHeight = 0;
+    let cmHasNewFile = false;
+    let cmListenersAttached = false;
+
+    async function loadHeroPortadaTab() {
+        // Cargar textos actuales
+        try {
+            const baseUrl = window.ApiService?.baseUrl || '/api/';
+            const resp = await fetch(`${baseUrl}site_config.php`);
+            const data = await resp.json();
+            if (data.success) {
+                const tagEl = document.getElementById('cm-hero-tagline-input');
+                const ctaEl = document.getElementById('cm-hero-cta-input');
+                if (tagEl) tagEl.value = data.hero_tagline || '';
+                if (ctaEl) ctaEl.value = data.hero_cta_text || '';
+            }
+        } catch (e) { /* silent */ }
+
+        // Inicializar cropper con la imagen actual
+        const imgEl = document.getElementById('cm-crop-target');
+        if (imgEl && !imgEl.src.includes('hero-banner')) {
+            imgEl.src = 'images/hero-banner.jpg?t=' + Date.now();
+        }
+        setupCmCropper(false);
+        attachCmListeners();
+    }
+
+    function setupCmCropper(isNewFile) {
+        const imgEl = document.getElementById('cm-crop-target');
+        if (!imgEl) return;
+        const init = () => {
+            cmImgWidth  = imgEl.naturalWidth;
+            cmImgHeight = imgEl.naturalHeight;
+            if (!cmImgWidth) return;
+            const scaleW = CM_VP_W / cmImgWidth;
+            const scaleH = CM_VP_H / cmImgHeight;
+            cmMinScale = Math.max(scaleW, scaleH);
+            cmScale    = cmMinScale;
+            cmCropX    = (CM_VP_W - cmImgWidth  * cmScale) / 2;
+            cmCropY    = (CM_VP_H - cmImgHeight * cmScale) / 2;
+            updateCmTransform();
+
+            const zoom = document.getElementById('cm-crop-zoom');
+            if (zoom) { zoom.min = cmMinScale; zoom.max = cmMinScale * 3; zoom.value = cmScale; }
+
+            const controls = document.getElementById('cm-crop-controls');
+            if (controls) controls.style.display = 'flex';
+            const instr = document.getElementById('cm-crop-instruction');
+            if (instr) instr.style.display = isNewFile ? 'block' : 'none';
+            cmHasNewFile = isNewFile;
+        };
+        if (imgEl.complete && imgEl.naturalWidth > 0) { init(); }
+        else { imgEl.onload = init; }
+    }
+
+    function attachCmListeners() {
+        if (cmListenersAttached) return;
+        cmListenersAttached = true;
+
+        const container = document.getElementById('cm-crop-container');
+        if (container) {
+            container.addEventListener('mousedown', (e) => {
+                cmIsDragging = true;
+                cmDragStart  = { x: e.clientX - cmCropX, y: e.clientY - cmCropY };
+                container.style.cursor = 'grabbing';
+            });
+        }
+        window.addEventListener('mousemove', (e) => {
+            if (!cmIsDragging) return;
+            cmCropX = e.clientX - cmDragStart.x;
+            cmCropY = e.clientY - cmDragStart.y;
+            updateCmTransform();
+        });
+        window.addEventListener('mouseup', () => {
+            cmIsDragging = false;
+            const c = document.getElementById('cm-crop-container');
+            if (c) c.style.cursor = 'grab';
+        });
+
+        const zoom = document.getElementById('cm-crop-zoom');
+        if (zoom) zoom.addEventListener('input', (e) => { cmScale = parseFloat(e.target.value); updateCmTransform(); });
+
+        const fileInput = document.getElementById('cm-hero-upload-input');
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                if (!e.target.files?.[0]) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    const imgEl = document.getElementById('cm-crop-target');
+                    if (imgEl) { imgEl.src = evt.target.result; imgEl.onload = () => setupCmCropper(true); }
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            });
+        }
+    }
+
+    function updateCmTransform() {
+        const imgEl = document.getElementById('cm-crop-target');
+        if (!imgEl) return;
+        const minX = CM_VP_W - cmImgWidth  * cmScale;
+        const minY = CM_VP_H - cmImgHeight * cmScale;
+        if (cmCropX > 0)    cmCropX = 0;
+        if (cmCropX < minX) cmCropX = minX;
+        if (cmCropY > 0)    cmCropY = 0;
+        if (cmCropY < minY) cmCropY = minY;
+        imgEl.style.transform = `translate(${cmCropX}px, ${cmCropY}px) scale(${cmScale})`;
+    }
+
+    window.saveHeroPortada = async function () {
+        const tagEl = document.getElementById('cm-hero-tagline-input');
+        const ctaEl = document.getElementById('cm-hero-cta-input');
+
+        Swal.fire({ title: 'Guardando...', didOpen: () => Swal.showLoading(), background: '#1a1a1a', color: '#fff' });
+
+        try {
+            const configRes = await ApiService.updateSiteConfig({
+                hero_tagline:  tagEl?.value.trim() || '',
+                hero_cta_text: ctaEl?.value.trim() || ''
+            });
+            if (!configRes.success) throw new Error(configRes.message);
+
+            const fileInput = document.getElementById('cm-hero-upload-input');
+            if (fileInput?.files[0] && cmHasNewFile) {
+                const imgRes = await ApiService.updateHeroImage(fileInput.files[0], {
+                    crop_x: -cmCropX / cmScale,
+                    crop_y: -cmCropY / cmScale,
+                    crop_w: CM_VP_W  / cmScale,
+                    crop_h: CM_VP_H  / cmScale
+                });
+                if (!imgRes.success) {
+                    Swal.fire('Parcial', 'Textos guardados, pero error en imagen: ' + imgRes.message, 'warning');
+                    return;
+                }
+            }
+
+            Swal.fire({ icon: 'success', title: 'Portada actualizada', background: '#1a1a1a', color: '#fff', timer: 2000, showConfirmButton: false });
+        } catch (e) {
+            Swal.fire('Error', e.message, 'error');
+        }
+    };
+
+    // ==========================================
+    // HERO CAROUSEL ADMIN
+    // ==========================================
+
+    function detectMediaType(url) {
+        if (!url) return 'image';
+        if (/youtube\.com|youtu\.be/.test(url)) return 'youtube';
+        if (/drive\.google\.com/.test(url))      return 'gdrive';
+        if (/vimeo\.com/.test(url))              return 'vimeo';
+        if (/\.(mp4|webm|ogg)/i.test(url))       return 'video';
+        return 'image';
+    }
+
+    function mediaTypeLabel(type) {
+        const map = { youtube: 'YouTube', gdrive: 'Google Drive', vimeo: 'Vimeo', video: 'Video (.mp4)', image: 'Imagen' };
+        return map[type] || 'Imagen';
+    }
+
+    function mediaTypeColor(type) {
+        const map = { youtube: '#e74c3c', gdrive: '#4285F4', vimeo: '#1ab7ea', video: '#9b59b6', image: '#2ecc71' };
+        return map[type] || '#2ecc71';
+    }
+
+    function renderHeroSlideRow(slide, index) {
+        const type = detectMediaType(slide.url);
+        const color = mediaTypeColor(type);
+        const label = mediaTypeLabel(type);
+        const isActive = slide.active !== false;
+
+        return `
+        <div class="hero-slide-row" data-index="${index}" style="
+            background:rgba(255,255,255,0.03); border:1px solid #333; border-radius:14px; padding:18px 20px;
+            display:flex; flex-direction:column; gap:12px; transition:border-color 0.2s;">
+            <!-- Cabecera del slide -->
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="background:#111; border:1px solid #444; color:#aaa; font-size:0.75rem; font-weight:700;
+                        width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;">${index + 1}</span>
+                    <span style="background:${color}22; color:${color}; border:1px solid ${color}44;
+                        padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600;">${label}</span>
+                </div>
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:#aaa; font-size:0.85rem;">
+                    <input type="checkbox" class="hero-slide-active" ${isActive ? 'checked' : ''}
+                        onchange="window.onHeroSlideActiveChange(${index})"
+                        style="width:16px; height:16px; accent-color:var(--color-acento-naranja);">
+                    Activo
+                </label>
+            </div>
+            <!-- URL -->
+            <div>
+                <label style="color:#888; font-size:0.8rem; display:block; margin-bottom:5px;">URL del Media</label>
+                <input type="url" class="hero-slide-url form-control" value="${escapeHtml(slide.url || '')}"
+                    placeholder="https://youtube.com/watch?v=… · https://drive.google.com/… · https://midominio.com/img.jpg"
+                    oninput="window.onHeroSlideUrlChange(${index}, this.value)"
+                    style="background:#111; border-color:#444; color:white; font-size:0.85rem; border-radius:8px; padding:8px 12px; width:100%; box-sizing:border-box;">
+            </div>
+            <!-- Frase del slide -->
+            <div>
+                <label style="color:#888; font-size:0.8rem; display:block; margin-bottom:5px;">
+                    Frase del slide <span style="color:#555;">(aparece en el hero sobre esta imagen/video)</span>
+                </label>
+                <input type="text" class="hero-slide-label form-control" value="${escapeHtml(slide.label || '')}"
+                    placeholder="Ej: Donde la pasión se convierte en arte"
+                    style="background:#111; border-color:#444; color:white; font-size:0.85rem; border-radius:8px; padding:8px 12px; width:100%; box-sizing:border-box;">
+            </div>
+        </div>`;
+    }
+
+    let heroSlides = [{url:'', label:'', active:true}, {url:'', label:'', active:false},
+                      {url:'', label:'', active:false}, {url:'', label:'', active:false}];
+
+    async function loadHeroSlidesAdmin() {
+        const grid = document.getElementById('hero-slides-grid');
+        if (!grid) return;
+
+        try {
+            const baseUrl = window.ApiService?.baseUrl || '/api/';
+            const resp = await fetch(`${baseUrl}site_config.php`);
+            const data = await resp.json();
+
+            if (data.success && Array.isArray(data.hero_slides) && data.hero_slides.length > 0) {
+                // Rellenar siempre con 4 slots
+                heroSlides = Array.from({length: 4}, (_, i) => data.hero_slides[i] || {url:'', label:'', active:false});
+            } else {
+                heroSlides = Array.from({length: 4}, (_, i) => ({url:'', label:'', active: i === 0}));
+            }
+            // Cargar CTA global en el input
+            const ctaInput = document.getElementById('hero-cta-global');
+            if (ctaInput && data.hero_cta_text) ctaInput.value = data.hero_cta_text;
+        } catch (e) {
+            heroSlides = Array.from({length: 4}, (_, i) => ({url:'', label:'', active: i === 0}));
+        }
+
+        renderHeroGrid();
+    }
+
+    function renderHeroGrid() {
+        const grid = document.getElementById('hero-slides-grid');
+        if (!grid) return;
+        grid.innerHTML = heroSlides.map((s, i) => renderHeroSlideRow(s, i)).join('');
+    }
+
+    window.onHeroSlideUrlChange = function(index, val) {
+        heroSlides[index].url = val.trim();
+        // Re-renderiza solo la chip de tipo
+        const row = document.querySelector(`.hero-slide-row[data-index="${index}"]`);
+        if (!row) return;
+        const type = detectMediaType(val.trim());
+        const color = mediaTypeColor(type);
+        const label = mediaTypeLabel(type);
+        const chip = row.querySelector('span:nth-child(2)');
+        if (chip) {
+            chip.style.background = `${color}22`;
+            chip.style.color = color;
+            chip.style.borderColor = `${color}44`;
+            chip.textContent = label;
+        }
+    };
+
+    window.onHeroSlideActiveChange = function(index) {
+        const checkbox = document.querySelector(`.hero-slide-row[data-index="${index}"] .hero-slide-active`);
+        if (checkbox) heroSlides[index].active = checkbox.checked;
+    };
+
+    window.saveHeroSlides = async function() {
+        // Leer valores actuales del DOM
+        document.querySelectorAll('.hero-slide-row').forEach((row, i) => {
+            const urlEl   = row.querySelector('.hero-slide-url');
+            const labelEl = row.querySelector('.hero-slide-label');
+            const activeEl = row.querySelector('.hero-slide-active');
+            if (urlEl)    heroSlides[i].url    = urlEl.value.trim();
+            if (labelEl)  heroSlides[i].label  = labelEl.value.trim();
+            if (activeEl) heroSlides[i].active = activeEl.checked;
+        });
+
+        // Filtrar slots completamente vacíos
+        const toSave = heroSlides.filter(s => s.url !== '');
+
+        // Leer CTA global
+        const ctaText = (document.getElementById('hero-cta-global')?.value || '').trim();
+
+        Swal.fire({ title: 'Guardando...', didOpen: () => Swal.showLoading(), background: '#1a1a1a', color: '#fff' });
+
+        try {
+            const baseUrl = window.ApiService?.baseUrl || '/api/';
+            const token = ApiService.getToken ? ApiService.getToken() : localStorage.getItem('jam_token');
+            const payload = { hero_slides: toSave };
+            if (ctaText) payload.hero_cta_text = ctaText;
+
+            const resp = await fetch(`${baseUrl}admin_site_config.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(payload)
+            });
+            const data = await resp.json();
+            if (data.success) {
+                Swal.fire({ icon: 'success', title: 'Carrusel guardado', text: `${toSave.length} slide(s) configurados.`,
+                    background: '#1a1a1a', color: '#fff', timer: 2200, showConfirmButton: false });
+            } else {
+                throw new Error(data.message || 'Error al guardar');
+            }
+        } catch (e) {
+            Swal.fire('Error', e.message, 'error');
+        }
+    };
 
 })();

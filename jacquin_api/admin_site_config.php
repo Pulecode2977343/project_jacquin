@@ -17,7 +17,7 @@ require_once 'config/connection.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
-if (!isset($data->enrollment_open) && !isset($data->hero_tagline)) {
+if (!isset($data->enrollment_open) && !isset($data->hero_tagline) && !isset($data->hero_slides)) {
     http_response_code(400);
     echo json_encode(["success" => false, "message" => "No se enviaron datos para actualizar."]);
     exit;
@@ -62,6 +62,28 @@ try {
     }
     if (isset($data->hero_cta_text)) {
         $stmt->execute(['hero_cta_text', trim((string)$data->hero_cta_text)]);
+    }
+
+    // Guardar slides del Hero Carousel (si se enviaron)
+    if (isset($data->hero_slides)) {
+        $slides = $data->hero_slides;
+        if (!is_array($slides)) {
+            http_response_code(400);
+            echo json_encode(["success" => false, "message" => "hero_slides debe ser un array."]);
+            exit;
+        }
+        $slides = array_slice($slides, 0, 4); // Máximo 4 slides
+        $sanitized = [];
+        foreach ($slides as $slide) {
+            $url = isset($slide->url) ? trim((string)$slide->url) : '';
+            if (empty($url)) continue;
+            $sanitized[] = [
+                'url'    => $url,
+                'label'  => isset($slide->label) ? trim((string)$slide->label) : '',
+                'active' => isset($slide->active) ? (bool)$slide->active : true,
+            ];
+        }
+        $stmt->execute(['hero_slides', json_encode($sanitized)]);
     }
 
     echo json_encode([

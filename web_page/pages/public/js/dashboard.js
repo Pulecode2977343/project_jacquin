@@ -93,8 +93,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     switch (roleId) {
         case 1: // Admin
             if (modAdminInventory) modAdminInventory.style.display = "flex";
-            const modHero = document.getElementById("mod-hero");
-            if (modHero) modHero.style.display = "flex";
+            // mod-hero consolidado en modal "Contenido Web" → tabs Portada + Carrusel
             if (modEvents) modEvents.style.display = "flex";
 
             // Show Programs Card for Admin
@@ -126,13 +125,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 modContent.style.cursor = "pointer";
             }
 
-            // Show Enrollment Module for Admin (NUEVO)
-            const modEnrollment = document.getElementById("mod-enrollment");
-            if (modEnrollment) {
-                modEnrollment.style.display = "flex";
-                modEnrollment.style.cursor = "pointer";
-                initDashboardEnrollmentStatus();
-            }
+            // mod-enrollment consolidado en modal "Contenido Web" → tab Matrículas
+            initDashboardEnrollmentStatus();
 
             // Show Positions Card for Admin
             if (modPositions) {
@@ -1405,7 +1399,7 @@ window.openHeroManager = async function () {
                 <!-- SECCIÓN TEXTOS -->
                 <div style="border-top:1px solid #333; padding-top:20px;">
                     <label style="color:var(--color-acento-azul); display:block; margin-bottom:15px; font-weight:bold; font-size:0.8rem; text-transform:uppercase;">2. Textos de la Portada</label>
-                    
+
                     <div style="margin-bottom:15px;">
                         <label style="color:#888; display:block; margin-bottom:5px; font-size:0.85rem;">Frase Principal (Tagline):</label>
                         <input type="text" id="hero-tagline-input" value="${currentConfig.hero_tagline}" placeholder="Ej: Donde la pasión se convierte en arte" style="width:100%; padding:10px; background:#222; border:1px solid #333; border-radius:8px; color:white; outline:none; font-size:0.95rem; box-sizing:border-box;">
@@ -1419,6 +1413,25 @@ window.openHeroManager = async function () {
 
                 <div style="text-align:center; padding-top:10px;">
                     <button id="btn-save-hero" onclick="uploadHero()" style="background:var(--color-acento-azul); color:white; border:none; padding:12px 40px; border-radius:50px; font-weight:bold; cursor:pointer; box-shadow:0 4px 15px rgba(52, 152, 219, 0.3); display:flex; align-items:center; gap:8px; margin:0 auto; font-size:1rem;"><i class="bi bi-check-lg"></i> Guardar Cambios</button>
+                </div>
+
+                <!-- SECCIÓN CARRUSEL -->
+                <div style="border-top:1px solid #333; margin-top:25px; padding-top:20px;">
+                    <label style="color:var(--color-acento-naranja); display:block; margin-bottom:8px; font-weight:bold; font-size:0.8rem; text-transform:uppercase;">
+                        <i class="bi bi-images"></i> 3. Carrusel (hasta 4 imágenes / videos)
+                    </label>
+                    <p style="color:#666; font-size:0.82rem; margin:0 0 14px 0; line-height:1.5;">
+                        Añade URLs de imágenes o videos (YouTube, Google Drive, Vimeo…) que se desplacen automáticamente.<br>
+                        <span style="color:#555;">Si configuras al menos un slide activo, el carrusel reemplaza la imagen de fondo.</span>
+                    </p>
+                    <button
+                        onclick="document.getElementById('hero-manager-modal').style.display='none'; window.openContentManager(); setTimeout(()=>window.switchContentTab('hero'), 150);"
+                        style="width:100%; padding:13px 20px; background:rgba(231,140,59,0.08); border:1px solid rgba(231,140,59,0.35); color:var(--color-acento-naranja); border-radius:12px; cursor:pointer; font-size:0.95rem; font-weight:600; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.25s;"
+                        onmouseover="this.style.background='rgba(231,140,59,0.18)'; this.style.borderColor='rgba(231,140,59,0.7)';"
+                        onmouseout="this.style.background='rgba(231,140,59,0.08)'; this.style.borderColor='rgba(231,140,59,0.35)';">
+                        <i class="bi bi-collection-play"></i> Configurar Slides del Carrusel
+                        <i class="bi bi-arrow-right" style="margin-left:auto; opacity:0.6;"></i>
+                    </button>
                 </div>
             </div>
              <div style="padding:15px; background:#1a1a1a; border-top:1px solid #333; text-align:center;">

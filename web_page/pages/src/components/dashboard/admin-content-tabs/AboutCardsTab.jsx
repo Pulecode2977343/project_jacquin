@@ -150,24 +150,67 @@ const AboutCardsTab = () => {
 
                 <div>
                   <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-                    URL de Imagen
+                    Imagen
                   </label>
-                  <input
-                    type="text"
-                    value={editForm.imageUrl || ''}
-                    onChange={(e) => setEditForm({ ...editForm, imageUrl: e.target.value })}
-                    placeholder="assets/images/about/..."
-                    style={{
-                      width: '100%',
-                      padding: '0.7rem',
-                      background: 'rgba(0, 0, 0, 0.3)',
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <input
+                      type="text"
+                      value={editForm.imageUrl || ''}
+                      onChange={(e) => setEditForm({ ...editForm, imageUrl: e.target.value })}
+                      placeholder="URL o ruta del archivo..."
+                      style={{
+                        flex: 1,
+                        padding: '0.7rem',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(147, 182, 238, 0.2)',
+                        borderRadius: '6px',
+                        color: '#fff',
+                        fontFamily: 'inherit',
+                        fontSize: '0.9rem'
+                      }}
+                    />
+                    <label style={{
+                      padding: '0.7rem 1rem',
+                      background: 'rgba(147, 182, 238, 0.15)',
                       border: '1px solid rgba(147, 182, 238, 0.2)',
                       borderRadius: '6px',
-                      color: '#fff',
-                      fontFamily: 'inherit',
-                      fontSize: '0.9rem'
-                    }}
-                  />
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      color: '#93b6ee',
+                      whiteSpace: 'nowrap',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.3rem'
+                    }}>
+                      <i className="bi bi-upload"></i> Subir
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              setEditForm({ ...editForm, imageUrl: event.target?.result });
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                  </div>
+                  {editForm.imageUrl && (
+                    <div style={{
+                      width: '100%',
+                      height: '100px',
+                      background: `url('${editForm.imageUrl}') center / cover`,
+                      borderRadius: '6px',
+                      border: '1px solid rgba(147, 182, 238, 0.2)',
+                      marginTop: '0.5rem'
+                    }}></div>
+                  )}
                 </div>
 
                 <div>

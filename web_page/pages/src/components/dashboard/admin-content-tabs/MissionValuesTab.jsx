@@ -140,6 +140,9 @@ const MissionValuesTab = () => {
                       fontSize: '0.9rem'
                     }}
                   />
+                  <small style={{ opacity: 0.5, marginTop: '0.3rem', display: 'block' }}>
+                    Ej: bi bi-star, bi bi-heart, bi bi-lightbulb, bi bi-hand-thumbs-up
+                  </small>
                 </div>
 
                 <div style={{ display: 'flex', gap: '0.5rem' }}>

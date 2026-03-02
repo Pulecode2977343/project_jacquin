@@ -64,3 +64,18 @@
 | **[HERO-06] Slider de reproducción para videos nativos** | ✅ | Barra de progreso `seek-bar` con tiempo actual/total funcional. |
 | **[HERO-07] Ajuste backend `admin_upload_hero_media.php`** | ✅ | Validaciones de MIME y tamaño de archivo (5MB/50MB) implementadas. |
 | **[HERO-08] QA y build de producción** | ⏳ | Probar flujo completo: subir imagen local → ver en carrusel · subir video → reproducir con controles · pegat live YouTube → bloquear carrusel. `npm run build` final. Commit y push. |
+
+---
+## 📋 TASK: React SPA Admin Dashboard v3 — 2 Mar 2026
+
+| Acción / Requerimiento | Estado | Nota |
+| :--- | :---: | :--- |
+| **[ADMIN-DASH-01] Migración SPA completa Dashboard** | ✅ | PrivateRoute, AdminPanel, ProfesorPanel, EstudiantePanel, Dashboard.jsx con routing v7. |
+| **[ADMIN-DASH-02] Limpieza referencias legacy gestion.html** | ✅ | 62 archivos auditados. 8 HTML deprecados + 5 JS deprecados eliminados. Header.jsx corregido. |
+| **[ADMIN-DASH-03] AdminPanel consolidado (6 módulos)** | ✅ | Usuarios, Programas, Cargos, Contenido Web, Eventos, Almacenamiento. |
+| **[ADMIN-DASH-04] Modal AdminContentWeb con 4 tabs** | ✅ | Glassmorphism overlay + tab switcher. AboutCardsTab, MissionValuesTab, EnrollmentTab, HeroCarouselTab. |
+| **[ADMIN-DASH-05] Control total del administrador — AboutCardsTab** | ✅ | Edición: Título, Subtítulo, Contenido, Imagen (upload FileReader), Ícono. |
+| **[ADMIN-DASH-06] Control total del administrador — MissionValuesTab** | ✅ | Edición: Título, Descripción, Ícono. 4 valores: Excelencia, Pasión, Innovación, Respeto. |
+| **[ADMIN-DASH-07] Control total del administrador — EnrollmentTab** | ✅ | Edición: Status (open/closed), Fechas inicio/fin, Mensaje matrículas abiertas/cerradas. |
+| **[ADMIN-DASH-08] Control total del administrador — HeroCarouselTab (v3)** | ✅ | Hasta 4 slides. **Nuevos campos**: Mensaje Principal ("Donde la pasión se convierte en arte"), Texto del Botón ("Descubre nuestros programas"), Mensaje del Botón ("Conoce nuestros programas"). Media type selector imagen/video. Upload FileReader para ambos. |
+| **[ADMIN-DASH-09] Integración API backend (pendiente)** | ⏳ | Conectar todos los tabs a endpoints PHP (TODO comments presentes). El cliente ya puede editar localmente. |

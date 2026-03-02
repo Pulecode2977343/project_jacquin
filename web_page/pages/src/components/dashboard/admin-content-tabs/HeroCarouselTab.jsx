@@ -8,12 +8,16 @@ import React, { useState } from 'react';
  * - Videos: sin volumen por defecto, bloquean carrusel durante reproducción
  */
 const HeroCarouselTab = () => {
+  // CONFIGURACIÓN GLOBAL DEL CARRUSEL
+  const [globalConfig, setGlobalConfig] = useState({
+    buttonText: 'Descubre nuestros programas',
+    buttonMessage: 'Conoce nuestros programas'
+  });
+
   const [slides, setSlides] = useState([
     {
       id: 1,
       message: 'Donde la pasión se convierte en arte',
-      buttonText: 'Descubre nuestros programas',
-      buttonMessage: 'Conoce nuestros programas',
       mediaType: 'image',
       media: 'assets/images/hero/hero-banner.jpg',
       mediaInfo: { size: '2.4 MB', dimensions: '1920x1080 px', format: 'JPEG' },
@@ -22,8 +26,6 @@ const HeroCarouselTab = () => {
     {
       id: 2,
       message: 'Programas Especializados para ti',
-      buttonText: 'Explorar programas',
-      buttonMessage: 'Piano, Guitarra, Voz, Percusión y más',
       mediaType: 'image',
       media: 'assets/images/programs/piano.png',
       mediaInfo: { size: '1.8 MB', dimensions: '1920x1080 px', format: 'PNG' },
@@ -32,12 +34,18 @@ const HeroCarouselTab = () => {
     {
       id: 3,
       message: 'Nuestro Equipo de Expertos',
-      buttonText: 'Conoce el equipo',
-      buttonMessage: 'Profesores apasionados y dedicados',
       mediaType: 'image',
       media: 'assets/images/about/equipo.jpg',
       mediaInfo: { size: '2.1 MB', dimensions: '1920x1080 px', format: 'JPEG' },
       order: 3
+    },
+    {
+      id: 4,
+      message: 'Únete a Nuestra Academia',
+      mediaType: 'image',
+      media: 'assets/images/hero/cta-banner.jpg',
+      mediaInfo: { size: '2.0 MB', dimensions: '1920x1080 px', format: 'JPEG' },
+      order: 4
     },
     {
       id: 5,
@@ -52,7 +60,8 @@ const HeroCarouselTab = () => {
 
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
-  const [showMediaInfo, setShowMediaInfo] = useState(null);
+  const [editingGlobalConfig, setEditingGlobalConfig] = useState(false);
+  const [globalConfigForm, setGlobalConfigForm] = useState({ ...globalConfig });
 
   const handleEdit = (slide) => {
     setEditingId(slide.id);
@@ -168,8 +177,6 @@ const HeroCarouselTab = () => {
     const newSlide = {
       id: Math.max(...slides.map(s => s.id), 0) + 1,
       message: 'Nuevo mensaje principal',
-      buttonText: 'Texto del botón',
-      buttonMessage: 'Mensaje del botón',
       mediaType: 'image',
       media: '',
       mediaInfo: {},
@@ -180,6 +187,144 @@ const HeroCarouselTab = () => {
 
   return (
     <div style={{ padding: '1rem 0' }}>
+      {/* CONFIGURACIÓN GLOBAL */}
+      <div style={{
+        background: 'rgba(231, 140, 59, 0.08)',
+        border: '2px solid rgba(231, 140, 59, 0.3)',
+        borderRadius: '12px',
+        padding: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <i className="bi bi-gear"></i> Configuración Global del Carrusel
+          </h3>
+          <button
+            onClick={() => {
+              setEditingGlobalConfig(!editingGlobalConfig);
+              if (!editingGlobalConfig) setGlobalConfigForm({ ...globalConfig });
+            }}
+            style={{
+              padding: '0.5rem 1rem',
+              background: editingGlobalConfig ? 'rgba(231, 140, 59, 0.2)' : 'rgba(231, 140, 59, 0.15)',
+              color: 'var(--color-acento-naranja)',
+              border: '1px solid rgba(231, 140, 59, 0.3)',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '0.85rem',
+              fontWeight: 500
+            }}
+          >
+            {editingGlobalConfig ? '✓ Listo' : '✏️ Editar'}
+          </button>
+        </div>
+
+        {editingGlobalConfig ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
+                Texto del Botón (aplica a TODOS los slides)
+              </label>
+              <input
+                type="text"
+                value={globalConfigForm.buttonText}
+                onChange={(e) => setGlobalConfigForm({ ...globalConfigForm, buttonText: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '0.7rem',
+                  background: 'rgba(0, 0, 0, 0.3)',
+                  border: '1px solid rgba(231, 140, 59, 0.2)',
+                  borderRadius: '6px',
+                  color: '#fff',
+                  fontFamily: 'inherit',
+                  fontSize: '0.9rem'
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
+                Mensaje del Botón (subtítulo, aplica a TODOS)
+              </label>
+              <input
+                type="text"
+                value={globalConfigForm.buttonMessage}
+                onChange={(e) => setGlobalConfigForm({ ...globalConfigForm, buttonMessage: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '0.7rem',
+                  background: 'rgba(0, 0, 0, 0.3)',
+                  border: '1px solid rgba(231, 140, 59, 0.2)',
+                  borderRadius: '6px',
+                  color: '#fff',
+                  fontFamily: 'inherit',
+                  fontSize: '0.9rem'
+                }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => {
+                  setGlobalConfig(globalConfigForm);
+                  setEditingGlobalConfig(false);
+                  if (window.showToast) window.showToast('Configuración global actualizada', 'success');
+                }}
+                style={{
+                  flex: 1,
+                  padding: '0.6rem',
+                  background: 'var(--color-acento-naranja)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: '0.85rem'
+                }}
+              >
+                💾 Guardar
+              </button>
+              <button
+                onClick={() => setEditingGlobalConfig(false)}
+                style={{
+                  flex: 1,
+                  padding: '0.6rem',
+                  background: 'rgba(147, 182, 238, 0.1)',
+                  color: '#93b6ee',
+                  border: '1px solid rgba(147, 182, 238, 0.2)',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: '0.85rem'
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div>
+              <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>
+                Botón
+              </p>
+              <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500 }}>
+                {globalConfig.buttonText}
+              </p>
+            </div>
+            <div>
+              <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>
+                Mensaje del Botón
+              </p>
+              <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500 }}>
+                {globalConfig.buttonMessage}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* SLIDES INDIVIDUALES */}
       <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
         <button
           onClick={handleAddSlide}
@@ -344,10 +489,24 @@ const HeroCarouselTab = () => {
                   </>
                 ) : (
                   // Formulario para slides regulares
-                  <>
+                  <div>
+                    <div style={{
+                      background: 'rgba(52, 152, 219, 0.1)',
+                      padding: '0.8rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(52, 152, 219, 0.2)',
+                      marginBottom: '1rem',
+                      fontSize: '0.85rem'
+                    }}>
+                      <strong>ℹ️ Configuración Global</strong>
+                      <p style={{ margin: '0.5rem 0 0 0', opacity: 0.8, fontSize: '0.8rem' }}>
+                        Botón y mensaje son únicos para todos los slides
+                      </p>
+                    </div>
+
                     <div>
                       <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-                        Mensaje Principal
+                        Mensaje Principal (Por esta imagen)
                       </label>
                       <input
                         type="text"
@@ -365,52 +524,11 @@ const HeroCarouselTab = () => {
                           fontSize: '0.9rem'
                         }}
                       />
+                      <small style={{ opacity: 0.6, fontSize: '0.8rem', marginTop: '0.3rem', display: 'block' }}>
+                        Este mensaje cambia con cada slide ✓
+                      </small>
                     </div>
-
-                    <div>
-                      <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-                        Texto del Botón (CTA)
-                      </label>
-                      <input
-                        type="text"
-                        value={editForm.buttonText || ''}
-                        onChange={(e) => setEditForm({ ...editForm, buttonText: e.target.value })}
-                        placeholder="Ej: Descubre nuestros programas"
-                        style={{
-                          width: '100%',
-                          padding: '0.7rem',
-                          background: 'rgba(0, 0, 0, 0.3)',
-                          border: '1px solid rgba(147, 182, 238, 0.2)',
-                          borderRadius: '6px',
-                          color: '#fff',
-                          fontFamily: 'inherit',
-                          fontSize: '0.9rem'
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-                        Mensaje del Botón (Subtítulo)
-                      </label>
-                      <input
-                        type="text"
-                        value={editForm.buttonMessage || ''}
-                        onChange={(e) => setEditForm({ ...editForm, buttonMessage: e.target.value })}
-                        placeholder="Ej: Conoce nuestros programas"
-                        style={{
-                          width: '100%',
-                          padding: '0.7rem',
-                          background: 'rgba(0, 0, 0, 0.3)',
-                          border: '1px solid rgba(147, 182, 238, 0.2)',
-                          borderRadius: '6px',
-                          color: '#fff',
-                          fontFamily: 'inherit',
-                          fontSize: '0.9rem'
-                        }}
-                      />
-                    </div>
-                  </>
+                  </div>
                 )}
 
                 {editForm.mediaType !== 'livestream' && (
@@ -783,33 +901,29 @@ const HeroCarouselTab = () => {
                       <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem', fontWeight: 600 }}>
                         {slide.message}
                       </h4>
-                      <p style={{
-                        margin: '0 0 0.8rem 0',
-                        fontSize: '0.8rem',
-                        opacity: 0.6,
-                        textTransform: 'uppercase',
-                        fontWeight: 500
-                      }}>
-                        Botón: <strong>{slide.buttonText}</strong>
-                        <MediaInfoTooltip info={slide.mediaInfo} />
-                      </p>
-                      <p style={{
-                        margin: '0 0 1rem 0',
-                        fontSize: '0.85rem',
-                        opacity: 0.7,
-                        lineHeight: 1.4
-                      }}>
-                        {slide.buttonMessage}
-                      </p>
                       <div style={{
                         fontSize: '0.75rem',
                         opacity: 0.5,
                         marginBottom: '1rem',
                         paddingTop: '0.5rem',
-                        borderTop: '1px solid rgba(147, 182, 238, 0.1)'
+                        paddingBottom: '0.5rem',
+                        borderTop: '1px solid rgba(147, 182, 238, 0.1)',
+                        borderBottom: '1px solid rgba(147, 182, 238, 0.1)'
                       }}>
-                        {slide.mediaType === 'image' ? '🖼️ Imagen' : '🎥 Video (sin volumen por defecto)'}
+                        {slide.mediaType === 'image' ? '🖼️ Imagen' : '🎥 Video (sin volumen)'}
+                        <MediaInfoTooltip info={slide.mediaInfo} />
                       </div>
+
+                      <p style={{
+                        margin: '0.5rem 0 1rem 0',
+                        fontSize: '0.8rem',
+                        opacity: 0.6,
+                        textTransform: 'uppercase',
+                        fontWeight: 500,
+                        lineHeight: 1.4
+                      }}>
+                        <strong>Global:</strong> "{globalConfig.buttonText}"
+                      </p>
 
                       <button
                         onClick={() => handleEdit(slide)}
@@ -832,7 +946,7 @@ const HeroCarouselTab = () => {
                           e.target.style.background = 'rgba(147, 182, 238, 0.15)';
                         }}
                       >
-                        ✏️ Editar
+                        ✏️ Editar Mensaje
                       </button>
                     </div>
                   </div>

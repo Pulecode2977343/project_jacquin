@@ -16830,8 +16830,15 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
         if (isDashboard) {
           return null;
         }
+        const handleDashboardClick = () => {
+          if (staticPage) {
+            window.location.href = "/dashboard";
+          } else {
+            navigate("/dashboard");
+          }
+        };
         return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(import_jsx_runtime3.Fragment, { children: [
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "user-profile-glass", onClick: () => navigate("/dashboard"), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "user-profile-glass", onClick: handleDashboardClick, children: [
             /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "user-text-info", children: [
               /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "user-name", children: cleanName }),
               /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "user-role", children: roleName })
@@ -16846,7 +16853,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
               "Salir ",
               /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("i", { className: "bi bi-box-arrow-right" })
             ] }),
-            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { className: "btn-primary-action", onClick: () => navigate("/dashboard"), children: "Mi Panel" })
+            /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("button", { className: "btn-primary-action", onClick: handleDashboardClick, children: "Mi Panel" })
           ] })
         ] });
       }

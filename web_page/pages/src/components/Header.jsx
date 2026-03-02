@@ -78,9 +78,17 @@ const Header = ({ staticPage = false }) => {
                 return null;
             }
 
+            const handleDashboardClick = () => {
+                if (staticPage) {
+                    window.location.href = '/dashboard';
+                } else {
+                    navigate('/dashboard');
+                }
+            };
+
             return (
                 <>
-                    <div className="user-profile-glass" onClick={() => navigate('/dashboard')}>
+                    <div className="user-profile-glass" onClick={handleDashboardClick}>
                         <div className="user-text-info">
                             <span className="user-name">{cleanName}</span>
                             <span className="user-role">{roleName}</span>
@@ -94,7 +102,7 @@ const Header = ({ staticPage = false }) => {
                         <button className="btn-ghost" onClick={handleLogout}>
                             Salir <i className="bi bi-box-arrow-right"></i>
                         </button>
-                        <button className="btn-primary-action" onClick={() => navigate('/dashboard')}>
+                        <button className="btn-primary-action" onClick={handleDashboardClick}>
                             Mi Panel
                         </button>
                     </div>

@@ -20,7 +20,7 @@ const Login = () => {
             setMessage('Tu sesión ha expirado por inactividad. Por favor ingresa de nuevo.');
             setIsError(true);
         } else if (ApiService.isAuthenticated()) {
-            window.location.href = 'gestion.html';
+            navigate('/dashboard', { replace: true });
         }
     }, [navigate, location.search]);
 
@@ -48,7 +48,7 @@ const Login = () => {
                         // Limpiar intents atascados si es admin o docente
                         sessionStorage.removeItem('pending_enrollment');
                         sessionStorage.removeItem('pending_enrollment_title');
-                        window.location.href = 'gestion.html';
+                        navigate('/dashboard', { replace: true });
                     }
                 }, 1000);
             } else {
@@ -80,6 +80,7 @@ const Login = () => {
                                 placeholder="usuario@ejemplo.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                style={{ paddingLeft: '40px' }}
                                 required
                             />
                         </div>
@@ -96,6 +97,7 @@ const Login = () => {
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                style={{ paddingLeft: '40px' }}
                                 required
                             />
                             <i

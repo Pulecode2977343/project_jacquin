@@ -32,7 +32,11 @@ const Header = ({ staticPage = false }) => {
         };
         window.addEventListener('scroll', handleScroll);
 
-        // Initial Auth Check
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Verificar sesión cuando cambia la ruta
+    useEffect(() => {
         const session = ApiService.getSession();
         if (session) {
             setIsAuthenticated(true);
@@ -49,10 +53,11 @@ const Header = ({ staticPage = false }) => {
                 };
                 document.body.appendChild(script);
             }
+        } else {
+            setIsAuthenticated(false);
+            setUser(null);
         }
-
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [location]);
 
     const handleLogout = () => {
         ApiService.logout();
@@ -66,10 +71,16 @@ const Header = ({ staticPage = false }) => {
             const avatarUrl = AvatarHelper.getUrl(user.avatar_url) || 'assets/images/avatars/default_avatar.svg';
             const cleanName = user.full_name.split(' ')[0];
             const initials = AvatarHelper.getInitials(user.full_name);
+            const isDashboard = location.pathname === '/dashboard' || location.pathname.startsWith('/dashboard/');
+
+            if (isDashboard) {
+                // En el dashboard, no mostrar nada (los botones estarán en el dashboard mismo)
+                return null;
+            }
 
             return (
                 <>
-                    <div className="user-profile-glass" onClick={() => window.location.href = 'gestion.html'}>
+                    <div className="user-profile-glass" onClick={() => navigate('/dashboard')}>
                         <div className="user-text-info">
                             <span className="user-name">{cleanName}</span>
                             <span className="user-role">{roleName}</span>
@@ -83,7 +94,7 @@ const Header = ({ staticPage = false }) => {
                         <button className="btn-ghost" onClick={handleLogout}>
                             Salir <i className="bi bi-box-arrow-right"></i>
                         </button>
-                        <button className="btn-primary-action" onClick={() => window.location.href = 'gestion.html'}>
+                        <button className="btn-primary-action" onClick={() => navigate('/dashboard')}>
                             Mi Panel
                         </button>
                     </div>
@@ -118,7 +129,7 @@ const Header = ({ staticPage = false }) => {
             <div className="logo-links">
                 <div className="logo" id="logo">
                     <a href="/" onClick={handleLogoClick}>
-                        <JamLogo width={239} height="auto" color="white" staticPage={staticPage} />
+                        <JamLogo width={380} height="auto" color="white" staticPage={staticPage} />
                     </a>
                 </div>
 

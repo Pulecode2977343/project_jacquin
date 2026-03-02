@@ -14,7 +14,7 @@
             background: '#1a1a1a',
             color: '#fff'
         }).then(() => {
-            window.location.href = 'gestion.html';
+            window.location.href = '/dashboard';
         });
         return;
     }

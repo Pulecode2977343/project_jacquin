@@ -25,23 +25,35 @@ const Navbar = ({ staticPage = false }) => {
 
     useEffect(() => {
         setIsAuthenticated(ApiService.isAuthenticated());
-    }, []);
+    }, [location]);
 
     const renderAuthLinks = () => {
         if (isAuthenticated) {
             return (
                 <>
                     <li className="mobile-only">
-                        <a className="navbar-link btn-bubble-mobile" href="/gestion.html" title="Mi Panel">
-                            <i className="bi bi-speedometer2"></i>
-                            <span className="txt-menu">Mi Panel</span>
-                        </a>
+                        {staticPage
+                            ? <a className="navbar-link btn-bubble-mobile" href="/dashboard" title="Mi Panel">
+                                <i className="bi bi-speedometer2"></i>
+                                <span className="txt-menu">Mi Panel</span>
+                            </a>
+                            : <Link className="navbar-link btn-bubble-mobile" to="/dashboard" title="Mi Panel">
+                                <i className="bi bi-speedometer2"></i>
+                                <span className="txt-menu">Mi Panel</span>
+                            </Link>
+                        }
                     </li>
                     <li className="mobile-only">
-                        <a className="navbar-link btn-bubble-mobile" href="/gestion.html?action=profile" title="Mi Perfil">
-                            <i className="bi bi-person-circle"></i>
-                            <span className="txt-menu">Mi Perfil</span>
-                        </a>
+                        {staticPage
+                            ? <a className="navbar-link btn-bubble-mobile" href="/dashboard" title="Mi Perfil">
+                                <i className="bi bi-person-circle"></i>
+                                <span className="txt-menu">Mi Perfil</span>
+                            </a>
+                            : <Link className="navbar-link btn-bubble-mobile" to="/dashboard" title="Mi Perfil">
+                                <i className="bi bi-person-circle"></i>
+                                <span className="txt-menu">Mi Perfil</span>
+                            </Link>
+                        }
                     </li>
                     <li className="mobile-only">
                         <a className="navbar-link btn-bubble-mobile" href="#" onClick={(e) => { e.preventDefault(); ApiService.logout(); window.location.reload(); }} title="Cerrar Sesión">

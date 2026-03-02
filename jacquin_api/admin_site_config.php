@@ -72,7 +72,7 @@ try {
             echo json_encode(["success" => false, "message" => "hero_slides debe ser un array."]);
             exit;
         }
-        $slides = array_slice($slides, 0, 4); // Máximo 4 slides
+        $slides = array_slice($slides, 0, 5); // Máximo 5 slides (incluyendo Live)
         $sanitized = [];
         foreach ($slides as $slide) {
             $url = isset($slide->url) ? trim((string)$slide->url) : '';
@@ -81,6 +81,7 @@ try {
                 'url'    => $url,
                 'label'  => isset($slide->label) ? trim((string)$slide->label) : '',
                 'active' => isset($slide->active) ? (bool)$slide->active : true,
+                'is_live'=> isset($slide->is_live) ? (bool)$slide->is_live : false,
             ];
         }
         $stmt->execute(['hero_slides', json_encode($sanitized)]);

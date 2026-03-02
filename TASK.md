@@ -50,3 +50,17 @@
 | **Hover naranja en letras auth** | ✅ | `.btn-register:hover .link-login` y `.btn-login:hover .link-register` con `color: var(--color-acento-naranja)`. |
 | **Header-manager sync** | ✅ | `npm run build:header` ejecutado. Bundle `react-header.bundle.js` (772.5kb) actualizado. 1 warning no crítico (`duplicate-object-key` en `api.js`). |
 | **Hero Carousel — Admin-managed Media** | ✅ | Carrusel fullscreen en `Hero.jsx`: hasta 4 slides (imagen URL / YouTube / Google Drive / Vimeo / .mp4). Transición derecha→izquierda. Carga perezosa de iframes (src vacío hasta que el slide es activo). Fallback a `hero-banner.jpg` si no hay slides. CSS en `hero.css`. Endpoints: `site_config.php` (GET) + `admin_site_config.php` (POST) con key `hero_slides` (JSON). Tab "Hero Carrusel" integrado en modal `openContentManager()` de `admin_content.js`. |
+
+---
+## 📋 TASK: Hero Carousel v2 — 28 Feb 2026
+
+| Acción / Requerimiento | Estado | Nota |
+| :--- | :---: | :--- |
+| **[HERO-01] Botón "Subir archivo" embebido en el campo URL** | ✅ | Botón integrado en el input con icono de nube. |
+| **[HERO-02] Subida de archivo local al servidor** | ✅ | Endpoint `admin_upload_hero_media.php` funcional. Guarda en `public/uploads/hero/`. |
+| **[HERO-03] Botón de ayuda — Requisitos de media (info pill)** | ✅ | Info-pill con tooltip hover indicando formatos, pesos y resoluciones. |
+| **[HERO-04] Quinto slide — Transmisión en vivo (Live Stream)** | ✅ | Slot 5 dedicado con badge ROJO. El auto-avance se detiene al llegar al Live para priorizar la transmisión. |
+| **[HERO-05] Controles de volumen para videos y streaming** | ✅ | Overlay con icono mute y slider de volumen para videos nativos. |
+| **[HERO-06] Slider de reproducción para videos nativos** | ✅ | Barra de progreso `seek-bar` con tiempo actual/total funcional. |
+| **[HERO-07] Ajuste backend `admin_upload_hero_media.php`** | ✅ | Validaciones de MIME y tamaño de archivo (5MB/50MB) implementadas. |
+| **[HERO-08] QA y build de producción** | ⏳ | Probar flujo completo: subir imagen local → ver en carrusel · subir video → reproducir con controles · pegat live YouTube → bloquear carrusel. `npm run build` final. Commit y push. |

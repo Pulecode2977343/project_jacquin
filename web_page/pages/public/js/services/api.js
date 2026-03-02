@@ -918,6 +918,29 @@ var ApiService = {
         } catch (error) {
             return { success: false, message: "Error al actualizar configuración" };
         }
+    },
+
+    /**
+     * Uploads media for the Hero Carousel (Images or Videos)
+     * @param {File} file 
+     * @returns 
+     */
+    async uploadHeroMedia(file) {
+        const formData = new FormData();
+        formData.append('media', file);
+
+        try {
+            // No enviamos Content-Type header para que el navegador ponga el boundary de multipart/form-data
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_upload_hero_media.php`, {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            console.error("Error uploadHeroMedia:", error);
+            return { success: false, message: "Error de red al subir archivo multimedia." };
+        }
     }
 };
 

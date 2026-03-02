@@ -13,6 +13,8 @@ import ContactUs from './components/ContactUs';
 import CookieBanner from './components/CookieBanner';
 import Terms from './components/Terms';
 import Privacy from './components/Privacy';
+import PrivateRoute from './components/PrivateRoute';
+import Dashboard from './components/Dashboard';
 
 // Hace scroll al elemento cuyo id coincide con el hash de la URL (#eventos, #programas, etc.)
 // Usa polling porque algunos componentes (Events, Programs) cargan datos asíncronamente
@@ -85,6 +87,14 @@ function App() {
                         <Route path="/terms" element={<Terms />} />
                         <Route path="/terminos" element={<Navigate to="/terms" replace />} />
                         <Route path="/politicas" element={<Privacy />} />
+
+                        {/* Redirección legacy */}
+                        <Route path="/gestion" element={<Navigate to="/dashboard" replace />} />
+
+                        {/* Rutas protegidas — Dashboard */}
+                        <Route element={<PrivateRoute allowedRoles={[1, 2, 3, 4, 5]} />}>
+                            <Route path="/dashboard" element={<Dashboard />} />
+                        </Route>
                     </Routes>
                 </main>
                 <Footer />

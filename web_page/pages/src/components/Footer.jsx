@@ -13,7 +13,7 @@ const Footer = () => {
                 <div className="jam-footer-brand">
                     <div className="footer-logo">
                         <Link to="/" onClick={() => window.scrollTo(0, 0)}>
-                            <JamLogo width={200} height="auto" color="white" />
+                            <JamLogo width={300} height="auto" color="white" />
                         </Link>
                     </div>
                     <p className="brand-desc">

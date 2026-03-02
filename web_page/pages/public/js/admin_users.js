@@ -13,6 +13,26 @@ console.log("Admin Users v4.1 Loaded");
 window.allUsers = window.allUsers || [];
 let currentRoleFilter = 'all';
 
+// ====================================
+// MIGRACIÓN REACT: Función de retorno
+// ====================================
+function getReturnURL() {
+    const params = new URLSearchParams(window.location.search);
+    const returnTo = params.get('return_to');
+    return returnTo || '/dashboard'; // Por defecto volver a dashboard
+}
+
+// Exportar función global para botones de volver
+window.goBack = function() {
+    const returnURL = getReturnURL();
+    if (returnURL.startsWith('/')) {
+        // React SPA route
+        window.location.href = returnURL;
+    } else {
+        window.location.href = returnURL;
+    }
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
     if (!ApiService.isAuthenticated()) {
         window.location.href = "login.html";

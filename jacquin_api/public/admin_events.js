@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = window.ApiService.getSession();
     if (user.id_rol != 1) { // Only Admin (Rol 1)
         alert("Acceso denegado.");
-        window.location.href = 'gestion.html';
+        window.location.href = '/dashboard';
         return;
     }
 

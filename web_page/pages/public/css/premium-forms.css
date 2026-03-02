@@ -100,13 +100,14 @@ textarea.form-input-glass {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 12px;
-    padding: 15px 15px 15px 45px;
-    /* Left padding for icon */
+    padding: 15px 45px 15px 75px;
+    /* Left padding for icon — SIGNIFICANTLY INCREASED to prevent overlap */
     color: white;
     font-size: 1rem;
     outline: none;
     transition: all 0.3s ease;
     font-family: inherit;
+    box-sizing: border-box;
 }
 
 textarea.form-input-glass {
@@ -141,16 +142,20 @@ textarea.form-input-glass::placeholder {
 
 .input-icon {
     position: absolute;
-    left: 15px;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--color-acento-azul);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     pointer-events: none;
     opacity: 0.8;
+    z-index: 1;
 }
 
 /* Adjust icon position for textarea if needed */
 textarea~.input-icon {
-    top: 15px;
+    top: 20px;
+    transform: none;
 }
 
 .toggle-password {

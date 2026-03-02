@@ -85,7 +85,7 @@ if (!empty($data->id_enrollment) && !empty($data->action)) {
                                 Ya puedes acceder al curso desde tu panel de estudiante.
                               </p>
                               <table width='100%'><tr><td align='center'>
-                                <a href='https://academiajacquin.infinityfreeapp.com/gestion.html' style='display:inline-block;background:#E78C3B;color:#fff;text-decoration:none;padding:13px 32px;border-radius:8px;font-size:14px;font-weight:bold;'>
+                                <a href='https://academiajacquin.infinityfreeapp.com/dashboard' style='display:inline-block;background:#E78C3B;color:#fff;text-decoration:none;padding:13px 32px;border-radius:8px;font-size:14px;font-weight:bold;'>
                                   Ir a mi Panel
                                 </a>
                               </td></tr></table>

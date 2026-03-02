@@ -41,8 +41,8 @@ const ApiService = {
             console.warn("[ApiService] Sesión expirada o no autorizada (401).");
             localStorage.removeItem("jam_user_session");
             const path = window.location.pathname;
-            if (!path.includes('login.html') && path !== '/' && path !== '') {
-                window.location.href = "login.html?error=session_expired";
+            if (!path.includes('login') && path !== '/' && path !== '') {
+                window.location.href = "/login?error=session_expired";
             }
             try {
                 const err = JSON.parse(text);
@@ -1188,9 +1188,9 @@ const ApiService = {
         } catch (error) { return { success: false, message: "Error obteniendo tareas." }; }
     },
 
-    async teacherGetNotes(courseId, scheduleId) {
+    async teacherGetNotes(studentId, courseId) {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_notes.php?course_id=${courseId}&schedule_id=${scheduleId}`);
+            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_notes.php?student_id=${studentId}&course_id=${courseId}`);
             return await response.json();
         } catch (error) { return { success: false, message: "Error obteniendo notas." }; }
     },
@@ -1298,17 +1298,6 @@ const ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error obteniendo estudiantes del horario." };
-        }
-    },
-
-    async getEnrollmentStatus() {
-        try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}site_config.php`, {
-                headers: API_CONFIG.HEADERS
-            });
-            return await this.handleResponse(response);
-        } catch (error) {
-            return { success: false, message: "Error de red" };
         }
     },
 

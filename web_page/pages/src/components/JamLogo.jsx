@@ -1,14 +1,16 @@
 import React, { useRef, useCallback } from 'react';
-import logoSrc from '../assets/logo_hr_jam.svg';
+import logoSrc from '../assets/logo_hr_jam.png';
+import pianoSrc from '../assets/piano.svg';
 
 
 /**
  * JamLogo - Jacquin Academia Musical
  *
  * Estrategia híbrida:
- * - El logo se renderiza como imagen SVG estática (fidelidad total al diseño)
+ * - El logo PNG se renderiza a la izquierda (letras)
+ * - El piano SVG se renderiza a la derecha (teclas interactivas)
  * - Los efectos de piano (hover + sonido) se aplican con divs overlay
- *   posicionados exactamente sobre cada tecla del SVG
+ *   posicionados exactamente sobre cada tecla del SVG del piano
  *
  * Notas de logoSound.js: F(349.23), G(392.00), A(440.00), B(493.88)
  * Oscilador: sine, gain: 0.1, duración: 350ms, trigger: mouseenter
@@ -21,13 +23,13 @@ const PIANO_NOTES = {
     key4: 493.88, // B
 };
 
-// Posición de cada tecla como % del ancho/alto del SVG (viewBox 239x58)
-// Las 4 teclas blancas están entre x=177 y x=239
+// Posición de cada tecla como % del ancho/alto del SVG Piano (viewBox 62x52)
+// Las 4 teclas blancas están en el Piano.svg
 const KEY_AREAS = [
-    { key: 'key1', left: '74.1%', width: '5.4%' }, // x=177-190 / 239
-    { key: 'key2', left: '80.3%', width: '5.4%' }, // x=192-205 / 239
-    { key: 'key3', left: '86.6%', width: '6.3%' }, // x=207-222 / 239
-    { key: 'key4', left: '93.3%', width: '6.7%' }, // x=223-239 / 239
+    { key: 'key1', left: '0%', width: '21%' },    // Primera tecla (x=0-13)
+    { key: 'key2', left: '24%', width: '21%' },   // Segunda tecla (x=15-28)
+    { key: 'key3', left: '48%', width: '24%' },   // Tercera tecla (x=30-45)
+    { key: 'key4', left: '76%', width: '24%' },   // Cuarta tecla (x=47-62)
 ];
 
 const JamLogo = ({ width = '100%', height = 'auto', color, className = '', staticPage = false }) => {
@@ -79,39 +81,60 @@ const JamLogo = ({ width = '100%', height = 'auto', color, className = '', stati
             className={`jam-logo-container ${className}`}
             style={{
                 position: 'relative',
-                display: 'inline-block',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                gap: '4px',
                 width: typeof width === 'number' ? `${width}px` : width,
                 height: typeof height === 'number' ? `${height}px` : height,
                 lineHeight: 0,
             }}
         >
-            {/* Logo SVG oficial — fidelidad total */}
+            {/* Logo PNG — letras */}
             <img
                 src={logoSrc}
                 alt="Jacquin Academia Musical"
-                style={{ width: '100%', height: 'auto', display: 'block' }}
+                style={{ height: '100%', width: 'auto', display: 'block', flexShrink: 0 }}
                 draggable={false}
             />
 
-            {/* Overlays invisibles sobre cada tecla de piano */}
-            {KEY_AREAS.map(({ key, left, width: kw }) => (
-                <div
-                    key={key}
-                    title={`Tecla ${key.replace('key', '')}`}
-                    onMouseEnter={handleKeyEnter(key)}
-                    onMouseLeave={handleKeyLeave}
-                    style={{
-                        position: 'absolute',
-                        top: '0',
-                        left,
-                        width: kw,
-                        height: '90%',
-                        cursor: 'pointer',
-                        transition: 'box-shadow 0.15s ease',
-                        zIndex: 2,
-                    }}
+            {/* Piano SVG — teclas visibles */}
+            <div
+                style={{
+                    position: 'relative',
+                    display: 'inline-block',
+                    height: '100%',
+                    width: 'auto',
+                    flexShrink: 0,
+                }}
+            >
+                <img
+                    src={pianoSrc}
+                    alt="Piano keys"
+                    style={{ height: '100%', width: 'auto', display: 'block' }}
+                    draggable={false}
                 />
-            ))}
+
+                {/* Overlays invisibles sobre cada tecla de piano */}
+                {KEY_AREAS.map(({ key, left, width: kw }) => (
+                    <div
+                        key={key}
+                        title={`Tecla ${key.replace('key', '')}`}
+                        onMouseEnter={handleKeyEnter(key)}
+                        onMouseLeave={handleKeyLeave}
+                        style={{
+                            position: 'absolute',
+                            top: '0',
+                            left,
+                            width: kw,
+                            height: '100%',
+                            cursor: 'pointer',
+                            transition: 'box-shadow 0.15s ease',
+                            zIndex: 2,
+                        }}
+                    />
+                ))}
+            </div>
         </div>
     );
 };

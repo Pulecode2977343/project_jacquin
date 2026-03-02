@@ -532,7 +532,8 @@ async function deleteUserDirect(targetUser) {
 // Re-implement goToAssign here or rely on the previous logic if copied
 // Re-implement goToAssign to redirect
 window.goToAssign = function (userId) {
-    window.location.href = `admin_academic.html ? teacher_id = ${userId} `;
+    // Redirect to React Dashboard (replaces old admin_academic.html logic)
+    window.location.href = `/dashboard?teacher_id=${userId}`;
 };
 
 

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 
-const SLIDE_INTERVAL = 7000; // 7 segundos entre slides
+const SLIDE_INTERVAL = 5000; // 5 segundos entre slides
 
 // ─── Utilidad: detectar tipo de media ───────────────────────────────────────
 const parseVideoUrl = (url) => {
@@ -25,9 +25,15 @@ const parseVideoUrl = (url) => {
 const SlideMedia = ({ slide, isActive }) => {
     const iframeRef = useRef(null);
     const videoRef = useRef(null);
-    const videoInfo = parseVideoUrl(slide.url);
+    const [muted, setMuted] = useState(true);
+    const [progress, setProgress] = useState(0);
+    const [currentTime, setCurrentTime] = useState("0:00");
+    const [duration, setDuration] = useState("0:00");
 
-    // Carga perezosa de iframes: solo asigna src cuando el slide es activo
+    const videoInfo = parseVideoUrl(slide.url);
+    const isLive = slide.is_live === true;
+
+    // Carga perezosa de iframes
     useEffect(() => {
         if (!iframeRef.current) return;
         if (isActive) {
@@ -36,88 +42,159 @@ const SlideMedia = ({ slide, isActive }) => {
                 iframeRef.current.src = dataSrc;
             }
         } else {
-            // Pausa el video removiendo src al salir
             iframeRef.current.src = '';
         }
     }, [isActive]);
 
-    // Control de video nativo
+    // Control de video nativo y barra de progreso
     useEffect(() => {
         if (!videoRef.current) return;
         if (isActive) {
-            videoRef.current.play().catch(() => {});
+            videoRef.current.play().catch(() => { });
         } else {
             videoRef.current.pause();
         }
     }, [isActive]);
 
-    if (videoInfo?.type === 'youtube') {
-        const embedSrc = `https://www.youtube.com/embed/${videoInfo.id}?autoplay=1&mute=1&loop=1&playlist=${videoInfo.id}&controls=0&rel=0&modestbranding=1&playsinline=1`;
-        return (
-            <iframe
-                ref={iframeRef}
-                className="hero-carousel-iframe"
-                src=""
-                data-src={embedSrc}
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-                title={slide.label || 'Hero video'}
-            />
-        );
-    }
+    // Actualizar progreso
+    const handleTimeUpdate = () => {
+        if (!videoRef.current) return;
+        const cur = videoRef.current.currentTime;
+        const dur = videoRef.current.duration;
+        setProgress((cur / dur) * 100);
 
-    if (videoInfo?.type === 'gdrive') {
-        const embedSrc = `https://drive.google.com/file/d/${videoInfo.id}/preview`;
-        return (
-            <iframe
-                ref={iframeRef}
-                className="hero-carousel-iframe"
-                src=""
-                data-src={embedSrc}
-                allow="autoplay"
-                allowFullScreen
-                title={slide.label || 'Hero video'}
-            />
-        );
-    }
+        const format = (s) => {
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+        };
+        setCurrentTime(format(cur));
+        setDuration(dur ? format(dur) : "0:00");
+    };
 
-    if (videoInfo?.type === 'vimeo') {
-        const embedSrc = `https://player.vimeo.com/video/${videoInfo.id}?autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`;
-        return (
-            <iframe
-                ref={iframeRef}
-                className="hero-carousel-iframe"
-                src=""
-                data-src={embedSrc}
-                allow="autoplay; fullscreen"
-                allowFullScreen
-                title={slide.label || 'Hero video'}
-            />
-        );
-    }
+    const toggleMute = (e) => {
+        e.stopPropagation();
+        if (!videoRef.current) return;
+        const newState = !videoRef.current.muted;
+        videoRef.current.muted = newState;
+        setMuted(newState);
+    };
 
-    if (videoInfo?.type === 'video') {
-        return (
-            <video
-                ref={videoRef}
-                className="hero-bg-img"
-                src={slide.url}
-                muted
-                loop
-                playsInline
-                preload="none"
-            />
-        );
-    }
+    const handleSeek = (e) => {
+        e.stopPropagation();
+        if (!videoRef.current) return;
+        const newTime = (e.target.value / 100) * videoRef.current.duration;
+        videoRef.current.currentTime = newTime;
+        setProgress(e.target.value);
+    };
 
-    // Imagen por defecto
+    const handleVolume = (e) => {
+        e.stopPropagation();
+        if (!videoRef.current) return;
+        const vol = parseFloat(e.target.value);
+        videoRef.current.volume = vol;
+        videoRef.current.muted = vol === 0;
+        setMuted(vol === 0);
+    };
+
+    const isVideoType = videoInfo?.type === 'video';
+
     return (
-        <img
-            src={slide.url}
-            alt={slide.label || 'Jacquin Academia Musical'}
-            className="hero-bg-img"
-            loading="lazy"
-        />
+        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+            {isLive && (
+                <div className="hero-live-badge">
+                    <span className="bt-dot"></span> EN VIVO
+                </div>
+            )}
+
+            {videoInfo?.type === 'youtube' && (
+                <iframe
+                    ref={iframeRef}
+                    className="hero-carousel-iframe"
+                    src=""
+                    data-src={`https://www.youtube.com/embed/${videoInfo.id}?autoplay=1&mute=1&loop=1&playlist=${videoInfo.id}&controls=0&rel=0&modestbranding=1&playsinline=1`}
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                    title={slide.label || 'Hero video'}
+                />
+            )}
+
+            {videoInfo?.type === 'gdrive' && (
+                <iframe
+                    ref={iframeRef}
+                    className="hero-carousel-iframe"
+                    src=""
+                    data-src={`https://drive.google.com/file/d/${videoInfo.id}/preview`}
+                    allow="autoplay"
+                    allowFullScreen
+                    title={slide.label || 'Hero video'}
+                />
+            )}
+
+            {videoInfo?.type === 'vimeo' && (
+                <iframe
+                    ref={iframeRef}
+                    className="hero-carousel-iframe"
+                    src=""
+                    data-src={`https://player.vimeo.com/video/${videoInfo.id}?autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`}
+                    allow="autoplay; fullscreen"
+                    allowFullScreen
+                    title={slide.label || 'Hero video'}
+                />
+            )}
+
+            {isVideoType && (
+                <>
+                    <video
+                        ref={videoRef}
+                        className="hero-bg-img"
+                        src={slide.url}
+                        muted={muted}
+                        loop
+                        playsInline
+                        preload="auto"
+                        onTimeUpdate={handleTimeUpdate}
+                    />
+                    {/* Controles para video nativo */}
+                    {isActive && (
+                        <div className="hero-video-controls" onClick={e => e.stopPropagation()}>
+                            <input
+                                type="range"
+                                className="hero-ctrl-seek-bar"
+                                value={progress || 0}
+                                onChange={handleSeek}
+                            />
+                            <div className="hero-ctrl-bottom">
+                                <div className="hero-ctrl-volume">
+                                    <button onClick={toggleMute} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '1.1rem' }}>
+                                        <i className={`bi bi-volume-${muted ? 'mute' : 'up'}-fill`}></i>
+                                    </button>
+                                    <input
+                                        type="range"
+                                        className="hero-ctrl-vol-slider"
+                                        min="0" max="1" step="0.1"
+                                        defaultValue={muted ? 0 : 0.5}
+                                        onChange={handleVolume}
+                                    />
+                                </div>
+                                <div className="hero-ctrl-time">
+                                    {currentTime} / {duration}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </>
+            )}
+
+            {!videoInfo && (
+                <img
+                    src={slide.url}
+                    alt={slide.label || 'Jacquin Academia Musical'}
+                    className="hero-bg-img"
+                    loading="lazy"
+                />
+            )}
+        </div>
     );
 };
 
@@ -144,7 +221,7 @@ const Hero = () => {
             setPrevIdx(null);
             setTransitioning(false);
         }, 750);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeIdx, transitioning]);
 
     const nextSlide = useCallback(() => {
@@ -160,9 +237,16 @@ const Hero = () => {
     // ── Auto-avance ───────────────────────────────────────────────────────
     useEffect(() => {
         if (slides.length < 2) return;
+
+        // No avanzar automáticamente si el slide actual es un Live Stream
+        if (slides[activeIdx]?.is_live) {
+            if (timerRef.current) clearInterval(timerRef.current);
+            return;
+        }
+
         timerRef.current = setInterval(nextSlide, SLIDE_INTERVAL);
         return () => clearInterval(timerRef.current);
-    }, [nextSlide, slides.length]);
+    }, [nextSlide, slides.length, activeIdx, slides]);
 
     // ── Scroll + carga de configuración ──────────────────────────────────
     useEffect(() => {
@@ -172,7 +256,7 @@ const Hero = () => {
         };
         window.addEventListener('scroll', handleScroll);
 
-        const baseUrl = window.ApiService?.baseUrl || '/api/';
+        const baseUrl = window.ApiService?.baseUrl || '/jacquin_api/';
         fetch(`${baseUrl}site_config.php`)
             .then(r => r.json())
             .then(data => {
@@ -183,7 +267,7 @@ const Hero = () => {
                     });
                     if (Array.isArray(data.hero_slides)) {
                         const active = data.hero_slides.filter(s => s.active && s.url);
-                        setSlides(active.slice(0, 4));
+                        setSlides(active.slice(0, 5));
                     }
                 }
             })
@@ -207,7 +291,7 @@ const Hero = () => {
                             className={[
                                 'hero-carousel-slide',
                                 idx === activeIdx ? 'active' : '',
-                                idx === prevIdx   ? 'leaving' : ''
+                                idx === prevIdx ? 'leaving' : ''
                             ].join(' ')}
                         >
                             <SlideMedia slide={slide} isActive={idx === activeIdx} />

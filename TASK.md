@@ -77,5 +77,6 @@
 | **[ADMIN-DASH-05] Control total del administrador — AboutCardsTab** | ✅ | Edición: Título, Subtítulo, Contenido, Imagen (upload FileReader), Ícono. |
 | **[ADMIN-DASH-06] Control total del administrador — MissionValuesTab** | ✅ | Edición: Título, Descripción, Ícono. 4 valores: Excelencia, Pasión, Innovación, Respeto. |
 | **[ADMIN-DASH-07] Control total del administrador — EnrollmentTab** | ✅ | Edición: Status (open/closed), Fechas inicio/fin, Mensaje matrículas abiertas/cerradas. |
-| **[ADMIN-DASH-08] Control total del administrador — HeroCarouselTab (v3)** | ✅ | Hasta 4 slides. **Nuevos campos**: Mensaje Principal ("Donde la pasión se convierte en arte"), Texto del Botón ("Descubre nuestros programas"), Mensaje del Botón ("Conoce nuestros programas"). Media type selector imagen/video. Upload FileReader para ambos. |
-| **[ADMIN-DASH-09] Integración API backend (pendiente)** | ⏳ | Conectar todos los tabs a endpoints PHP (TODO comments presentes). El cliente ya puede editar localmente. |
+| **[ADMIN-DASH-08] Control total del administrador — HeroCarouselTab (v3)** | ✅ | Hasta 4 slides. **Nuevos campos**: Mensaje Principal, Texto del Botón, Mensaje del Botón. Media type selector imagen/video. Upload FileReader para ambos. |
+| **[ADMIN-DASH-09] HeroCarouselTab avanzado (v4) — Streaming + Metadatos** | ✅ | **Livestream**: Slide 5 dedicado, URL configurable, bloquea carrusel cuando activa. **Metadatos**: Tooltip "i" con tamaño, resolución, duración. **Volumen**: Videos sin sonido por defecto, user puede activar. **Carrusel bloqueado** durante reproducción. |
+| **[ADMIN-DASH-10] Integración API backend (pendiente)** | ⏳ | Conectar todos los tabs + livestream a endpoints PHP. TODO comments presentes. El cliente puede editar localmente. |

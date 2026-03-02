@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 /**
  * HeroCarouselTab — Gestión del Hero Carrusel
@@ -10,58 +10,107 @@ import React, { useState } from 'react';
 const HeroCarouselTab = () => {
   // CONFIGURACIÓN GLOBAL DEL CARRUSEL
   const [globalConfig, setGlobalConfig] = useState({
-    buttonText: 'Descubre nuestros programas',
-    buttonMessage: 'Conoce nuestros programas'
+    buttonText: '',
+    buttonMessage: ''
   });
 
-  const [slides, setSlides] = useState([
-    {
-      id: 1,
-      message: 'Donde la pasión se convierte en arte',
-      mediaType: 'image',
-      media: 'assets/images/hero/hero-banner.jpg',
-      mediaInfo: { size: '2.4 MB', dimensions: '1920x1080 px', format: 'JPEG' },
-      order: 1
-    },
-    {
-      id: 2,
-      message: 'Programas Especializados para ti',
-      mediaType: 'image',
-      media: 'assets/images/programs/piano.png',
-      mediaInfo: { size: '1.8 MB', dimensions: '1920x1080 px', format: 'PNG' },
-      order: 2
-    },
-    {
-      id: 3,
-      message: 'Nuestro Equipo de Expertos',
-      mediaType: 'image',
-      media: 'assets/images/about/equipo.jpg',
-      mediaInfo: { size: '2.1 MB', dimensions: '1920x1080 px', format: 'JPEG' },
-      order: 3
-    },
-    {
-      id: 4,
-      message: 'Únete a Nuestra Academia',
-      mediaType: 'image',
-      media: 'assets/images/hero/cta-banner.jpg',
-      mediaInfo: { size: '2.0 MB', dimensions: '1920x1080 px', format: 'JPEG' },
-      order: 4
-    },
-    {
-      id: 5,
-      mediaType: 'livestream',
-      liveUrl: '',
-      liveTitle: 'Transmisión en Vivo',
-      mediaInfo: { type: 'LIVESTREAM', platform: 'YouTube/Vimeo/Custom' },
-      order: 5,
-      isLiveActive: false
-    }
-  ]);
+  const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [editingGlobalConfig, setEditingGlobalConfig] = useState(false);
   const [globalConfigForm, setGlobalConfigForm] = useState({ ...globalConfig });
+
+  // ── Cargar configuración del hero desde API ──────────────────────────────
+  useEffect(() => {
+    const loadHeroConfig = async () => {
+      try {
+        const baseUrl = window.ApiService?.baseUrl || '/jacquin_api/';
+        const response = await fetch(`${baseUrl}site_config.php`);
+        const data = await response.json();
+
+        if (data.success) {
+          // Mapear hero_cta_text a buttonText
+          setGlobalConfig({
+            buttonText: data.hero_cta_text || 'Descubre nuestros programas',
+            buttonMessage: data.buttonMessage || 'Conoce nuestros programas'
+          });
+          setGlobalConfigForm({
+            buttonText: data.hero_cta_text || 'Descubre nuestros programas',
+            buttonMessage: data.buttonMessage || 'Conoce nuestros programas'
+          });
+
+          // Procesar hero_slides desde API
+          if (Array.isArray(data.hero_slides)) {
+            const processedSlides = data.hero_slides
+              .map((slide, idx) => ({
+                id: slide.id || idx + 1,
+                message: slide.label || '',
+                mediaType: slide.is_live ? 'livestream' : 'image',
+                media: slide.url || '',
+                mediaInfo: slide.mediaInfo || {},
+                order: slide.order !== undefined ? slide.order : idx + 1,
+                isLiveActive: slide.is_live === true,
+                liveUrl: slide.is_live ? (slide.url || '') : '',
+                liveTitle: slide.is_live ? (slide.label || 'Transmisión en Vivo') : '',
+                active: slide.active !== false
+              }));
+
+            // Si no hay livestream, agregarlo
+            if (!processedSlides.some(s => s.mediaType === 'livestream')) {
+              processedSlides.push({
+                id: Math.max(...processedSlides.map(s => s.id), 0) + 1,
+                mediaType: 'livestream',
+                liveUrl: '',
+                liveTitle: 'Transmisión en Vivo',
+                mediaInfo: { type: 'LIVESTREAM', platform: 'YouTube/Vimeo/Custom' },
+                order: 5,
+                isLiveActive: false
+              });
+            }
+
+            setSlides(processedSlides);
+          } else {
+            // Si no hay slides, crear uno default con livestream
+            setSlides([
+              {
+                id: 5,
+                mediaType: 'livestream',
+                liveUrl: '',
+                liveTitle: 'Transmisión en Vivo',
+                mediaInfo: { type: 'LIVESTREAM', platform: 'YouTube/Vimeo/Custom' },
+                order: 5,
+                isLiveActive: false
+              }
+            ]);
+          }
+        }
+      } catch (error) {
+        console.error('Error cargando configuración del hero:', error);
+        // Fallback a livestream por defecto
+        setSlides([
+          {
+            id: 5,
+            mediaType: 'livestream',
+            liveUrl: '',
+            liveTitle: 'Transmisión en Vivo',
+            mediaInfo: { type: 'LIVESTREAM', platform: 'YouTube/Vimeo/Custom' },
+            order: 5,
+            isLiveActive: false
+          }
+        ]);
+      } finally {
+        setLoading(false);
+        setHasLoaded(true);
+      }
+    };
+
+    if (!hasLoaded) {
+      loadHeroConfig();
+    }
+  }, [hasLoaded]);
 
   const handleEdit = (slide) => {
     setEditingId(slide.id);
@@ -70,12 +119,44 @@ const HeroCarouselTab = () => {
 
   const handleSave = async (slideId) => {
     try {
-      // TODO: Conectar con API
+      // Actualizar estado local primero
       setSlides(slides.map(s => s.id === slideId ? editForm : s));
       setEditingId(null);
-      if (window.showToast) window.showToast('Slide actualizado correctamente', 'success');
+
+      // Preparar payload para API
+      const payloadSlides = slides
+        .map(s => s.id === slideId ? editForm : s)
+        .filter(s => s.mediaType !== 'livestream' || s.liveUrl) // Solo livestream con URL
+        .map(s => ({
+          id: s.id,
+          url: s.mediaType === 'livestream' ? s.liveUrl : s.media,
+          label: s.mediaType === 'livestream' ? s.liveTitle : s.message,
+          active: s.active !== false,
+          is_live: s.mediaType === 'livestream',
+          order: s.order || 0
+        }));
+
+      // Enviar a API
+      const baseUrl = window.ApiService?.baseUrl || '/jacquin_api/';
+      const response = await fetch(`${baseUrl}admin_site_config.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_hero',
+          hero_cta_text: globalConfig.buttonText,
+          hero_slides: payloadSlides
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        if (window.showToast) window.showToast('Slide actualizado correctamente', 'success');
+      } else {
+        if (window.showToast) window.showToast('Error: ' + (result.message || 'No se pudo guardar'), 'error');
+      }
     } catch (error) {
-      if (window.showToast) window.showToast('Error al guardar', 'error');
+      console.error('Error al guardar slide:', error);
+      if (window.showToast) window.showToast('Error al guardar: ' + error.message, 'error');
     }
   };
 
@@ -185,6 +266,15 @@ const HeroCarouselTab = () => {
     setSlides([...slides, newSlide]);
   };
 
+  if (loading) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <i className="bi bi-hourglass-split" style={{ fontSize: '2rem', color: 'var(--color-acento-naranja)', marginBottom: '1rem', display: 'block', animation: 'spin 2s linear infinite' }}></i>
+        <p style={{ color: '#93b6ee', opacity: 0.8 }}>Cargando configuración del hero...</p>
+      </div>
+    );
+  }
+
   return (
     <div style={{ padding: '1rem 0' }}>
       {/* CONFIGURACIÓN GLOBAL */}
@@ -265,10 +355,44 @@ const HeroCarouselTab = () => {
 
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <button
-                onClick={() => {
-                  setGlobalConfig(globalConfigForm);
-                  setEditingGlobalConfig(false);
-                  if (window.showToast) window.showToast('Configuración global actualizada', 'success');
+                onClick={async () => {
+                  try {
+                    setGlobalConfig(globalConfigForm);
+                    setEditingGlobalConfig(false);
+
+                    // Guardar en API
+                    const baseUrl = window.ApiService?.baseUrl || '/jacquin_api/';
+                    const payloadSlides = slides
+                      .filter(s => s.mediaType !== 'livestream' || s.liveUrl)
+                      .map(s => ({
+                        id: s.id,
+                        url: s.mediaType === 'livestream' ? s.liveUrl : s.media,
+                        label: s.mediaType === 'livestream' ? s.liveTitle : s.message,
+                        active: s.active !== false,
+                        is_live: s.mediaType === 'livestream',
+                        order: s.order || 0
+                      }));
+
+                    const response = await fetch(`${baseUrl}admin_site_config.php`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        action: 'update_hero',
+                        hero_cta_text: globalConfigForm.buttonText,
+                        hero_slides: payloadSlides
+                      })
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                      if (window.showToast) window.showToast('Configuración global actualizada', 'success');
+                    } else {
+                      if (window.showToast) window.showToast('Error: ' + (result.message || 'No se pudo guardar'), 'error');
+                    }
+                  } catch (error) {
+                    console.error('Error al guardar configuración:', error);
+                    if (window.showToast) window.showToast('Error al guardar', 'error');
+                  }
                 }}
                 style={{
                   flex: 1,
@@ -976,6 +1100,15 @@ const HeroCarouselTab = () => {
           to {
             opacity: 1;
             transform: scale(1);
+          }
+        }
+
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
           }
         }
       `}</style>

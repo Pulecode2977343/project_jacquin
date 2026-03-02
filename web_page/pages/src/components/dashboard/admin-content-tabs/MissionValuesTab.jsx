@@ -105,7 +105,7 @@ const MissionValuesTab = () => {
                   <textarea
                     value={editForm.description || ''}
                     onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                    rows="3"
+                    rows="2"
                     style={{
                       width: '100%',
                       padding: '0.7rem',
@@ -116,6 +116,28 @@ const MissionValuesTab = () => {
                       fontFamily: 'inherit',
                       fontSize: '0.9rem',
                       resize: 'vertical'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem', textAlign: 'left' }}>
+                    Ícono (Bootstrap Icon Class)
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.icon || ''}
+                    onChange={(e) => setEditForm({ ...editForm, icon: e.target.value })}
+                    placeholder="bi bi-star"
+                    style={{
+                      width: '100%',
+                      padding: '0.7rem',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(147, 182, 238, 0.2)',
+                      borderRadius: '6px',
+                      color: '#fff',
+                      fontFamily: 'inherit',
+                      fontSize: '0.9rem'
                     }}
                   />
                 </div>

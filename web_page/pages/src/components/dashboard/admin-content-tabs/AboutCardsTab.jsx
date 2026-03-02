@@ -133,7 +133,7 @@ const AboutCardsTab = () => {
                   <textarea
                     value={editForm.content || ''}
                     onChange={(e) => setEditForm({ ...editForm, content: e.target.value })}
-                    rows="4"
+                    rows="3"
                     style={{
                       width: '100%',
                       padding: '0.7rem',
@@ -144,6 +144,50 @@ const AboutCardsTab = () => {
                       fontFamily: 'inherit',
                       fontSize: '0.9rem',
                       resize: 'vertical'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
+                    URL de Imagen
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.imageUrl || ''}
+                    onChange={(e) => setEditForm({ ...editForm, imageUrl: e.target.value })}
+                    placeholder="assets/images/about/..."
+                    style={{
+                      width: '100%',
+                      padding: '0.7rem',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(147, 182, 238, 0.2)',
+                      borderRadius: '6px',
+                      color: '#fff',
+                      fontFamily: 'inherit',
+                      fontSize: '0.9rem'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
+                    Ícono (Bootstrap Icon Class)
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.icon || ''}
+                    onChange={(e) => setEditForm({ ...editForm, icon: e.target.value })}
+                    placeholder="bi bi-book-half"
+                    style={{
+                      width: '100%',
+                      padding: '0.7rem',
+                      background: 'rgba(0, 0, 0, 0.3)',
+                      border: '1px solid rgba(147, 182, 238, 0.2)',
+                      borderRadius: '6px',
+                      color: '#fff',
+                      fontFamily: 'inherit',
+                      fontSize: '0.9rem'
                     }}
                   />
                 </div>

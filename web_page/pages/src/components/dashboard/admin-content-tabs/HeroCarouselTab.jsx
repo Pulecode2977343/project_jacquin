@@ -8,23 +8,29 @@ const HeroCarouselTab = () => {
   const [slides, setSlides] = useState([
     {
       id: 1,
-      title: 'Educación Musical de Excelencia',
-      subtitle: 'Desde 2010 formando músicos integrales',
-      image: 'assets/images/hero/hero-banner.jpg',
+      message: 'Donde la pasión se convierte en arte',
+      buttonText: 'Descubre nuestros programas',
+      buttonMessage: 'Conoce nuestros programas',
+      mediaType: 'image',
+      media: 'assets/images/hero/hero-banner.jpg',
       order: 1
     },
     {
       id: 2,
-      title: 'Programas Especializados',
-      subtitle: 'Piano, Guitarra, Voz, Percusión y más',
-      image: 'assets/images/programs/piano.png',
+      message: 'Programas Especializados para ti',
+      buttonText: 'Explorar programas',
+      buttonMessage: 'Piano, Guitarra, Voz, Percusión y más',
+      mediaType: 'image',
+      media: 'assets/images/programs/piano.png',
       order: 2
     },
     {
       id: 3,
-      title: 'Nuestro Equipo',
-      subtitle: 'Profesores apasionados y expertos',
-      image: 'assets/images/about/equipo.jpg',
+      message: 'Nuestro Equipo de Expertos',
+      buttonText: 'Conoce el equipo',
+      buttonMessage: 'Profesores apasionados y dedicados',
+      mediaType: 'image',
+      media: 'assets/images/about/equipo.jpg',
       order: 3
     }
   ]);
@@ -56,9 +62,11 @@ const HeroCarouselTab = () => {
   const handleAddSlide = () => {
     const newSlide = {
       id: Math.max(...slides.map(s => s.id), 0) + 1,
-      title: 'Nuevo Slide',
-      subtitle: 'Edita este contenido',
-      image: '',
+      message: 'Nuevo mensaje principal',
+      buttonText: 'Texto del botón',
+      buttonMessage: 'Mensaje del botón',
+      mediaType: 'image',
+      media: '',
       order: slides.length + 1
     };
     setSlides([...slides, newSlide]);
@@ -108,12 +116,13 @@ const HeroCarouselTab = () => {
               <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
                   <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-                    Título
+                    Mensaje Principal
                   </label>
                   <input
                     type="text"
-                    value={editForm.title || ''}
-                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                    value={editForm.message || ''}
+                    onChange={(e) => setEditForm({ ...editForm, message: e.target.value })}
+                    placeholder="Ej: Donde la pasión se convierte en arte"
                     style={{
                       width: '100%',
                       padding: '0.7rem',
@@ -129,12 +138,13 @@ const HeroCarouselTab = () => {
 
                 <div>
                   <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-                    Subtítulo
+                    Texto del Botón (CTA)
                   </label>
                   <input
                     type="text"
-                    value={editForm.subtitle || ''}
-                    onChange={(e) => setEditForm({ ...editForm, subtitle: e.target.value })}
+                    value={editForm.buttonText || ''}
+                    onChange={(e) => setEditForm({ ...editForm, buttonText: e.target.value })}
+                    placeholder="Ej: Descubre nuestros programas"
                     style={{
                       width: '100%',
                       padding: '0.7rem',
@@ -150,13 +160,13 @@ const HeroCarouselTab = () => {
 
                 <div>
                   <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-                    URL de Imagen
+                    Mensaje del Botón (Subtítulo)
                   </label>
                   <input
                     type="text"
-                    value={editForm.image || ''}
-                    onChange={(e) => setEditForm({ ...editForm, image: e.target.value })}
-                    placeholder="assets/images/..."
+                    value={editForm.buttonMessage || ''}
+                    onChange={(e) => setEditForm({ ...editForm, buttonMessage: e.target.value })}
+                    placeholder="Ej: Conoce nuestros programas"
                     style={{
                       width: '100%',
                       padding: '0.7rem',
@@ -169,6 +179,166 @@ const HeroCarouselTab = () => {
                     }}
                   />
                 </div>
+
+                <div>
+                  <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
+                    Tipo de Media
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <button
+                      onClick={() => setEditForm({ ...editForm, mediaType: 'image' })}
+                      style={{
+                        flex: 1,
+                        padding: '0.5rem',
+                        background: editForm.mediaType === 'image' ? 'var(--color-acento-naranja)' : 'rgba(147, 182, 238, 0.1)',
+                        color: editForm.mediaType === 'image' ? '#fff' : '#93b6ee',
+                        border: '1px solid rgba(147, 182, 238, 0.2)',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '0.8rem',
+                        fontWeight: 500
+                      }}
+                    >
+                      <i className="bi bi-image" style={{ marginRight: '0.3rem' }}></i> Imagen
+                    </button>
+                    <button
+                      onClick={() => setEditForm({ ...editForm, mediaType: 'video' })}
+                      style={{
+                        flex: 1,
+                        padding: '0.5rem',
+                        background: editForm.mediaType === 'video' ? 'var(--color-acento-naranja)' : 'rgba(147, 182, 238, 0.1)',
+                        color: editForm.mediaType === 'video' ? '#fff' : '#93b6ee',
+                        border: '1px solid rgba(147, 182, 238, 0.2)',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '0.8rem',
+                        fontWeight: 500
+                      }}
+                    >
+                      <i className="bi bi-play-circle" style={{ marginRight: '0.3rem' }}></i> Video
+                    </button>
+                  </div>
+                </div>
+
+                {editForm.mediaType === 'image' ? (
+                  <div>
+                    <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
+                      URL de Imagen
+                    </label>
+                    <input
+                      type="text"
+                      value={editForm.media || ''}
+                      onChange={(e) => setEditForm({ ...editForm, media: e.target.value })}
+                      placeholder="assets/images/..."
+                      style={{
+                        width: '100%',
+                        padding: '0.7rem',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(147, 182, 238, 0.2)',
+                        borderRadius: '6px',
+                        color: '#fff',
+                        fontFamily: 'inherit',
+                        fontSize: '0.9rem',
+                        marginBottom: '0.5rem'
+                      }}
+                    />
+                    <label style={{
+                      padding: '0.7rem 1rem',
+                      background: 'rgba(147, 182, 238, 0.15)',
+                      border: '1px solid rgba(147, 182, 238, 0.2)',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      color: '#93b6ee',
+                      whiteSpace: 'nowrap',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.3rem'
+                    }}>
+                      <i className="bi bi-upload"></i> Subir Imagen
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              setEditForm({ ...editForm, media: event.target?.result });
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                    {editForm.media && !editForm.media.startsWith('data:') && (
+                      <div style={{
+                        width: '100%',
+                        height: '100px',
+                        background: `url('${editForm.media}') center / cover`,
+                        borderRadius: '6px',
+                        border: '1px solid rgba(147, 182, 238, 0.2)',
+                        marginTop: '0.5rem'
+                      }}></div>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
+                      URL del Video
+                    </label>
+                    <input
+                      type="text"
+                      value={editForm.media || ''}
+                      onChange={(e) => setEditForm({ ...editForm, media: e.target.value })}
+                      placeholder="https://youtube.com/... o URL de video"
+                      style={{
+                        width: '100%',
+                        padding: '0.7rem',
+                        background: 'rgba(0, 0, 0, 0.3)',
+                        border: '1px solid rgba(147, 182, 238, 0.2)',
+                        borderRadius: '6px',
+                        color: '#fff',
+                        fontFamily: 'inherit',
+                        fontSize: '0.9rem',
+                        marginBottom: '0.5rem'
+                      }}
+                    />
+                    <label style={{
+                      padding: '0.7rem 1rem',
+                      background: 'rgba(147, 182, 238, 0.15)',
+                      border: '1px solid rgba(147, 182, 238, 0.2)',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      color: '#93b6ee',
+                      whiteSpace: 'nowrap',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.3rem'
+                    }}>
+                      <i className="bi bi-upload"></i> Subir Video
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              setEditForm({ ...editForm, media: event.target?.result });
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                  </div>
+                )}
 
                 <div>
                   <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
@@ -179,6 +349,7 @@ const HeroCarouselTab = () => {
                     value={editForm.order || 1}
                     onChange={(e) => setEditForm({ ...editForm, order: parseInt(e.target.value) })}
                     min="1"
+                    max="4"
                     style={{
                       width: '100%',
                       padding: '0.7rem',
@@ -230,13 +401,25 @@ const HeroCarouselTab = () => {
             ) : (
               // Modo visualización
               <div>
-                {slide.image && (
+                {slide.media && (
                   <div style={{
                     width: '100%',
                     height: '180px',
-                    background: `url('${slide.image}') center / cover`,
-                    position: 'relative'
+                    background: slide.mediaType === 'image'
+                      ? `url('${slide.media}') center / cover`
+                      : 'rgba(0, 0, 0, 0.5)',
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}>
+                    {slide.mediaType === 'video' && (
+                      <i className="bi bi-play-circle" style={{
+                        fontSize: '3rem',
+                        color: 'var(--color-acento-naranja)',
+                        opacity: 0.8
+                      }}></i>
+                    )}
                     <div style={{
                       position: 'absolute',
                       top: '0.5rem',
@@ -255,16 +438,34 @@ const HeroCarouselTab = () => {
 
                 <div style={{ padding: '1.5rem' }}>
                   <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem', fontWeight: 600 }}>
-                    {slide.title}
+                    {slide.message}
                   </h4>
+                  <p style={{
+                    margin: '0 0 0.8rem 0',
+                    fontSize: '0.8rem',
+                    opacity: 0.6,
+                    textTransform: 'uppercase',
+                    fontWeight: 500
+                  }}>
+                    Botón: <strong>{slide.buttonText}</strong>
+                  </p>
                   <p style={{
                     margin: '0 0 1rem 0',
                     fontSize: '0.85rem',
                     opacity: 0.7,
                     lineHeight: 1.4
                   }}>
-                    {slide.subtitle}
+                    {slide.buttonMessage}
                   </p>
+                  <div style={{
+                    fontSize: '0.75rem',
+                    opacity: 0.5,
+                    marginBottom: '1rem',
+                    paddingTop: '0.5rem',
+                    borderTop: '1px solid rgba(147, 182, 238, 0.1)'
+                  }}>
+                    {slide.mediaType === 'image' ? '🖼️ Imagen' : '🎥 Video'}
+                  </div>
 
                   <button
                     onClick={() => handleEdit(slide)}

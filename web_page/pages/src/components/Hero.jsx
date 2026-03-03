@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 
-const SLIDE_INTERVAL = 5000; // 5 segundos entre slides
+const SLIDE_INTERVAL = 7000; // 7 segundos entre slides (si no hay video con volumen activado)
 
 // ─── Utilidad: detectar tipo de media ───────────────────────────────────────
 const parseVideoUrl = (url) => {
@@ -22,7 +22,7 @@ const parseVideoUrl = (url) => {
 };
 
 // ─── Componente de media para cada slide ────────────────────────────────────
-const SlideMedia = ({ slide, isActive }) => {
+const SlideMedia = ({ slide, isActive, onVolumeChange }) => {
     const iframeRef = useRef(null);
     const videoRef = useRef(null);
     const [muted, setMuted] = useState(true);
@@ -78,6 +78,10 @@ const SlideMedia = ({ slide, isActive }) => {
         const newState = !videoRef.current.muted;
         videoRef.current.muted = newState;
         setMuted(newState);
+        // Notificar si volumen fue activado (unmuted)
+        if (!newState && onVolumeChange) {
+            onVolumeChange(true);
+        }
     };
 
     const handleSeek = (e) => {
@@ -95,6 +99,10 @@ const SlideMedia = ({ slide, isActive }) => {
         videoRef.current.volume = vol;
         videoRef.current.muted = vol === 0;
         setMuted(vol === 0);
+        // Notificar si volumen fue activado (vol > 0)
+        if (vol > 0 && onVolumeChange) {
+            onVolumeChange(true);
+        }
     };
 
     const isVideoType = videoInfo?.type === 'video';
@@ -173,7 +181,7 @@ const SlideMedia = ({ slide, isActive }) => {
                                         type="range"
                                         className="hero-ctrl-vol-slider"
                                         min="0" max="1" step="0.1"
-                                        defaultValue={muted ? 0 : 0.5}
+                                        defaultValue={muted ? 0 : 0.25}
                                         onChange={handleVolume}
                                     />
                                 </div>
@@ -209,6 +217,7 @@ const Hero = () => {
     const [activeIdx, setActiveIdx] = useState(0);
     const [prevIdx, setPrevIdx] = useState(null);
     const [transitioning, setTransitioning] = useState(false);
+    const [volumeActivated, setVolumeActivated] = useState(false);
     const timerRef = useRef(null);
 
     // ── Navegación de slides ──────────────────────────────────────────────
@@ -234,19 +243,29 @@ const Hero = () => {
         goToSlide((activeIdx - 1 + slides.length) % slides.length);
     }, [activeIdx, slides.length, goToSlide]);
 
+    // ── Resetear estado de volumen al cambiar slide ───────────────────────
+    useEffect(() => {
+        setVolumeActivated(false);
+    }, [activeIdx]);
+
     // ── Auto-avance ───────────────────────────────────────────────────────
     useEffect(() => {
         if (slides.length < 2) return;
 
-        // No avanzar automáticamente si el slide actual es un Live Stream
-        if (slides[activeIdx]?.is_live) {
+        const currentSlide = slides[activeIdx];
+        const isVideoWithVolumeOn = currentSlide && !currentSlide.is_live && volumeActivated;
+
+        // No avanzar si:
+        // 1. El slide es un Live Stream
+        // 2. Es un video con volumen activado por el usuario
+        if (currentSlide?.is_live || isVideoWithVolumeOn) {
             if (timerRef.current) clearInterval(timerRef.current);
             return;
         }
 
         timerRef.current = setInterval(nextSlide, SLIDE_INTERVAL);
         return () => clearInterval(timerRef.current);
-    }, [nextSlide, slides.length, activeIdx, slides]);
+    }, [nextSlide, slides.length, activeIdx, slides, volumeActivated]);
 
     // ── Scroll + carga de configuración ──────────────────────────────────
     useEffect(() => {
@@ -294,7 +313,7 @@ const Hero = () => {
                                 idx === prevIdx ? 'leaving' : ''
                             ].join(' ')}
                         >
-                            <SlideMedia slide={slide} isActive={idx === activeIdx} />
+                            <SlideMedia slide={slide} isActive={idx === activeIdx} onVolumeChange={setVolumeActivated} />
                         </div>
                     ))}
                 </div>

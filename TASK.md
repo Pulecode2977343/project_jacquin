@@ -63,7 +63,8 @@
 | **[HERO-05] Controles de volumen para videos y streaming** | ✅ | Overlay con icono mute y slider de volumen para videos nativos. |
 | **[HERO-06] Slider de reproducción para videos nativos** | ✅ | Barra de progreso `seek-bar` con tiempo actual/total funcional. |
 | **[HERO-07] Ajuste backend `admin_upload_hero_media.php`** | ✅ | Validaciones de MIME y tamaño de archivo (5MB/50MB) implementadas. |
-| **[HERO-08] QA y build de producción** | ⏳ | Probar flujo completo: subir imagen local → ver en carrusel · subir video → reproducir con controles · pegat live YouTube → bloquear carrusel. `npm run build` final. Commit y push. |
+| **[HERO-08] Lógica inteligente de carrusel con videos** | ✅ | 7 seg intervalo. Volumen inicial 25%. Detecta activación volumen → bloquea auto-advance. Documentación admin integrada. |
+| **[HERO-09] QA y build de producción** | ⏳ | Probar: imagen 7seg automático · video mudo 7seg → siguiente · video con volumen BLOQUEADO hasta fin · livestream bloqueado. `npm run build`. Commit y push. |
 
 ---
 ## 📋 TASK: React SPA Admin Dashboard v3 — 2 Mar 2026
@@ -79,4 +80,4 @@
 | **[ADMIN-DASH-07] Control total del administrador — EnrollmentTab** | ✅ | Edición: Status (open/closed), Fechas inicio/fin, Mensaje matrículas abiertas/cerradas. |
 | **[ADMIN-DASH-08] Control total del administrador — HeroCarouselTab (v3)** | ✅ | Hasta 4 slides. **Nuevos campos**: Mensaje Principal, Texto del Botón, Mensaje del Botón. Media type selector imagen/video. Upload FileReader para ambos. |
 | **[ADMIN-DASH-09] HeroCarouselTab avanzado (v4) — Streaming + Metadatos** | ✅ | **Livestream**: Slide 5 dedicado, URL configurable, bloquea carrusel cuando activa. **Metadatos**: Tooltip "i" con tamaño, resolución, duración. **Volumen**: Videos sin sonido por defecto, user puede activar. **Carrusel bloqueado** durante reproducción. |
-| **[ADMIN-DASH-10] Integración API backend (pendiente)** | ⏳ | Conectar todos los tabs + livestream a endpoints PHP. TODO comments presentes. El cliente puede editar localmente. |
+| **[ADMIN-DASH-10] Integración API backend — HeroCarouselTab** | ✅ | Conectado a `site_config.php` para GET + `admin_site_config.php` para POST. Admin panel ahora muestra imágenes REALES del sitio web. |

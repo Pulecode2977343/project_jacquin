@@ -10,8 +10,7 @@ import React, { useState, useEffect } from 'react';
 const HeroCarouselTab = () => {
   // CONFIGURACIÓN GLOBAL DEL CARRUSEL
   const [globalConfig, setGlobalConfig] = useState({
-    buttonText: '',
-    buttonMessage: ''
+    buttonText: ''
   });
 
   const [slides, setSlides] = useState([]);
@@ -33,14 +32,9 @@ const HeroCarouselTab = () => {
 
         if (data.success) {
           // Mapear hero_cta_text a buttonText
-          setGlobalConfig({
-            buttonText: data.hero_cta_text || 'Descubre nuestros programas',
-            buttonMessage: data.buttonMessage || 'Conoce nuestros programas'
-          });
-          setGlobalConfigForm({
-            buttonText: data.hero_cta_text || 'Descubre nuestros programas',
-            buttonMessage: data.buttonMessage || 'Conoce nuestros programas'
-          });
+          const btnText = data.hero_cta_text || 'Descubre nuestros programas';
+          setGlobalConfig({ buttonText: btnText });
+          setGlobalConfigForm({ buttonText: btnText });
 
           // Procesar hero_slides desde API
           if (Array.isArray(data.hero_slides)) {
@@ -313,33 +307,12 @@ const HeroCarouselTab = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
               <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-                Texto del Botón (aplica a TODOS los slides)
+                Texto del Botón
               </label>
               <input
                 type="text"
                 value={globalConfigForm.buttonText}
-                onChange={(e) => setGlobalConfigForm({ ...globalConfigForm, buttonText: e.target.value })}
-                style={{
-                  width: '100%',
-                  padding: '0.7rem',
-                  background: 'rgba(0, 0, 0, 0.3)',
-                  border: '1px solid rgba(231, 140, 59, 0.2)',
-                  borderRadius: '6px',
-                  color: '#fff',
-                  fontFamily: 'inherit',
-                  fontSize: '0.9rem'
-                }}
-              />
-            </div>
-
-            <div>
-              <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-                Mensaje del Botón (subtítulo, aplica a TODOS)
-              </label>
-              <input
-                type="text"
-                value={globalConfigForm.buttonMessage}
-                onChange={(e) => setGlobalConfigForm({ ...globalConfigForm, buttonMessage: e.target.value })}
+                onChange={(e) => setGlobalConfigForm({ buttonText: e.target.value })}
                 style={{
                   width: '100%',
                   padding: '0.7rem',
@@ -427,23 +400,13 @@ const HeroCarouselTab = () => {
             </div>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div>
-              <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>
-                Botón
-              </p>
-              <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500 }}>
-                {globalConfig.buttonText}
-              </p>
-            </div>
-            <div>
-              <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>
-                Mensaje del Botón
-              </p>
-              <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500 }}>
-                {globalConfig.buttonMessage}
-              </p>
-            </div>
+          <div>
+            <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>
+              Texto del Botón
+            </p>
+            <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500 }}>
+              {globalConfig.buttonText}
+            </p>
           </div>
         )}
       </div>

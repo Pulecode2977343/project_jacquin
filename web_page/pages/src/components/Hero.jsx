@@ -322,7 +322,7 @@ const Hero = () => {
                                     idx === activeIdx ? 'active' : '',
                                     idx === prevIdx ? 'leaving' : '',
                                     isCircularTransition ? 'circular' : '',
-                                    isBackward ? 'backward' : ''
+                                    (isBackward && (idx === activeIdx || idx === prevIdx)) ? 'backward' : ''
                                 ].join(' ')}
                             >
                                 <SlideMedia slide={slide} isActive={idx === activeIdx} onVolumeChange={setVolumeActivated} />

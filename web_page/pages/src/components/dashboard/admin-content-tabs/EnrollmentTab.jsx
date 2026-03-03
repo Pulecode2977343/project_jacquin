@@ -1,38 +1,135 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ApiService from '../../../services/api';
 
 /**
  * EnrollmentTab — Control de Disponibilidad de Matrículas
- * Permite abrir/cerrar matrículas para la academia
+ * Sincronizado con API y EnrollmentStatusBadge en Footer
  */
 const EnrollmentTab = () => {
   const [enrollmentState, setEnrollmentState] = useState({
-    status: 'open', // 'open' | 'closed'
-    startDate: '2024-01-15',
-    endDate: '2024-12-31',
+    status: 'open',
     message: 'Las matrículas están abiertas. ¡Inscríbete ahora!',
-    closedMessage: 'Las matrículas se encuentran cerradas en este momento.'
+    closedMessage: 'Las matrículas se encuentran cerradas en este momento.',
+    year: new Date().getFullYear()
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({ ...enrollmentState });
+  const [loading, setLoading] = useState(true);
 
-  const handleToggleStatus = () => {
+  // Cargar datos de la API al montar
+  useEffect(() => {
+    const fetchEnrollmentData = async () => {
+      try {
+        const response = await ApiService.getEnrollmentStatus();
+        if (response.success) {
+          setEnrollmentState(prev => ({
+            ...prev,
+            status: response.enrollment_open ? 'open' : 'closed',
+            year: response.enrollment_year || new Date().getFullYear(),
+            message: response.enrollment_message || prev.message,
+            closedMessage: response.enrollment_closed_message || prev.closedMessage
+          }));
+          setEditForm(prev => ({
+            ...prev,
+            status: response.enrollment_open ? 'open' : 'closed',
+            year: response.enrollment_year || new Date().getFullYear(),
+            message: response.enrollment_message || prev.message,
+            closedMessage: response.enrollment_closed_message || prev.closedMessage
+          }));
+        }
+      } catch (error) {
+        console.error("Error cargando estado de matrículas:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEnrollmentData();
+  }, []);
+
+  const handleToggleStatus = async () => {
     const newStatus = enrollmentState.status === 'open' ? 'closed' : 'open';
-    setEnrollmentState({ ...enrollmentState, status: newStatus });
+    const newState = { ...enrollmentState, status: newStatus };
+    const isOpen = newStatus === 'open';
+
+    try {
+      setLoading(true);
+      // Guardar automáticamente en la API
+      const response = await ApiService.updateEnrollmentStatus(isOpen, enrollmentState.year);
+
+      if (response.success) {
+        setEnrollmentState(newState);
+        setEditForm(newState);
+
+        // Emitir evento para actualizar el footer en tiempo real
+        document.dispatchEvent(new CustomEvent('enrollment-status-updated', {
+          detail: {
+            isOpen,
+            year: enrollmentState.year,
+            message: enrollmentState.message,
+            closedMessage: enrollmentState.closedMessage
+          }
+        }));
+
+        if (window.showToast) {
+          window.showToast(
+            isOpen ? '🔓 Matrículas abiertas' : '🔒 Matrículas cerradas',
+            'success'
+          );
+        }
+      } else {
+        if (window.showToast) window.showToast(response.message || 'Error al guardar', 'error');
+      }
+    } catch (error) {
+      console.error("Error al cambiar estado:", error);
+      if (window.showToast) window.showToast('Error al cambiar estado', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSave = async () => {
     try {
-      // TODO: Conectar con API
-      setEnrollmentState({ ...editForm });
-      setIsEditing(false);
-      if (window.showToast) window.showToast('Configuración de matrículas actualizada', 'success');
+      setLoading(true);
+      // Guardar en API
+      const isOpen = editForm.status === 'open';
+      const response = await ApiService.updateEnrollmentStatus(isOpen, editForm.year);
+
+      if (response.success) {
+        setEnrollmentState({ ...editForm });
+        setIsEditing(false);
+
+        // Emitir evento para actualizar el badge del footer en tiempo real
+        document.dispatchEvent(new CustomEvent('enrollment-status-updated', {
+          detail: {
+            isOpen,
+            year: editForm.year,
+            message: editForm.message,
+            closedMessage: editForm.closedMessage
+          }
+        }));
+
+        if (window.showToast) window.showToast('Configuración de matrículas actualizada', 'success');
+      } else {
+        if (window.showToast) window.showToast(response.message || 'Error al guardar', 'error');
+      }
     } catch (error) {
+      console.error("Error guardando matrículas:", error);
       if (window.showToast) window.showToast('Error al guardar', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
   const isOpen = enrollmentState.status === 'open';
+
+  if (loading) {
+    return (
+      <div style={{ padding: '1rem 0', textAlign: 'center', opacity: 0.6 }}>
+        <p>Cargando configuración de matrículas...</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: '1rem 0' }}>
@@ -108,25 +205,6 @@ const EnrollmentTab = () => {
           borderRadius: '12px',
           padding: '1.5rem'
         }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '1.5rem' }}>
-            <div>
-              <label style={{ fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600, display: 'block', marginBottom: '0.5rem' }}>
-                Fecha Inicio
-              </label>
-              <p style={{ margin: 0, fontSize: '1rem', fontWeight: 500 }}>
-                {new Date(enrollmentState.startDate).toLocaleDateString('es-ES')}
-              </p>
-            </div>
-            <div>
-              <label style={{ fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600, display: 'block', marginBottom: '0.5rem' }}>
-                Fecha Fin
-              </label>
-              <p style={{ margin: 0, fontSize: '1rem', fontWeight: 500 }}>
-                {new Date(enrollmentState.endDate).toLocaleDateString('es-ES')}
-              </p>
-            </div>
-          </div>
-
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600, display: 'block', marginBottom: '0.5rem' }}>
               Mensaje (Matrículas Abiertas)
@@ -182,46 +260,6 @@ const EnrollmentTab = () => {
           flexDirection: 'column',
           gap: '1rem'
         }}>
-          <div>
-            <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-              Fecha Inicio
-            </label>
-            <input
-              type="date"
-              value={editForm.startDate}
-              onChange={(e) => setEditForm({ ...editForm, startDate: e.target.value })}
-              style={{
-                width: '100%',
-                padding: '0.7rem',
-                background: 'rgba(0, 0, 0, 0.3)',
-                border: '1px solid rgba(147, 182, 238, 0.2)',
-                borderRadius: '6px',
-                color: '#fff',
-                fontFamily: 'inherit'
-              }}
-            />
-          </div>
-
-          <div>
-            <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
-              Fecha Fin
-            </label>
-            <input
-              type="date"
-              value={editForm.endDate}
-              onChange={(e) => setEditForm({ ...editForm, endDate: e.target.value })}
-              style={{
-                width: '100%',
-                padding: '0.7rem',
-                background: 'rgba(0, 0, 0, 0.3)',
-                border: '1px solid rgba(147, 182, 238, 0.2)',
-                borderRadius: '6px',
-                color: '#fff',
-                fontFamily: 'inherit'
-              }}
-            />
-          </div>
-
           <div>
             <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
               Mensaje (Abiertas)

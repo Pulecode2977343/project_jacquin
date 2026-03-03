@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ApiService from '../services/api';
+import useOutsideClick from '../hooks/useOutsideClick';
 
 // Datos estáticos de respaldo por si la API falla o está vacía
 const STATIC_CARDS = [
@@ -55,6 +56,9 @@ const About = () => {
     const [mission, setMission] = useState(STATIC_MISSION);
     const [values, setValues] = useState(STATIC_VALUES);
     const [loading, setLoading] = useState(true);
+
+    // Hook para cerrar modal al hacer clic fuera
+    const modalRef = useOutsideClick(() => setActiveModal(null));
 
     useEffect(() => {
         const fetchData = async () => {
@@ -149,8 +153,12 @@ const About = () => {
 
             {/* Modal Overlay */}
             {activeModal && (
-                <div className={`about-modal-overlay ${activeModal ? 'active' : ''}`} style={{ opacity: 1, pointerEvents: 'all' }}>
-                    <div className="about-modal" style={{ transform: 'scale(1)' }}>
+                <div
+                    className={`about-modal-overlay ${activeModal ? 'active' : ''}`}
+                    style={{ opacity: 1, pointerEvents: 'all' }}
+                    onClick={(e) => { if (e.target === e.currentTarget) setActiveModal(null); }}
+                >
+                    <div ref={modalRef} className="about-modal" style={{ transform: 'scale(1)' }}>
                         <button className="about-modal-close" onClick={closeModal}>
                             <i className="bi bi-x"></i>
                         </button>

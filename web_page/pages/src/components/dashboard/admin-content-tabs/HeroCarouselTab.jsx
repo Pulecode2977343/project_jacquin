@@ -500,7 +500,7 @@ const HeroCarouselTab = () => {
                       <i className="bi bi-broadcast" style={{ marginRight: '0.5rem' }}></i>
                       <strong>TRANSMISIÓN EN VIVO</strong>
                       <p style={{ margin: '0.5rem 0 0 0', opacity: 0.8, fontSize: '0.8rem' }}>
-                        Cuando esté activa, bloquea el carrusel
+                        Si está "ACTIVA": bloquea el carrusel. Usuario solo avanza con botón Next o si desactiva volumen
                       </p>
                     </div>
 
@@ -793,11 +793,11 @@ const HeroCarouselTab = () => {
                       border: '1px solid rgba(52, 152, 219, 0.2)',
                       fontSize: '0.8rem'
                     }}>
-                      <strong>⚙️ Comportamiento del carrusel:</strong>
+                      <strong>⚙️ Comportamiento automático del carrusel:</strong>
                       <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0 }}>
-                        <li>Video sin volumen → usuario puede activar</li>
-                        <li>Carrusel bloqueado durante reproducción</li>
-                        <li>Se reanuda al terminar el video</li>
+                        <li><strong>Volumen DESACTIVADO:</strong> Video mudo durante 7 seg, luego pasa al siguiente (como imagen)</li>
+                        <li><strong>Volumen ACTIVADO:</strong> Inicia a 25% volumen. Carrusel se DETIENE y espera a que termine el video o usuario haga click en siguiente</li>
+                        <li><strong>Máx duración:</strong> 30 segundos (recomendado: 15-20 seg tipo "reel")</li>
                       </ul>
                     </div>
                   </>

@@ -32,6 +32,19 @@
     transform: translateX(-100%);
 }
 
+/* Navegación hacia atrás: invertir direcciones */
+.hero-carousel-slide.backward {
+    transform: translateX(-100%);
+}
+
+.hero-carousel-slide.backward.active {
+    transform: translateX(0);
+}
+
+.hero-carousel-slide.backward.leaving {
+    transform: translateX(100%);
+}
+
 /* Para transiciones circulares (último → primero): resetear instantáneamente */
 .hero-carousel-slide.circular {
     transition: none !important;

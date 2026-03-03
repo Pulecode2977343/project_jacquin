@@ -218,19 +218,22 @@ const Hero = () => {
     const [prevIdx, setPrevIdx] = useState(null);
     const [transitioning, setTransitioning] = useState(false);
     const [volumeActivated, setVolumeActivated] = useState(false);
+    const [isBackward, setIsBackward] = useState(false);
     const timerRef = useRef(null);
 
     // ── Navegación de slides ──────────────────────────────────────────────
-    const goToSlide = useCallback((idx, isCircular = false) => {
+    const goToSlide = useCallback((idx, isCircular = false, backward = false) => {
         if (transitioning) return;
         setTransitioning(true);
         setPrevIdx(prev => prev === null ? activeIdx : prev);
         setActiveIdx(idx);
+        setIsBackward(backward);
         // Si es circular (último → primero), resetear más rápido para evitar efecto visual
         const delay = isCircular ? 0 : 750;
         setTimeout(() => {
             setPrevIdx(null);
             setTransitioning(false);
+            setIsBackward(false);
         }, delay);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeIdx, transitioning]);
@@ -244,7 +247,7 @@ const Hero = () => {
 
     const prevSlide = useCallback(() => {
         if (slides.length < 2) return;
-        goToSlide((activeIdx - 1 + slides.length) % slides.length);
+        goToSlide((activeIdx - 1 + slides.length) % slides.length, false, true);
     }, [activeIdx, slides.length, goToSlide]);
 
     // ── Resetear estado de volumen al cambiar slide ───────────────────────
@@ -318,7 +321,8 @@ const Hero = () => {
                                     'hero-carousel-slide',
                                     idx === activeIdx ? 'active' : '',
                                     idx === prevIdx ? 'leaving' : '',
-                                    isCircularTransition ? 'circular' : ''
+                                    isCircularTransition ? 'circular' : '',
+                                    isBackward ? 'backward' : ''
                                 ].join(' ')}
                             >
                                 <SlideMedia slide={slide} isActive={idx === activeIdx} onVolumeChange={setVolumeActivated} />

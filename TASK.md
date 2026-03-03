@@ -81,3 +81,22 @@
 | **[ADMIN-DASH-08] Control total del administrador — HeroCarouselTab (v3)** | ✅ | Hasta 4 slides. **Nuevos campos**: Mensaje Principal, Texto del Botón, Mensaje del Botón. Media type selector imagen/video. Upload FileReader para ambos. |
 | **[ADMIN-DASH-09] HeroCarouselTab avanzado (v4) — Streaming + Metadatos** | ✅ | **Livestream**: Slide 5 dedicado, URL configurable, bloquea carrusel cuando activa. **Metadatos**: Tooltip "i" con tamaño, resolución, duración. **Volumen**: Videos sin sonido por defecto, user puede activar. **Carrusel bloqueado** durante reproducción. |
 | **[ADMIN-DASH-10] Integración API backend — HeroCarouselTab** | ✅ | Conectado a `site_config.php` para GET + `admin_site_config.php` para POST. Admin panel ahora muestra imágenes REALES del sitio web. |
+
+---
+## 📋 TASK: Hero Carousel v3 + Enrollment Sync + Modal UX — 2 Mar 2026 (continuación)
+
+| Acción / Requerimiento | Estado | Nota |
+| :--- | :---: | :--- |
+| **[HERO-FIX-01] Cruce de 3 imágenes en transición backward** | ✅ | Bug: clase `.backward` aplicada globalmente a todos los slides. Fix: condicional `(isBackward && (idx === activeIdx \|\| idx === prevIdx))` para aplicar solo a slides activos/leaving. Transición smooth ahora. Build `02032026CAROUSEL`. |
+| **[ENROLL-SYNC-01] Sincronización estado matrículas admin ↔ footer** | ✅ | Admin panel (EnrollmentTab) y footer (EnrollmentStatusBadge) estaban desincronizados. Implementación: API sync + Custom Event `enrollment-status-updated`. EnrollmentTab auto-guarda cambios sin formulario. Build `02032026ENROLL`. |
+| **[ENROLL-SYNC-02] API getEnrollmentStatus() en EnrollmentStatusBadge** | ✅ | Badge carga `enrollment_open`, `enrollment_year`, `enrollment_message`, `enrollment_closed_message` desde `site_config.php` en mount. Actualización en tiempo real vía event listener. |
+| **[ENROLL-UI-01] Remover año del anuncio de matrículas** | ✅ | Badge ahora solo muestra "Matrículas Abiertas" o "Matrículas Cerradas". Año y fechas opcionalmente en mensaje personalizado (configurado en admin). |
+| **[MODAL-UX-01] Cierre de modal por clic externo — hook useOutsideClick** | ✅ | Hook reusable `src/hooks/useOutsideClick.js` creado. Detecta clics fuera del modal ref → ejecuta callback `onClose()`. Implementado en `About.jsx` como prueba de concepto. |
+| **[MODAL-UX-02] Fallback onClick en overlay divs** | ✅ | Agregado check en overlay: `if (e.target === e.currentTarget) onClose()`. Proporciona segunda capa de cierre si hook no detecta. |
+| **[MODAL-REFACTOR-01] Aplicar useOutsideClick a ProgramModal** | ✅ | Hook inicializado ANTES de `if (!program) return null` para cumplir React hooks rules. Fallback onClick en overlay. |
+| **[MODAL-REFACTOR-02] Aplicar useOutsideClick a AuthPromptModal** | ✅ | Hook + fallback onClick implementado. Modal se cierra al clic externo. |
+| **[MODAL-REFACTOR-03] Aplicar useOutsideClick a ScheduleModal** | ✅ | Hook aplicado a todas las 4 rutas de render (loading, error, success, select). Fallback onClick en todos los overlays. |
+| **[MODAL-WIP-01] Validar cierre modal al clic externo en todos los casos** | ⏳ | Algunos modales aún no responden al clic externo (debugging pendiente). Verificar si hook o overlay handler se ejecutan correctamente. |
+| **[QA-01] Carousel forward/backward transitions smooth** | ⏳ | Probar navegación adelante/atrás. Verificar que imagen única se vea en cada transición (sin cruzamientos). |
+| **[QA-02] Real-time enrollment sync en tiempo real** | ⏳ | Cambiar status en admin → verificar footer actualiza sin refresh. Mensaje personalizado persiste. |
+| **[GIT-01] Commit y push de cambios** | ✅ | Commit `27eb930`: "feat: carrusel Hero, sincronización de matrículas y cierre de modales por clic externo". Push a `origin/feature/despliegue-infinityfree` exitoso. |

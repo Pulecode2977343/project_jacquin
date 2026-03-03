@@ -32,6 +32,11 @@
     transform: translateX(-100%);
 }
 
+/* Para transiciones circulares (último → primero): resetear instantáneamente */
+.hero-carousel-slide.circular {
+    transition: none !important;
+}
+
 .hero-carousel-slide img,
 .hero-carousel-slide video {
     width: 100%;

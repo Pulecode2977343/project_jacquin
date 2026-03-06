@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import JamLogo from './JamLogo';
 import EnrollmentStatusBadge from './EnrollmentStatusBadge';
+import ContactTrigger from './ContactTrigger';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -53,7 +54,9 @@ const Footer = () => {
                             </div>
                         </div>
                         <div className="contact-item">
-                            <div className="icon-box"><i className="bi bi-whatsapp"></i></div>
+                            <ContactTrigger className="icon-box">
+                                <i className="bi bi-whatsapp"></i>
+                            </ContactTrigger>
                             <div>
                                 <span className="label">Escríbenos</span>
                                 <span className="value">+57 304 232 8575</span>
@@ -65,7 +68,9 @@ const Footer = () => {
                         <a href="https://www.facebook.com/academiamusicaljacquin" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="bi bi-facebook"></i></a>
                         <a href="https://www.instagram.com/academiamusicaljacquin" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="bi bi-instagram"></i></a>
                         <a href="https://www.tiktok.com/@academiamusicaljacquin" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i className="bi bi-tiktok"></i></a>
-                        <a href="https://wa.me/573042328575" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i className="bi bi-whatsapp"></i></a>
+                        <ContactTrigger aria-label="WhatsApp">
+                            <i className="bi bi-whatsapp"></i>
+                        </ContactTrigger>
                     </div>
                 </div>
             </div>

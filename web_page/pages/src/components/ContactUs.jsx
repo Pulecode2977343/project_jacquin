@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import ApiService from '../services/api';
 import Swal from 'sweetalert2';
 import BackgroundBubbles from './BackgroundBubbles';
+import ContactTrigger from './ContactTrigger';
 
 const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -153,7 +154,7 @@ const ContactUs = () => {
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
-                            <div style={{
+                            <ContactTrigger style={{
                                 width: '60px', height: '60px',
                                 background: 'rgba(37, 211, 102, 0.1)',
                                 border: '1px solid rgba(37, 211, 102, 0.2)',
@@ -162,7 +163,7 @@ const ContactUs = () => {
                                 boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
                             }}>
                                 <i className="bi bi-whatsapp" style={{ fontSize: '1.6rem', color: '#25D366' }}></i>
-                            </div>
+                            </ContactTrigger>
                             <div>
                                 <p style={{ color: 'rgba(255,255,255,0.6)', margin: 0, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>WhatsApp</p>
                                 <span style={{ color: 'white', fontSize: '1.1rem', fontWeight: 500 }}>+57 304 232 8575</span>
@@ -176,7 +177,9 @@ const ContactUs = () => {
                             <a href="https://www.facebook.com/academiamusicaljacquin" target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-facebook"></i></a>
                             <a href="https://www.tiktok.com/@academiamusicaljacquin" target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-tiktok"></i></a>
                             <a href="https://www.instagram.com/academiamusicaljacquin" target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-instagram"></i></a>
-                            <a href="https://wa.me/573042328575" target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-whatsapp"></i></a>
+                            <ContactTrigger style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}>
+                                <i className="bi bi-whatsapp"></i>
+                            </ContactTrigger>
                         </div>
                     </div>
                 </div>

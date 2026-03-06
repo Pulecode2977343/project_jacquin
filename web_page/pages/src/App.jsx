@@ -16,6 +16,10 @@ import Terms from './components/Terms';
 import Privacy from './components/Privacy';
 import PrivateRoute from './components/PrivateRoute';
 import Dashboard from './components/Dashboard';
+import { ContactModalProvider } from './components/ContactModalContext';
+import WhatsAppButton from './components/WhatsAppButton';
+import ContactModal from './components/ContactModal';
+
 
 // Hace scroll al elemento cuyo id coincide con el hash de la URL (#eventos, #programas, etc.)
 // Usa polling porque algunos componentes (Events, Programs) cargan datos asíncronamente
@@ -67,42 +71,48 @@ function HashScroller() {
 
 function App() {
     return (
-        <Router>
-            <div className="App">
-                <Header />
-                <HashScroller />
-                <main className="jam-main-content">
-                    <Routes>
-                        <Route path="/" element={
-                            <>
-                                <Hero />
-                                <Gallery />
-                                <Events />
-                                <Programs />
-                                <About />
-                            </>
-                        } />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/registro" element={<Register />} />
-                        <Route path="/reset" element={<ResetPassword />} />
-                        <Route path="/contactanos" element={<ContactUs />} />
-                        <Route path="/terms" element={<Terms />} />
-                        <Route path="/terminos" element={<Navigate to="/terms" replace />} />
-                        <Route path="/politicas" element={<Privacy />} />
+        <ContactModalProvider>
+            <Router>
+                <div className="App">
+                    <Header />
+                    <HashScroller />
+                    <main className="jam-main-content">
+                        <Routes>
+                            <Route path="/" element={
+                                <>
+                                    <Hero />
+                                    <Gallery />
+                                    <Events />
+                                    <Programs />
+                                    <About />
+                                </>
+                            } />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/registro" element={<Register />} />
+                            <Route path="/reset" element={<ResetPassword />} />
+                            <Route path="/contactanos" element={<ContactUs />} />
+                            <Route path="/terms" element={<Terms />} />
+                            <Route path="/terminos" element={<Navigate to="/terms" replace />} />
+                            <Route path="/politicas" element={<Privacy />} />
 
-                        {/* Redirección legacy */}
-                        <Route path="/gestion" element={<Navigate to="/dashboard" replace />} />
+                            {/* Redirección legacy */}
+                            <Route path="/gestion" element={<Navigate to="/dashboard" replace />} />
 
-                        {/* Rutas protegidas — Dashboard */}
-                        <Route element={<PrivateRoute allowedRoles={[1, 2, 3, 4, 5]} />}>
-                            <Route path="/dashboard" element={<Dashboard />} />
-                        </Route>
-                    </Routes>
-                </main>
-                <Footer />
-                <CookieBanner />
-            </div>
-        </Router>
+                            {/* Rutas protegidas — Dashboard */}
+                            <Route element={<PrivateRoute allowedRoles={[1, 2, 3, 4, 5]} />}>
+                                <Route path="/dashboard" element={<Dashboard />} />
+                            </Route>
+                        </Routes>
+                    </main>
+                    <Footer />
+                    <CookieBanner />
+
+                    {/* Elementos Globales de Contacto */}
+                    <WhatsAppButton />
+                    <ContactModal />
+                </div>
+            </Router>
+        </ContactModalProvider>
     );
 }
 

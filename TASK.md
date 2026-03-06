@@ -100,3 +100,15 @@
 | **[QA-01] Carousel forward/backward transitions smooth** | ✅ | Añadido control de z-index y refinamiento de clases backward. |
 | **[QA-02] Real-time enrollment sync en tiempo real** | ✅ | Verificada implementación vía Custom Events `enrollment-status-updated`. |
 | **[GIT-01] Commit y push de cambios** | ✅ | Commit `27eb930`: "feat: carrusel Hero, sincronización de matrículas y cierre de modales por clic externo". |
+
+---
+## 📋 TASK: User Profile Management & UI Refinement — 6 Mar 2026
+
+| Acción / Requerimiento | Estado | Nota |
+| :--- | :---: | :--- |
+| **[PROF-01] Gestión de perfil para docentes y alumnos** | ✅ | Creado `UserProfileModal.jsx` y `UserProfileModal.css`. Integrado en el header del Dashboard para acceso universal (incluyendo docentes). |
+| **[PROF-02] Tabs de Información y Seguridad** | ✅ | Separación de datos personales (nombre, tel) y cambio de contraseña con validación de contraseña actual. |
+| **[UX-01] Auditoría Estética de Perfil** | ✅ | Diseño premium con *glassmorphism*, gradientes sutiles y micro-animaciones en el modal de perfil. |
+| **[MESS-01] Jerarquía de botones flotantes (Stack Logic)** | ✅ | WhatsApp Button movido a la derecha, apilado sobre la mensajería interna. |
+| **[MESS-02] Lógica de "Empuje" Reactiva (Floating Stack)** | ✅ | El botón de WhatsApp se desplaza verticalmente (de 92px a 625px) cuando se abre el chat interno, evitando traslapes. |
+| **[MESS-03] Optimización Móvil - Floating Buttons** | ✅ | Alineamiento en la derecha con comportamiento específico para pantallas pequeñas, garantizando que el WhatsApp no obstruya el chat. |

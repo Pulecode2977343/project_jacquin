@@ -185,7 +185,8 @@
     gap: 15px;
 }
 
-.contact-item .icon-box {
+.contact-item .icon-box,
+.contact-item .contact-trigger.icon-box {
     width: 40px;
     height: 40px;
     background: rgba(255, 255, 255, 0.05);
@@ -217,7 +218,8 @@
     gap: 15px;
 }
 
-.social-links-premium a {
+.social-links-premium a,
+.social-links-premium .contact-trigger {
     width: 40px;
     height: 40px;
     background: rgba(255, 255, 255, 0.05);
@@ -231,7 +233,8 @@
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.social-links-premium a:hover {
+.social-links-premium a:hover,
+.social-links-premium .contact-trigger:hover {
     background: var(--color-principal-azul);
     border-color: var(--color-acento-azul);
     transform: translateY(-5px);

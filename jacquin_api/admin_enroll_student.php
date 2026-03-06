@@ -109,6 +109,50 @@ try {
     if ($successCount > 0) {
         $cleanup = $pdo->prepare("DELETE FROM enrollments WHERE student_id = ? AND course_id = ? AND status = 'Pre-inscrito'");
         $cleanup->execute([$data['student_id'], $data['course_id']]);
+
+        // ── SINGLE EMAIL: gather successful schedule IDs and send ONE notification ──
+        $enrolledScheduleIds = array_map(
+            fn($r) => $r['id'],
+            array_filter($results, fn($r) => $r['success'])
+        );
+
+        if (!empty($enrolledScheduleIds)) {
+            try {
+                require_once 'services/EmailService.php';
+
+                // Fetch student info
+                $stmtStudent = $pdo->prepare("SELECT email, full_name FROM usuario WHERE id_usuario = ?");
+                $stmtStudent->execute([$data['student_id']]);
+                $student = $stmtStudent->fetch(PDO::FETCH_ASSOC);
+
+                // Fetch course name
+                $stmtCourse = $pdo->prepare("SELECT course_name FROM courses WHERE id_course = ?");
+                $stmtCourse->execute([$data['course_id']]);
+                $course = $stmtCourse->fetch(PDO::FETCH_ASSOC);
+
+                // Fetch schedule details for each enrolled schedule
+                $placeholders = implode(',', array_fill(0, count($enrolledScheduleIds), '?'));
+                $stmtSched = $pdo->prepare(
+                    "SELECT day, time_start, time_end FROM schedules WHERE id_schedule IN ({$placeholders})
+                     ORDER BY FIELD(day,'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'), time_start"
+                );
+                $stmtSched->execute($enrolledScheduleIds);
+                $scheduleDetails = $stmtSched->fetchAll(PDO::FETCH_ASSOC);
+
+                if ($student && $course && !empty($scheduleDetails)) {
+                    $emailService = new EmailService();
+                    $emailService->sendEnrollmentConfirmation(
+                        $student['email'],
+                        $student['full_name'],
+                        $course['course_name'],
+                        $scheduleDetails
+                    );
+                }
+            } catch (Exception $emailErr) {
+                // Email failure should NOT block the enrollment response
+                error_log("Email error in admin_enroll_student: " . $emailErr->getMessage());
+            }
+        }
     }
 
     if ($successCount > 0) {

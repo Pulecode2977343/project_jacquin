@@ -28,15 +28,15 @@ const Footer = () => {
                         <li><a href="/#programas" className="hover-link">Nuestros Programas</a></li>
                         <li><a href="/#eventos" className="hover-link">Agenda de Eventos</a></li>
                         <li><a href="/#nosotros" className="hover-link">Sobre Nosotros</a></li>
-                        <li><a href="galeria.html" className="hover-link">Galería Multimedia</a></li>
+                        <li><a href="/#galeria" className="hover-link">Galería Multimedia</a></li>
                     </ul>
                 </div>
 
                 <div className="jam-footer-col">
                     <h3>Comunidad</h3>
                     <ul className="jam-footer-links">
-                        <li><a href="login.html" className="hover-link"><i className="bi bi-person-circle"></i> Portal Estudiantes</a></li>
-                        <li><a href="registro.html" className="hover-link"><i className="bi bi-pencil-square"></i> Inscripciones</a></li>
+                        <li><Link to="/login" className="hover-link"><i className="bi bi-person-circle"></i> Portal Estudiantes</Link></li>
+                        <li><Link to="/registro" className="hover-link"><i className="bi bi-pencil-square"></i> Inscripciones</Link></li>
                         <li><Link to="/terms" className="hover-link">Términos y Condiciones</Link></li>
                         <li><Link to="/politicas" className="hover-link">Política de Privacidad</Link></li>
                     </ul>
@@ -78,9 +78,9 @@ const Footer = () => {
                     </div>
                 </div>
                 <div className="footer-bottom-links">
-                    <a href="contactanos.html">Soporte</a>
+                    <Link to="/contactanos">Soporte</Link>
                     <span className="separator">•</span>
-                    <a href="/#programas">Mapa del Sitio</a>
+                    <Link to="/#programas">Mapa del Sitio</Link>
                 </div>
             </div>
         </footer>

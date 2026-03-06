@@ -6,6 +6,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import ApiService from '../services/api';
 import Swal from 'sweetalert2';
+import useOutsideClick from '../hooks/useOutsideClick';
 
 const TicketModal = ({ event, onClose }) => {
     const session = ApiService.getSession();
@@ -15,6 +16,7 @@ const TicketModal = ({ event, onClose }) => {
         telefono: session?.n_phone || ''
     });
     const [loading, setLoading] = useState(false);
+    const modalRef = useOutsideClick(onClose);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -58,10 +60,26 @@ const TicketModal = ({ event, onClose }) => {
 
     return (
         <div
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
-            onClick={(e) => e.target === e.currentTarget && onClose()}
+            style={{
+                position: 'fixed', inset: 0,
+                background: 'rgba(0,0,0,0.85)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                zIndex: 9999, display: 'flex',
+                alignItems: 'center', justifyContent: 'center',
+                padding: '20px'
+            }}
         >
-            <div style={{ background: 'rgba(13,25,38,0.95)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '16px', padding: '2rem', width: '100%', maxWidth: '480px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
+            <div
+                ref={modalRef}
+                style={{
+                    background: 'rgba(13,25,38,0.98)',
+                    border: '1px solid rgba(147, 182, 238, 0.2)',
+                    borderRadius: '16px', padding: '2rem',
+                    width: '100%', maxWidth: '480px',
+                    boxShadow: '0 28px 72px rgba(0,0,0,0.6)'
+                }}
+            >
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
                     <div>

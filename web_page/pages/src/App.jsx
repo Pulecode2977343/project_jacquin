@@ -6,6 +6,7 @@ import Hero from './components/Hero';
 import Events from './components/Events';
 import Programs from './components/Programs';
 import About from './components/About';
+import Gallery from './components/Gallery';
 import Login from './components/Login';
 import Register from './components/Register';
 import ResetPassword from './components/ResetPassword';
@@ -75,6 +76,7 @@ function App() {
                         <Route path="/" element={
                             <>
                                 <Hero />
+                                <Gallery />
                                 <Events />
                                 <Programs />
                                 <About />

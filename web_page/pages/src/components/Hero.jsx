@@ -207,6 +207,8 @@ const SlideMedia = ({ slide, isActive, onVolumeChange }) => {
 };
 
 // ─── Componente principal Hero ───────────────────────────────────────────────
+const CROSSFADE_DURATION = 1000; // Duración del crossfade en ms
+
 const Hero = () => {
     const [scrolled, setScrolled] = useState(false);
     const [config, setConfig] = useState({
@@ -218,36 +220,33 @@ const Hero = () => {
     const [prevIdx, setPrevIdx] = useState(null);
     const [transitioning, setTransitioning] = useState(false);
     const [volumeActivated, setVolumeActivated] = useState(false);
-    const [isBackward, setIsBackward] = useState(false);
     const timerRef = useRef(null);
+    const transitionTimer = useRef(null);
 
-    // ── Navegación de slides ──────────────────────────────────────────────
-    const goToSlide = useCallback((idx, isCircular = false, backward = false) => {
-        if (transitioning) return;
+    // ── Navegación de slides (crossfade) ──────────────────────────────────
+    const goToSlide = useCallback((idx) => {
+        if (transitioning || idx === activeIdx) return;
         setTransitioning(true);
-        setPrevIdx(prev => prev === null ? activeIdx : prev);
+        setPrevIdx(activeIdx);
         setActiveIdx(idx);
-        setIsBackward(backward);
-        // Si es circular (último → primero), resetear más rápido para evitar efecto visual
-        const delay = isCircular ? 0 : 750;
-        setTimeout(() => {
+
+        // Limpiar timer anterior si existe
+        if (transitionTimer.current) clearTimeout(transitionTimer.current);
+
+        transitionTimer.current = setTimeout(() => {
             setPrevIdx(null);
             setTransitioning(false);
-            setIsBackward(false);
-        }, delay);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, CROSSFADE_DURATION);
     }, [activeIdx, transitioning]);
 
     const nextSlide = useCallback(() => {
         if (slides.length < 2) return;
-        const newIdx = (activeIdx + 1) % slides.length;
-        // Pasar flag de transición circular
-        goToSlide(newIdx, newIdx === 0); // 0 = es circular
+        goToSlide((activeIdx + 1) % slides.length);
     }, [activeIdx, slides.length, goToSlide]);
 
     const prevSlide = useCallback(() => {
         if (slides.length < 2) return;
-        goToSlide((activeIdx - 1 + slides.length) % slides.length, false, true);
+        goToSlide((activeIdx - 1 + slides.length) % slides.length);
     }, [activeIdx, slides.length, goToSlide]);
 
     // ── Resetear estado de volumen al cambiar slide ───────────────────────
@@ -311,24 +310,18 @@ const Hero = () => {
             {/* Fondo: carrusel o imagen estática de respaldo */}
             {hasCarousel ? (
                 <div className="hero-carousel-track">
-                    {slides.map((slide, idx) => {
-                        // Detectar transición circular: si vamos al primero desde el último
-                        const isCircularTransition = idx === activeIdx && activeIdx === 0 && prevIdx === slides.length - 1;
-                        return (
-                            <div
-                                key={idx}
-                                className={[
-                                    'hero-carousel-slide',
-                                    idx === activeIdx ? 'active' : '',
-                                    idx === prevIdx ? 'leaving' : '',
-                                    isCircularTransition ? 'circular' : '',
-                                    (isBackward && (idx === activeIdx || idx === prevIdx)) ? 'backward' : ''
-                                ].join(' ')}
-                            >
-                                <SlideMedia slide={slide} isActive={idx === activeIdx} onVolumeChange={setVolumeActivated} />
-                            </div>
-                        );
-                    })}
+                    {slides.map((slide, idx) => (
+                        <div
+                            key={idx}
+                            className={[
+                                'hero-carousel-slide',
+                                idx === activeIdx ? 'active' : '',
+                                idx === prevIdx ? 'leaving' : ''
+                            ].join(' ')}
+                        >
+                            <SlideMedia slide={slide} isActive={idx === activeIdx} onVolumeChange={setVolumeActivated} />
+                        </div>
+                    ))}
                 </div>
             ) : (
                 <div className="hero-bg-wrapper">
@@ -356,7 +349,7 @@ const Hero = () => {
                 })()}
 
                 {/* CTA: siempre el mismo, configurable globalmente */}
-                <a href="#programas" className="hero-cta">
+                <a href="#galeria" className="hero-cta">
                     {config.hero_cta_text}
                     <i className="bi bi-arrow-down"></i>
                 </a>

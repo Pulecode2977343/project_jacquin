@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import ApiService from '../services/api';
 import Swal from 'sweetalert2';
+import BackgroundBubbles from './BackgroundBubbles';
 
 const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -96,44 +98,74 @@ const ContactUs = () => {
     };
 
     return (
-        <main className="main-login-container">
-            <section className="login-card" style={{ maxWidth: '1000px', display: 'flex', flexWrap: 'wrap', gap: '40px', alignItems: 'stretch', padding: '4rem' }}>
+        <main className="main-login-container" style={{ animation: 'fadeIn 1s ease-out' }}>
+            <BackgroundBubbles />
+            <section className="login-card" style={{
+                maxWidth: '1100px',
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '50px',
+                alignItems: 'stretch',
+                padding: '4rem',
+                animation: 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}>
 
                 {/* Contact Info Side */}
-                <div style={{ flex: '1', minWidth: '300px', paddingRight: '20px', borderRight: '1px solid rgba(255,255,255,0.1)' }}>
+                <div style={{ flex: '1.2', minWidth: '320px', paddingRight: '30px', borderRight: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column' }}>
                     <h2 className="login-title" style={{ textAlign: 'left', marginBottom: '1rem' }}>¡Hablemos!</h2>
                     <p style={{ color: 'var(--color-humo-gris)', lineHeight: '1.6', marginBottom: '3rem' }}>
                         Si buscas asistencia experta, nuestro equipo dedicado está preparado para apoyarte en cada paso del camino.
                     </p>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                            <div style={{ width: '50px', height: '50px', background: 'rgba(147, 182, 238, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <i className="bi bi-telephone-outbound" style={{ fontSize: '1.5rem', color: 'var(--color-acento-azul)' }}></i>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', marginTop: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '25px', transition: 'transform 0.3s' }}>
+                            <div style={{
+                                width: '60px', height: '60px',
+                                background: 'rgba(147, 182, 238, 0.1)',
+                                border: '1px solid rgba(147, 182, 238, 0.2)',
+                                borderRadius: '18px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+                            }}>
+                                <i className="bi bi-telephone-outbound" style={{ fontSize: '1.6rem', color: '#93b6ee' }}></i>
                             </div>
                             <div>
-                                <p style={{ color: 'white', margin: 0, fontWeight: 600 }}>Llámanos</p>
-                                <span style={{ color: 'var(--color-humo-gris)' }}>+57 304 232 8575</span>
+                                <p style={{ color: 'rgba(255,255,255,0.6)', margin: 0, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Llámanos</p>
+                                <span style={{ color: 'white', fontSize: '1.1rem', fontWeight: 500 }}>+57 304 232 8575</span>
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                            <div style={{ width: '50px', height: '50px', background: 'rgba(147, 182, 238, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <i className="bi bi-envelope" style={{ fontSize: '1.5rem', color: 'var(--color-acento-azul)' }}></i>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
+                            <div style={{
+                                width: '60px', height: '60px',
+                                background: 'rgba(147, 182, 238, 0.1)',
+                                border: '1px solid rgba(147, 182, 238, 0.2)',
+                                borderRadius: '18px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+                            }}>
+                                <i className="bi bi-envelope" style={{ fontSize: '1.6rem', color: '#93b6ee' }}></i>
                             </div>
                             <div>
-                                <p style={{ color: 'white', margin: 0, fontWeight: 600 }}>Email</p>
-                                <span style={{ color: 'var(--color-humo-gris)' }}>adminadmin@jacquin.com.co</span>
+                                <p style={{ color: 'rgba(255,255,255,0.6)', margin: 0, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Email</p>
+                                <span style={{ color: 'white', fontSize: '1.1rem', fontWeight: 500 }}>admin@jacquin.com.co</span>
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                            <div style={{ width: '50px', height: '50px', background: 'rgba(147, 182, 238, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <i className="bi bi-whatsapp" style={{ fontSize: '1.5rem', color: 'var(--color-acento-azul)' }}></i>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
+                            <div style={{
+                                width: '60px', height: '60px',
+                                background: 'rgba(37, 211, 102, 0.1)',
+                                border: '1px solid rgba(37, 211, 102, 0.2)',
+                                borderRadius: '18px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+                            }}>
+                                <i className="bi bi-whatsapp" style={{ fontSize: '1.6rem', color: '#25D366' }}></i>
                             </div>
                             <div>
-                                <p style={{ color: 'white', margin: 0, fontWeight: 600 }}>WhatsApp</p>
-                                <span style={{ color: 'var(--color-humo-gris)' }}>+57 304 232 8575</span>
+                                <p style={{ color: 'rgba(255,255,255,0.6)', margin: 0, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>WhatsApp</p>
+                                <span style={{ color: 'white', fontSize: '1.1rem', fontWeight: 500 }}>+57 304 232 8575</span>
                             </div>
                         </div>
                     </div>
@@ -141,10 +173,10 @@ const ContactUs = () => {
                     <div style={{ marginTop: '4rem' }}>
                         <p style={{ color: 'white', marginBottom: '1rem', fontWeight: 600 }}>Síguenos:</p>
                         <div className="social-icons" style={{ justifyContent: 'flex-start', gap: '20px', display: 'flex' }}>
-                            <a href="#" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-facebook"></i></a>
-                            <a href="#" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-tiktok"></i></a>
-                            <a href="#" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-twitter-x"></i></a>
-                            <a href="#" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-instagram"></i></a>
+                            <a href="https://www.facebook.com/academiamusicaljacquin" target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-facebook"></i></a>
+                            <a href="https://www.tiktok.com/@academiamusicaljacquin" target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-tiktok"></i></a>
+                            <a href="https://www.instagram.com/academiamusicaljacquin" target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-instagram"></i></a>
+                            <a href="https://wa.me/573042328575" target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '1.5rem', transition: 'color 0.3s' }}><i className="bi bi-whatsapp"></i></a>
                         </div>
                     </div>
                 </div>
@@ -244,7 +276,7 @@ const ContactUs = () => {
                                     checked={formData.terms}
                                     onChange={handleChange}
                                 />
-                                <span>Acepto los <a href="/terminos" target="_blank" rel="noreferrer" style={{ color: 'var(--color-acento-azul)', textDecoration: 'none' }}>términos y condiciones</a>.</span>
+                                <span>Acepto los <Link to="/terms" style={{ color: 'var(--color-acento-azul)', textDecoration: 'none' }}>términos y condiciones</Link>.</span>
                             </label>
                             <label style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', cursor: 'pointer' }}>
                                 <input
@@ -254,7 +286,7 @@ const ContactUs = () => {
                                     checked={formData.privacy}
                                     onChange={handleChange}
                                 />
-                                <span>Acepto la <a href="/politicas" target="_blank" rel="noreferrer" style={{ color: 'var(--color-acento-azul)', textDecoration: 'none' }}>política de datos</a>.</span>
+                                <span>Acepto la <Link to="/politicas" style={{ color: 'var(--color-acento-azul)', textDecoration: 'none' }}>política de datos</Link>.</span>
                             </label>
                         </div>
                     </form>

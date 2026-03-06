@@ -714,10 +714,14 @@ jam-header.scrolled,
 .programs-swiper .swiper-button-next,
 .events-swiper .swiper-button-prev,
 .events-swiper .swiper-button-next,
+.gallery-swiper .swiper-button-prev,
+.gallery-swiper .swiper-button-next,
 .programs-prev,
 .programs-next,
 .events-prev,
-.events-next {
+.events-next,
+.gallery-prev,
+.gallery-next {
     color: var(--color-acento-azul) !important;
     background: rgba(25, 47, 72, 0.85) !important;
     width: 50px !important;
@@ -742,18 +746,21 @@ jam-header.scrolled,
 
 /* Posicionamiento de los botones customizados */
 .programs-prev,
-.events-prev {
-    left: -20px !important;
+.events-prev,
+.gallery-prev {
+    left: -45px !important;
 }
 
 .programs-next,
-.events-next {
-    right: -20px !important;
+.events-next,
+.gallery-next {
+    right: -45px !important;
 }
 
 /* Flecha única: una sola chevron */
 .programs-prev::after,
-.events-prev::after {
+.events-prev::after,
+.gallery-prev::after {
     content: '‹' !important;
     font-size: 1.6rem !important;
     font-weight: 700 !important;
@@ -762,7 +769,8 @@ jam-header.scrolled,
 }
 
 .programs-next::after,
-.events-next::after {
+.events-next::after,
+.gallery-next::after {
     content: '›' !important;
     font-size: 1.6rem !important;
     font-weight: 700 !important;
@@ -774,7 +782,9 @@ jam-header.scrolled,
 .programs-swiper .swiper-button-prev::after,
 .programs-swiper .swiper-button-next::after,
 .events-swiper .swiper-button-prev::after,
-.events-swiper .swiper-button-next::after {
+.events-swiper .swiper-button-next::after,
+.gallery-swiper .swiper-button-prev::after,
+.gallery-swiper .swiper-button-next::after {
     font-size: 1.1rem !important;
     font-weight: 700 !important;
     color: var(--color-acento-azul) !important;
@@ -785,10 +795,14 @@ jam-header.scrolled,
 .programs-swiper .swiper-button-next:hover,
 .events-swiper .swiper-button-prev:hover,
 .events-swiper .swiper-button-next:hover,
+.gallery-swiper .swiper-button-prev:hover,
+.gallery-swiper .swiper-button-next:hover,
 .programs-prev:hover,
 .programs-next:hover,
 .events-prev:hover,
-.events-next:hover {
+.events-next:hover,
+.gallery-prev:hover,
+.gallery-next:hover {
     background: var(--color-acento-azul) !important;
     border-color: var(--color-acento-azul) !important;
     transform: translateY(-50%) scale(1.1) !important;
@@ -800,14 +814,18 @@ jam-header.scrolled,
 .programs-prev:hover::after,
 .programs-next:hover::after,
 .events-prev:hover::after,
-.events-next:hover::after {
+.events-next:hover::after,
+.gallery-prev:hover::after,
+.gallery-next:hover::after {
     color: white !important;
 }
 
 .programs-swiper .swiper-button-prev:hover::after,
 .programs-swiper .swiper-button-next:hover::after,
 .events-swiper .swiper-button-prev:hover::after,
-.events-swiper .swiper-button-next:hover::after {
+.events-swiper .swiper-button-next:hover::after,
+.gallery-swiper .swiper-button-prev:hover::after,
+.gallery-swiper .swiper-button-next:hover::after {
     color: white !important;
 }
 
@@ -815,19 +833,23 @@ jam-header.scrolled,
 @media (max-width: 1024px) {
 
     .programs-prev,
-    .events-prev {
+    .events-prev,
+    .gallery-prev {
         left: 5px !important;
     }
 
     .programs-next,
-    .events-next {
+    .events-next,
+    .gallery-next {
         right: 5px !important;
     }
 
     .programs-swiper .swiper-button-prev,
     .programs-swiper .swiper-button-next,
     .events-swiper .swiper-button-prev,
-    .events-swiper .swiper-button-next {
+    .events-swiper .swiper-button-next,
+    .gallery-swiper .swiper-button-prev,
+    .gallery-swiper .swiper-button-next {
         width: 42px !important;
         height: 42px !important;
     }
@@ -838,7 +860,8 @@ jam-header.scrolled,
    ========================================= */
 
 .programs-swiper .swiper-pagination-bullet,
-.events-swiper .swiper-pagination-bullet {
+.events-swiper .swiper-pagination-bullet,
+.gallery-swiper .swiper-pagination-bullet {
     background: var(--color-humo-gris) !important;
     opacity: 0.5 !important;
     width: 8px !important;
@@ -847,7 +870,8 @@ jam-header.scrolled,
 }
 
 .programs-swiper .swiper-pagination-bullet-active,
-.events-swiper .swiper-pagination-bullet-active {
+.events-swiper .swiper-pagination-bullet-active,
+.gallery-swiper .swiper-pagination-bullet-active {
     background: var(--color-acento-naranja) !important;
     opacity: 1 !important;
     width: 24px !important;
@@ -1315,7 +1339,9 @@ textarea:-webkit-autofill:active {
 .programs-swiper .swiper-button-prev,
 .programs-swiper .swiper-button-next,
 .events-swiper .swiper-button-prev,
-.events-swiper .swiper-button-next {
+.events-swiper .swiper-button-next,
+.gallery-swiper .swiper-button-prev,
+.gallery-swiper .swiper-button-next {
     color: var(--color-acento-azul);
     background: rgba(25, 47, 72, 0.8);
     width: 50px;
@@ -1329,7 +1355,9 @@ textarea:-webkit-autofill:active {
 .programs-swiper .swiper-button-prev::after,
 .programs-swiper .swiper-button-next::after,
 .events-swiper .swiper-button-prev::after,
-.events-swiper .swiper-button-next::after {
+.events-swiper .swiper-button-next::after,
+.gallery-swiper .swiper-button-prev::after,
+.gallery-swiper .swiper-button-next::after {
     font-size: 1.2rem;
     font-weight: bold;
 }
@@ -1337,7 +1365,9 @@ textarea:-webkit-autofill:active {
 .programs-swiper .swiper-button-prev:hover,
 .programs-swiper .swiper-button-next:hover,
 .events-swiper .swiper-button-prev:hover,
-.events-swiper .swiper-button-next:hover {
+.events-swiper .swiper-button-next:hover,
+.gallery-swiper .swiper-button-prev:hover,
+.gallery-swiper .swiper-button-next:hover {
     background: var(--color-acento-azul);
     color: white;
     transform: scale(1.1);
@@ -1345,7 +1375,8 @@ textarea:-webkit-autofill:active {
 }
 
 .programs-swiper .swiper-pagination-bullet,
-.events-swiper .swiper-pagination-bullet {
+.events-swiper .swiper-pagination-bullet,
+.gallery-swiper .swiper-pagination-bullet {
     background: var(--color-humo-gris);
     opacity: 0.5;
     width: 8px;
@@ -1354,7 +1385,8 @@ textarea:-webkit-autofill:active {
 }
 
 .programs-swiper .swiper-pagination-bullet-active,
-.events-swiper .swiper-pagination-bullet-active {
+.events-swiper .swiper-pagination-bullet-active,
+.gallery-swiper .swiper-pagination-bullet-active {
     background: var(--color-acento-naranja);
     opacity: 1;
     width: 24px;

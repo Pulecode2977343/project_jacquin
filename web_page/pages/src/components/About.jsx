@@ -92,12 +92,10 @@ const About = () => {
 
     const openModal = (card) => {
         setActiveModal(card);
-        document.body.style.overflow = 'hidden';
     };
 
     const closeModal = () => {
         setActiveModal(null);
-        document.body.style.overflow = 'auto';
     };
 
     // Helper para manejar URLs de imágenes (API vs Local)

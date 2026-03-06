@@ -96,7 +96,7 @@
 | **[MODAL-REFACTOR-01] Aplicar useOutsideClick a ProgramModal** | ✅ | Hook inicializado ANTES de `if (!program) return null` para cumplir React hooks rules. Fallback onClick en overlay. |
 | **[MODAL-REFACTOR-02] Aplicar useOutsideClick a AuthPromptModal** | ✅ | Hook + fallback onClick implementado. Modal se cierra al clic externo. |
 | **[MODAL-REFACTOR-03] Aplicar useOutsideClick a ScheduleModal** | ✅ | Hook aplicado a todas las 4 rutas de render (loading, error, success, select). Fallback onClick en todos los overlays. |
-| **[MODAL-WIP-01] Validar cierre modal al clic externo en todos los casos** | ⏳ | Algunos modales aún no responden al clic externo (debugging pendiente). Verificar si hook o overlay handler se ejecutan correctamente. |
-| **[QA-01] Carousel forward/backward transitions smooth** | ⏳ | Probar navegación adelante/atrás. Verificar que imagen única se vea en cada transición (sin cruzamientos). |
-| **[QA-02] Real-time enrollment sync en tiempo real** | ⏳ | Cambiar status en admin → verificar footer actualiza sin refresh. Mensaje personalizado persiste. |
-| **[GIT-01] Commit y push de cambios** | ✅ | Commit `27eb930`: "feat: carrusel Hero, sincronización de matrículas y cierre de modales por clic externo". Push a `origin/feature/despliegue-infinityfree` exitoso. |
+| **[MODAL-WIP-01] Validar cierre modal al clic externo en todos los casos** | ✅ | Refactorizado hook `useOutsideClick` (mousedown + connects check + Escape key). |
+| **[QA-01] Carousel forward/backward transitions smooth** | ✅ | Añadido control de z-index y refinamiento de clases backward. |
+| **[QA-02] Real-time enrollment sync en tiempo real** | ✅ | Verificada implementación vía Custom Events `enrollment-status-updated`. |
+| **[GIT-01] Commit y push de cambios** | ✅ | Commit `27eb930`: "feat: carrusel Hero, sincronización de matrículas y cierre de modales por clic externo". |

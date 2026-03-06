@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ApiService from '../services/api';
+import BackgroundBubbles from './BackgroundBubbles';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ const Register = () => {
                     }
                 }
             })
-            .catch(() => {});
+            .catch(() => { });
     }, []);
 
     const handleChange = (e) => {
@@ -54,8 +55,8 @@ const Register = () => {
         try {
             const result = await ApiService.register({
                 fullName: formData.fullName,
-                email:    formData.email,
-                nPhone:   formData.phone,
+                email: formData.email,
+                nPhone: formData.phone,
                 password: formData.password,
                 idCourse: formData.idCourse ? Number(formData.idCourse) : null
             });
@@ -81,8 +82,9 @@ const Register = () => {
     };
 
     return (
-        <main className="main-login-container">
-            <section className="login-card" style={{ maxWidth: '600px' }}>
+        <main className="main-login-container" style={{ animation: 'fadeIn 1s ease-out' }}>
+            <BackgroundBubbles />
+            <section className="login-card" style={{ maxWidth: '650px', transform: 'scale(0.95)', animation: 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}>
                 <h1 className="login-title">Inscripción Aspirante</h1>
 
                 <form onSubmit={handleSubmit} id="register-form">
@@ -192,7 +194,7 @@ const Register = () => {
                         <label style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', cursor: 'pointer' }}>
                             <input type="checkbox" required style={{ marginTop: '3px' }} />
                             <span style={{ color: 'var(--color-humo-gris)', fontSize: '0.9rem' }}>
-                                Acepto la <Link to="/policy">Política de Tratamiento de Datos</Link>.
+                                Acepto la <Link to="/politicas">Política de Tratamiento de Datos</Link>.
                             </span>
                         </label>
                     </div>

@@ -261,6 +261,20 @@ const ApiService = {
         }
     },
 
+    async updateUser(userId, data) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}update_profile.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify({ id_usuario: userId, ...data }),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error actualizando perfil." };
+        }
+    },
+
     async uploadAvatar(userId, file) {
         try {
             const formData = new FormData();

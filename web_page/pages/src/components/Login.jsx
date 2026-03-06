@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import ApiService from '../services/api';
+import BackgroundBubbles from './BackgroundBubbles';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -64,7 +65,8 @@ const Login = () => {
     };
 
     return (
-        <main className="main-login-container">
+        <main className="main-login-container" style={{ animation: 'fadeIn 1s ease-out' }}>
+            <BackgroundBubbles />
             <section className="login-card">
                 <form onSubmit={handleSubmit} id="login-form">
                     <h1 className="login-title">Ingresar</h1>
@@ -80,7 +82,6 @@ const Login = () => {
                                 placeholder="usuario@ejemplo.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                style={{ paddingLeft: '40px' }}
                                 required
                             />
                         </div>
@@ -97,7 +98,6 @@ const Login = () => {
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                style={{ paddingLeft: '40px' }}
                                 required
                             />
                             <i
@@ -118,9 +118,9 @@ const Login = () => {
 
                     <div className="form-footer">
                         <p>
-                            Al ingresar aceptas nuestros
-                            <Link to="/terms">Términos</Link> y
-                            <Link to="/policy">Política de Datos</Link>.
+                            Al ingresar aceptas nuestros{' '}
+                            <Link to="/terms">Términos</Link> y{' '}
+                            <Link to="/politicas">Política de Datos</Link>.
                         </p>
                     </div>
 

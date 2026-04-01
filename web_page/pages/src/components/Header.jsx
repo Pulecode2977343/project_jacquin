@@ -130,10 +130,6 @@ const Header = ({ staticPage = false }) => {
 
     return (
         <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
-            <div className="btns-log-reg" id="authButtons">
-                {renderAuthButtons()}
-            </div>
-
             <div className="logo-links">
                 <div className="logo" id="logo">
                     <a href="/" onClick={handleLogoClick}>
@@ -149,6 +145,10 @@ const Header = ({ staticPage = false }) => {
                 <nav className="navbar" id="navBar">
                     <Navbar staticPage={staticPage} />
                 </nav>
+            </div>
+
+            <div className="btns-log-reg" id="authButtons">
+                {renderAuthButtons()}
             </div>
         </header>
     );

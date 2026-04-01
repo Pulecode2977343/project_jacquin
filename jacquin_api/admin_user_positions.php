@@ -7,6 +7,10 @@
  */
 require_once __DIR__ . '/config/cors.php';
 require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/helpers/auth_helper.php';
+require_once __DIR__ . '/helpers/audit_helper.php';
+
+validateAdmin();
 
 header('Content-Type: application/json; charset=UTF-8');
 
@@ -125,6 +129,9 @@ try {
             $posStmt->execute([$data['position_id']]);
             $posName = $posStmt->fetch(PDO::FETCH_ASSOC)['name'] ?? 'Cargo';
 
+            // Auditoría
+            logAudit($pdo, 'update', 'user_position', $data['user_id'], ['position' => $posName, 'action' => 'assignment']);
+
             echo json_encode([
                 'success' => true,
                 'message' => "Cargo '$posName' asignado correctamente"
@@ -147,6 +154,9 @@ try {
                 $stmt = $pdo->prepare("UPDATE user_positions SET is_active = 0 WHERE user_id = ? AND position_id = ?");
                 $stmt->execute([$data['user_id'], $data['position_id']]);
             }
+
+            // Auditoría
+            logAudit($pdo, 'delete', 'user_position', $data['user_id'] ?? $data['id'], ['action' => 'unassignment']);
 
             echo json_encode(['success' => true, 'message' => 'Asignación removida correctamente']);
             break;

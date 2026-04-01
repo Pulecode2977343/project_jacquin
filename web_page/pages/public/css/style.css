@@ -1,4 +1,4 @@
-﻿/* =========================================
+/* =========================================
    BRANDBOOK FONTS - Poppins & Lancelot
    ========================================= */
 
@@ -256,7 +256,9 @@ body>main {
 .header {
     height: 14vh;
     width: 100%;
-    display: block;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* Tres columnas: izquierda, centro (auto), derecha */
+    align-items: center;
     position: fixed;
     top: 0;
     z-index: 1000;
@@ -264,6 +266,7 @@ body>main {
     backdrop-filter: blur(0px);
     -webkit-backdrop-filter: blur(0px);
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0 4%;
 }
 
 /* Scrolled State - Frosted Glass Effect (Vidrio Esmerilado) */
@@ -278,30 +281,31 @@ jam-header.scrolled,
         inset 0 1px 0 rgba(255, 255, 255, 0.1),
         0 1px 3px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    height: 11vh;
+    height: 10vh; /* Restaurado a 10vh */
 }
 
 /* Sub-Contenedores del Header */
 .btns-log-reg {
-    width: 100%;
     display: flex !important;
     justify-content: flex-end !important;
-    padding: 5px 3% !important;
     gap: 15px;
     align-items: center;
+    grid-column: 3;
+    justify-self: end; /* Pegado a la derecha */
 }
 
 .logo-links {
-    height: 9vh;
-    width: 100%;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 0 5% !important;
-    box-sizing: border-box;
+    display: contents; /* Permite que el logo y la navbar sean hijos directos del grid del header */
 }
 
-/* Desktop: Hide hamburger and checkbox visually (but keep in DOM for CSS selectors) */
+.logo {
+    display: flex;
+    align-items: center;
+    grid-column: 1;
+    justify-self: start; /* Pegado a la izquierda */
+}
+
+/* Desktop: Hide hamburger and checkbox visually */
 .menuToggle {
     position: absolute;
     opacity: 0;
@@ -314,9 +318,12 @@ jam-header.scrolled,
     display: none;
 }
 
-/* Desktop Navbar - horizontal */
+/* Desktop Navbar - horizontal y centrada */
 .navbar {
+    grid-column: 2; /* Siempre al centro */
     display: flex;
+    justify-content: center;
+    justify-self: center; /* Centro absoluto del grid */
 }
 
 .navbar-list {
@@ -1514,24 +1521,25 @@ textarea:-webkit-autofill:active {
     jam-header,
     .header {
         display: flex !important;
-        flex-direction: column !important;
+        flex-direction: row !important;
         height: auto !important;
         min-height: 14vh;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0 4% !important;
     }
 
     .btns-log-reg {
-        order: 1 !important;
-        width: 100% !important;
+        order: 3 !important; /* Desplazado al final */
+        width: auto !important;
         display: flex !important;
         justify-content: flex-end !important;
-        padding: 20px 12% 5px !important;
+        padding: 0 !important;
         background: transparent !important;
         align-items: center !important;
         gap: 15px;
-        /* Add gap between buttons */
     }
 
-    /* Target the 'Inscríbete' button (which has class .btn-login) */
     .btn-login {
         border: 1px solid var(--color-acento-naranja) !important;
         box-shadow: 0 0 10px rgba(231, 140, 59, 0.4);
@@ -1545,13 +1553,12 @@ textarea:-webkit-autofill:active {
     }
 
     .logo-links {
-        order: 2 !important;
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        width: 100% !important;
-        padding: 0 12% !important;
-        flex: 1 !important;
+        order: 1 !important;
+        display: contents !important; /* Desencapsular para el grid del header */
+    }
+
+    .navbar {
+        order: 2 !important; /* Centrado */
     }
 }
 
@@ -1667,14 +1674,14 @@ textarea:-webkit-autofill:active {
 /* --- 5. PIANO TILE NAVIGATION --- */
 @media (min-width: 1251px) {
     .navbar-link {
-        width: 105px !important;
-        height: 60px !important;
-        border-radius: 12px !important;
-        background: var(--color-principal-azul) !important;
+        width: 105px !important; /* Restaurado */
+        height: 60px !important; /* Restaurado */
+        border-radius: 12px !important; /* Restaurado */
+        background: var(--color-principal-azul) !important; /* Restaurado fondo sólido */
         box-shadow: none !important;
         border: 1px solid rgba(255, 255, 255, 0.02) !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        margin: 0 6px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Restaurada velocidad original */
+        margin: 0 6px; /* Restaurado margen original */
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;

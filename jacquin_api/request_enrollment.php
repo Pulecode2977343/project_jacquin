@@ -27,9 +27,9 @@ if (
             $query = "UPDATE enrollments SET schedule_id = ?, status = 'Pendiente' WHERE id_enrollment = ?";
             $stmt = $pdo->prepare($query);
             $exec = $stmt->execute([$data->schedule_id, $preEnrollment['id_enrollment']]);
+            $enrollmentId = $preEnrollment['id_enrollment'];
         } else {
             // 2. Check for EXACT duplicate (Same Course AND Same Schedule)
-            // This allows multiple enrollments in the same course IF the schedule is different.
             $checkDup = $pdo->prepare("SELECT id_enrollment FROM enrollments WHERE student_id = ? AND course_id = ? AND schedule_id = ? AND status != 'Cancelado' AND status != 'Rechazado'");
             $checkDup->execute([$data->student_id, $data->course_id, $data->schedule_id]);
 
@@ -49,9 +49,13 @@ if (
             $query = "INSERT INTO enrollments (student_id, course_id, schedule_id, status) VALUES (?, ?, ?, 'Pendiente')";
             $stmt = $pdo->prepare($query);
             $exec = $stmt->execute([$data->student_id, $data->course_id, $data->schedule_id]);
+            $enrollmentId = $pdo->lastInsertId();
         }
 
-        if ($exec) {
+        if ($exec && $enrollmentId) {
+            // SYNC: Populate junction table
+            $pdo->prepare("INSERT IGNORE INTO enrollment_schedules (enrollment_id, schedule_id) VALUES (?, ?)")
+                ->execute([$enrollmentId, $data->schedule_id]);
 
             // 3. Get Details for Email
             // Get Student Name

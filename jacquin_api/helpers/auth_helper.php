@@ -7,12 +7,11 @@
 function validateAdmin() {
     // Iniciamos sesión si no está iniciada
     if (session_status() === PHP_SESSION_NONE) {
-        // Establecer tiempo de vida de la sesión (8 horas = 28800 segundos)
-        ini_set('session.gc_maxlifetime', 28800);
+        $isHTTPS = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
         session_set_cookie_params([
             'lifetime' => 28800,
             'path' => '/',
-            'secure' => true,
+            'secure' => $isHTTPS,
             'httponly' => true,
             'samesite' => 'Lax'
         ]);
@@ -32,5 +31,39 @@ function validateAdmin() {
         echo json_encode(["success" => false, "message" => "Permisos insuficientes. Solo administradores pueden realizar esta acción."]);
         exit();
     }
+}
+
+/**
+ * Permite acceso a Admin (rol 1) O a usuarios con cargo de Secretario (id_position = 2)
+ */
+function validateAdminOrSecretary($pdo) {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if (!isset($_SESSION['user_id']) || !isset($_SESSION['id_rol'])) {
+        http_response_code(401);
+        echo json_encode(["success" => false, "message" => "Sesión no iniciada."]);
+        exit();
+    }
+
+    // Si es Administrador, tiene acceso total
+    if ($_SESSION['id_rol'] == 1) {
+        return true;
+    }
+
+    // Si no es Admin, verificamos si tiene cargo de Secretario (id_position 2)
+    // El id_position suele estar en la tabla user_positions
+    $userId = $_SESSION['user_id'];
+    $stmt = $pdo->prepare("SELECT id FROM user_positions WHERE user_id = ? AND position_id = 2 AND is_active = 1 LIMIT 1");
+    $stmt->execute([$userId]);
+    
+    if ($stmt->fetch()) {
+        return true;
+    }
+
+    http_response_code(403);
+    echo json_encode(["success" => false, "message" => "Permisos insuficientes. Se requiere cargo de Secretario o Administrador."]);
+    exit();
 }
 ?>

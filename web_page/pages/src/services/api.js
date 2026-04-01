@@ -26,6 +26,23 @@ const ApiService = {
         return API_CONFIG.BASE_URL;
     },
     /**
+     * Helper for authenticated GET requests
+     */
+    async fetchWithAuth(endpoint) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}${endpoint}`, {
+                method: "GET",
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            console.error(`[ApiService] Error fetching ${endpoint}:`, error);
+            throw error;
+        }
+    },
+
+    /**
      * Centralized response handler to detect 401 Unauthorized errors
      * and redirect to login automatically.
      */
@@ -211,6 +228,10 @@ const ApiService = {
         }
     },
 
+    async getAdminUsers() {
+        return this.getUsers();
+    },
+
     async getTeachers() {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_get_teachers.php`, {
@@ -229,7 +250,8 @@ const ApiService = {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}get_courses.php`, {
                 method: "GET",
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -241,7 +263,8 @@ const ApiService = {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}get_schedules.php?course_id=${courseId}`, {
                 method: "GET",
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -253,7 +276,8 @@ const ApiService = {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}get_user_details.php?id=${userId}&t=${Date.now()}`, {
                 method: "GET",
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -283,6 +307,7 @@ const ApiService = {
 
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_upload_avatar.php`, {
                 method: "POST",
+                credentials: 'include',
                 // Headers auto-set for FormData (multipart)
                 body: formData
             });
@@ -418,7 +443,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_unassign_teacher.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ teacher_id: teacherId, course_id: courseId })
+                body: JSON.stringify({ teacher_id: teacherId, course_id: courseId }),
+                credentials: 'include'
             });
             return await this.handleResponse(response);
         } catch (error) {
@@ -431,7 +457,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_update_role.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ id_usuario: parseInt(id_usuario), id_rol: parseInt(id_rol) })
+                body: JSON.stringify({ id_usuario: parseInt(id_usuario), id_rol: parseInt(id_rol) }),
+                credentials: 'include'
             });
             return await this.handleResponse(response);
         } catch (error) {
@@ -444,7 +471,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_delete_user.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ id_usuario: parseInt(id_usuario) })
+                body: JSON.stringify({ id_usuario: parseInt(id_usuario) }),
+                credentials: 'include'
             });
             return await this.handleResponse(response);
         } catch (error) {
@@ -481,7 +509,8 @@ const ApiService = {
     async getInventory() {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_inventory_get.php`, {
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await this.handleResponse(response);
         } catch (error) {
@@ -494,7 +523,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_inventory_create.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(itemData)
+                body: JSON.stringify(itemData),
+                credentials: 'include'
             });
             return await this.handleResponse(response);
         } catch (error) {
@@ -564,7 +594,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_update_user_full.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData)
+                body: JSON.stringify(userData),
+                credentials: 'include'
             });
             return await this.handleResponse(response);
         } catch (error) {
@@ -786,7 +817,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_add_schedule_to_enrollment.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ enrollment_id: enrollmentId, schedule_id: scheduleId })
+                body: JSON.stringify({ enrollment_id: enrollmentId, schedule_id: scheduleId }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -799,7 +831,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_remove_schedule_from_enrollment.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ enrollment_id: enrollmentId, schedule_id: scheduleId })
+                body: JSON.stringify({ enrollment_id: enrollmentId, schedule_id: scheduleId }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -810,7 +843,8 @@ const ApiService = {
     async getScheduleById(scheduleId) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}get_schedule_by_id.php?id=${scheduleId}`, {
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -825,7 +859,8 @@ const ApiService = {
     async getPositions(includeHidden = false) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_positions.php?include_hidden=${includeHidden}`, {
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -838,7 +873,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_positions.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(positionData)
+                body: JSON.stringify(positionData),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -851,7 +887,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_positions.php`, {
                 method: "PUT",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ id_position: positionId, ...positionData })
+                body: JSON.stringify({ id_position: positionId, ...positionData }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -864,7 +901,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_positions.php`, {
                 method: "DELETE",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ id_position: positionId })
+                body: JSON.stringify({ id_position: positionId }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -876,7 +914,8 @@ const ApiService = {
     async getPositionFunctions(positionId) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_position_functions.php?position_id=${positionId}`, {
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -889,7 +928,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_position_functions.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ position_id: positionId, description })
+                body: JSON.stringify({ position_id: positionId, description }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -902,7 +942,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_position_functions.php`, {
                 method: "PUT",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(functionData)
+                body: JSON.stringify(functionData),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -915,7 +956,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_position_functions.php`, {
                 method: "DELETE",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ id_function: functionId })
+                body: JSON.stringify({ id_function: functionId }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -927,7 +969,8 @@ const ApiService = {
     async getUserPositions(userId) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_user_positions.php?user_id=${userId}`, {
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -938,7 +981,8 @@ const ApiService = {
     async getPositionUsers(positionId) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_user_positions.php?position_id=${positionId}`, {
-                headers: API_CONFIG.HEADERS
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -951,7 +995,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_user_positions.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ user_id: userId, position_id: positionId, assigned_by: assignedBy })
+                body: JSON.stringify({ user_id: userId, position_id: positionId, assigned_by: assignedBy }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {
@@ -964,7 +1009,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_user_positions.php`, {
                 method: "DELETE",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify({ id: assignmentId })
+                body: JSON.stringify({ id: assignmentId }),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) {

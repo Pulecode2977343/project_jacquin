@@ -39,19 +39,22 @@ const Login = () => {
 
                 setTimeout(() => {
                     const pendingId = sessionStorage.getItem('pending_enrollment');
-                    // Solo los estudiantes (id_rol 3) deben recobrar flujos de inscripción
                     if (pendingId && result.user.id_rol == 3) {
                         setMessage('¡Bienvenido! Retomando tu inscripción...');
-                        // navigate con state para que Programs.jsx recupere el intent
-                        // sin recargar la página (DOMContentLoaded no se dispara en SPA)
                         navigate('/', { state: { recoverEnrollment: true } });
                     } else {
-                        // Limpiar intents atascados si es admin o docente
                         sessionStorage.removeItem('pending_enrollment');
                         sessionStorage.removeItem('pending_enrollment_title');
                         navigate('/dashboard', { replace: true });
                     }
                 }, 1000);
+            } else if (result.force_reset) {
+                setMessage(result.message);
+                setIsError(true);
+                // Redirigir a recuperación de contraseña tras un breve retraso
+                setTimeout(() => {
+                    navigate('/reset', { state: { email, reason: 'forced' } });
+                }, 3000);
             } else {
                 setMessage(result.message || 'Credenciales incorrectas');
                 setIsError(true);

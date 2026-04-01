@@ -6,55 +6,53 @@ import ApiService from '../../../services/api';
  * Permite editar: Historia, Equipo, Metodología, Instalaciones
  */
 const AboutCardsTab = () => {
-  const [cards, setCards] = useState([
-    {
-      id: 'historia',
-      title: 'Nuestra Historia',
-      description: 'Desde 2010',
-      content: 'Fundada con la visión de democratizar la educación musical de calidad...',
-      icon: 'bi bi-book-half'
-    },
-    {
-      id: 'equipo',
-      title: 'Nuestro Equipo',
-      description: 'Profesionales apasionados',
-      content: 'Contamos con un equipo de profesores profesionales, músicos activos y pedagogos...',
-      icon: 'bi bi-people'
-    },
-    {
-      id: 'metodologia',
-      title: 'Metodología',
-      description: 'Enfoque personalizado',
-      content: 'Nuestra metodología combina técnica clásica con enfoques modernos...',
-      icon: 'bi bi-music-note'
-    },
-    {
-      id: 'instalaciones',
-      title: 'Instalaciones',
-      description: 'Espacios creativos',
-      content: 'Espacios creativos diseñados para inspirar. Salones equipados con instrumentos...',
-      icon: 'bi bi-building'
-    }
-  ]);
-
+  const [cards, setCards] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
 
+  useEffect(() => {
+    fetchCards();
+  }, []);
+
+  const fetchCards = async () => {
+    try {
+      setLoading(true);
+      const res = await ApiService.getAboutCardsAdmin();
+      if (res.success) {
+        setCards(res.data);
+      }
+    } catch (error) {
+      console.error("Error fetching cards:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleEdit = (card) => {
     setEditingId(card.id);
-    setEditForm({ ...card });
+    // Asegurar que image_url esté en el form
+    setEditForm({ ...card, imageUrl: card.image_url });
   };
 
   const handleSave = async (cardId) => {
     try {
-      // TODO: Conectar con API para guardar
-      // await ApiService.updateAboutCard(cardId, editForm);
-      setCards(cards.map(c => c.id === cardId ? editForm : c));
-      setEditingId(null);
-      // Mostrar toast de éxito
-      if (window.showToast) window.showToast('Tarjeta actualizada correctamente', 'success');
+      // Mapear campos para el backend (el backend espera image_url no imageUrl)
+      const payload = {
+        ...editForm,
+        image_url: editForm.imageUrl
+      };
+      
+      const res = await ApiService.updateAboutCard(payload);
+      if (res.success) {
+        setCards(cards.map(c => c.id === cardId ? { ...editForm, image_url: editForm.imageUrl } : c));
+        setEditingId(null);
+        if (window.showToast) window.showToast('Tarjeta actualizada correctamente', 'success');
+      } else {
+        throw new Error(res.message);
+      }
     } catch (error) {
-      if (window.showToast) window.showToast('Error al guardar', 'error');
+      if (window.showToast) window.showToast('Error al guardar: ' + error.message, 'error');
     }
   };
 
@@ -62,6 +60,8 @@ const AboutCardsTab = () => {
     setEditingId(null);
     setEditForm({});
   };
+
+  if (loading) return <div className="loading-text">Cargando tarjetas...</div>;
 
   return (
     <div style={{ padding: '1rem 0' }}>
@@ -152,7 +152,7 @@ const AboutCardsTab = () => {
                   <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
                     Imagen
                   </label>
-                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                     <input
                       type="text"
                       value={editForm.imageUrl || ''}
@@ -166,7 +166,8 @@ const AboutCardsTab = () => {
                         borderRadius: '6px',
                         color: '#fff',
                         fontFamily: 'inherit',
-                        fontSize: '0.9rem'
+                        fontSize: '0.9rem',
+                        minWidth: '200px'
                       }}
                     />
                     <label style={{

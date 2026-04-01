@@ -41,7 +41,8 @@ if ($id_usuario > 0) {
                 LEFT JOIN courses c ON e.course_id = c.id_course
                 LEFT JOIN enrollment_schedules es ON e.id_enrollment = es.enrollment_id
                 LEFT JOIN schedules s ON es.schedule_id = s.id_schedule
-                LEFT JOIN usuario u_prof ON s.teacher_id = u_prof.id_usuario
+                LEFT JOIN schedule_teachers st ON s.id_schedule = st.id_schedule
+                LEFT JOIN usuario u_prof ON st.id_teacher = u_prof.id_usuario
                 WHERE e.student_id = ? AND e.status IN ('Activo', 'Pendiente', 'Pre-inscrito', 'Inscrito')
                 ORDER BY e.id_enrollment DESC, s.day
             ");
@@ -137,7 +138,8 @@ if ($id_usuario > 0) {
                             'id_course' => (int) $cid,
                             'name' => $t['course_name'],
                             'schedules' => [],
-                            'total_students' => 0
+                            'total_students' => 0,
+                            'students' => []
                         ];
                     }
 
@@ -154,6 +156,20 @@ if ($id_usuario > 0) {
                         $coursesMap[$cid]['total_students'] += $sCount;
                     }
                 }
+
+                // Fetch students for each course to allow list display and notes management
+                foreach ($coursesMap as $cid => &$courseData) {
+                    $stmtStudents = $pdo->prepare("
+                        SELECT DISTINCT u.id_usuario, u.full_name, u.email, u.n_phone, e.status
+                        FROM enrollments e
+                        JOIN usuario u ON e.student_id = u.id_usuario
+                        WHERE e.course_id = ? AND e.status = 'Activo'
+                        ORDER BY u.full_name ASC
+                    ");
+                    $stmtStudents->execute([$cid]);
+                    $courseData['students'] = $stmtStudents->fetchAll(PDO::FETCH_ASSOC);
+                }
+
                 $result['teaching'] = array_values($coursesMap);
             }
 

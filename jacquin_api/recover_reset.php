@@ -37,8 +37,8 @@ try {
     // 2. Hash Password
     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-    // 3. Actualizar Password y Limpiar Código
-    $update = $pdo->prepare("UPDATE usuario SET password = ?, recovery_code = NULL, recovery_expires = NULL WHERE id_usuario = ?");
+    // 3. Actualizar Password y Limpiar Código + Seguridad
+    $update = $pdo->prepare("UPDATE usuario SET password = ?, recovery_code = NULL, recovery_expires = NULL, force_password_reset = 0, login_attempts = 0, locked_until = NULL WHERE id_usuario = ?");
     $update->execute([$hashedPassword, $user['id_usuario']]);
 
     echo json_encode(['success' => true, 'message' => 'Contraseña actualizada correctamente.']);

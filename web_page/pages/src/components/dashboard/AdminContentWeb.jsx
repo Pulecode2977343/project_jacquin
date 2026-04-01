@@ -117,7 +117,7 @@ const AdminContentWeb = ({ onClose }) => {
         </div>
 
         {/* Content Area */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '2rem', color: 'rgba(255, 255, 255, 0.85)' }}>
+        <div className="modal-content-area" style={{ flex: 1, overflowY: 'auto', padding: '2rem', color: 'rgba(255, 255, 255, 0.85)' }}>
           {tabs[activeTab].component}
         </div>
       </div>

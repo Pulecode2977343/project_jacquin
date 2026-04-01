@@ -17,7 +17,7 @@ if (!empty($data->id_usuario) && !empty($data->currentPassword) && !empty($data-
         if ($user && password_verify($data->currentPassword, $user['password'])) {
             // 2. Hash new password
             $newHashed = password_hash($data->newPassword, PASSWORD_DEFAULT);
-            $update = $pdo->prepare("UPDATE usuario SET password = ? WHERE id_usuario = ?");
+            $update = $pdo->prepare("UPDATE usuario SET password = ?, force_password_reset = 0, login_attempts = 0, locked_until = NULL WHERE id_usuario = ?");
             if ($update->execute([$newHashed, $data->id_usuario])) {
                 echo json_encode(["success" => true, "message" => "Contraseña actualizada."]);
             } else {

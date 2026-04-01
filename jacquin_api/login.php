@@ -1,93 +1,102 @@
 <?php
 // login.php - Iniciar Sesión en JACQUIN
-
-// Configuración de errores para depuración (desactivar en producción)
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 header('Content-Type: application/json');
 
 try {
-    // Incluir configuraciones esenciales dentro del try para capturar errores de conexión
     require_once __DIR__ . '/config/cors.php';
     require_once __DIR__ . '/config/connection.php';
 
-    // Solo permitir POST
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception('Método no permitido. Use POST.');
     }
 
-    // Leer el input JSON
-    $input = json_decode(file_get_contents('php://input'), true);
-
-    // Si json_decode falla, intentar leer de POST normal form-data
-    if (!$input) {
-        $input = $_POST;
-    }
-
+    $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
     $email = $input['email'] ?? '';
     $password = $input['password'] ?? '';
 
-    // Validar campos vacíos
     if (empty($email) || empty($password)) {
         throw new Exception('Por favor ingrese correo y contraseña.');
     }
 
-    // Buscar usuario en la base de datos
-    // Se asume tabla 'usuario' con columnas 'email', 'password', 'full_name', 'id_rol', 'id_usuario'
-    // Se asume tabla 'usuario' con columnas 'email', 'password', 'full_name', 'id_rol', 'id_usuario', 'avatar_url'
-    $stmt = $pdo->prepare("SELECT id_usuario, full_name, email, password, id_rol, avatar_url FROM usuario WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT id_usuario, full_name, email, password, id_rol, avatar_url, login_attempts, locked_until, force_password_reset FROM usuario WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Verificar si el usuario existe
     if (!$user) {
-        // Por seguridad, mensaje genérico
         throw new Exception('Credenciales incorrectas.');
     }
 
-    // Verificar contraseña (Hash)
-    // Nota: Si tus usuarios antiguos no tienen hash, esto fallará. 
-    // Asegúrate de que registro use password_hash().
+    // 1. Bloqueo temporal
+    if ($user['locked_until']) {
+        $lockedTime = strtotime($user['locked_until']);
+        $now = time();
+        if ($lockedTime > $now) {
+            $minutesLeft = ceil(($lockedTime - $now) / 60);
+            throw new Exception("Cuenta bloqueada temporalmente. Intente en $minutesLeft minutos.");
+        }
+    }
+
+    // 2. Forzado de reset
+    if ($user['force_password_reset']) {
+        echo json_encode(['success' => false, 'force_reset' => true, 'message' => 'Debes restablecer tu contraseña para continuar.']);
+        exit;
+    }
+
+    // 3. Contraseña
     if (!password_verify($password, $user['password'])) {
-        throw new Exception('Credenciales incorrectas.');
+        $attempts = (int)$user['login_attempts'] + 1;
+        $updateFields = ["login_attempts = ?"];
+        $params = [$attempts];
+
+        if ($attempts >= 5) {
+            $updateFields[] = "locked_until = ?";
+            $params[] = date('Y-m-d H:i:s', strtotime('+10 minutes'));
+            if ($user['login_attempts'] >= 5) {
+                $updateFields[] = "force_password_reset = 1";
+            }
+            $msg = "Cuenta bloqueada por 10 minutos.";
+        } else {
+            $msg = "Credenciales incorrectas. Intentos restantes: " . (5 - $attempts);
+        }
+
+        $params[] = $user['id_usuario'];
+        $pdo->prepare("UPDATE usuario SET " . implode(", ", $updateFields) . " WHERE id_usuario = ?")->execute($params);
+        throw new Exception($msg);
     }
 
-    // ¡Login Exitoso!
-    // Aquí podrías generar un JWT, pero por ahora devolveremos los datos básicos del usuario
-    // para que el frontend los guarde en localStorage/sessionStorage.
+    // Login Exitoso
+    $pdo->prepare("UPDATE usuario SET login_attempts = 0, locked_until = NULL WHERE id_usuario = ?")->execute([$user['id_usuario']]);
 
-    // Remover password del array antes de enviarlo
-    unset($user['password']);
+    // Obtener Positions
+    $stmtPos = $pdo->prepare("SELECT position_id FROM user_positions WHERE user_id = ? AND is_active = 1");
+    $stmtPos->execute([$user['id_usuario']]);
+    $positions = $stmtPos->fetchAll(PDO::FETCH_ASSOC);
+    $user['positions'] = array_map(fn($p) => (int)$p['position_id'], $positions);
 
-    // Iniciar sesión PHP
-    if (session_status() === PHP_SESSION_NONE) {
-        // Establecer tiempo de vida de la sesión (8 horas)
-        ini_set('session.gc_maxlifetime', 28800);
+    unset($user['password'], $user['login_attempts'], $user['locked_until'], $user['force_password_reset']);
+
+        $isHTTPS = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
         session_set_cookie_params([
             'lifetime' => 28800,
             'path' => '/',
-            'secure' => true,
+            'secure' => $isHTTPS, // Solo secure en HTTPS
             'httponly' => true,
             'samesite' => 'Lax'
         ]);
         session_start();
-    }
-    $_SESSION['user'] = $user;
+    
     $_SESSION['user_id'] = $user['id_usuario'];
+    $_SESSION['full_name'] = $user['full_name'];
     $_SESSION['id_rol'] = $user['id_rol'];
+    $_SESSION['positions'] = $user['positions'];
+    $_SESSION['user'] = $user;
 
-    echo json_encode([
-        'success' => true,
-        'message' => 'Inicio de sesión exitoso',
-        'user' => $user,
-        // 'token' => '...' // Futuro: Implementar JWT aquí
-    ]);
+    echo json_encode(['success' => true, 'message' => 'Inicio de sesión exitoso', 'user' => $user]);
 
 } catch (Exception $e) {
-    http_response_code(401); // Unauthorized
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }

@@ -1,4 +1,8 @@
 <?php
+/**
+ * admin_handle_enrollment.php
+ * Aprueba o Rechaza solicitudes de inscripción.
+ */
 include_once 'helpers/cors_helper.php';
 handleCors();
 header("Content-Type: application/json; charset=UTF-8");
@@ -7,9 +11,10 @@ header("Access-Control-Allow-Methods: POST");
 include_once 'config/connection.php';
 require_once 'services/EmailService.php';
 require_once 'helpers/auth_helper.php';
+require_once 'helpers/audit_helper.php';
 
-// Protegemos el endpoint: Solo administradores
-validateAdmin();
+// Protegemos el endpoint: Administradores o Secretarios
+validateAdminOrSecretary($pdo);
 
 $data = json_decode(file_get_contents("php://input"));
 
@@ -22,139 +27,61 @@ if (!empty($data->id_enrollment) && !empty($data->action)) {
         $stmt = $pdo->prepare("UPDATE enrollments SET status = ? WHERE id_enrollment = ?");
         $stmt->execute([$newStatus, $data->id_enrollment]);
 
-        // Si aprobamos: insertar en enrollment_schedules si el enrollment tiene schedule_id
         if ($data->action === 'approve') {
-            $stmtSched = $pdo->prepare("
-                SELECT schedule_id FROM enrollments
-                WHERE id_enrollment = ? AND schedule_id IS NOT NULL
-            ");
+            $stmtSched = $pdo->prepare("SELECT schedule_id FROM enrollments WHERE id_enrollment = ? AND schedule_id IS NOT NULL");
             $stmtSched->execute([$data->id_enrollment]);
             $schedRow = $stmtSched->fetch(PDO::FETCH_ASSOC);
 
             if ($schedRow && !empty($schedRow['schedule_id'])) {
-                // Insertar en junction table (ignorar si ya existe)
-                $stmtIns = $pdo->prepare("
-                    INSERT IGNORE INTO enrollment_schedules (enrollment_id, schedule_id)
-                    VALUES (?, ?)
-                ");
-                $stmtIns->execute([$data->id_enrollment, $schedRow['schedule_id']]);
+                $pdo->prepare("INSERT IGNORE INTO enrollment_schedules (enrollment_id, schedule_id) VALUES (?, ?)")
+                    ->execute([$data->id_enrollment, $schedRow['schedule_id']]);
             }
         }
+
+        // Auditoría
+        logAudit($pdo, 'update', 'enrollment', $data->id_enrollment, [
+            'action' => $data->action,
+            'new_status' => $newStatus
+        ]);
 
         $pdo->commit();
 
-        if (true) {
-            // Notify Student
-            // Fetch student email and course details
-            $stmtInfo = $pdo->prepare("
-                SELECT u.email, u.full_name, c.course_name
-                FROM enrollments e
-                JOIN usuario u ON e.student_id = u.id_usuario
-                JOIN courses c ON e.course_id = c.id_course
-                WHERE e.id_enrollment = ?
-            ");
-            $stmtInfo->execute([$data->id_enrollment]);
-            $info = $stmtInfo->fetch(PDO::FETCH_ASSOC);
+        // Notify Student
+        $stmtInfo = $pdo->prepare("
+            SELECT u.email, u.full_name, c.course_name
+            FROM enrollments e
+            JOIN usuario u ON e.student_id = u.id_usuario
+            JOIN courses c ON e.course_id = c.id_course
+            WHERE e.id_enrollment = ?
+        ");
+        $stmtInfo->execute([$data->id_enrollment]);
+        $info = $stmtInfo->fetch(PDO::FETCH_ASSOC);
 
-            if ($info) {
-                $emailService = new EmailService();
+        if ($info) {
+            $emailService = new EmailService();
 
-                if ($data->action === 'approve') {
-                    // Fetch the schedule details for this enrollment
-                    $stmtSched = $pdo->prepare("
-                        SELECT s.day, s.time_start, s.time_end
-                        FROM schedules s
-                        JOIN enrollments e ON e.schedule_id = s.id_schedule
-                        WHERE e.id_enrollment = ?
-                        UNION
-                        SELECT s.day, s.time_start, s.time_end
-                        FROM schedules s
-                        JOIN enrollment_schedules es ON es.schedule_id = s.id_schedule
-                        WHERE es.enrollment_id = ?
-                        ORDER BY FIELD(day,'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'), time_start
-                    ");
-                    $stmtSched->execute([$data->id_enrollment, $data->id_enrollment]);
-                    $scheduleDetails = $stmtSched->fetchAll(PDO::FETCH_ASSOC);
+            if ($data->action === 'approve') {
+                $stmtSched = $pdo->prepare("
+                    SELECT s.day, s.time_start, s.time_end FROM schedules s
+                    JOIN enrollments e ON e.schedule_id = s.id_schedule WHERE e.id_enrollment = ?
+                    UNION
+                    SELECT s.day, s.time_start, s.time_end FROM schedules s
+                    JOIN enrollment_schedules es ON es.schedule_id = s.id_schedule WHERE es.enrollment_id = ?
+                    ORDER BY FIELD(day,'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'), time_start
+                ");
+                $stmtSched->execute([$data->id_enrollment, $data->id_enrollment]);
+                $scheduleDetails = $stmtSched->fetchAll(PDO::FETCH_ASSOC);
 
-                    // If we have schedule details, send the rich confirmation; otherwise fallback
-                    if (!empty($scheduleDetails)) {
-                        $emailService->sendEnrollmentConfirmation(
-                            $info['email'],
-                            $info['full_name'],
-                            $info['course_name'],
-                            $scheduleDetails
-                        );
-                    } else {
-                        // Fallback: plain approval email without schedule detail
-                        $safeName   = htmlspecialchars($info['full_name']);
-                        $safeCourse = htmlspecialchars($info['course_name']);
-                        $emailService->sendEmail($info['email'],
-                            "🎉 ¡Inscripción aprobada! - Academia Jacquin",
-                            "<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'></head>
-                            <body style='margin:0;padding:0;background:#f0f2f5;font-family:Arial,sans-serif;'>
-                              <table width='100%' cellpadding='0' cellspacing='0' style='background:#f0f2f5;padding:30px 0;'>
-                                <tr><td align='center'>
-                                  <table width='600' cellpadding='0' cellspacing='0' style='max-width:600px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.10);'>
-                                    <tr><td style='background:#0d1926;padding:28px 40px;text-align:center;'>
-                                      <h1 style='margin:0;color:#E78C3B;font-size:24px;'>Academia Jacquin</h1>
-                                    </td></tr>
-                                    <tr><td style='padding:36px 40px;text-align:center;'>
-                                      <div style='width:64px;height:64px;background:#d4edda;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:30px;'>✅</div>
-                                      <h2 style='color:#0d1926;font-size:22px;text-align:center;margin:16px 0 12px;'>¡Felicidades, {$safeName}!</h2>
-                                      <p style='color:#4a5568;font-size:15px;line-height:1.7;text-align:center;margin:0 0 24px;'>
-                                        Tu inscripción al programa <strong>{$safeCourse}</strong> ha sido <span style='color:#27ae60;font-weight:bold;'>APROBADA</span>.<br>
-                                        Ya puedes acceder al curso desde tu panel de estudiante.
-                                      </p>
-                                      <a href='https://jacquin.infinityfreeapp.com/dashboard' style='display:inline-block;background:#E78C3B;color:#fff;text-decoration:none;padding:13px 32px;border-radius:8px;font-size:14px;font-weight:bold;'>Ir a mi Panel</a>
-                                    </td></tr>
-                                    <tr><td style='background:#f7f8fa;padding:14px 40px;text-align:center;border-top:1px solid #e2e8f0;'>
-                                      <p style='margin:0;color:#a0aec0;font-size:11px;'>© " . date('Y') . " Academia Jacquin</p>
-                                    </td></tr>
-                                  </table>
-                                </td></tr>
-                              </table>
-                            </body></html>"
-                        );
-                    }
-                } else {
-                    // Rejection email
-                    $safeName   = htmlspecialchars($info['full_name']);
-                    $safeCourse = htmlspecialchars($info['course_name']);
-                    $emailService->sendEmail($info['email'],
-                        "Actualización de tu solicitud - Academia Jacquin",
-                        "<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'></head>
-                        <body style='margin:0;padding:0;background:#f0f2f5;font-family:Arial,sans-serif;'>
-                          <table width='100%' cellpadding='0' cellspacing='0' style='background:#f0f2f5;padding:30px 0;'>
-                            <tr><td align='center'>
-                              <table width='600' cellpadding='0' cellspacing='0' style='max-width:600px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.10);'>
-                                <tr><td style='background:#0d1926;padding:28px 40px;text-align:center;'>
-                                  <h1 style='margin:0;color:#E78C3B;font-size:24px;'>Academia Jacquin</h1>
-                                </td></tr>
-                                <tr><td style='padding:36px 40px;'>
-                                  <h2 style='color:#0d1926;font-size:20px;margin:0 0 12px;'>Hola, {$safeName}</h2>
-                                  <p style='color:#4a5568;font-size:15px;line-height:1.7;margin:0 0 20px;'>
-                                    Lamentamos informarte que en esta ocasión tu solicitud para el programa <strong>{$safeCourse}</strong> no pudo ser procesada.
-                                  </p>
-                                  <p style='color:#4a5568;font-size:15px;line-height:1.7;margin:0 0 24px;'>
-                                    Puedes contactarnos directamente para conocer más detalles o explorar otras opciones disponibles.
-                                  </p>
-                                  <table width='100%'><tr><td align='center'>
-                                    <a href='https://jacquin.infinityfreeapp.com/contactanos' style='display:inline-block;background:#0d1926;color:#E78C3B;text-decoration:none;padding:13px 32px;border-radius:8px;font-size:14px;font-weight:bold;border:2px solid #E78C3B;'>Contáctanos</a>
-                                  </td></tr></table>
-                                </td></tr>
-                                <tr><td style='background:#f7f8fa;padding:14px 40px;text-align:center;border-top:1px solid #e2e8f0;'>
-                                  <p style='margin:0;color:#a0aec0;font-size:11px;'>© " . date('Y') . " Academia Jacquin</p>
-                                </td></tr>
-                              </table>
-                            </td></tr>
-                          </table>
-                        </body></html>"
-                    );
+                if (!empty($scheduleDetails)) {
+                    $emailService->sendEnrollmentConfirmation($info['email'], $info['full_name'], $info['course_name'], $scheduleDetails);
                 }
+            } else {
+                // Rejection: Simplified message
+                $emailService->sendEmail($info['email'], "Actualización de tu solicitud - Academia Jacquin", "Hola {$info['full_name']}, tu solicitud para el curso {$info['course_name']} ha sido rechazada.");
             }
-
-            echo json_encode(["success" => true, "message" => "Solicitud actualizada a " . $newStatus]);
         }
+
+        echo json_encode(["success" => true, "message" => "Solicitud actualizada a " . $newStatus]);
 
     } catch (Exception $e) {
         if ($pdo->inTransaction()) $pdo->rollBack();
@@ -164,4 +91,3 @@ if (!empty($data->id_enrollment) && !empty($data->action)) {
 } else {
     echo json_encode(["success" => false, "message" => "Datos incompletos."]);
 }
-?>

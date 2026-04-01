@@ -18,16 +18,32 @@ if (!isset($data->course_id) || !isset($data->day) || !isset($data->time_start) 
 }
 
 try {
+    $quota = isset($data->quota) ? intval($data->quota) : 15;
+    // Handle id_docente or id_usuario depending on what frontend sends
+    $teacherId = !empty($data->id_docente) ? intval($data->id_docente) : ( !empty($data->id_usuario) ? intval($data->id_usuario) : null );
+
     if (isset($data->id_schedule) && $data->id_schedule > 0) {
         // UPDATE
-        $stmt = $pdo->prepare("UPDATE schedules SET day = ?, time_start = ?, time_end = ? WHERE id_schedule = ?");
-        $stmt->execute([$data->day, $data->time_start, $data->time_end, $data->id_schedule]);
+        $stmt = $pdo->prepare("UPDATE schedules SET day = ?, time_start = ?, time_end = ?, quota = ?, teacher_id = ? WHERE id_schedule = ?");
+        $stmt->execute([$data->day, $data->time_start, $data->time_end, $quota, $teacherId, $data->id_schedule]);
+
+        // Sync with schedule_teachers junction table (Modern mapping)
+        $pdo->prepare("DELETE FROM schedule_teachers WHERE id_schedule = ?")->execute([$data->id_schedule]);
+        if ($teacherId) {
+            $pdo->prepare("INSERT INTO schedule_teachers (id_schedule, id_teacher) VALUES (?, ?)")->execute([$data->id_schedule, $teacherId]);
+        }
+
         echo json_encode(["success" => true, "message" => "Horario actualizado."]);
     } else {
         // INSERT
-        // Note: Default quota is 15 based on previous scripts.
-        $stmt = $pdo->prepare("INSERT INTO schedules (id_course, day, time_start, time_end, quota) VALUES (?, ?, ?, ?, 15)");
-        $stmt->execute([$data->course_id, $data->day, $data->time_start, $data->time_end]);
+        $stmt = $pdo->prepare("INSERT INTO schedules (id_course, day, time_start, time_end, quota, teacher_id) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$data->course_id, $data->day, $data->time_start, $data->time_end, $quota, $teacherId]);
+        $newId = $pdo->lastInsertId();
+
+        if ($teacherId && $newId) {
+            $pdo->prepare("INSERT INTO schedule_teachers (id_schedule, id_teacher) VALUES (?, ?)")->execute([$newId, $teacherId]);
+        }
+
         echo json_encode(["success" => true, "message" => "Nuevo horario creado."]);
     }
 } catch (Exception $e) {

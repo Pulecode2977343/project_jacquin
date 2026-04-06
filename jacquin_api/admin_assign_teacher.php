@@ -7,6 +7,7 @@ header("Access-Control-Allow-Methods: POST");
 
 include_once 'config/connection.php';
 require_once 'helpers/auth_helper.php';
+require_once 'helpers/audit_helper.php';
 
 // Solo administradores pueden asignar docentes
 validateAdmin();
@@ -118,6 +119,13 @@ try {
     $pdo->prepare("UPDATE schedules SET teacher_id = ? WHERE id_schedule = ?")->execute([$legacyTeacher, $data->schedule_id]);
 
     $pdo->commit();
+
+    // Audit Log
+    logAudit($pdo, 'update', 'schedule', $data->schedule_id, [
+        'info' => "Se asignó docente(s) al horario",
+        'teacher_ids' => $teacherIds
+    ]);
+
     echo json_encode(["success" => true, "message" => "Docentes asignados correctamente."]);
 
 } catch (Exception $e) {

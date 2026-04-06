@@ -6,6 +6,7 @@ header("Access-Control-Allow-Methods: POST");
 
 include_once 'config/connection.php';
 require_once 'helpers/auth_helper.php';
+require_once 'helpers/audit_helper.php';
 
 // Protegemos el endpoint: Solo administradores
 validateAdmin();
@@ -33,6 +34,14 @@ try {
             $pdo->prepare("INSERT INTO schedule_teachers (id_schedule, id_teacher) VALUES (?, ?)")->execute([$data->id_schedule, $teacherId]);
         }
 
+        // Audit Log
+        logAudit($pdo, 'update', 'schedule', $data->id_schedule, [
+            'course_id' => $data->course_id,
+            'day' => $data->day,
+            'time' => $data->time_start . ' - ' . $data->time_end,
+            'quota' => $quota
+        ]);
+
         echo json_encode(["success" => true, "message" => "Horario actualizado."]);
     } else {
         // INSERT
@@ -43,6 +52,14 @@ try {
         if ($teacherId && $newId) {
             $pdo->prepare("INSERT INTO schedule_teachers (id_schedule, id_teacher) VALUES (?, ?)")->execute([$newId, $teacherId]);
         }
+
+        // Audit Log
+        logAudit($pdo, 'create', 'schedule', $newId, [
+            'course_id' => $data->course_id,
+            'day' => $data->day,
+            'time' => $data->time_start . ' - ' . $data->time_end,
+            'quota' => $quota
+        ]);
 
         echo json_encode(["success" => true, "message" => "Nuevo horario creado."]);
     }

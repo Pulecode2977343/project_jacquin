@@ -6,6 +6,7 @@ session_start();
 require_once 'config/cors.php';
 require_once 'config/connection.php';
 require_once 'helpers/PathHelper.php';
+require_once 'helpers/audit_helper.php';
 
 // Verify admin session
 if (!isset($_SESSION['user']) || $_SESSION['user']['id_rol'] != 1) {
@@ -82,7 +83,7 @@ try {
             throw new Exception("Error al guardar la imagen.");
         }
 
-        $image_url = "uploads/events/" . $image_filename;
+        $image_url = "public/uploads/events/" . $image_filename;
     }
 
     // Process media update
@@ -130,7 +131,7 @@ try {
             throw new Exception("Error al guardar el archivo multimedia.");
         }
 
-        $media_url = "uploads/events/" . $media_filename;
+        $media_url = "public/uploads/events/" . $media_filename;
     } elseif ($media_type === 'ninguno') {
         // Delete old media if switching to none
         if ($current['media_url'] && $current['media_type'] !== 'video_youtube' && file_exists($base_dir . $current['media_url'])) {
@@ -163,6 +164,12 @@ try {
     ])) {
         throw new Exception("Error al actualizar el evento.");
     }
+
+    // Audit Log
+    logAudit($pdo, 'update', 'event', $event_id, [
+        'title' => $title,
+        'changes' => 'Se actualizaron los datos del evento'
+    ]);
 
     echo json_encode([
         "success" => true,

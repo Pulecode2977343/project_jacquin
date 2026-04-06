@@ -3,6 +3,21 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 include_once 'config/connection.php';
+session_start();
+
+// Determinar si el usuario tiene permiso para ver el conteo de inscritos
+// Roles permitidos: 1 (Admin), 2 (Docente)
+// Cargos permitidos: 2 (Secretario/Recepcionista) en $_SESSION['positions']
+$canSeeEnrolled = false;
+if (isset($_SESSION['user_id'])) {
+    $role = (int)($_SESSION['id_rol'] ?? 0);
+    $positions = $_SESSION['positions'] ?? [];
+    if (!is_array($positions)) $positions = [];
+    
+    if ($role === 1 || $role === 2 || in_array(2, $positions) || in_array('2', $positions)) {
+        $canSeeEnrolled = true;
+    }
+}
 
 $course_id = isset($_GET['course_id']) ? intval($_GET['course_id']) : 0;
 
@@ -40,7 +55,7 @@ try {
         $stmt->execute([$course_id]);
         $schedules = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $mapped = array_map(function ($s) {
+        $mapped = array_map(function ($s) use ($canSeeEnrolled) {
             return [
                 'id_schedule' => (int) $s['id_schedule'],
                 'day' => $s['day'],
@@ -48,8 +63,8 @@ try {
                 'time_end' => $s['time_end'],
                 'teacher_id' => $s['teacher_id'], // Legacy
                 'teacher_name' => $s['teacher_name'] ? $s['teacher_name'] : 'Sin Asignar',
-                'quota' => $s['quota'],
-                'enrolled_count' => (int) $s['enrolled_count']
+                'quota' => $canSeeEnrolled ? (int)$s['quota'] : 0, 
+                'enrolled_count' => $canSeeEnrolled ? (int) $s['enrolled_count'] : 0
             ];
         }, $schedules);
 

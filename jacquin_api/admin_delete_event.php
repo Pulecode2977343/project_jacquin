@@ -6,6 +6,7 @@ session_start();
 require_once 'config/cors.php';
 require_once 'config/connection.php';
 require_once 'helpers/PathHelper.php';
+require_once 'helpers/audit_helper.php';
 
 // Verify admin session
 if (!isset($_SESSION['user']) || $_SESSION['user']['id_rol'] != 1) {
@@ -47,6 +48,9 @@ try {
     if ($event['media_url'] && $event['media_type'] !== 'video_youtube' && file_exists($base_path . $event['media_url'])) {
         @unlink($base_path . $event['media_url']);
     }
+
+    // Audit Log
+    logAudit($pdo, 'delete', 'event', $event_id, ['event_id' => $event_id]);
 
     echo json_encode([
         "success" => true,

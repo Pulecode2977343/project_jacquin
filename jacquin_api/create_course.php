@@ -2,6 +2,7 @@
 require_once __DIR__ . '/config/cors.php';
 require_once __DIR__ . '/config/connection.php';
 require_once __DIR__ . '/helpers/auth_helper.php';
+require_once __DIR__ . '/helpers/audit_helper.php';
 
 header('Content-Type: application/json');
 
@@ -24,6 +25,12 @@ try {
     ]);
 
     $course_id = $pdo->lastInsertId();
+
+    // Audit Log
+    logAudit($pdo, 'create', 'course', $course_id, [
+        'name' => $data->name,
+        'teacher_id' => $data->teacher_id
+    ]);
 
     echo json_encode(['success' => true, 'message' => 'Curso creado', 'id' => $course_id]);
 

@@ -45,6 +45,17 @@ try {
 
     $stmt->execute();
     $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Normalize paths (append public/ if missing)
+    foreach ($events as &$ev) {
+        if (!empty($ev['image_url']) && strpos($ev['image_url'], 'public/') !== 0) {
+            $ev['image_url'] = 'public/' . $ev['image_url'];
+        }
+        if (!empty($ev['media_url']) && strpos($ev['media_url'], 'uploads/') === 0 && strpos($ev['media_url'], 'public/') !== 0) {
+            $ev['media_url'] = 'public/' . $ev['media_url'];
+        }
+    }
+    unset($ev);
 
     echo json_encode([
         "success" => true,

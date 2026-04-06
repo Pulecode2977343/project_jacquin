@@ -6,6 +6,7 @@ header("Access-Control-Allow-Methods: POST");
 
 require_once __DIR__ . '/config/connection.php';
 require_once __DIR__ . '/helpers/auth_helper.php';
+require_once __DIR__ . '/helpers/audit_helper.php';
 
 // Protegemos el endpoint: Solo administradores
 validateAdmin();
@@ -28,6 +29,12 @@ if (!empty($data->id_course) && !empty($data->course_name)) {
             $data->price ?? 0, 
             $data->id_course
         ])) {
+            // Audit Log
+            logAudit($pdo, 'update', 'course', $data->id_course, [
+                'name' => $data->course_name,
+                'price' => $data->price ?? 0
+            ]);
+
             echo json_encode(["success" => true, "message" => "Curso actualizado correctamente."]);
         } else {
             echo json_encode(["success" => false, "message" => "Error al actualizar el curso."]);

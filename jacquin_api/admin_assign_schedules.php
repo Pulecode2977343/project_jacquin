@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 include_once 'config/connection.php';
 require_once 'helpers/auth_helper.php';
+require_once 'helpers/audit_helper.php';
 
 // Protegemos el endpoint: Solo administradores
 validateAdmin();
@@ -70,6 +71,12 @@ try {
     }
 
     $pdo->commit();
+
+    // Audit Log
+    logAudit($pdo, 'update', 'enrollment', $enrollmentId, [
+        'info' => "Se asignaron $inserted nuevo(s) horario(s)",
+        'schedule_ids' => $scheduleIds
+    ]);
 
     echo json_encode([
         "success" => true,

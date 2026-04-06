@@ -7,6 +7,19 @@ require_once __DIR__ . '/config/connection.php';
 
 header('Content-Type: application/json');
 
+session_start();
+$user_id = $_SESSION['user_id'] ?? null;
+$id_rol = $_SESSION['id_rol'] ?? null;
+$positions = $_SESSION['positions'] ?? [];
+
+if (!$user_id) {
+    http_response_code(401);
+    echo json_encode(["success" => false, "message" => "No auntenticado"]);
+    exit;
+}
+
+$canSeeEnrolled = ($id_rol == 1 || $id_rol == 2 || in_array(2, (array)$positions));
+
 try {
     $action = $_GET['action'] ?? '';
     $courseId = $_GET['course_id'] ?? null;
@@ -17,9 +30,12 @@ try {
         throw new Exception("Acción requerida");
 
     // ===============================================
-    // TEACHER: GET ROSTER (Lista de Estudiantes)
+    // TEACHER/ADMIN: GET ROSTER (Lista de Estudiantes)
     // ===============================================
     if ($action === 'get_roster') {
+        if (!$canSeeEnrolled) {
+            throw new Exception("Permisos insuficientes");
+        }
         if (!$courseId)
             throw new Exception("course_id requerido");
 
@@ -37,9 +53,12 @@ try {
     }
 
     // ===============================================
-    // TEACHER: GET STUDENTS FOR SPECIFIC SCHEDULE CHECKLIST
+    // TEACHER/ADMIN: GET STUDENTS FOR SPECIFIC SCHEDULE CHECKLIST
     // ===============================================
     if ($action === 'get_schedule_students') {
+        if (!$canSeeEnrolled) {
+            throw new Exception("Permisos insuficientes");
+        }
         if (!$scheduleId)
             throw new Exception("schedule_id requerido");
 
@@ -63,6 +82,11 @@ try {
     if ($action === 'get_my_assignments') {
         if (!$studentId)
             throw new Exception("student_id requerido");
+        
+        // Security: Student can only see their OWN assignments
+        if ($id_rol != 1 && $studentId != $user_id) {
+            throw new Exception("No autorizado para ver estas tareas");
+        }
 
         $sql = "SELECT DISTINCT a.*, c.course_name as course_name, 
                 s.status as submission_status, s.grade, s.feedback,
@@ -88,6 +112,11 @@ try {
     if ($action === 'get_my_notes') {
         if (!$studentId)
             throw new Exception("student_id requerido");
+
+        // Security: Student can only see their OWN notes
+        if ($id_rol != 1 && $studentId != $user_id) {
+            throw new Exception("No autorizado para ver estas notas");
+        }
 
         $sql = "SELECT n.*, c.course_name as course_name, u.full_name as teacher_name
                  FROM academic_notes n

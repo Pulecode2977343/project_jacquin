@@ -31,6 +31,8 @@ function validateAdmin() {
         echo json_encode(["success" => false, "message" => "Permisos insuficientes. Solo administradores pueden realizar esta acción."]);
         exit();
     }
+
+    return $_SESSION;
 }
 
 /**

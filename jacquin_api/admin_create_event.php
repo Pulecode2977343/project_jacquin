@@ -6,6 +6,7 @@ session_start();
 require_once 'config/cors.php';
 require_once 'config/connection.php';
 require_once 'helpers/PathHelper.php';
+require_once 'helpers/audit_helper.php';
 
 // Verify admin session
 if (!isset($_SESSION['user']) || $_SESSION['user']['id_rol'] != 1) {
@@ -67,7 +68,7 @@ try {
             throw new Exception("Error al guardar la imagen.");
         }
 
-        $image_url = "uploads/events/" . $image_filename;
+        $image_url = "public/uploads/events/" . $image_filename;
     }
 
     // Process media file upload (video, PDF, PPT)
@@ -109,7 +110,7 @@ try {
                 throw new Exception("Error al guardar el archivo multimedia.");
             }
 
-            $media_url = "uploads/events/" . $media_filename;
+            $media_url = "public/uploads/events/" . $media_filename;
         }
     }
 
@@ -136,6 +137,13 @@ try {
     }
 
     $event_id = $pdo->lastInsertId();
+
+    // Audit Log
+    logAudit($pdo, 'create', 'event', $event_id, [
+        'title' => $title,
+        'type' => $event_type,
+        'date' => $event_date
+    ]);
 
     echo json_encode([
         "success" => true,

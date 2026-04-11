@@ -8,6 +8,8 @@ header('Content-Type: application/json');
 try {
     require_once __DIR__ . '/config/cors.php';
     require_once __DIR__ . '/config/connection.php';
+    require_once __DIR__ . '/helpers/session_helper.php';
+
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception('Método no permitido. Use POST.');
@@ -57,13 +59,20 @@ try {
             if ($user['login_attempts'] >= 5) {
                 $updateFields[] = "force_password_reset = 1";
             }
+
             $msg = "Cuenta bloqueada por 10 minutos.";
         } else {
             $msg = "Credenciales incorrectas. Intentos restantes: " . (5 - $attempts);
         }
 
-        $params[] = $user['id_usuario'];
         $pdo->prepare("UPDATE usuario SET " . implode(", ", $updateFields) . " WHERE id_usuario = ?")->execute($params);
+        
+        // Registrar intento fallido crítico (bloqueo)
+        if ($attempts >= 5) {
+            require_once __DIR__ . '/helpers/audit_helper.php';
+            logAudit($pdo, 'account_locked', 'usuario', $user['id_usuario'], "Cuenta bloqueada por 10 minutos tras 5 intentos fallidos.");
+        }
+        
         throw new Exception($msg);
     }
 
@@ -77,22 +86,18 @@ try {
     $user['positions'] = array_map(fn($p) => (int)$p['position_id'], $positions);
 
     unset($user['password'], $user['login_attempts'], $user['locked_until'], $user['force_password_reset']);
-
-        $isHTTPS = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
-        session_set_cookie_params([
-            'lifetime' => 28800,
-            'path' => '/',
-            'secure' => $isHTTPS, // Solo secure en HTTPS
-            'httponly' => true,
-            'samesite' => 'Lax'
-        ]);
-        session_start();
+    
+    startSecureSession();
     
     $_SESSION['user_id'] = $user['id_usuario'];
     $_SESSION['full_name'] = $user['full_name'];
     $_SESSION['id_rol'] = $user['id_rol'];
     $_SESSION['positions'] = $user['positions'];
     $_SESSION['user'] = $user;
+
+    // Registrar Login en bitácora
+    require_once __DIR__ . '/helpers/audit_helper.php';
+    logAudit($pdo, 'login', 'usuario', $user['id_usuario'], "Inicio de sesión exitoso vía web.");
 
     echo json_encode(['success' => true, 'message' => 'Inicio de sesión exitoso', 'user' => $user]);
 

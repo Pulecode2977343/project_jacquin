@@ -4,9 +4,9 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('memory_limit', '512M'); // High memory for image manipulation
 
-header("Access-Control-Allow-Origin: *");
+require_once 'config/cors.php';
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+
 require_once 'helpers/PathHelper.php';
 
 $base_dir = PathHelper::getUploadBaseDir();

@@ -6,17 +6,9 @@
 
 function validateAdmin() {
     // Iniciamos sesión si no está iniciada
-    if (session_status() === PHP_SESSION_NONE) {
-        $isHTTPS = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443;
-        session_set_cookie_params([
-            'lifetime' => 28800,
-            'path' => '/',
-            'secure' => $isHTTPS,
-            'httponly' => true,
-            'samesite' => 'Lax'
-        ]);
-        session_start();
-    }
+    require_once __DIR__ . '/session_helper.php';
+    startSecureSession();
+
 
     // Verificamos si existe la sesión del usuario
     if (!isset($_SESSION['user_id']) || !isset($_SESSION['id_rol'])) {
@@ -39,9 +31,8 @@ function validateAdmin() {
  * Permite acceso a Admin (rol 1) O a usuarios con cargo de Secretario (id_position = 2)
  */
 function validateAdminOrSecretary($pdo) {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    require_once __DIR__ . '/session_helper.php';
+    startSecureSession();
 
     if (!isset($_SESSION['user_id']) || !isset($_SESSION['id_rol'])) {
         http_response_code(401);

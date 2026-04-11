@@ -91,6 +91,18 @@ try {
             error_log("Error enviando emails en registro: " . $emailError->getMessage());
         }
 
+        // 3. AUDIT LOG
+        try {
+            require_once __DIR__ . '/helpers/audit_helper.php';
+            logAudit($pdo, 'register', 'user', $newUserId, [
+                'full_name' => $fullName,
+                'email' => $email,
+                'course_interested' => $courseName ?? 'None'
+            ]);
+        } catch (Exception $auditError) {
+            error_log("Error en auditoría durante registro: " . $auditError->getMessage());
+        }
+
         echo json_encode(['success' => true, 'message' => 'Usuario registrado exitosamente']);
     } else {
         throw new Exception('Error al guardar en base de datos');

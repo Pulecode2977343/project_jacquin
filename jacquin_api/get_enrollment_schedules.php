@@ -5,7 +5,7 @@
  * GET /jacquin_api/get_enrollment_schedules.php?enrollment_id=15
  */
 
-header("Access-Control-Allow-Origin: *");
+require_once 'config/cors.php';
 header("Content-Type: application/json; charset=UTF-8");
 
 include_once 'config/connection.php';

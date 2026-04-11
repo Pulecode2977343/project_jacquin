@@ -3,9 +3,9 @@
  * Validate Schedule Conflict
  * Checks if a student has a time conflict with a new schedule.
  */
-header("Access-Control-Allow-Origin: *");
+require_once 'config/cors.php';
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+
 
 include_once 'config/connection.php';
 

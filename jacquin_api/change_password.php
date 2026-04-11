@@ -1,7 +1,7 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+require_once 'config/cors.php';
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+
 
 include_once 'config/connection.php';
 
@@ -19,6 +19,10 @@ if (!empty($data->id_usuario) && !empty($data->currentPassword) && !empty($data-
             $newHashed = password_hash($data->newPassword, PASSWORD_DEFAULT);
             $update = $pdo->prepare("UPDATE usuario SET password = ?, force_password_reset = 0, login_attempts = 0, locked_until = NULL WHERE id_usuario = ?");
             if ($update->execute([$newHashed, $data->id_usuario])) {
+                // Auditoría
+                require_once 'helpers/audit_helper.php';
+                logAudit($pdo, 'change_password', 'usuario', $data->id_usuario, "Cambio de contraseña realizado por el usuario.");
+
                 echo json_encode(["success" => true, "message" => "Contraseña actualizada."]);
             } else {
                 echo json_encode(["success" => false, "message" => "Error al actualizar."]);

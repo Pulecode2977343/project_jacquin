@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+require_once 'config/cors.php';
 header("Content-Type: application/json; charset=UTF-8");
 
 include_once 'config/connection.php';
@@ -31,9 +31,9 @@ if ($id_usuario > 0) {
                     e.course_id as id_course, 
                     c.course_name as course_name, 
                     e.status,
-                    s.day,
-                    s.time_start,
-                    s.time_end,
+                    s.day_of_week as day,
+                    s.start_time as time_start,
+                    s.end_time as time_end,
                     s.id_schedule,
                     u_prof.full_name as teacher_name,
                     u_prof.id_rol as teacher_role
@@ -44,7 +44,7 @@ if ($id_usuario > 0) {
                 LEFT JOIN schedule_teachers st ON s.id_schedule = st.id_schedule
                 LEFT JOIN usuario u_prof ON st.id_teacher = u_prof.id_usuario
                 WHERE e.student_id = ? AND e.status IN ('Activo', 'Pendiente', 'Pre-inscrito', 'Inscrito')
-                ORDER BY e.id_enrollment DESC, s.day
+                ORDER BY e.id_enrollment DESC, s.day_of_week
             ");
             $stmtEnroll->execute([$id_usuario]);
             $enrollRows = $stmtEnroll->fetchAll(PDO::FETCH_ASSOC);

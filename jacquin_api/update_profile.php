@@ -34,7 +34,13 @@ try {
     $stmt = $pdo->prepare($sql);
     
     if($stmt->execute([$fullName, $phone, $userId])) {
-        // Return updated data to update local session
+        // Auditoría
+        require_once __DIR__ . '/helpers/audit_helper.php';
+        logAudit($pdo, 'update_profile', 'usuario', $userId, [
+            'new_full_name' => $fullName,
+            'new_phone' => $phone
+        ]);
+
         echo json_encode(['success' => true, 'message' => 'Perfil actualizado']);
     } else {
         throw new Exception('Error al actualizar en la base de datos');

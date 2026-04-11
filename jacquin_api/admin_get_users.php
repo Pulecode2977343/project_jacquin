@@ -3,13 +3,25 @@
 ini_set('display_errors', 0);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
 
-include_once 'helpers/cors_helper.php';
-handleCors();
-require_once __DIR__ . '/config/connection.php';
+header('Content-Type: application/json; charset=UTF-8');
+require_once 'config/cors.php';
+require_once 'config/connection.php';
+require_once 'helpers/auth_helper.php';
 
-header('Content-Type: application/json');
+require_once 'helpers/session_helper.php';
+startSecureSession();
+
+file_put_contents(__DIR__ . "/delete_debug.log", "[" . date('Y-m-d H:i:s') . "] GET_USERS: Acceso detectado\n", FILE_APPEND);
 
 try {
+    $sessionInfo = "SessionID: " . session_id() . " | UserID: " . ($_SESSION['user_id'] ?? 'NONE') . " | Role: " . ($_SESSION['id_rol'] ?? 'NONE');
+    file_put_contents(__DIR__ . "/delete_debug.log", "[" . date('Y-m-d H:i:s') . "] GET_USERS AUTH: " . $sessionInfo . "\n", FILE_APPEND);
+
+    // Validar permisos: Solo Administrador (rol 1)
+
+    $admin = validateAdmin();
+
+
     // Consulta con conteo de acciones pendientes para estudiantes/aspirantes
     $sql = "
         SELECT u.id_usuario, u.full_name, u.email, u.id_rol, u.avatar_url,

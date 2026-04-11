@@ -291,14 +291,22 @@ const Events = () => {
                                         <div
                                             className="about-card-premium"
                                             style={{
-                                                backgroundImage: `url(${event.image_url ? (
-                                                    event.image_url.startsWith('assets/') ||
-                                                        event.image_url.startsWith('uploads/') ||
-                                                        event.image_url.startsWith('http') ||
-                                                        event.image_url.startsWith('data:')
-                                                        ? event.image_url
-                                                        : (event.image_url.startsWith('uploads') ? event.image_url : 'assets/' + event.image_url.replace(/^\//, ''))
-                                                ) : 'assets/images/hero/hero-banner.jpg'})`,
+                                                backgroundImage: `url(${(() => {
+                                                    if (!event.image_url) return 'assets/images/hero/hero-banner.jpg';
+                                                    
+                                                    let url = event.image_url;
+                                                    // Remove public/ prefix if prepended by backend
+                                                    if (url.startsWith('public/')) {
+                                                        url = url.substring(7);
+                                                    }
+                                                    
+                                                    if (url.startsWith('http') || url.startsWith('data:') || url.startsWith('assets/') || url.startsWith('uploads/')) {
+                                                        return url;
+                                                    }
+                                                    
+                                                    // Default to assets if nothing else matches
+                                                    return 'assets/' + url.replace(/^\//, '');
+                                                })()})`,
                                                 cursor: 'pointer'
                                             }}
                                             onClick={() => setSelectedEvent(event)}

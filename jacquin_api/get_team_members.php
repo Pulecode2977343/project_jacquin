@@ -6,7 +6,7 @@
  */
 
 header('Content-Type: application/json; charset=UTF-8');
-header('Access-Control-Allow-Origin: *');
+require_once 'config/cors.php';
 
 require_once __DIR__ . '/config/cors.php';
 require_once __DIR__ . '/config/connection.php';

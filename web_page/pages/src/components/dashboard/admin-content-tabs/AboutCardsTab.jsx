@@ -152,7 +152,13 @@ const AboutCardsTab = () => {
                   <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
                     Imagen
                   </label>
-                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: '0.5rem', 
+                    marginBottom: '0.5rem', 
+                    flexDirection: window.innerWidth < 400 ? 'column' : 'row',
+                    alignItems: 'stretch'
+                  }}>
                     <input
                       type="text"
                       value={editForm.imageUrl || ''}
@@ -166,8 +172,7 @@ const AboutCardsTab = () => {
                         borderRadius: '6px',
                         color: '#fff',
                         fontFamily: 'inherit',
-                        fontSize: '0.9rem',
-                        minWidth: '200px'
+                        fontSize: '0.9rem'
                       }}
                     />
                     <label style={{
@@ -182,20 +187,29 @@ const AboutCardsTab = () => {
                       whiteSpace: 'nowrap',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.3rem'
+                      justifyContent: 'center',
+                      gap: '0.3rem',
+                      minWidth: '100px'
                     }}>
                       <i className="bi bi-upload"></i> Subir
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                              setEditForm({ ...editForm, imageUrl: event.target?.result });
-                            };
-                            reader.readAsDataURL(file);
+                            try {
+                              if (window.showToast) window.showToast('Subiendo imagen...', 'info');
+                              const res = await ApiService.uploadAboutCardImage(file);
+                              if (res.success) {
+                                setEditForm({ ...editForm, imageUrl: res.url });
+                                if (window.showToast) window.showToast('Imagen cargada', 'success');
+                              } else {
+                                if (window.showToast) window.showToast('Error: ' + res.error, 'error');
+                              }
+                            } catch (err) {
+                              if (window.showToast) window.showToast('Error de conexión', 'error');
+                            }
                           }
                         }}
                         style={{ display: 'none' }}
@@ -205,11 +219,12 @@ const AboutCardsTab = () => {
                   {editForm.imageUrl && (
                     <div style={{
                       width: '100%',
-                      height: '100px',
-                      background: `url('${editForm.imageUrl}') center / cover`,
-                      borderRadius: '6px',
+                      height: '110px',
+                      background: `url('${editForm.imageUrl.startsWith('http') || editForm.imageUrl.startsWith('data:') ? editForm.imageUrl : ApiService.BASE_URL + editForm.imageUrl}') center / cover`,
+                      borderRadius: '8px',
                       border: '1px solid rgba(147, 182, 238, 0.2)',
-                      marginTop: '0.5rem'
+                      marginTop: '0.8rem',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
                     }}></div>
                   )}
                 </div>

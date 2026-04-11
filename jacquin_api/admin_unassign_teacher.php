@@ -1,7 +1,7 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+require_once 'config/cors.php';
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
+
 // Created: 2026-01-20 - Unassign teacher from all schedules of a course
 
 include_once 'config/connection.php';

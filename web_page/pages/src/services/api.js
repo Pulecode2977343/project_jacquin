@@ -8,9 +8,11 @@ export const API_CONFIG = {
     get BASE_URL() {
         const path = window.location.pathname;
         const host = window.location.hostname;
-        const url = host === 'localhost' || host === '127.0.0.1' || host.includes('share.zrok.io')
+        const url = host.includes('share.zrok.io')
             ? "/jacquin_api/"
-            : (path.includes('/pages/') ? "../../jacquin_api/" : "./jacquin_api/");
+            : (host === 'localhost' || host === '127.0.0.1' 
+                ? "http://localhost:8080/jacquin_api/" 
+                : (path.includes('/pages/') ? "../../jacquin_api/" : "./jacquin_api/"));
 
         console.log(`[ApiService-React] Host: ${host} | Base URL: ${url}`);
         return url;
@@ -136,6 +138,7 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}login.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
+                credentials: 'include',
                 body: JSON.stringify({ email, password })
             });
             return await response.json();
@@ -149,6 +152,7 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}register.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(userData)
             });
             const text = await response.text();
@@ -168,6 +172,7 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}recover_request.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
+                credentials: 'include',
                 body: JSON.stringify({ email })
             });
             return await response.json();
@@ -182,6 +187,7 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}recover_verify.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
+                credentials: 'include',
                 body: JSON.stringify({ email, code })
             });
             return await response.json();
@@ -196,6 +202,7 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}recover_reset.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
+                credentials: 'include',
                 body: JSON.stringify({ email, code, new_password: newPassword })
             });
             return await response.json();
@@ -498,6 +505,7 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}change_password.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
+                credentials: 'include',
                 body: JSON.stringify({ id_usuario, currentPassword, newPassword })
             });
             return await this.handleResponse(response);
@@ -537,6 +545,7 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_inventory_delete.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
+                credentials: 'include',
                 body: JSON.stringify({ id_item })
             });
             return await this.handleResponse(response);
@@ -559,6 +568,7 @@ const ApiService = {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_upload_hero.php`, {
                 method: 'POST',
+                credentials: 'include',
                 body: formData
             });
             const text = await response.text();
@@ -774,6 +784,7 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}request_ticket.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
+                credentials: 'include',
                 body: JSON.stringify(data)
             });
             return await response.json();
@@ -1162,7 +1173,9 @@ const ApiService = {
     // NOTIFICATIONS
     async getPendingActions(userId, roleId) {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}check_pending_actions.php?user_id=${userId}&role_id=${roleId}`);
+            const response = await fetch(`${API_CONFIG.BASE_URL}check_pending_actions.php?user_id=${userId}&role_id=${roleId}`, {
+                credentials: 'include'
+            });
             return await response.json();
         } catch (error) {
             return { success: false, message: "Error comprobando alertas." };
@@ -1372,6 +1385,106 @@ const ApiService = {
             return await this.handleResponse(response);
         } catch (error) {
             return { success: false, message: "Error al actualizar configuración" };
+        }
+    },
+
+    // ==========================================
+    // PERSONAL Y ASISTENCIA (NUEVOS MÓDULOS)
+    // ==========================================
+
+    async staffCheckin(id_usuario, action) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}staff_checkin.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify({ id_usuario, action }),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error en control de personal" };
+        }
+    },
+
+    async getStaffStatus(id_usuario) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}staff_checkin.php?id_usuario=${id_usuario}`, {
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error obteniendo estado de entrada" };
+        }
+    },
+
+    async submitPermissionRequest(data) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}permission_requests.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify(data),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error enviando solicitud de permiso" };
+        }
+    },
+
+    async getPermissionRequests(userId = null, all = false) {
+        try {
+            let url = `${API_CONFIG.BASE_URL}permission_requests.php?`;
+            if (all) url += `all=true`;
+            else url += `id_usuario=${userId}`;
+
+            const response = await fetch(url, {
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error obteniendo solicitudes" };
+        }
+    },
+
+    async handlePermissionRequest(idRequest, status, adminNotes = '') {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}permission_requests.php`, {
+                method: "PATCH",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify({ id_request: idRequest, status, admin_notes: adminNotes }),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error procesando solicitud" };
+        }
+    },
+
+    async saveAttendance(scheduleId, date, students, recordedBy) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_attendance.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify({ schedule_id: scheduleId, date, students, recorded_by: recordedBy }),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error guardando asistencia" };
+        }
+    },
+
+    async getAttendance(scheduleId, date) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_attendance.php?schedule_id=${scheduleId}&date=${date}`, {
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error cargando asistencia" };
         }
     }
 };

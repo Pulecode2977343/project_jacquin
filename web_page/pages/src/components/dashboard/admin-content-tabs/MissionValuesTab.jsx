@@ -193,7 +193,13 @@ const MissionValuesTab = () => {
                   <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem', textAlign: 'left' }}>
                     Imagen (Opcional)
                   </label>
-                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: '0.5rem', 
+                    marginBottom: '0.5rem',
+                    flexDirection: window.innerWidth < 400 ? 'column' : 'row',
+                    alignItems: 'stretch'
+                  }}>
                     <input
                       type="text"
                       value={editForm.imageUrl || ''}
@@ -223,7 +229,9 @@ const MissionValuesTab = () => {
                       whiteSpace: 'nowrap',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.3rem'
+                      justifyContent: 'center',
+                      gap: '0.3rem',
+                      minWidth: '100px'
                     }}>
                       <i className="bi bi-upload"></i> Subir
                       <input
@@ -233,12 +241,17 @@ const MissionValuesTab = () => {
                           const file = e.target.files?.[0];
                           if (file) {
                             try {
+                              if (window.showToast) window.showToast('Subiendo...', 'info');
                               const res = await ApiService.uploadAboutCardImage(file);
                               if (res.success) {
-                                setEditForm({ ...editForm, imageUrl: res.data.file_path });
+                                setEditForm({ ...editForm, imageUrl: res.url });
+                                if (window.showToast) window.showToast('Imagen cargada', 'success');
+                              } else {
+                                if (window.showToast) window.showToast('Error: ' + res.error, 'error');
                               }
                             } catch (err) {
                               console.error("Upload error", err);
+                              if (window.showToast) window.showToast('Error de conexión', 'error');
                             }
                           }
                         }}
@@ -250,7 +263,7 @@ const MissionValuesTab = () => {
                     <div style={{
                       width: '100%',
                       height: '80px',
-                      background: `url('${editForm.imageUrl}') center / cover`,
+                      background: `url('${editForm.imageUrl.startsWith('http') || editForm.imageUrl.startsWith('data:') ? editForm.imageUrl : ApiService.BASE_URL + editForm.imageUrl}') center / cover`,
                       borderRadius: '6px',
                       border: '1px solid rgba(147, 182, 238, 0.2)',
                       marginTop: '0.5rem'

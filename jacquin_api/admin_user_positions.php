@@ -26,7 +26,7 @@ try {
                 $stmt = $pdo->prepare("
                     SELECT 
                         up.*,
-                        p.name as position_name,
+                        p.position_name,
                         p.icon as position_icon,
                         p.description as position_description,
                         u.full_name as assigned_by_name
@@ -51,7 +51,7 @@ try {
                         u.full_name,
                         u.email,
                         u.email,
-                        r.nombre_rol as rol_name,
+                        r.descripcion as rol_name,
                         admin.full_name as assigned_by_name
                     FROM user_positions up
                     JOIN usuario u ON up.user_id = u.id_usuario
@@ -70,7 +70,7 @@ try {
                 $stmt = $pdo->query("
                     SELECT 
                         up.*,
-                        p.name as position_name,
+                        p.position_name,
                         p.icon as position_icon,
                         u.full_name,
                         u.email
@@ -125,9 +125,9 @@ try {
             }
 
             // Obtener nombre del cargo para el mensaje
-            $posStmt = $pdo->prepare("SELECT name FROM positions WHERE id_position = ?");
+            $posStmt = $pdo->prepare("SELECT position_name FROM positions WHERE id_position = ?");
             $posStmt->execute([$data['position_id']]);
-            $posName = $posStmt->fetch(PDO::FETCH_ASSOC)['name'] ?? 'Cargo';
+            $posName = $posStmt->fetch(PDO::FETCH_ASSOC)['position_name'] ?? 'Cargo';
 
             // Auditoría
             logAudit($pdo, 'update', 'user_position', $data['user_id'], ['position' => $posName, 'action' => 'assignment']);

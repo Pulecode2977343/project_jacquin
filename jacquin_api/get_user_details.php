@@ -17,7 +17,7 @@ $result = [
 if ($id_usuario > 0) {
     try {
         // 1. User Info
-        $stmt = $pdo->prepare("SELECT id_usuario, full_name, email, n_phone, avatar_url, id_rol FROM usuario WHERE id_usuario = ?");
+        $stmt = $pdo->prepare("SELECT id_usuario, full_name, email, n_phone, address, avatar_url, id_rol FROM usuario WHERE id_usuario = ?");
         $stmt->execute([$id_usuario]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -108,7 +108,7 @@ if ($id_usuario > 0) {
             }
 
             // 3. Teaching (Teacher) - Optimized join and grouping
-            if ($user['id_rol'] == 2) {
+            if ($user['id_rol'] == 3) {
                 $stmtTeach = $pdo->prepare("
                     SELECT 
                         c.id_course,
@@ -172,6 +172,30 @@ if ($id_usuario > 0) {
 
                 $result['teaching'] = array_values($coursesMap);
             }
+
+            // 4. Positions & Functions (Administrative/Staff)
+            $stmtPos = $pdo->prepare("
+                SELECT 
+                    up.id as association_id,
+                    p.id_position,
+                    p.position_name,
+                    p.position_description,
+                    up.assigned_at,
+                    up.is_active
+                FROM user_positions up
+                JOIN positions p ON up.position_id = p.id_position
+                WHERE up.user_id = ? AND up.is_active = 1
+                ORDER BY up.assigned_at DESC
+            ");
+            $stmtPos->execute([$id_usuario]);
+            $positions = $stmtPos->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($positions as &$pos) {
+                $stmtFunc = $pdo->prepare("SELECT function_text FROM position_functions WHERE position_id = ?");
+                $stmtFunc->execute([$pos['id_position']]);
+                $pos['functions'] = $stmtFunc->fetchAll(PDO::FETCH_COLUMN);
+            }
+            $result['positions'] = $positions;
 
         }
 

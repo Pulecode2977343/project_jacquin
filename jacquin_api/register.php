@@ -51,8 +51,8 @@ try {
     // Hash Password
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Rol por defecto: 3 (Estudiante)
-    $defaultRole = 3;
+    // Rol por defecto: 4 (Estudiante)
+    $defaultRole = 4;
 
     // Insertar Usuario
     $sql = "INSERT INTO usuario (full_name, email, password, n_phone, id_rol) VALUES (?, ?, ?, ?, ?)";

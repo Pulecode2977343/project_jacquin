@@ -1,10 +1,29 @@
+<?php
+/**
+ * admin_update_course_teacher.php
+ * Endpoint para asignar el docente principal de un curso.
+ */
+include_once 'helpers/cors_helper.php';
+handleCors();
+header("Content-Type: application/json; charset=UTF-8");
+
+include_once 'config/connection.php';
+require_once 'helpers/auth_helper.php';
+
+validateAdminOrSecretary($pdo);
+
+$data = json_decode(file_get_contents("php://input"), true);
+
+if (!isset($data['course_id'])) {
+    echo json_encode(['success' => false, 'message' => 'Faltan datos (course_id)']);
+    exit;
 }
 
 $course_id = $data['course_id'];
 $teacher_id = isset($data['teacher_id']) ? $data['teacher_id'] : null;
 
 try {
-    // If teacher_id provided, verify role
+    // Si se provee teacher_id, verificar que el usuario existe y es docente (id_rol 2)
     if ($teacher_id) {
         $stmtUser = $pdo->prepare("SELECT id_rol FROM usuario WHERE id_usuario = ?");
         $stmtUser->execute([$teacher_id]);

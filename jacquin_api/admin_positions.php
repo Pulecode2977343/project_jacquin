@@ -22,7 +22,8 @@ try {
 
             $sql = "
                 SELECT 
-                    p.*,
+                    p.id_position, p.position_name, p.icon, p.description, p.is_predefined, p.is_visible, 
+                    p.access_level, p.responsibilities,
                     COUNT(DISTINCT pf.id_function) as functions_count,
                     COUNT(DISTINCT up.id) as assigned_users_count
                 FROM positions p
@@ -34,7 +35,7 @@ try {
                 $sql .= " WHERE p.is_visible = 1";
             }
 
-            $sql .= " GROUP BY p.id_position ORDER BY p.is_predefined DESC, p.name ASC";
+            $sql .= " GROUP BY p.id_position ORDER BY p.is_predefined DESC, p.position_name ASC";
 
             $stmt = $pdo->query($sql);
             $positions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -52,14 +53,16 @@ try {
             }
 
             $stmt = $pdo->prepare("
-                INSERT INTO positions (name, icon, description, is_predefined, created_by)
-                VALUES (?, ?, ?, 0, ?)
+                INSERT INTO positions (position_name, icon, description, is_predefined, created_by, access_level, responsibilities)
+                VALUES (?, ?, ?, 0, ?, ?, ?)
             ");
             $stmt->execute([
                 $data['name'],
                 $data['icon'] ?? '👤',
                 $data['description'] ?? null,
-                $data['created_by'] ?? null
+                $data['created_by'] ?? null,
+                $data['access_level'] ?? 'Básico',
+                $data['responsibilities'] ?? ''
             ]);
 
             $positionId = $pdo->lastInsertId();
@@ -99,7 +102,7 @@ try {
             $params = [];
 
             if (isset($data['name'])) {
-                $updates[] = "name = ?";
+                $updates[] = "position_name = ?";
                 $params[] = $data['name'];
             }
             if (isset($data['icon'])) {

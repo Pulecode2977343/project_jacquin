@@ -30,17 +30,35 @@ const ApiService = {
     /**
      * Helper for authenticated GET requests
      */
-    async fetchWithAuth(endpoint) {
+    async fetchWithAuth(endpoint, options = {}) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}${endpoint}`, {
-                method: "GET",
-                headers: API_CONFIG.HEADERS,
-                credentials: 'include'
+                method: options.method || "GET",
+                headers: {
+                    ...API_CONFIG.HEADERS,
+                    ...(options.headers || {})
+                },
+                credentials: 'include',
+                body: options.body
             });
             return await this.handleResponse(response);
         } catch (error) {
             console.error(`[ApiService] Error fetching ${endpoint}:`, error);
             throw error;
+        }
+    },
+
+    async syncSession() {
+        try {
+            const res = await this.fetchWithAuth('sync_session.php');
+            if (res.success && res.user) {
+                this.saveSession(res.user);
+                return res.user;
+            }
+            return null;
+        } catch (e) {
+            console.error("Error syncing session:", e);
+            return null;
         }
     },
 

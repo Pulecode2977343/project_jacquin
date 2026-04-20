@@ -17,8 +17,8 @@ function validateAdmin() {
         exit();
     }
 
-    // Verificamos que sea administrador (rol 1)
-    if ($_SESSION['id_rol'] != 1) {
+    // Verificamos que sea administrador (rol 1 o 2)
+    if (!in_array(intval($_SESSION['id_rol']), [1, 2])) {
         http_response_code(403);
         echo json_encode(["success" => false, "message" => "Permisos insuficientes. Solo administradores pueden realizar esta acción."]);
         exit();

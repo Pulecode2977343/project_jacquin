@@ -24,12 +24,16 @@ try {
 
     // Consulta con conteo de acciones pendientes para estudiantes/aspirantes
     $sql = "
-        SELECT u.id_usuario, u.full_name, u.email, u.id_rol, u.avatar_url,
+        SELECT u.id_usuario, u.full_name, u.email, u.id_rol, u.avatar_url, u.n_phone, u.address,
         (
             SELECT COUNT(*) FROM enrollments e
             WHERE e.student_id = u.id_usuario
               AND e.status IN ('Pendiente', 'Pre-inscrito')
-        ) AS pending_actions
+        ) AS pending_actions,
+        (
+            SELECT COUNT(*) FROM user_positions up
+            WHERE up.user_id = u.id_usuario AND up.is_active = 1
+        ) AS position_count
         FROM usuario u
         ORDER BY u.id_usuario DESC
     ";

@@ -17,28 +17,26 @@ try {
 
     $input = json_decode(file_get_contents('php://input'), true);
 
-    if (!isset($input['id_usuario']) || !isset($input['full_name'])) {
+    $userId = $input['id_usuario'] ?? $input['id'] ?? 0;
+    $fullName = trim($input['full_name'] ?? $input['fullName'] ?? '');
+    $phone = trim($input['n_phone'] ?? $input['nPhone'] ?? '');
+    $address = trim($input['address'] ?? '');
+
+    if (empty($fullName) || empty($userId)) {
         throw new Exception('Faltan datos obligatorios');
     }
 
-    $userId = $input['id_usuario'];
-    $fullName = trim($input['full_name']);
-    $phone = trim($input['n_phone'] ?? '');
-
-    if(empty($fullName)) {
-        throw new Exception('El nombre no puede estar vacío');
-    }
-
     // Actualizar
-    $sql = "UPDATE usuario SET full_name = ?, n_phone = ? WHERE id_usuario = ?";
+    $sql = "UPDATE usuario SET full_name = ?, n_phone = ?, address = ? WHERE id_usuario = ?";
     $stmt = $pdo->prepare($sql);
     
-    if($stmt->execute([$fullName, $phone, $userId])) {
+    if($stmt->execute([$fullName, $phone, $address, $userId])) {
         // Auditoría
         require_once __DIR__ . '/helpers/audit_helper.php';
         logAudit($pdo, 'update_profile', 'usuario', $userId, [
             'new_full_name' => $fullName,
-            'new_phone' => $phone
+            'new_phone' => $phone,
+            'new_address' => $address
         ]);
 
         echo json_encode(['success' => true, 'message' => 'Perfil actualizado']);

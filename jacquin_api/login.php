@@ -23,7 +23,7 @@ try {
         throw new Exception('Por favor ingrese correo y contraseña.');
     }
 
-    $stmt = $pdo->prepare("SELECT id_usuario, full_name, email, password, id_rol, avatar_url, login_attempts, locked_until, force_password_reset FROM usuario WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT id_usuario, full_name, email, password, id_rol, avatar_url, n_phone, address, login_attempts, locked_until, force_password_reset FROM usuario WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 

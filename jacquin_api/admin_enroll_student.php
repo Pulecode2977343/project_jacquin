@@ -109,7 +109,7 @@ try {
             $course = $stmtCourse->fetch(PDO::FETCH_ASSOC);
 
             $placeholders = implode(',', array_fill(0, count($scheduleIds), '?'));
-            $stmtSched = $pdo->prepare("SELECT day, time_start, time_end FROM schedules WHERE id_schedule IN ({$placeholders})");
+            $stmtSched = $pdo->prepare("SELECT day_of_week as day, start_time, end_time FROM schedules WHERE id_schedule IN ({$placeholders})");
             $stmtSched->execute($scheduleIds);
             $scheduleDetails = $stmtSched->fetchAll(PDO::FETCH_ASSOC);
 

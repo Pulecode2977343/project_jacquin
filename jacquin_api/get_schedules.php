@@ -30,15 +30,16 @@ try {
         $stmt = $pdo->prepare("
             SELECT 
                 s.*, 
+                FIELD(s.day_of_week, 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo') as day_index,
                 (SELECT GROUP_CONCAT(u.full_name SEPARATOR ', ') 
                  FROM schedule_teachers st 
                  JOIN usuario u ON st.id_teacher = u.id_usuario 
                  WHERE st.id_schedule = s.id_schedule) as teacher_name,
                 (SELECT COUNT(*) FROM enrollment_schedules es WHERE es.schedule_id = s.id_schedule) as enrolled_count
             FROM schedules s
-            WHERE s.id_course = ?
+            WHERE s.course_id = ?
             ORDER BY 
-                CASE s.day
+                CASE s.day_of_week
                     WHEN 'Lunes' THEN 1
                     WHEN 'Martes' THEN 2
                     WHEN 'Miércoles' THEN 3
@@ -50,20 +51,32 @@ try {
                     WHEN 'Domingo' THEN 7
                     ELSE 8
                 END ASC,
-                s.time_start ASC
+                s.start_time ASC
         ");
         $stmt->execute([$course_id]);
         $schedules = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $mapped = array_map(function ($s) use ($canSeeEnrolled) {
+            $dayStr = mb_strtolower($s['day_of_week'], 'UTF-8');
+            $dayIndex = (int) $s['day_index'];
+            if ($dayIndex === 0) {
+                if (strpos($dayStr, 'lunes') !== false) $dayIndex = 1;
+                elseif (strpos($dayStr, 'martes') !== false) $dayIndex = 2;
+                elseif (strpos($dayStr, 'mi') !== false) $dayIndex = 3;
+                elseif (strpos($dayStr, 'jueves') !== false) $dayIndex = 4;
+                elseif (strpos($dayStr, 'viernes') !== false) $dayIndex = 5;
+                elseif (strpos($dayStr, 's') !== false && strpos($dayStr, 'bado') !== false) $dayIndex = 6;
+                elseif (strpos($dayStr, 'domingo') !== false) $dayIndex = 7;
+            }
             return [
                 'id_schedule' => (int) $s['id_schedule'],
-                'day' => $s['day'],
-                'time_start' => $s['time_start'],
-                'time_end' => $s['time_end'],
+                'day' => $s['day_of_week'],
+                'day_index' => $dayIndex,
+                'time_start' => $s['start_time'],
+                'time_end' => $s['end_time'],
                 'teacher_id' => $s['teacher_id'], // Legacy
                 'teacher_name' => $s['teacher_name'] ? $s['teacher_name'] : 'Sin Asignar',
-                'quota' => $canSeeEnrolled ? (int)$s['quota'] : 0, 
+                'quota' => $canSeeEnrolled ? (int)$s['max_students'] : 0, 
                 'enrolled_count' => $canSeeEnrolled ? (int) $s['enrolled_count'] : 0
             ];
         }, $schedules);

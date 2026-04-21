@@ -47,8 +47,8 @@ if ($course_id > 0) {
                        u_legacy.full_name as legacy_teacher_name
                 FROM schedules s
                 LEFT JOIN usuario u_legacy ON s.teacher_id = u_legacy.id_usuario 
-                WHERE s.id_course = ?
-                ORDER BY FIELD(s.day, 'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'), s.time_start
+                WHERE s.course_id = ?
+                ORDER BY FIELD(s.day_of_week, 'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'), s.start_time
             ");
             $stmtSched->execute([$course_id]);
             $schedules = $stmtSched->fetchAll(PDO::FETCH_ASSOC);
@@ -60,7 +60,7 @@ if ($course_id > 0) {
                 FROM schedule_teachers st
                 JOIN usuario u ON st.id_teacher = u.id_usuario
                 WHERE st.id_schedule IN (
-                    SELECT id_schedule FROM schedules WHERE id_course = ?
+                    SELECT id_schedule FROM schedules WHERE course_id = ?
                 )
             ");
             $stmtTeachers->execute([$course_id]);
@@ -103,7 +103,7 @@ if ($course_id > 0) {
                 if (!empty($enrollmentIds)) {
                     $inQuery = implode(',', array_fill(0, count($enrollmentIds), '?'));
                     $stmtStudSched = $pdo->prepare("
-                        SELECT es.enrollment_id, s.day, s.time_start, s.time_end
+                        SELECT es.enrollment_id, s.day_of_week as day, s.start_time as time_start, s.end_time as time_end
                         FROM enrollment_schedules es
                         JOIN schedules s ON es.schedule_id = s.id_schedule
                         WHERE es.enrollment_id IN ($inQuery)
@@ -121,13 +121,13 @@ if ($course_id > 0) {
             // Fetching schedules via enrollment_schedules table
             $stmtPending = $pdo->prepare("
                 SELECT e.id_enrollment, u.full_name as student_name, u.email, e.status, DATE_FORMAT(e.enrollment_date, '%Y-%m-%d') as request_date,
-                       (SELECT GROUP_CONCAT(CONCAT(s.day, ' ', LEFT(s.time_start, 5), '-', LEFT(s.time_end, 5)) SEPARATOR ', ')
+                       (SELECT GROUP_CONCAT(CONCAT(s.day_of_week, ' ', LEFT(s.start_time, 5), '-', LEFT(s.end_time, 5)) SEPARATOR ', ')
                         FROM enrollment_schedules es
                         JOIN schedules s ON es.schedule_id = s.id_schedule
                         WHERE es.enrollment_id = e.id_enrollment) as schedule_info,
                        (SELECT s.id_schedule FROM enrollment_schedules es JOIN schedules s ON es.schedule_id = s.id_schedule WHERE es.enrollment_id = e.id_enrollment LIMIT 1) as id_schedule,
-                       (SELECT s.day FROM enrollment_schedules es JOIN schedules s ON es.schedule_id = s.id_schedule WHERE es.enrollment_id = e.id_enrollment LIMIT 1) as day,
-                       (SELECT s.time_start FROM enrollment_schedules es JOIN schedules s ON es.schedule_id = s.id_schedule WHERE es.enrollment_id = e.id_enrollment LIMIT 1) as time_start
+                       (SELECT s.day_of_week FROM enrollment_schedules es JOIN schedules s ON es.schedule_id = s.id_schedule WHERE es.enrollment_id = e.id_enrollment LIMIT 1) as day,
+                       (SELECT s.start_time FROM enrollment_schedules es JOIN schedules s ON es.schedule_id = s.id_schedule WHERE es.enrollment_id = e.id_enrollment LIMIT 1) as time_start
                 FROM enrollments e
                 JOIN usuario u ON e.student_id = u.id_usuario
                 WHERE e.course_id = ? AND e.status IN ('Pendiente', 'Pre-inscrito')

@@ -21,19 +21,19 @@ try {
     $stmt = $pdo->prepare("
         SELECT 
             es.schedule_id,
-            s.day,
-            s.time_start,
-            s.time_end,
-            s.quota,
+            s.day_of_week,
+            s.start_time as time_start,
+            s.end_time as time_end,
+            s.max_students as quota,
             u.full_name as teacher_name,
             c.course_name
         FROM enrollment_schedules es
         JOIN schedules s ON es.schedule_id = s.id_schedule
-        LEFT JOIN courses c ON s.id_course = c.id_course
+        LEFT JOIN courses c ON s.course_id = c.id_course
         LEFT JOIN usuario u ON COALESCE(s.teacher_id, c.teacher_id) = u.id_usuario
         WHERE es.enrollment_id = ?
         ORDER BY 
-            CASE s.day
+            CASE s.day_of_week
                 WHEN 'Lunes' THEN 1
                 WHEN 'Martes' THEN 2
                 WHEN 'Miércoles' THEN 3
@@ -45,16 +45,30 @@ try {
                 WHEN 'Domingo' THEN 7
                 ELSE 8
             END ASC,
-            s.time_start ASC
+            s.start_time ASC
     ");
 
     $stmt->execute([$enrollmentId]);
     $schedules = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $mapped = array_map(function($s) {
+        $dayStr = mb_strtolower($s['day_of_week'], 'UTF-8');
+        $dayIndex = 0;
+        if (strpos($dayStr, 'lunes') !== false) $dayIndex = 1;
+        elseif (strpos($dayStr, 'martes') !== false) $dayIndex = 2;
+        elseif (strpos($dayStr, 'mi') !== false) $dayIndex = 3;
+        elseif (strpos($dayStr, 'jueves') !== false) $dayIndex = 4;
+        elseif (strpos($dayStr, 'viernes') !== false) $dayIndex = 5;
+        elseif (strpos($dayStr, 's') !== false && strpos($dayStr, 'bado') !== false) $dayIndex = 6;
+        elseif (strpos($dayStr, 'domingo') !== false) $dayIndex = 7;
+        
+        $s['day_index'] = $dayIndex;
+        return $s;
+    }, $schedules);
 
     echo json_encode([
         "success" => true,
-        "data" => $schedules,
-        "count" => count($schedules)
+        "data" => $mapped,
+        "count" => count($mapped)
     ]);
 
 } catch (PDOException $e) {

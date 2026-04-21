@@ -18,16 +18,16 @@ try {
     $stmt = $pdo->prepare("
         SELECT 
             s.id_schedule,
-            s.id_course,
-            s.day as day_of_week,
-            s.time_start,
-            s.time_end,
-            s.quota,
+            s.course_id,
+            s.day_of_week,
+            s.start_time,
+            s.end_time,
+            s.max_students as quota,
             s.teacher_id,
-            c.name as course_name,
+            c.course_name,
             u.full_name as teacher_name
         FROM schedules s
-        LEFT JOIN courses c ON s.id_course = c.id_course
+        LEFT JOIN courses c ON s.course_id = c.id_course
         LEFT JOIN usuario u ON s.teacher_id = u.id_usuario
         WHERE s.id_schedule = ?
     ");

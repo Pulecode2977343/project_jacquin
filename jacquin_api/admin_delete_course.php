@@ -5,8 +5,10 @@
  * Realiza una limpieza completa de dependencias asociadas.
  */
 
-session_start();
-require_once 'config/cors.php';
+require_once 'helpers/cors_helper.php';
+handleCors();
+header("Content-Type: application/json; charset=UTF-8");
+
 require_once 'config/connection.php';
 require_once 'helpers/auth_helper.php';
 require_once 'helpers/audit_helper.php';
@@ -35,39 +37,44 @@ try {
     $pdo->beginTransaction();
 
     // -- Limpieza de dependencias profundas --
+    // Función auxiliar para eliminar de tablas que pueden no existir
+    $safeDelete = function($sql, $params) use ($pdo) {
+        try {
+            $pdo->prepare($sql)->execute($params);
+        } catch (PDOException $e) {
+            // Tabla no existe, ignorar silenciosamente
+        }
+    };
 
     // Obtener todos los horarios de este curso para limpiar sus hijos
-    $stmtS = $pdo->prepare("SELECT id_schedule FROM schedules WHERE id_course = ?");
-    $stmtS->execute([$id_course]);
-    $schedules = $stmtS->fetchAll(PDO::FETCH_COLUMN);
+    $stmtS = $pdo->prepare("SELECT id_schedule FROM schedules WHERE course_id = ?");
+    try {
+        $stmtS->execute([$id_course]);
+        $schedules = $stmtS->fetchAll(PDO::FETCH_COLUMN);
+    } catch (PDOException $e) {
+        // Intentar con id_course
+        $stmtS = $pdo->prepare("SELECT id_schedule FROM schedules WHERE id_course = ?");
+        $stmtS->execute([$id_course]);
+        $schedules = $stmtS->fetchAll(PDO::FETCH_COLUMN);
+    }
 
     if (!empty($schedules)) {
         $inQuery = implode(',', array_fill(0, count($schedules), '?'));
         
-        // Tabla: enrollment_schedules (vínculo horario-estudiante)
-        $pdo->prepare("DELETE FROM enrollment_schedules WHERE schedule_id IN ($inQuery)")->execute($schedules);
-        
-        // Tabla: schedule_teachers (vínculo horario-docente)
-        $pdo->prepare("DELETE FROM schedule_teachers WHERE id_schedule IN ($inQuery)")->execute($schedules);
-        
-        // Tabla: attendance
-        $pdo->prepare("DELETE FROM attendance WHERE id_schedule IN ($inQuery)")->execute($schedules);
+        $safeDelete("DELETE FROM enrollment_schedules WHERE schedule_id IN ($inQuery)", $schedules);
+        $safeDelete("DELETE FROM schedule_teachers WHERE id_schedule IN ($inQuery)", $schedules);
+        $safeDelete("DELETE FROM attendance WHERE id_schedule IN ($inQuery)", $schedules);
     }
 
-    // Tabla: academic_notes (notas asociadas a este curso)
-    $pdo->prepare("DELETE FROM academic_notes WHERE course_id = ?")->execute([$id_course]);
-
-    // Tabla: course_assignments (docentes asignados como titulares)
-    $pdo->prepare("DELETE FROM course_assignments WHERE course_id = ?")->execute([$id_course]);
-
-    // Tabla: enrollments (inscripciones activas o pendientes)
-    $pdo->prepare("DELETE FROM enrollments WHERE course_id = ?")->execute([$id_course]);
-
-    // Tabla: schedule_requests
-    $pdo->prepare("DELETE FROM schedule_requests WHERE course_id = ?")->execute([$id_course]);
+    // Tablas opcionales — eliminar si existen
+    $safeDelete("DELETE FROM academic_notes WHERE course_id = ?", [$id_course]);
+    $safeDelete("DELETE FROM course_assignments WHERE course_id = ?", [$id_course]);
+    $safeDelete("DELETE FROM enrollments WHERE course_id = ?", [$id_course]);
+    $safeDelete("DELETE FROM schedule_requests WHERE course_id = ?", [$id_course]);
 
     // Tabla: schedules (los horarios mismos)
-    $pdo->prepare("DELETE FROM schedules WHERE id_course = ?")->execute([$id_course]);
+    $safeDelete("DELETE FROM schedules WHERE course_id = ?", [$id_course]);
+    $safeDelete("DELETE FROM schedules WHERE id_course = ?", [$id_course]);
 
     // 4. POR ÚLTIMO: ELIMINAR EL CURSO
     $stmtDelete = $pdo->prepare("DELETE FROM courses WHERE id_course = ?");

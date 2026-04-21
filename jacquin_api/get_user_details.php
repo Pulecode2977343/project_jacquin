@@ -8,8 +8,8 @@ $id_usuario = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 $result = [
     'user_info' => null,
-    'enrolled' => [],
-    'teaching' => [],
+    'enrollments' => [],
+    'academic_load' => [],
     'functions' => [],
     'pending' => []
 ];
@@ -63,9 +63,11 @@ if ($id_usuario > 0) {
                         'id_enrollment' => (int) $eId,
                         'id_course' => (int) $row['id_course'],
                         'name' => $row['course_name'],
+                        'course_name' => $row['course_name'], // Añadido para consistencia con AdminUsersManager
                         'status' => $row['status'],
                         'teacher_name' => $tName,
                         'id_schedule' => $row['id_schedule'] ? (int) $row['id_schedule'] : null,
+                        'created_at' => $row['created_at'] ?? date('Y-m-d'), // Para sort y display
                         'schedules' => []
                     ];
                 }
@@ -84,9 +86,21 @@ if ($id_usuario > 0) {
                         if (!$schTeacher || $row['teacher_role'] == 1) {
                             $schTeacher = 'Por asignar';
                         }
+                        
+                        $dayStr = mb_strtolower($row['day'], 'UTF-8');
+                        $dayIndex = 0;
+                        if (strpos($dayStr, 'lu') !== false) $dayIndex = 1;
+                        elseif (strpos($dayStr, 'ma') !== false) $dayIndex = 2;
+                        elseif (strpos($dayStr, 'mi') !== false) $dayIndex = 3;
+                        elseif (strpos($dayStr, 'ju') !== false) $dayIndex = 4;
+                        elseif (strpos($dayStr, 'vi') !== false) $dayIndex = 5;
+                        elseif (strpos($dayStr, 's') !== false && strpos($dayStr, 'ba') !== false) $dayIndex = 6;
+                        elseif (strpos($dayStr, 'do') !== false) $dayIndex = 7;
+
                         $enrollMap[$eId]['schedules'][] = [
                             'id_schedule' => (int) $row['id_schedule'],
                             'day_of_week' => $row['day'],
+                            'day_index'   => $dayIndex,
                             'start_time' => $row['time_start'],
                             'end_time' => $row['time_end'],
                             'teacher_name' => $schTeacher
@@ -101,7 +115,7 @@ if ($id_usuario > 0) {
 
             foreach ($enrollMap as $item) {
                 if ($item['status'] === 'Activo') {
-                    $result['enrolled'][] = $item;
+                    $result['enrollments'][] = $item;
                 } else {
                     $result['pending'][] = $item;
                 }
@@ -114,18 +128,18 @@ if ($id_usuario > 0) {
                         c.id_course,
                         c.course_name,
                         s.id_schedule,
-                        s.day,
-                        s.time_start,
-                        s.time_end,
-                        s.quota,
+                        s.day_of_week as day,
+                        s.start_time as time_start,
+                        s.end_time as time_end,
+                        s.max_students as quota,
                         (SELECT COUNT(*) FROM enrollment_schedules es 
                          JOIN enrollments e ON es.enrollment_id = e.id_enrollment
                          WHERE es.schedule_id = s.id_schedule AND e.status = 'Activo') as student_count
                     FROM courses c
-                    LEFT JOIN schedules s ON c.id_course = s.id_course
+                    LEFT JOIN schedules s ON c.id_course = s.course_id
                     LEFT JOIN schedule_teachers st ON s.id_schedule = st.id_schedule
                     WHERE c.teacher_id = ? OR s.teacher_id = ? OR st.id_teacher = ?
-                    ORDER BY c.course_name ASC, s.day, s.time_start ASC
+                    ORDER BY c.course_name ASC, s.day_of_week, s.start_time ASC
                 ");
                 $stmtTeach->execute([$id_usuario, $id_usuario, $id_usuario]);
                 $teachingRaw = $stmtTeach->fetchAll(PDO::FETCH_ASSOC);
@@ -145,11 +159,26 @@ if ($id_usuario > 0) {
 
                     if ($t['id_schedule']) {
                         $sCount = (int) $t['student_count'];
+                        
+                        $dayStr = mb_strtolower($t['day'], 'UTF-8');
+                        $dayIndex = 0;
+                        if (strpos($dayStr, 'lu') !== false) $dayIndex = 1;
+                        elseif (strpos($dayStr, 'ma') !== false) $dayIndex = 2;
+                        elseif (strpos($dayStr, 'mi') !== false) $dayIndex = 3;
+                        elseif (strpos($dayStr, 'ju') !== false) $dayIndex = 4;
+                        elseif (strpos($dayStr, 'vi') !== false) $dayIndex = 5;
+                        elseif (strpos($dayStr, 's') !== false && strpos($dayStr, 'ba') !== false) $dayIndex = 6;
+                        elseif (strpos($dayStr, 'do') !== false) $dayIndex = 7;
+
                         $coursesMap[$cid]['schedules'][] = [
                             'id_schedule' => (int) $t['id_schedule'],
+                            'schedule_name' => $t['day'] . " " . $t['time_start'] . "-" . $t['time_end'], // Para consistencia
                             'day_of_week' => $t['day'],
+                            'day_index'   => $dayIndex,
                             'start_time' => $t['time_start'],
                             'end_time' => $t['time_end'],
+                            'time_start' => $t['time_start'], // Alias
+                            'time_end' => $t['time_end'], // Alias
                             'quota' => (int) $t['quota'],
                             'student_count' => $sCount
                         ];
@@ -170,7 +199,23 @@ if ($id_usuario > 0) {
                     $courseData['students'] = $stmtStudents->fetchAll(PDO::FETCH_ASSOC);
                 }
 
-                $result['teaching'] = array_values($coursesMap);
+                $academicLoadFlat = [];
+                foreach ($coursesMap as $c) {
+                    foreach ($c['schedules'] as $s) {
+                        $academicLoadFlat[] = [
+                            'id_course' => $c['id_course'],
+                            'course_name' => $c['name'],
+                            'id_schedule' => $s['id_schedule'],
+                            'schedule_name' => $s['schedule_name'],
+                            'day_of_week' => $s['day_of_week'],
+                            'day_index' => $s['day_index'],
+                            'time_start' => $s['time_start'],
+                            'time_end' => $s['time_end'],
+                            'student_count' => $s['student_count']
+                        ];
+                    }
+                }
+                $result['academic_load'] = $academicLoadFlat;
             }
 
             // 4. Positions & Functions (Administrative/Staff)
@@ -179,7 +224,7 @@ if ($id_usuario > 0) {
                     up.id as association_id,
                     p.id_position,
                     p.position_name,
-                    p.position_description,
+                    p.description as position_description,
                     up.assigned_at,
                     up.is_active
                 FROM user_positions up

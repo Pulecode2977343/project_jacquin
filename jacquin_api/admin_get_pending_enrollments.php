@@ -21,9 +21,9 @@ try {
             c.course_name,
             c.id_course as course_id,
             -- Agrupar horarios para mostrar resumen
-            GROUP_CONCAT(CONCAT(s.day, ' ', LEFT(s.time_start, 5)) SEPARATOR ', ') as schedule_day,
-            MAX(s.time_start) as time_start,
-            MAX(s.time_end) as time_end,
+            GROUP_CONCAT(CONCAT(s.day_of_week, ' ', LEFT(s.start_time, 5)) SEPARATOR ', ') as schedule_day,
+            MAX(s.start_time) as time_start,
+            MAX(s.end_time) as time_end,
             MAX(s.id_schedule) as id_schedule,
             MAX(st.id_teacher) as teacher_id,
             MAX(t.full_name) as teacher_name

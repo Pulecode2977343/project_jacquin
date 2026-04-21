@@ -7,7 +7,7 @@
 function checkScheduleConflict($pdo, $studentId, $newScheduleId)
 {
     // 1. Get New Schedule Details
-    $stmtNew = $pdo->prepare("SELECT day, time_start, time_end FROM schedules WHERE id_schedule = ?");
+    $stmtNew = $pdo->prepare("SELECT day_of_week as day, start_time as time_start, end_time as time_end FROM schedules WHERE id_schedule = ?");
     $stmtNew->execute([$newScheduleId]);
     $newSchedule = $stmtNew->fetch(PDO::FETCH_ASSOC);
 
@@ -22,7 +22,7 @@ function checkScheduleConflict($pdo, $studentId, $newScheduleId)
     // 2. Get Existing Active/Pending Schedules for the student
     // Union to capture both single-day and multi-day models
     $sql = "
-        SELECT s.id_schedule, s.day, s.time_start, s.time_end, c.course_name
+        SELECT s.id_schedule, s.day_of_week as day, s.start_time as time_start, s.end_time as time_end, c.course_name
         FROM enrollments e
         JOIN schedules s ON e.schedule_id = s.id_schedule
         JOIN courses c ON e.course_id = c.id_course
@@ -31,7 +31,7 @@ function checkScheduleConflict($pdo, $studentId, $newScheduleId)
         
         UNION
         
-        SELECT s.id_schedule, s.day, s.time_start, s.time_end, c.course_name
+        SELECT s.id_schedule, s.day_of_week as day, s.start_time as time_start, s.end_time as time_end, c.course_name
         FROM enrollments e
         JOIN enrollment_schedules es ON e.id_enrollment = es.enrollment_id
         JOIN schedules s ON es.schedule_id = s.id_schedule

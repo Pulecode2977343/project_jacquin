@@ -21,8 +21,8 @@ if (!isset($data->schedule_id) || (!isset($data->teacher_id) && !isset($data->te
 
 try {
     // 1. Get details of the target schedule
-    // FIX: Use correct columns: time_start, time_end, and id_course
-    $stmtTarget = $pdo->prepare("SELECT day, time_start, time_end, course_name FROM schedules s JOIN courses c ON s.id_course = c.id_course WHERE id_schedule = ?");
+    // FIX: Use correct columns: start_time, end_time, and course_id
+    $stmtTarget = $pdo->prepare("SELECT day_of_week, start_time, end_time, course_name FROM schedules s JOIN courses c ON s.course_id = c.id_course WHERE id_schedule = ?");
     $stmtTarget->execute([$data->schedule_id]);
     $targetSchedule = $stmtTarget->fetch(PDO::FETCH_ASSOC);
 
@@ -73,22 +73,22 @@ try {
             SELECT c.course_name 
             FROM schedule_teachers st
             JOIN schedules s ON st.id_schedule = s.id_schedule
-            JOIN courses c ON s.id_course = c.id_course
+            JOIN courses c ON s.course_id = c.id_course
             WHERE st.id_teacher = :tid 
-            AND s.day = :day 
+            AND s.day_of_week = :day 
             AND s.id_schedule != :sid
             AND (
-                (s.time_start < :end_time AND s.time_end > :start_time)
+                (s.start_time < :end_time AND s.end_time > :start_time)
             )
         ";
         
         $stmtConflict = $pdo->prepare($query);
         $stmtConflict->execute([
             ':tid' => $tid,
-            ':day' => $targetSchedule['day'],
+            ':day' => $targetSchedule['day_of_week'],
             ':sid' => $data->schedule_id,
-            ':start_time' => $targetSchedule['time_start'],
-            ':end_time' => $targetSchedule['time_end']
+            ':start_time' => $targetSchedule['start_time'],
+            ':end_time' => $targetSchedule['end_time']
         ]);
 
         $conflict = $stmtConflict->fetch(PDO::FETCH_ASSOC);

@@ -340,8 +340,8 @@ const Hero = () => {
                 {/* Tagline: cambia por slide, re-anima con key */}
                 {/* Tagline: solo muestra si hay texto (por slide o global en modo estático) */}
                 {(() => {
-                    const text = hasCarousel
-                        ? (slides[activeIdx]?.label || '')
+                    const text = (hasCarousel && slides[activeIdx]?.label)
+                        ? slides[activeIdx].label
                         : config.hero_tagline;
                     return text
                         ? <p key={`tagline-${activeIdx}`} className="hero-tagline hero-tagline-animated">{text}</p>

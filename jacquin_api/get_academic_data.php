@@ -5,20 +5,31 @@
 require_once __DIR__ . '/config/cors.php';
 require_once __DIR__ . '/config/connection.php';
 
+require_once __DIR__ . '/helpers/session_helper.php';
+
 header('Content-Type: application/json');
 
-session_start();
+startSecureSession();
 $user_id = $_SESSION['user_id'] ?? null;
 $id_rol = $_SESSION['id_rol'] ?? null;
 $positions = $_SESSION['positions'] ?? [];
 
 if (!$user_id) {
     http_response_code(401);
-    echo json_encode(["success" => false, "message" => "No auntenticado"]);
+    $debugInfo = [
+        "time" => date('Y-m-d H:i:s'),
+        "session_id" => session_id(),
+        "session_status" => session_status(),
+        "session_data" => $_SESSION,
+        "cookies" => $_COOKIE,
+        "action" => $_GET['action'] ?? 'none'
+    ];
+    file_put_contents(__DIR__ . '/debug_401.log', json_encode($debugInfo, JSON_PRETTY_PRINT) . PHP_EOL, FILE_APPEND);
+    echo json_encode(["success" => false, "message" => "No auntenticado", "debug" => $debugInfo]);
     exit;
 }
 
-$canSeeEnrolled = ($id_rol == 1 || $id_rol == 2 || in_array(2, (array)$positions));
+$canSeeEnrolled = ($id_rol == 1 || $id_rol == 2 || $id_rol == 3 || in_array(2, (array)$positions));
 
 try {
     $action = $_GET['action'] ?? '';

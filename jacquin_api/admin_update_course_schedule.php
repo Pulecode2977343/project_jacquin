@@ -7,6 +7,7 @@ header("Access-Control-Allow-Methods: POST");
 include_once 'config/connection.php';
 require_once 'helpers/auth_helper.php';
 require_once 'helpers/audit_helper.php';
+require_once 'helpers/conflict_helper.php';
 
 validateAdmin();
 
@@ -74,6 +75,21 @@ try {
     $quota = isset($data->quota) ? intval($data->quota) : 15;
     // Handle id_docente or id_usuario depending on what frontend sends
     $teacherId = !empty($data->id_docente) ? intval($data->id_docente) : ( !empty($data->id_usuario) ? intval($data->id_usuario) : null );
+
+    // --- TEACHER CONFLICT CHECK ---
+    if ($teacherId) {
+        $excludeId = (isset($data->id_schedule) && $data->id_schedule > 0) ? (int)$data->id_schedule : 0;
+        
+        // Usamos el índice numérico para la validación de conflictos (más seguro)
+        $dayIndex = (int)$data->day; 
+        
+        $conflict = checkTeacherTimeConflict($pdo, (int)$teacherId, $dayIndex, $startTime, $endTime, $excludeId);
+        
+        if ($conflict['status'] === 'error') {
+            echo json_encode(["success" => false, "message" => $conflict['message']]);
+            exit;
+        }
+    }
 
     if (isset($data->id_schedule) && $data->id_schedule > 0) {
         // UPDATE

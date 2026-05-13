@@ -3,7 +3,22 @@ require_once 'config/cors.php';
 header("Content-Type: application/json; charset=UTF-8");
 
 include_once 'config/connection.php';
-session_start();
+require_once __DIR__ . '/helpers/session_helper.php';
+startSecureSession();
+
+// Helper to normalize corrupted ENUM day names
+function normalizeDayName($raw) {
+    if (!$raw) return $raw;
+    $lower = mb_strtolower($raw, 'UTF-8');
+    if (strpos($lower, 'lu') === 0) return 'Lunes';
+    if (strpos($lower, 'ma') === 0) return 'Martes';
+    if (strpos($lower, 'mi') === 0) return 'Miércoles';
+    if (strpos($lower, 'ju') === 0) return 'Jueves';
+    if (strpos($lower, 'vi') === 0) return 'Viernes';
+    if (strpos($lower, 's') === 0) return 'Sábado';
+    if (strpos($lower, 'do') === 0) return 'Domingo';
+    return $raw;
+}
 
 // Determinar si el usuario tiene permiso para ver el conteo de inscritos
 // Roles permitidos: 1 (Admin), 2 (Docente)
@@ -70,7 +85,7 @@ try {
             }
             return [
                 'id_schedule' => (int) $s['id_schedule'],
-                'day' => $s['day_of_week'],
+                'day' => normalizeDayName($s['day_of_week']),
                 'day_index' => $dayIndex,
                 'time_start' => $s['start_time'],
                 'time_end' => $s['end_time'],

@@ -6,8 +6,8 @@ header("Content-Type: application/json; charset=UTF-8");
 include_once 'config/connection.php';
 
 try {
-    // Role 3 = Profesor (NOT 2, which is Administrador)
-    $stmt = $pdo->prepare("SELECT id_usuario, full_name, avatar_url FROM usuario WHERE id_rol = 3 ORDER BY full_name ASC");
+    // Role 1=Admin, 2=SubAdmin, 3=Profesor, 6=Secretaria
+    $stmt = $pdo->prepare("SELECT id_usuario, full_name, avatar_url FROM usuario WHERE id_rol IN (1, 2, 3, 6) ORDER BY full_name ASC");
     $stmt->execute();
     $teachers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

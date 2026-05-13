@@ -10,7 +10,8 @@ import React, { useState, useEffect } from 'react';
 const HeroCarouselTab = () => {
   // CONFIGURACIÓN GLOBAL DEL CARRUSEL
   const [globalConfig, setGlobalConfig] = useState({
-    buttonText: ''
+    buttonText: '',
+    tagline: ''
   });
 
   const [slides, setSlides] = useState([]);
@@ -20,7 +21,10 @@ const HeroCarouselTab = () => {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [editingGlobalConfig, setEditingGlobalConfig] = useState(false);
-  const [globalConfigForm, setGlobalConfigForm] = useState({ ...globalConfig });
+  const [globalConfigForm, setGlobalConfigForm] = useState({ 
+    buttonText: globalConfig.buttonText,
+    tagline: globalConfig.tagline
+  });
 
   // ── Cargar configuración del hero desde API ──────────────────────────────
   useEffect(() => {
@@ -31,10 +35,11 @@ const HeroCarouselTab = () => {
         const data = await response.json();
 
         if (data.success) {
-          // Mapear hero_cta_text a buttonText
+          // Mapear hero_cta_text a buttonText y hero_tagline a tagline
           const btnText = data.hero_cta_text || 'Descubre nuestros programas';
-          setGlobalConfig({ buttonText: btnText });
-          setGlobalConfigForm({ buttonText: btnText });
+          const tagLine = data.hero_tagline || 'Donde la pasión se convierte en arte';
+          setGlobalConfig({ buttonText: btnText, tagline: tagLine });
+          setGlobalConfigForm({ buttonText: btnText, tagline: tagLine });
 
           // Procesar hero_slides desde API
           if (Array.isArray(data.hero_slides)) {
@@ -138,6 +143,7 @@ const HeroCarouselTab = () => {
         body: JSON.stringify({
           action: 'update_hero',
           hero_cta_text: globalConfig.buttonText,
+          hero_tagline: globalConfig.tagline,
           hero_slides: payloadSlides
         })
       });
@@ -286,7 +292,10 @@ const HeroCarouselTab = () => {
           <button
             onClick={() => {
               setEditingGlobalConfig(!editingGlobalConfig);
-              if (!editingGlobalConfig) setGlobalConfigForm({ ...globalConfig });
+              if (!editingGlobalConfig) setGlobalConfigForm({ 
+                buttonText: globalConfig.buttonText,
+                tagline: globalConfig.tagline 
+              });
             }}
             style={{
               padding: '0.5rem 1rem',
@@ -312,7 +321,26 @@ const HeroCarouselTab = () => {
               <input
                 type="text"
                 value={globalConfigForm.buttonText}
-                onChange={(e) => setGlobalConfigForm({ buttonText: e.target.value })}
+                onChange={(e) => setGlobalConfigForm({ ...globalConfigForm, buttonText: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '0.7rem',
+                  background: 'rgba(0, 0, 0, 0.3)',
+                  border: '1px solid rgba(231, 140, 59, 0.2)',
+                  borderRadius: '6px',
+                  color: '#fff',
+                  fontFamily: 'inherit',
+                  fontSize: '0.9rem',
+                  marginBottom: '1rem'
+                }}
+              />
+              <label style={{ fontSize: '0.85rem', opacity: 0.7, display: 'block', marginBottom: '0.3rem' }}>
+                Tagline Global (Fallback / Por defecto)
+              </label>
+              <input
+                type="text"
+                value={globalConfigForm.tagline}
+                onChange={(e) => setGlobalConfigForm({ ...globalConfigForm, tagline: e.target.value })}
                 style={{
                   width: '100%',
                   padding: '0.7rem',
@@ -352,6 +380,7 @@ const HeroCarouselTab = () => {
                       body: JSON.stringify({
                         action: 'update_hero',
                         hero_cta_text: globalConfigForm.buttonText,
+                        hero_tagline: globalConfigForm.tagline,
                         hero_slides: payloadSlides
                       })
                     });
@@ -400,13 +429,23 @@ const HeroCarouselTab = () => {
             </div>
           </div>
         ) : (
-          <div>
-            <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>
-              Texto del Botón
-            </p>
-            <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500 }}>
-              {globalConfig.buttonText}
-            </p>
+          <div style={{ display: 'flex', gap: '2rem' }}>
+            <div>
+              <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>
+                Texto del Botón
+              </p>
+              <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500 }}>
+                {globalConfig.buttonText}
+              </p>
+            </div>
+            <div>
+              <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', opacity: 0.6, textTransform: 'uppercase', fontWeight: 600 }}>
+                Tagline Global
+              </p>
+              <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500 }}>
+                {globalConfig.tagline}
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -585,9 +624,9 @@ const HeroCarouselTab = () => {
                       marginBottom: '1rem',
                       fontSize: '0.85rem'
                     }}>
-                      <strong>ℹ️ Configuración Global</strong>
+                      <strong>ℹ️ Configuración Visual</strong>
                       <p style={{ margin: '0.5rem 0 0 0', opacity: 0.8, fontSize: '0.8rem' }}>
-                        Botón y mensaje son únicos para todos los slides
+                        El botón es global, pero el mensaje es específico de este slide.
                       </p>
                     </div>
 

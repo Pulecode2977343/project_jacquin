@@ -75,18 +75,17 @@ const ApiService = {
         }
 
         if (response.status === 401) {
-            console.warn("[ApiService] Sesión expirada o no autorizada (401).");
+            console.warn(`[ApiService] Sesión expirada o no autorizada (401) en endpoint: ${response.url}`);
+            try {
+                const text = await response.text();
+                console.warn("[ApiService] 401 Response Text:", text);
+            } catch (e) {}
             localStorage.removeItem("jam_user_session");
             const path = window.location.pathname;
             if (!path.includes('login') && path !== '/' && path !== '') {
                 window.location.href = "/login?error=session_expired";
             }
-            try {
-                const err = JSON.parse(text);
-                return { success: false, message: err.message || "Sesión expirada", unauthorized: true };
-            } catch (e) {
-                return { success: false, message: "Sesión expirada", unauthorized: true };
-            }
+            return { success: false, message: "Sesión expirada", unauthorized: true };
         }
 
         try {
@@ -797,6 +796,72 @@ const ApiService = {
         }
     },
 
+    // ==========================================
+    // STUDENT ASSIGNMENTS & ATTENDANCE
+    // ==========================================
+
+    async getStudentAssignments(studentId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}student_assignments.php?student_id=${studentId}`, {
+                method: "GET",
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error obteniendo tareas." };
+        }
+    },
+
+    async submitStudentAssignment(formData) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}student_assignments.php`, {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            });
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                return { success: false, message: "Error del servidor." };
+            }
+        } catch (error) {
+            return { success: false, message: "Error enviando entrega." };
+        }
+    },
+
+    async getStudentAttendance(studentId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}student_attendance.php?student_id=${studentId}`, {
+                method: "GET",
+                headers: API_CONFIG.HEADERS,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error obteniendo asistencia." };
+        }
+    },
+
+    async uploadStudentExcuse(formData) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}student_attendance.php`, {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            });
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                return { success: false, message: "Error del servidor." };
+            }
+        } catch (error) {
+            return { success: false, message: "Error enviando excusa." };
+        }
+    },
+
     async requestTicket(data) {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}request_ticket.php`, {
@@ -1234,13 +1299,38 @@ const ApiService = {
 
     async teacherCreateAssignment(data) {
         try {
+            const isFormData = data instanceof FormData;
+            const headers = isFormData ? {} : { ...API_CONFIG.HEADERS };
+            
             const response = await fetch(`${API_CONFIG.BASE_URL}teacher_assignments.php`, {
                 method: "POST",
-                headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(data)
+                headers: headers,
+                body: isFormData ? data : JSON.stringify(data),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) { return { success: false, message: "Error creando tarea." }; }
+    },
+
+    async teacherGetSubmissions(assignmentId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_submissions.php?assignment_id=${assignmentId}`, {
+                credentials: 'include'
+            });
+            return await response.json();
+        } catch (error) { return { success: false, message: "Error obteniendo entregas." }; }
+    },
+
+    async teacherGradeSubmission(data) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_submissions.php`, {
+                method: "POST",
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify(data),
+                credentials: 'include'
+            });
+            return await response.json();
+        } catch (error) { return { success: false, message: "Error calificando entrega." }; }
     },
 
     async teacherSaveAttendance(data) {
@@ -1248,7 +1338,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}teacher_attendance.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) { return { success: false, message: "Error guardando asistencia." }; }
@@ -1256,7 +1347,9 @@ const ApiService = {
 
     async teacherGetAttendance(scheduleId, date) {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_attendance.php?schedule_id=${scheduleId}&date=${date}`);
+            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_attendance.php?schedule_id=${scheduleId}&date=${date}`, {
+                credentials: 'include'
+            });
             return await response.json();
         } catch (error) { return { success: false, message: "Error obteniendo asistencia." }; }
     },
@@ -1266,7 +1359,8 @@ const ApiService = {
             const response = await fetch(`${API_CONFIG.BASE_URL}teacher_notes.php`, {
                 method: "POST",
                 headers: API_CONFIG.HEADERS,
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
+                credentials: 'include'
             });
             return await response.json();
         } catch (error) { return { success: false, message: "Error guardando nota." }; }
@@ -1274,20 +1368,47 @@ const ApiService = {
 
     async teacherGetAssignments(courseId) {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_assignments.php?course_id=${courseId}`);
+            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_assignments.php?course_id=${courseId}`, {
+                credentials: 'include'
+            });
             return await response.json();
         } catch (error) { return { success: false, message: "Error obteniendo tareas." }; }
     },
 
     async teacherGetNotes(studentId, courseId) {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_notes.php?student_id=${studentId}&course_id=${courseId}`);
+            const response = await fetch(`${API_CONFIG.BASE_URL}teacher_notes.php?student_id=${studentId}&course_id=${courseId}`, {
+                credentials: 'include'
+            });
             return await response.json();
         } catch (error) { return { success: false, message: "Error obteniendo notas." }; }
     },
 
     async teacherAddNote(data) {
         return this.teacherSaveNote(data);
+    },
+
+    async getStudentAttendance(studentId) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}student_attendance.php?student_id=${studentId}`, {
+                credentials: 'include'
+            });
+            return await response.json();
+        } catch (error) { return { success: false, message: "Error obteniendo asistencia." }; }
+    },
+
+    async uploadAttendanceExcuse(formData) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}student_attendance.php`, {
+                method: "POST",
+                headers: {
+                    // Fetch establece el Content-Type automáticamente con FormData
+                },
+                body: formData,
+                credentials: 'include'
+            });
+            return await response.json();
+        } catch (error) { return { success: false, message: "Error subiendo excusa." }; }
     },
 
     // MISSION & VALUES
@@ -1504,6 +1625,13 @@ const ApiService = {
         } catch (error) {
             return { success: false, message: "Error cargando asistencia" };
         }
+    },
+
+    getMediaUrl(path) {
+        if (!path) return '';
+        if (path.startsWith('http')) return path;
+        const serverRoot = API_CONFIG.BASE_URL.replace('jacquin_api/', '');
+        return `${serverRoot}${path}`;
     }
 };
 

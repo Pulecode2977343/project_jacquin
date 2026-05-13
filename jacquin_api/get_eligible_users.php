@@ -16,7 +16,7 @@ try {
             u.full_name,
             u.email,
             u.id_rol,
-            r.nombre_rol as rol_name
+            r.descripcion as rol_name
         FROM usuario u
         JOIN rol r ON u.id_rol = r.id_rol
         ORDER BY u.full_name ASC

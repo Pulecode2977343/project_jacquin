@@ -6,6 +6,20 @@ include_once 'config/connection.php';
 
 $id_usuario = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
+// Helper to normalize corrupted ENUM day names
+function normalizeDayName($raw) {
+    if (!$raw) return $raw;
+    $lower = mb_strtolower($raw, 'UTF-8');
+    if (strpos($lower, 'lu') === 0) return 'Lunes';
+    if (strpos($lower, 'ma') === 0) return 'Martes';
+    if (strpos($lower, 'mi') === 0) return 'Miércoles';
+    if (strpos($lower, 'ju') === 0) return 'Jueves';
+    if (strpos($lower, 'vi') === 0) return 'Viernes';
+    if (strpos($lower, 's') === 0) return 'Sábado';
+    if (strpos($lower, 'do') === 0) return 'Domingo';
+    return $raw;
+}
+
 $result = [
     'user_info' => null,
     'enrollments' => [],
@@ -31,6 +45,7 @@ if ($id_usuario > 0) {
                     e.course_id as id_course, 
                     c.course_name as course_name, 
                     e.status,
+                    e.enrollment_date,
                     s.day_of_week as day,
                     s.start_time as time_start,
                     s.end_time as time_end,
@@ -63,11 +78,11 @@ if ($id_usuario > 0) {
                         'id_enrollment' => (int) $eId,
                         'id_course' => (int) $row['id_course'],
                         'name' => $row['course_name'],
-                        'course_name' => $row['course_name'], // Añadido para consistencia con AdminUsersManager
+                        'course_name' => $row['course_name'],
                         'status' => $row['status'],
                         'teacher_name' => $tName,
                         'id_schedule' => $row['id_schedule'] ? (int) $row['id_schedule'] : null,
-                        'created_at' => $row['created_at'] ?? date('Y-m-d'), // Para sort y display
+                        'created_at' => $row['enrollment_date'] ?? date('Y-m-d'),
                         'schedules' => []
                     ];
                 }
@@ -99,7 +114,7 @@ if ($id_usuario > 0) {
 
                         $enrollMap[$eId]['schedules'][] = [
                             'id_schedule' => (int) $row['id_schedule'],
-                            'day_of_week' => $row['day'],
+                            'day_of_week' => normalizeDayName($row['day']),
                             'day_index'   => $dayIndex,
                             'start_time' => $row['time_start'],
                             'end_time' => $row['time_end'],
@@ -121,8 +136,8 @@ if ($id_usuario > 0) {
                 }
             }
 
-            // 3. Teaching (Teacher) - Optimized join and grouping
-            if ($user['id_rol'] == 3) {
+            // 3. Teaching (Teacher & Admin academic load) - Optimized join and grouping
+            if (in_array($user['id_rol'], [1, 2, 3, 6])) {
                 $stmtTeach = $pdo->prepare("
                     SELECT 
                         c.id_course,
@@ -170,15 +185,16 @@ if ($id_usuario > 0) {
                         elseif (strpos($dayStr, 's') !== false && strpos($dayStr, 'ba') !== false) $dayIndex = 6;
                         elseif (strpos($dayStr, 'do') !== false) $dayIndex = 7;
 
+                        $normalDay = normalizeDayName($t['day']);
                         $coursesMap[$cid]['schedules'][] = [
                             'id_schedule' => (int) $t['id_schedule'],
-                            'schedule_name' => $t['day'] . " " . $t['time_start'] . "-" . $t['time_end'], // Para consistencia
-                            'day_of_week' => $t['day'],
+                            'schedule_name' => $normalDay . " " . $t['time_start'] . "-" . $t['time_end'],
+                            'day_of_week' => $normalDay,
                             'day_index'   => $dayIndex,
                             'start_time' => $t['time_start'],
                             'end_time' => $t['time_end'],
-                            'time_start' => $t['time_start'], // Alias
-                            'time_end' => $t['time_end'], // Alias
+                            'time_start' => $t['time_start'],
+                            'time_end' => $t['time_end'],
                             'quota' => (int) $t['quota'],
                             'student_count' => $sCount
                         ];
@@ -216,6 +232,12 @@ if ($id_usuario > 0) {
                     }
                 }
                 $result['academic_load'] = $academicLoadFlat;
+                $result['teaching'] = $academicLoadFlat; // Alias for frontend hooks
+                $result['courses'] = array_values($coursesMap); // Array de cursos con sus estudiantes
+            } else {
+                $result['academic_load'] = [];
+                $result['teaching'] = [];
+                $result['courses'] = [];
             }
 
             // 4. Positions & Functions (Administrative/Staff)
@@ -236,7 +258,7 @@ if ($id_usuario > 0) {
             $positions = $stmtPos->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($positions as &$pos) {
-                $stmtFunc = $pdo->prepare("SELECT function_text FROM position_functions WHERE position_id = ?");
+                $stmtFunc = $pdo->prepare("SELECT description FROM position_functions WHERE position_id = ?");
                 $stmtFunc->execute([$pos['id_position']]);
                 $pos['functions'] = $stmtFunc->fetchAll(PDO::FETCH_COLUMN);
             }

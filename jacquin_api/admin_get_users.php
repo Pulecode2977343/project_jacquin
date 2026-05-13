@@ -33,7 +33,19 @@ try {
         (
             SELECT COUNT(*) FROM user_positions up
             WHERE up.user_id = u.id_usuario AND up.is_active = 1
-        ) AS position_count
+        ) AS position_count,
+        (
+            SELECT GROUP_CONCAT(p.position_name SEPARATOR ', ')
+            FROM user_positions up
+            JOIN positions p ON up.position_id = p.id_position
+            WHERE up.user_id = u.id_usuario AND up.is_active = 1
+        ) AS position_names,
+        (
+            SELECT GROUP_CONCAT(pf.description SEPARATOR ' | ')
+            FROM user_positions up
+            JOIN position_functions pf ON up.position_id = pf.position_id
+            WHERE up.user_id = u.id_usuario AND up.is_active = 1
+        ) AS position_functions_text
         FROM usuario u
         ORDER BY u.id_usuario DESC
     ";

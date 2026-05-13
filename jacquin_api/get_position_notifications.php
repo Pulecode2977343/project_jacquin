@@ -25,7 +25,7 @@ try {
                 up.id,
                 up.assigned_at,
                 p.id_position,
-                p.name as position_name,
+                p.position_name,
                 p.icon as position_icon,
                 admin.full_name as assigned_by_name
             FROM user_positions up

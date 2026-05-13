@@ -29,6 +29,11 @@ try {
                         p.position_name,
                         p.icon as position_icon,
                         p.description as position_description,
+                        (
+                            SELECT GROUP_CONCAT(pf.description SEPARATOR ' | ')
+                            FROM position_functions pf
+                            WHERE pf.position_id = p.id_position
+                        ) as functions_text,
                         u.full_name as assigned_by_name
                     FROM user_positions up
                     JOIN positions p ON up.position_id = p.id_position

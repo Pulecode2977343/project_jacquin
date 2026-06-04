@@ -23,12 +23,16 @@ try {
             s.start_time,
             s.end_time,
             s.max_students as quota,
-            s.teacher_id,
             c.course_name,
-            u.full_name as teacher_name
+            (SELECT GROUP_CONCAT(u.full_name SEPARATOR ', ') 
+             FROM schedule_teachers st 
+             JOIN usuario u ON st.id_teacher = u.id_usuario 
+             WHERE st.id_schedule = s.id_schedule) as teacher_name,
+            (SELECT GROUP_CONCAT(st.id_teacher SEPARATOR ',') 
+             FROM schedule_teachers st 
+             WHERE st.id_schedule = s.id_schedule) as teacher_id
         FROM schedules s
         LEFT JOIN courses c ON s.course_id = c.id_course
-        LEFT JOIN usuario u ON s.teacher_id = u.id_usuario
         WHERE s.id_schedule = ?
     ");
     $stmt->execute([$scheduleId]);

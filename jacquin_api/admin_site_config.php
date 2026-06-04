@@ -23,26 +23,29 @@ if (!isset($data->enrollment_open) && !isset($data->hero_tagline) && !isset($dat
     exit;
 }
 
-$isOpen = $data->enrollment_open ? '1' : '0';
-$yearRaw = isset($data->enrollment_year) ? $data->enrollment_year : null;
-$year = null;
+if (isset($data->enrollment_open)) {
+    $isOpen = $data->enrollment_open ? '1' : '0';
+    $yearRaw = isset($data->enrollment_year) ? $data->enrollment_year : null;
+    $year = null;
 
-if ($isOpen === '1') {
-    if (empty($yearRaw)) {
-        http_response_code(400);
-        echo json_encode(["success" => false, "message" => "El año de vigencia es obligatorio cuando las matrículas están abiertas."]);
-        exit;
+    if ($isOpen === '1') {
+        if (empty($yearRaw)) {
+            http_response_code(400);
+            echo json_encode(["success" => false, "message" => "El año de vigencia es obligatorio cuando las matrículas están abiertas."]);
+            exit;
+        }
+        $year = (int)$yearRaw;
+        if ($year < 2020 || $year > 2099) {
+            http_response_code(400);
+            echo json_encode(["success" => false, "message" => "Año inválido (debe ser entre 2020 y 2099)."]);
+            exit;
+        }
+    } else {
+        // Si está cerrado, el año es opcional. Si lo envían, lo guardamos; si no, queda vacío o nulo.
+        $year = !empty($yearRaw) ? (int)$yearRaw : null;
     }
-    $year = (int)$yearRaw;
-    if ($year < 2020 || $year > 2099) {
-        http_response_code(400);
-        echo json_encode(["success" => false, "message" => "Año inválido (debe ser entre 2020 y 2099)."]);
-        exit;
-    }
-} else {
-    // Si está cerrado, el año es opcional. Si lo envían, lo guardamos; si no, queda vacío o nulo.
-    $year = !empty($yearRaw) ? (int)$yearRaw : null;
 }
+
 
 try {
     $stmt = $pdo->prepare(

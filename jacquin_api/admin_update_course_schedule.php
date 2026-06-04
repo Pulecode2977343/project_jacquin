@@ -73,17 +73,25 @@ if ($startTime >= $endTime) {
 
 try {
     $quota = isset($data->quota) ? intval($data->quota) : 15;
-    // Handle id_docente or id_usuario depending on what frontend sends
-    $teacherId = !empty($data->id_docente) ? intval($data->id_docente) : ( !empty($data->id_usuario) ? intval($data->id_usuario) : null );
+    // Get teacher ids (supports single id_docente/id_usuario/teacher_id or array teacher_ids)
+    $teacherIds = [];
+    if (isset($data->teacher_ids) && is_array($data->teacher_ids)) {
+        $teacherIds = array_filter(array_map('intval', $data->teacher_ids));
+    } else {
+        $singleTeacher = !empty($data->id_docente) ? intval($data->id_docente) : ( !empty($data->id_usuario) ? intval($data->id_usuario) : ( !empty($data->teacher_id) ? intval($data->teacher_id) : null ) );
+        if ($singleTeacher) {
+            $teacherIds = [$singleTeacher];
+        }
+    }
 
     // --- TEACHER CONFLICT CHECK ---
-    if ($teacherId) {
+    foreach ($teacherIds as $tid) {
         $excludeId = (isset($data->id_schedule) && $data->id_schedule > 0) ? (int)$data->id_schedule : 0;
         
         // Usamos el índice numérico para la validación de conflictos (más seguro)
         $dayIndex = (int)$data->day; 
         
-        $conflict = checkTeacherTimeConflict($pdo, (int)$teacherId, $dayIndex, $startTime, $endTime, $excludeId);
+        $conflict = checkTeacherTimeConflict($pdo, (int)$tid, $dayIndex, $startTime, $endTime, $excludeId);
         
         if ($conflict['status'] === 'error') {
             echo json_encode(["success" => false, "message" => $conflict['message']]);
@@ -94,13 +102,17 @@ try {
     if (isset($data->id_schedule) && $data->id_schedule > 0) {
         // UPDATE
         $dayIndex = (int)$data->day;
-        $stmt = $pdo->prepare("UPDATE schedules SET day_of_week = ?, start_time = ?, end_time = ?, max_students = ?, teacher_id = ? WHERE id_schedule = ?");
-        $stmt->execute([$dayIndex, $startTime, $endTime, $quota, $teacherId, $data->id_schedule]);
+        
+        $stmt = $pdo->prepare("UPDATE schedules SET day_of_week = ?, start_time = ?, end_time = ?, max_students = ?, teacher_id = NULL WHERE id_schedule = ?");
+        $stmt->execute([$dayIndex, $startTime, $endTime, $quota, $data->id_schedule]);
 
         // Sync with schedule_teachers junction table (Modern mapping)
         $pdo->prepare("DELETE FROM schedule_teachers WHERE id_schedule = ?")->execute([$data->id_schedule]);
-        if ($teacherId) {
-            $pdo->prepare("INSERT INTO schedule_teachers (id_schedule, id_teacher) VALUES (?, ?)")->execute([$data->id_schedule, $teacherId]);
+        if (!empty($teacherIds)) {
+            $stmtInsert = $pdo->prepare("INSERT INTO schedule_teachers (id_schedule, id_teacher) VALUES (?, ?)");
+            foreach ($teacherIds as $tid) {
+                $stmtInsert->execute([$data->id_schedule, $tid]);
+            }
         }
 
         // Audit Log
@@ -118,12 +130,15 @@ try {
         // Esto evita errores de acentos y codificación al 100%.
         $dayIndex = (int)$data->day; 
 
-        $stmt = $pdo->prepare("INSERT INTO schedules (course_id, day_of_week, start_time, end_time, max_students, teacher_id) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$data->course_id, $dayIndex, $startTime, $endTime, $quota, $teacherId]);
+        $stmt = $pdo->prepare("INSERT INTO schedules (course_id, day_of_week, start_time, end_time, max_students, teacher_id) VALUES (?, ?, ?, ?, ?, NULL)");
+        $stmt->execute([$data->course_id, $dayIndex, $startTime, $endTime, $quota]);
         $newId = $pdo->lastInsertId();
 
-        if ($teacherId && $newId) {
-            $pdo->prepare("INSERT INTO schedule_teachers (id_schedule, id_teacher) VALUES (?, ?)")->execute([$newId, $teacherId]);
+        if ($newId && !empty($teacherIds)) {
+            $stmtInsert = $pdo->prepare("INSERT INTO schedule_teachers (id_schedule, id_teacher) VALUES (?, ?)");
+            foreach ($teacherIds as $tid) {
+                $stmtInsert->execute([$newId, $tid]);
+            }
         }
 
         // Audit Log

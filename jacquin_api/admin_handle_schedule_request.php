@@ -45,7 +45,7 @@ try {
         // Let's assume 1 hour class for simplicity or just verify start time.
         // We'll check if a schedule exists for this course at this time.
 
-        $schStmt = $pdo->prepare("SELECT id_schedule FROM schedules WHERE id_course = ? AND day = ? AND time_start = ?");
+        $schStmt = $pdo->prepare("SELECT id_schedule FROM schedules WHERE id_course = ? AND day_of_week = ? AND start_time = ?");
         $schStmt->execute([$request['course_id'], $request['requested_day'], $request['requested_time']]);
         $schedule = $schStmt->fetch(PDO::FETCH_ASSOC);
 
@@ -64,7 +64,7 @@ try {
             $course = $cStmt->fetch(PDO::FETCH_ASSOC);
             $teacherId = $course['teacher_id'] ?? null;
 
-            $insSch = $pdo->prepare("INSERT INTO schedules (id_course, day, time_start, time_end, quota, teacher_id) VALUES (?, ?, ?, ?, 1, ?)");
+            $insSch = $pdo->prepare("INSERT INTO schedules (id_course, day_of_week, start_time, end_time, quota, teacher_id) VALUES (?, ?, ?, ?, 1, ?)");
             $insSch->execute([$request['course_id'], $request['requested_day'], $request['requested_time'], $endTime, $teacherId]);
             $scheduleId = $pdo->lastInsertId();
         }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ApiService from '../../../services/api';
 
 /**
  * HeroCarouselTab — Gestión del Hero Carrusel
@@ -30,8 +31,7 @@ const HeroCarouselTab = () => {
   useEffect(() => {
     const loadHeroConfig = async () => {
       try {
-        const baseUrl = window.ApiService?.baseUrl || '/jacquin_api/';
-        const response = await fetch(`${baseUrl}site_config.php`);
+        const response = await fetch(`${ApiService.BASE_URL}site_config.php`);
         const data = await response.json();
 
         if (data.success) {
@@ -130,25 +130,19 @@ const HeroCarouselTab = () => {
           id: s.id,
           url: s.mediaType === 'livestream' ? s.liveUrl : s.media,
           label: s.mediaType === 'livestream' ? s.liveTitle : s.message,
-          active: s.active !== false,
+          active: s.mediaType === 'livestream' ? s.isLiveActive === true : s.active !== false,
           is_live: s.mediaType === 'livestream',
           order: s.order || 0
         }));
 
       // Enviar a API
-      const baseUrl = window.ApiService?.baseUrl || '/jacquin_api/';
-      const response = await fetch(`${baseUrl}admin_site_config.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'update_hero',
-          hero_cta_text: globalConfig.buttonText,
-          hero_tagline: globalConfig.tagline,
-          hero_slides: payloadSlides
-        })
+      const result = await ApiService.updateSiteConfig({
+        action: 'update_hero',
+        hero_cta_text: globalConfig.buttonText,
+        hero_tagline: globalConfig.tagline,
+        hero_slides: payloadSlides
       });
 
-      const result = await response.json();
       if (result.success) {
         if (window.showToast) window.showToast('Slide actualizado correctamente', 'success');
       } else {
@@ -362,30 +356,24 @@ const HeroCarouselTab = () => {
                     setEditingGlobalConfig(false);
 
                     // Guardar en API
-                    const baseUrl = window.ApiService?.baseUrl || '/jacquin_api/';
                     const payloadSlides = slides
                       .filter(s => s.mediaType !== 'livestream' || s.liveUrl)
                       .map(s => ({
                         id: s.id,
                         url: s.mediaType === 'livestream' ? s.liveUrl : s.media,
                         label: s.mediaType === 'livestream' ? s.liveTitle : s.message,
-                        active: s.active !== false,
+                        active: s.mediaType === 'livestream' ? s.isLiveActive === true : s.active !== false,
                         is_live: s.mediaType === 'livestream',
                         order: s.order || 0
                       }));
 
-                    const response = await fetch(`${baseUrl}admin_site_config.php`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        action: 'update_hero',
-                        hero_cta_text: globalConfigForm.buttonText,
-                        hero_tagline: globalConfigForm.tagline,
-                        hero_slides: payloadSlides
-                      })
+                    const result = await ApiService.updateSiteConfig({
+                      action: 'update_hero',
+                      hero_cta_text: globalConfigForm.buttonText,
+                      hero_tagline: globalConfigForm.tagline,
+                      hero_slides: payloadSlides
                     });
 
-                    const result = await response.json();
                     if (result.success) {
                       if (window.showToast) window.showToast('Configuración global actualizada', 'success');
                     } else {
@@ -745,12 +733,18 @@ const HeroCarouselTab = () => {
                             onChange={async (e) => {
                               const file = e.target.files?.[0];
                               if (file) {
-                                const reader = new FileReader();
-                                reader.onload = async (event) => {
-                                  const mediaInfo = await getMediaFileInfo(file);
-                                  setEditForm({ ...editForm, media: event.target?.result, mediaInfo });
-                                };
-                                reader.readAsDataURL(file);
+                                if (window.showToast) window.showToast('Subiendo imagen...', 'info');
+                                const mediaInfo = await getMediaFileInfo(file);
+                                const result = await window.ApiService?.uploadHeroMedia(file);
+                                if (result && result.success) {
+                                  // The result returns the path without the domain, we need to prefix it or just use it if the API handles it
+                                  // admin_upload_hero_media.php returns something like "public/uploads/hero/..."
+                                  const finalUrl = window.ApiService?.getMediaUrl ? window.ApiService.getMediaUrl(result.url) : result.url;
+                                  setEditForm({ ...editForm, media: finalUrl, mediaInfo });
+                                  if (window.showToast) window.showToast('Imagen subida con éxito', 'success');
+                                } else {
+                                  if (window.showToast) window.showToast(result?.message || 'Error al subir', 'error');
+                                }
                               }
                             }}
                             style={{ display: 'none' }}
@@ -811,12 +805,16 @@ const HeroCarouselTab = () => {
                             onChange={async (e) => {
                               const file = e.target.files?.[0];
                               if (file) {
-                                const reader = new FileReader();
-                                reader.onload = async (event) => {
-                                  const mediaInfo = await getMediaFileInfo(file);
-                                  setEditForm({ ...editForm, media: event.target?.result, mediaInfo });
-                                };
-                                reader.readAsDataURL(file);
+                                if (window.showToast) window.showToast('Subiendo video...', 'info');
+                                const mediaInfo = await getMediaFileInfo(file);
+                                const result = await window.ApiService?.uploadHeroMedia(file);
+                                if (result && result.success) {
+                                  const finalUrl = window.ApiService?.getMediaUrl ? window.ApiService.getMediaUrl(result.url) : result.url;
+                                  setEditForm({ ...editForm, media: finalUrl, mediaInfo });
+                                  if (window.showToast) window.showToast('Video subido con éxito', 'success');
+                                } else {
+                                  if (window.showToast) window.showToast(result?.message || 'Error al subir', 'error');
+                                }
                               }
                             }}
                             style={{ display: 'none' }}

@@ -69,7 +69,7 @@ if (
             $course = $stmtCourse->fetch(PDO::FETCH_ASSOC);
 
             // Get Schedule Details for Email
-            $stmtSched = $pdo->prepare("SELECT day, time_start, time_end FROM schedules WHERE id_schedule = ?");
+            $stmtSched = $pdo->prepare("SELECT day_of_week as day, start_time as time_start, end_time as time_end FROM schedules WHERE id_schedule = ?");
             $stmtSched->execute([$data->schedule_id]);
             $scheData = $stmtSched->fetch(PDO::FETCH_ASSOC);
 

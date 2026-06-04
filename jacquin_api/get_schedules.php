@@ -50,6 +50,9 @@ try {
                  FROM schedule_teachers st 
                  JOIN usuario u ON st.id_teacher = u.id_usuario 
                  WHERE st.id_schedule = s.id_schedule) as teacher_name,
+                (SELECT GROUP_CONCAT(st.id_teacher SEPARATOR ',') 
+                 FROM schedule_teachers st 
+                 WHERE st.id_schedule = s.id_schedule) as teacher_ids,
                 (SELECT COUNT(*) FROM enrollment_schedules es WHERE es.schedule_id = s.id_schedule) as enrolled_count
             FROM schedules s
             WHERE s.course_id = ?
@@ -91,6 +94,7 @@ try {
                 'time_end' => $s['end_time'],
                 'teacher_id' => $s['teacher_id'], // Legacy
                 'teacher_name' => $s['teacher_name'] ? $s['teacher_name'] : 'Sin Asignar',
+                'teacher_ids' => $s['teacher_ids'] ? array_map('intval', explode(',', $s['teacher_ids'])) : [],
                 'quota' => $canSeeEnrolled ? (int)$s['max_students'] : 0, 
                 'enrolled_count' => $canSeeEnrolled ? (int) $s['enrolled_count'] : 0
             ];

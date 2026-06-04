@@ -65,6 +65,7 @@ try {
             $msg = "Credenciales incorrectas. Intentos restantes: " . (5 - $attempts);
         }
 
+        $params[] = $user['id_usuario'];
         $pdo->prepare("UPDATE usuario SET " . implode(", ", $updateFields) . " WHERE id_usuario = ?")->execute($params);
         
         // Registrar intento fallido crítico (bloqueo)

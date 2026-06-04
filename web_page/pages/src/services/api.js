@@ -601,12 +601,40 @@ const ApiService = {
         }
     },
 
-    async updateCourseTeacher(courseId, teacherId) {
+    async uploadHeroMedia(file) {
+        const formData = new FormData();
+        formData.append('media', file);
         try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_upload_hero_media.php`, {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            });
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error("Server Response:", text);
+                return { success: false, message: "Error del servidor: " + text.substring(0, 50) };
+            }
+        } catch (error) {
+            console.error("Error uploading hero media:", error);
+            return { success: false, message: "Error de red subiendo archivo multimedia." };
+        }
+    },
+
+    async updateCourseTeacher(courseId, teacherIdOrIds) {
+        try {
+            const payload = { course_id: courseId };
+            if (Array.isArray(teacherIdOrIds)) {
+                payload.teacher_ids = teacherIdOrIds;
+            } else {
+                payload.teacher_id = teacherIdOrIds;
+            }
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_update_course_teacher.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ course_id: courseId, teacher_id: teacherId }),
+                body: JSON.stringify(payload),
                 credentials: 'include'
             });
             return await this.handleResponse(response);
@@ -741,6 +769,21 @@ const ApiService = {
             return await response.json();
         } catch (error) {
             console.error("Error fetching mission values:", error);
+            return { success: false, message: error.message };
+        }
+    },
+
+    async updateMissionValues(data) {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}update_mission_values.php`, {
+                method: 'POST',
+                headers: API_CONFIG.HEADERS,
+                body: JSON.stringify(data),
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            console.error("Error updating mission values:", error);
             return { success: false, message: error.message };
         }
     },
@@ -1220,6 +1263,23 @@ const ApiService = {
         }
     },
 
+    async uploadHeroMedia(file) {
+        try {
+            const formData = new FormData();
+            formData.append('media', file);
+
+            const response = await fetch(`${API_CONFIG.BASE_URL}admin_upload_hero_media.php`, {
+                method: "POST",
+                body: formData,
+                credentials: 'include'
+            });
+            return await this.handleResponse(response);
+        } catch (error) {
+            return { success: false, message: "Error subiendo archivo de hero." };
+        }
+    },
+
+
     // ==========================================
     // PROGRAMS JSON BACKEND (Marketing)
     // ==========================================
@@ -1630,8 +1690,7 @@ const ApiService = {
     getMediaUrl(path) {
         if (!path) return '';
         if (path.startsWith('http')) return path;
-        const serverRoot = API_CONFIG.BASE_URL.replace('jacquin_api/', '');
-        return `${serverRoot}${path}`;
+        return `${API_CONFIG.BASE_URL}${path}`;
     }
 };
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * API Service Client
  * Centralizes all communication with the backend API.
  * Handles Authentication, Token Management, and Error Parsing.
@@ -511,12 +511,18 @@ var ApiService = {
         }
     },
 
-    async updateCourseTeacher(courseId, teacherId) {
+    async updateCourseTeacher(courseId, teacherIdOrIds) {
         try {
+            const payload = { course_id: courseId };
+            if (Array.isArray(teacherIdOrIds)) {
+                payload.teacher_ids = teacherIdOrIds;
+            } else {
+                payload.teacher_id = teacherIdOrIds;
+            }
             const response = await fetch(`${API_CONFIG.BASE_URL}admin_update_course_teacher.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ course_id: courseId, teacher_id: teacherId }),
+                body: JSON.stringify(payload),
                 credentials: 'include'
             });
             return await this.handleResponse(response);

@@ -11,7 +11,7 @@ try {
 
     // Get Schedule Info
     $stmt = $pdo->prepare("
-        SELECT s.day, s.time_start, s.time_end, s.quota, c.name as course_name
+        SELECT s.day_of_week as day, s.start_time as time_start, s.end_time as time_end, s.quota, c.course_name as course_name
         FROM schedules s
         JOIN courses c ON s.id_course = c.id_course
         WHERE s.id_schedule = ?

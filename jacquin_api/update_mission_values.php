@@ -1,12 +1,14 @@
 <?php
 require_once 'config/cors.php';
-
+require_once 'helpers/auth_helper.php';
 
 header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
+
+validateAdmin();
 
 include_once 'config/connection.php';
 

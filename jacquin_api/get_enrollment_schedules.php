@@ -25,12 +25,17 @@ try {
             s.start_time as time_start,
             s.end_time as time_end,
             s.max_students as quota,
-            u.full_name as teacher_name,
+            COALESCE(
+                (SELECT GROUP_CONCAT(u.full_name SEPARATOR ', ')
+                 FROM schedule_teachers st
+                 JOIN usuario u ON st.id_teacher = u.id_usuario
+                 WHERE st.id_schedule = s.id_schedule),
+                (SELECT u.full_name FROM usuario u WHERE u.id_usuario = c.teacher_id)
+            ) as teacher_name,
             c.course_name
         FROM enrollment_schedules es
         JOIN schedules s ON es.schedule_id = s.id_schedule
         LEFT JOIN courses c ON s.course_id = c.id_course
-        LEFT JOIN usuario u ON COALESCE(s.teacher_id, c.teacher_id) = u.id_usuario
         WHERE es.enrollment_id = ?
         ORDER BY 
             CASE s.day_of_week

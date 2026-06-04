@@ -197,9 +197,13 @@ const SlideMedia = ({ slide, isActive, onVolumeChange }) => {
             {!videoInfo && (
                 <img
                     src={slide.url}
-                    alt={slide.label || 'Jacquin Academia Musical'}
+                    alt="Jacquin Academia Musical"
                     className="hero-bg-img"
                     loading="lazy"
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/assets/images/hero/hero-banner.jpg';
+                    }}
                 />
             )}
         </div>
@@ -282,7 +286,7 @@ const Hero = () => {
         window.addEventListener('scroll', handleScroll);
 
         const baseUrl = window.ApiService?.baseUrl || '/jacquin_api/';
-        fetch(`${baseUrl}site_config.php`)
+        fetch(`${baseUrl}site_config.php?t=${new Date().getTime()}`)
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
@@ -291,7 +295,15 @@ const Hero = () => {
                         hero_cta_text: data.hero_cta_text || "Descubre Nuestros Programas"
                     });
                     if (Array.isArray(data.hero_slides)) {
-                        const active = data.hero_slides.filter(s => s.active && s.url);
+                        const active = data.hero_slides
+                            .filter(s => s.active && s.url)
+                            .map(s => {
+                                let url = s.url;
+                                if (url.startsWith('http://localhost:8080/public/')) {
+                                    url = url.replace('http://localhost:8080/public/', 'http://localhost:8080/jacquin_api/public/');
+                                }
+                                return { ...s, url };
+                            });
                         setSlides(active.slice(0, 5));
                     }
                 }

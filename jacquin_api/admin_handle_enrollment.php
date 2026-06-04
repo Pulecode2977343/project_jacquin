@@ -62,10 +62,10 @@ if (!empty($data->id_enrollment) && !empty($data->action)) {
 
             if ($data->action === 'approve') {
                 $stmtSched = $pdo->prepare("
-                    SELECT s.day, s.time_start, s.time_end FROM schedules s
+                    SELECT s.day_of_week as day, s.start_time as time_start, s.end_time as time_end FROM schedules s
                     JOIN enrollments e ON e.schedule_id = s.id_schedule WHERE e.id_enrollment = ?
                     UNION
-                    SELECT s.day, s.time_start, s.time_end FROM schedules s
+                    SELECT s.day_of_week as day, s.start_time as time_start, s.end_time as time_end FROM schedules s
                     JOIN enrollment_schedules es ON es.schedule_id = s.id_schedule WHERE es.enrollment_id = ?
                     ORDER BY FIELD(day,'Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'), time_start
                 ");

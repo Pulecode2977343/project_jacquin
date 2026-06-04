@@ -113,10 +113,8 @@ try {
         $stmtInsert->execute([$data->schedule_id, $tid]);
     }
 
-    // Update legacy column for backward compatibility (optional, maybe set to first teacher or NULL)
-    // We will set it to the first teacher to keep simple views working
-    $legacyTeacher = !empty($teacherIds) ? $teacherIds[0] : NULL;
-    $pdo->prepare("UPDATE schedules SET teacher_id = ? WHERE id_schedule = ?")->execute([$legacyTeacher, $data->schedule_id]);
+    // Force NULL for legacy column to ensure schedule_teachers is the single source of truth
+    $pdo->prepare("UPDATE schedules SET teacher_id = NULL WHERE id_schedule = ?")->execute([$data->schedule_id]);
 
     $pdo->commit();
 

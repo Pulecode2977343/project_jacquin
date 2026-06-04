@@ -24,8 +24,12 @@ try {
         throw new Exception("Missing required fields (student_id, course_id, day, time)");
     }
 
-    // Validate if already exists a pending request for same course/day/time?
-    // Maybe just allow multiple for now, or check for duplicates.
+    // Validate if already exists a pending or approved request for same student, course, day, time
+    $checkStmt = $pdo->prepare("SELECT id FROM schedule_requests WHERE student_id = ? AND course_id = ? AND requested_day = ? AND requested_time = ? AND (status = 'pending' OR status = 'approved')");
+    $checkStmt->execute([$studentId, $courseId, $day, $time]);
+    if ($checkStmt->fetch()) {
+        throw new Exception("Ya tienes una solicitud pendiente o aprobada para este mismo día y hora en este curso.");
+    }
 
     $stmt = $pdo->prepare("INSERT INTO schedule_requests (student_id, course_id, requested_day, requested_time, status) VALUES (?, ?, ?, ?, 'pending')");
     $stmt->execute([$studentId, $courseId, $day, $time]);

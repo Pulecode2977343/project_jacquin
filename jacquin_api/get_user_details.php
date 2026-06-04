@@ -50,14 +50,19 @@ if ($id_usuario > 0) {
                     s.start_time as time_start,
                     s.end_time as time_end,
                     s.id_schedule,
-                    u_prof.full_name as teacher_name,
-                    u_prof.id_rol as teacher_role
+                    COALESCE(
+                        (SELECT GROUP_CONCAT(u.full_name SEPARATOR ', ')
+                         FROM schedule_teachers st
+                         JOIN usuario u ON st.id_teacher = u.id_usuario
+                         WHERE st.id_schedule = s.id_schedule),
+                        u_course.full_name,
+                        'Por asignar'
+                    ) as teacher_name
                 FROM enrollments e
                 LEFT JOIN courses c ON e.course_id = c.id_course
+                LEFT JOIN usuario u_course ON c.teacher_id = u_course.id_usuario
                 LEFT JOIN enrollment_schedules es ON e.id_enrollment = es.enrollment_id
                 LEFT JOIN schedules s ON es.schedule_id = s.id_schedule
-                LEFT JOIN schedule_teachers st ON s.id_schedule = st.id_schedule
-                LEFT JOIN usuario u_prof ON st.id_teacher = u_prof.id_usuario
                 WHERE e.student_id = ? AND e.status IN ('Activo', 'Pendiente', 'Pre-inscrito', 'Inscrito')
                 ORDER BY e.id_enrollment DESC, s.day_of_week
             ");
@@ -70,9 +75,6 @@ if ($id_usuario > 0) {
 
                 if (!isset($enrollMap[$eId])) {
                     $tName = $row['teacher_name'];
-                    if (!$tName || $row['teacher_role'] == 1) {
-                        $tName = 'Por asignar';
-                    }
 
                     $enrollMap[$eId] = [
                         'id_enrollment' => (int) $eId,
@@ -98,9 +100,6 @@ if ($id_usuario > 0) {
 
                     if (!$exists) {
                         $schTeacher = $row['teacher_name'];
-                        if (!$schTeacher || $row['teacher_role'] == 1) {
-                            $schTeacher = 'Por asignar';
-                        }
                         
                         $dayStr = mb_strtolower($row['day'], 'UTF-8');
                         $dayIndex = 0;
@@ -139,7 +138,7 @@ if ($id_usuario > 0) {
             // 3. Teaching (Teacher & Admin academic load) - Optimized join and grouping
             if (in_array($user['id_rol'], [1, 2, 3, 6])) {
                 $stmtTeach = $pdo->prepare("
-                    SELECT 
+                    SELECT DISTINCT
                         c.id_course,
                         c.course_name,
                         s.id_schedule,
@@ -152,8 +151,9 @@ if ($id_usuario > 0) {
                          WHERE es.schedule_id = s.id_schedule AND e.status = 'Activo') as student_count
                     FROM courses c
                     LEFT JOIN schedules s ON c.id_course = s.course_id
-                    LEFT JOIN schedule_teachers st ON s.id_schedule = st.id_schedule
-                    WHERE c.teacher_id = ? OR s.teacher_id = ? OR st.id_teacher = ?
+                    WHERE c.teacher_id = ? 
+                       OR s.teacher_id = ? 
+                       OR EXISTS (SELECT 1 FROM schedule_teachers st WHERE st.id_schedule = s.id_schedule AND st.id_teacher = ?)
                     ORDER BY c.course_name ASC, s.day_of_week, s.start_time ASC
                 ");
                 $stmtTeach->execute([$id_usuario, $id_usuario, $id_usuario]);

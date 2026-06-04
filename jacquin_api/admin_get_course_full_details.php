@@ -19,6 +19,28 @@ if ($course_id > 0) {
         $course = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($course) {
+            // Obtener los docentes asociados al curso a través de la tabla intermedia
+            $stmtCourseTeachers = $pdo->prepare("
+                SELECT u.id_usuario as id, u.full_name as name, u.email
+                FROM course_teachers ct
+                JOIN usuario u ON ct.teacher_id = u.id_usuario
+                WHERE ct.course_id = ?
+            ");
+            $stmtCourseTeachers->execute([$course_id]);
+            $courseTeachers = $stmtCourseTeachers->fetchAll(PDO::FETCH_ASSOC);
+
+            // Fallback si la intermedia está vacía pero hay un teacher_id en la columna legado
+            if (empty($courseTeachers) && !empty($course['teacher_id'])) {
+                $stmtLegacyTeacher = $pdo->prepare("SELECT id_usuario as id, full_name as name, email FROM usuario WHERE id_usuario = ?");
+                $stmtLegacyTeacher->execute([$course['teacher_id']]);
+                $legacyTeacher = $stmtLegacyTeacher->fetch(PDO::FETCH_ASSOC);
+                if ($legacyTeacher) {
+                    $courseTeachers = [$legacyTeacher];
+                }
+            }
+
+            $course['teachers'] = $courseTeachers;
+            $course['teacher_ids'] = array_map('intval', array_column($courseTeachers, 'id'));
             // 2. Schedules
             // Join with teacher info if available (assuming teacher_id in schedules or courses)
             // For now, let's assume teacher is in SCHEDULES based on commonly seen patterns, 

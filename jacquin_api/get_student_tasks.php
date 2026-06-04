@@ -11,7 +11,6 @@ try {
         throw new Exception("Student ID is required");
     }
 
-    // Get tasks for courses the student is enrolled in
     $sql = "
         SELECT 
             ca.id as assignment_id,
@@ -21,7 +20,7 @@ try {
             ca.due_date,
             ca.media_type,
             ca.media_url,
-            c.name as course_name,
+            c.course_name as course_name,
             u_teacher.full_name as teacher_name,
             ss.status as submission_status,
             ss.grade,
@@ -29,11 +28,11 @@ try {
             ss.submitted_at
         FROM course_assignments ca
         JOIN courses c ON ca.course_id = c.id_course
-        JOIN enrollments e ON c.id_course = e.id_course
+        JOIN enrollments e ON c.id_course = e.course_id
         LEFT JOIN usuario u_teacher ON ca.teacher_id = u_teacher.id_usuario
         LEFT JOIN student_submissions ss ON ca.id = ss.assignment_id AND ss.student_id = ?
-        WHERE e.id_student = ? 
-        AND e.status = 'active'
+        WHERE e.student_id = ? 
+        AND e.status = 'Activo'
         AND ca.is_active = 1
         ORDER BY ca.due_date ASC
     ";

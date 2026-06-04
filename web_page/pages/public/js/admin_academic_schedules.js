@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Academic Management Module
  * Consolidated logic for Courses, Schedules, and Enrollments.
  */
@@ -474,21 +474,60 @@ const AcademicManager = {
 
     async openTeacherModal(courseId, courseName, teacherId) {
         const res = await ApiService.getUsers();
-        const teachers = (res.success && res.data) ? res.data.filter(u => u.id_rol == 2) : [];
-        const { value: selectedId } = await Swal.fire({
-            title: 'Asignar Docente',
-            input: 'select',
-            inputOptions: Object.fromEntries(teachers.map(t => [t.id_usuario, t.full_name])),
-            inputValue: teacherId,
-            showCancelButton: true
+        if (!res.success) return Swal.fire('Error', 'No se cargaron docentes', 'error');
+
+        const teachers = res.data.filter(u => u.id_rol == 2);
+
+        // Normalize teacherId to a safe array of integers
+        let safeCurrentIds = [];
+        if (Array.isArray(teacherId)) {
+            safeCurrentIds = teacherId.map(id => parseInt(id));
+        } else if (typeof teacherId === 'string' && teacherId.includes(',')) {
+            safeCurrentIds = teacherId.split(',').map(id => parseInt(id.trim()));
+        } else if (teacherId) {
+            safeCurrentIds = [parseInt(teacherId)];
+        }
+
+        const html = `
+            <div style="text-align:left; max-height:300px; overflow-y:auto; border:1px solid rgba(255,255,255,0.1); padding:10px; border-radius:5px; background:rgba(0,0,0,0.2);">
+                <div style="font-size:0.9rem; color:#aaa; margin-bottom:10px;">Selecciona uno o varios docentes para el curso:</div>
+                ${teachers.map(t => `
+                    <label style="display:flex; align-items:center; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); cursor:pointer;">
+                        <input type="checkbox" name="course_teacher_ids[]" value="${t.id_usuario}" ${safeCurrentIds.includes(t.id_usuario) ? 'checked' : ''} style="transform:scale(1.3); margin-right:10px; accent-color:var(--color-acento-azul);">
+                        <span style="color:white;">${t.full_name}</span>
+                    </label>
+                `).join('')}
+            </div>
+        `;
+
+        const { value: selectedIds } = await Swal.fire({
+            title: `Asignar Docentes - ${courseName}`,
+            html: html,
+            showCancelButton: true,
+            confirmButtonColor: '#ff9f43',
+            preConfirm: () => {
+                const checked = Array.from(document.querySelectorAll('input[name="course_teacher_ids[]"]:checked'));
+                if (checked.length === 0) {
+                    Swal.showValidationMessage('Debes seleccionar al menos un docente');
+                }
+                return checked.map(el => parseInt(el.value));
+            }
         });
-        if (selectedId) this.confirmTeacherChange(courseId, selectedId);
+
+        if (selectedIds) {
+            this.confirmTeacherChange(courseId, selectedIds);
+        }
     },
 
-    async confirmTeacherChange(courseId, teacherId) {
-        const res = await ApiService.updateCourseTeacher(courseId, teacherId);
-        if (res.success) { Swal.fire('Actualizado', '', 'success'); this.loadCourses(); this.openOverview(); }
-        else Swal.fire('Error', res.message, 'error');
+    async confirmTeacherChange(courseId, teacherIds) {
+        const res = await ApiService.updateCourseTeacher(courseId, teacherIds);
+        if (res.success) {
+            Swal.fire('Actualizado', '', 'success');
+            if (typeof this.loadCourses === 'function') this.loadCourses();
+            if (typeof this.openOverview === 'function') this.openOverview();
+        } else {
+            Swal.fire('Error', res.message, 'error');
+        }
     },
 
     async handleRequest(id, action, courseId, courseName, schedId, teacherId) {

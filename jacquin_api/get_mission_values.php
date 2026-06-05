@@ -13,7 +13,7 @@ try {
     $mission = $stmt_mission->fetch(PDO::FETCH_ASSOC);
 
     // Get Values
-    $stmt_values = $pdo->query("SELECT title, description, icon, image_url FROM web_values WHERE is_active = 1 ORDER BY display_order ASC");
+    $stmt_values = $pdo->query("SELECT id, title, description, icon, image_url FROM web_values WHERE is_active = 1 ORDER BY display_order ASC");
     $values = $stmt_values->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([

@@ -754,7 +754,7 @@ const HeroCarouselTab = () => {
                           <div style={{
                             width: '100%',
                             height: '100px',
-                            background: `url('${editForm.media}') center / cover`,
+                            background: `url('${editForm.media.startsWith('http') ? editForm.media : ApiService.BASE_URL + editForm.media}') center / cover`,
                             borderRadius: '6px',
                             border: '1px solid rgba(147, 182, 238, 0.2)',
                             marginTop: '0.5rem'
@@ -991,7 +991,7 @@ const HeroCarouselTab = () => {
                         width: '100%',
                         height: '180px',
                         background: slide.mediaType === 'image'
-                          ? `url('${slide.media}') center / cover`
+                          ? `url('${slide.media.startsWith('http') || slide.media.startsWith('data:') ? slide.media : ApiService.BASE_URL + slide.media}') center / cover`
                           : 'rgba(0, 0, 0, 0.5)',
                         position: 'relative',
                         display: 'flex',

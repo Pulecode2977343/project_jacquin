@@ -65,7 +65,7 @@ if ($file['size'] > $maxSize) {
 
 // Create upload directory dynamic using PathHelper
 $baseDir = PathHelper::getUploadBaseDir();
-$uploadDir = $baseDir . 'images' . DIRECTORY_SEPARATOR . 'about' . DIRECTORY_SEPARATOR;
+$uploadDir = $baseDir . 'uploads' . DIRECTORY_SEPARATOR . 'about' . DIRECTORY_SEPARATOR;
 PathHelper::ensureDir($uploadDir);
 
 // Generate unique filename
@@ -75,8 +75,8 @@ $targetPath = $uploadDir . $filename;
 
 // Move uploaded file
 if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-    // Return relative URL for web access
-    $webUrl = 'images/about/' . $filename;
+    // Return relative URL for web access (starts with public/uploads/ so About.jsx helper catches it)
+    $webUrl = 'public/uploads/about/' . $filename;
 
     echo json_encode([
         'success' => true,

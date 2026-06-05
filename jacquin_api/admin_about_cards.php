@@ -28,7 +28,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
     case 'GET':
         // Get all cards (admin view - includes inactive)
-        $stmt = $pdo->query("SELECT * FROM about_cards ORDER BY display_order ASC");
+        $stmt = $pdo->query("SELECT id_card AS id, about_cards.* FROM about_cards ORDER BY display_order ASC");
         $cards = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Parse images JSON
@@ -92,7 +92,7 @@ switch ($method) {
         if (isset($data['reorder']) && is_array($data['reorder'])) {
             try {
                 $pdo->beginTransaction();
-                $stmt = $pdo->prepare("UPDATE about_cards SET display_order = :order WHERE id = :id");
+                $stmt = $pdo->prepare("UPDATE about_cards SET display_order = :order WHERE id_card = :id");
                 foreach ($data['reorder'] as $item) {
                     $stmt->execute([':order' => $item['order'], ':id' => $item['id']]);
                 }
@@ -138,7 +138,7 @@ switch ($method) {
             exit;
         }
 
-        $sql = "UPDATE about_cards SET " . implode(', ', $fields) . " WHERE id = :id";
+        $sql = "UPDATE about_cards SET " . implode(', ', $fields) . " WHERE id_card = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
 
@@ -159,7 +159,7 @@ switch ($method) {
             exit;
         }
 
-        $stmt = $pdo->prepare("DELETE FROM about_cards WHERE id = :id");
+        $stmt = $pdo->prepare("DELETE FROM about_cards WHERE id_card = :id");
         $stmt->execute([':id' => $data['id']]);
 
         echo json_encode([

@@ -13,6 +13,17 @@ const MissionValuesTab = () => {
   const [editingMission, setEditingMission] = useState(false);
   const [editForm, setEditForm] = useState({});
 
+  const getPreviewUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    if (url.startsWith('assets/') || url.startsWith('/assets/')) {
+        return url.startsWith('/') ? url : '/' + url;
+    }
+    if (url.startsWith('images/')) return '/assets/' + url;
+    const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
+    return (ApiService.BASE_URL || '/jacquin_api/') + cleanUrl;
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -34,16 +45,17 @@ const MissionValuesTab = () => {
 
   const handleEdit = (value) => {
     setEditingId(value.id);
-    setEditForm({ ...value });
+    setEditForm({ ...value, imageUrl: value.image_url });
   };
 
   const handleSaveValue = async (valueId) => {
     try {
+      const payload = { ...editForm, image_url: editForm.imageUrl };
       const res = await ApiService.updateMissionValues({
-        values: [editForm] // El backend espera un array de valores
+        values: [payload] // El backend espera un array de valores
       });
       if (res.success) {
-        setValues(values.map(v => v.id === valueId ? editForm : v));
+        setValues(values.map(v => v.id === valueId ? payload : v));
         setEditingId(null);
         if (window.showToast) window.showToast('Valor actualizado correctamente', 'success');
       }
@@ -214,7 +226,8 @@ const MissionValuesTab = () => {
                         color: '#fff',
                         fontFamily: 'inherit',
                         fontSize: '0.9rem',
-                        minWidth: 0
+                        minWidth: 0,
+                        boxSizing: 'border-box'
                       }}
                     />
                     <label style={{
@@ -263,7 +276,7 @@ const MissionValuesTab = () => {
                     <div style={{
                       width: '100%',
                       height: '80px',
-                      background: `url('${editForm.imageUrl.startsWith('http') || editForm.imageUrl.startsWith('data:') ? editForm.imageUrl : ApiService.BASE_URL + editForm.imageUrl}') center / cover`,
+                      background: `url('${getPreviewUrl(editForm.imageUrl)}') center / cover`,
                       borderRadius: '6px',
                       border: '1px solid rgba(147, 182, 238, 0.2)',
                       marginTop: '0.5rem'
@@ -343,6 +356,18 @@ const MissionValuesTab = () => {
                 <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', fontWeight: 600 }}>
                   {value.title}
                 </h4>
+                
+                {value.image_url && (
+                  <div style={{
+                    width: '100%',
+                    height: '90px',
+                    background: `url('${getPreviewUrl(value.image_url)}') center / cover`,
+                    borderRadius: '8px',
+                    border: '1px solid rgba(147, 182, 238, 0.2)',
+                    marginBottom: '0.8rem',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                  }}></div>
+                )}
                 <p style={{
                   margin: '0 0 1rem 0',
                   fontSize: '0.85rem',

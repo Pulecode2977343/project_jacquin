@@ -11,6 +11,17 @@ const AboutCardsTab = () => {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
 
+  const getPreviewUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    if (url.startsWith('assets/') || url.startsWith('/assets/')) {
+        return url.startsWith('/') ? url : '/' + url;
+    }
+    if (url.startsWith('images/')) return '/assets/' + url;
+    const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
+    return (ApiService.BASE_URL || '/jacquin_api/') + cleanUrl;
+  };
+
   useEffect(() => {
     fetchCards();
   }, []);
@@ -111,8 +122,8 @@ const AboutCardsTab = () => {
                   </label>
                   <input
                     type="text"
-                    value={editForm.description || ''}
-                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                    value={editForm.subtitle || ''}
+                    onChange={(e) => setEditForm({ ...editForm, subtitle: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '0.7rem',
@@ -131,8 +142,8 @@ const AboutCardsTab = () => {
                     Contenido
                   </label>
                   <textarea
-                    value={editForm.content || ''}
-                    onChange={(e) => setEditForm({ ...editForm, content: e.target.value })}
+                    value={editForm.description || ''}
+                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                     rows="3"
                     style={{
                       width: '100%',
@@ -172,7 +183,9 @@ const AboutCardsTab = () => {
                         borderRadius: '6px',
                         color: '#fff',
                         fontFamily: 'inherit',
-                        fontSize: '0.9rem'
+                        fontSize: '0.9rem',
+                        minWidth: 0,
+                        boxSizing: 'border-box'
                       }}
                     />
                     <label style={{
@@ -220,7 +233,7 @@ const AboutCardsTab = () => {
                     <div style={{
                       width: '100%',
                       height: '110px',
-                      background: `url('${editForm.imageUrl.startsWith('http') || editForm.imageUrl.startsWith('data:') ? editForm.imageUrl : ApiService.BASE_URL + editForm.imageUrl}') center / cover`,
+                      background: `url('${getPreviewUrl(editForm.imageUrl)}') center / cover`,
                       borderRadius: '8px',
                       border: '1px solid rgba(147, 182, 238, 0.2)',
                       marginTop: '0.8rem',
@@ -289,13 +302,25 @@ const AboutCardsTab = () => {
             ) : (
               // Modo visualización
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.8rem' }}>
                   <i className={card.icon} style={{ fontSize: '1.5rem', color: 'var(--color-acento-naranja)' }}></i>
                   <div>
                     <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 600 }}>{card.title}</h4>
-                    <p style={{ margin: 0, fontSize: '0.8rem', opacity: 0.6 }}>{card.description}</p>
+                    <p style={{ margin: 0, fontSize: '0.8rem', opacity: 0.6 }}>{card.subtitle}</p>
                   </div>
                 </div>
+                
+                {card.image_url && (
+                  <div style={{
+                    width: '100%',
+                    height: '90px',
+                    background: `url('${getPreviewUrl(card.image_url)}') center / cover`,
+                    borderRadius: '8px',
+                    border: '1px solid rgba(147, 182, 238, 0.2)',
+                    marginBottom: '0.8rem',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                  }}></div>
+                )}
 
                 <p style={{
                   fontSize: '0.85rem',
@@ -306,7 +331,7 @@ const AboutCardsTab = () => {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis'
                 }}>
-                  {card.content}
+                  {card.description}
                 </p>
 
                 <button
